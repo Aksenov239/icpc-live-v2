@@ -6,6 +6,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.themes.Reindeer;
 import ru.ifmo.acm.MainView;
+import com.vaadin.event.ShortcutAction;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -46,6 +47,8 @@ public class LoginView extends CustomComponent implements View {
                 }
             }
         });
+
+        loginButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
         VerticalLayout fields = new VerticalLayout(user, password, loginButton);
         fields.setSizeUndefined();
