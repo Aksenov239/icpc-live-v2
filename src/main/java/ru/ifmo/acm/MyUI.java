@@ -8,10 +8,13 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.creepingline.CreepingLineView;
+import ru.ifmo.acm.creepingline.MessageRequestHandlers;
 import ru.ifmo.acm.login.LoginView;
+import ru.ifmo.acm.mainscreen.MainScreenView;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -49,6 +52,12 @@ public class MyUI extends UI {
 
         getNavigator().addView(CreepingLineView.NAME, CreepingLineView.class);
 
+        getNavigator().addView(MainScreenView.NAME, MainScreenView.class);
+
+        menu.addItem("Main screen", selectedItem -> {
+            getNavigator().navigateTo(MainScreenView.NAME);
+        });
+
         menu.addItem("Creeping Line", selectedItem -> {
             getNavigator().navigateTo(CreepingLineView.NAME);
         });
@@ -63,6 +72,9 @@ public class MyUI extends UI {
         addPollListener(event -> {
             if (currentView instanceof CreepingLineView) {
                 ((CreepingLineView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenView) {
+                ((MainScreenView) currentView).refresh();
             }
         });
 
@@ -93,6 +105,8 @@ public class MyUI extends UI {
         });
 
         getNavigator().navigateTo(LoginView.NAME);
+
+        VaadinSession.getCurrent().addRequestHandler(new MessageRequestHandlers());
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)

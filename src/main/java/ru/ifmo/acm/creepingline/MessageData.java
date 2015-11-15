@@ -80,7 +80,7 @@ public class MessageData {
 
     public void backup() {
         try {
-            String path = "backup";//getClass().getResource(backup).getPath();
+            String path = backup;//getClass().getResource(backup).getPath();
 
             String tmpFile = path + ".tmp";
 
@@ -109,6 +109,12 @@ public class MessageData {
 
     public void addMessage(Message message) {
         messageList.addBean(message);
+    }
+
+    public List<Message> getMessages() {
+        synchronized (messageList) {
+            return messageList.getItemIds();
+        }
     }
 
     public void tick() {
