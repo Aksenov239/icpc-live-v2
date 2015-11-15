@@ -1,35 +1,57 @@
 package ru.ifmo.acm.creepingline;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
  */
 public class MessageForm extends FormLayout {
 
-    BeanFieldGroup<Message> formFieldBindings;
     final MessageData messageData;
-    Message message;
+    final CreepingLineView parent;
+    Message messageObject;
 
-    public MessageForm() {
+    final TextField message;
+    final ComboBox timeBox;
+    final CheckBox advertBox;
+
+    VerticalLayout form;
+
+    final String[] timeBoxValues;
+
+    public MessageForm(CreepingLineView parent) {
+        this.parent = parent;
+
+        //VerticalLayout panel = new VerticalLayout();
+
+        Button newMessage = new Button("New Message");
+        newMessage.addClickListener(event -> {
+            parent.messageList.setValue(null);
+            this.edit(null);
+        });
+        newMessage.setSizeUndefined();
+
+        form = new VerticalLayout();
+
         messageData = MessageData.getMessageData();
 
-        setVisible(false);
+        form.setVisible(false);
 
-        setSizeUndefined();
-        setMargin(true);
+        form.setSizeUndefined();
+        form.setMargin(true);
 
-        final TextField message = new TextField("Message");
-        final ComboBox timeBox = new ComboBox();
-        final String[] timeBoxValues = new String[]{"30 seconds", "1 minute", "2 minutes", "5 minutes", "infinity milliseconds"};
+        message = new TextField("Message:");
+        timeBox = new ComboBox("Duration:");
+        timeBoxValues = new String[]{"30 seconds", "1 minute", "2 minutes", "5 minutes", "infinity milliseconds"};
         final int[] duration = new int[]{30000, 60000, 120000, 3000000, Integer.MAX_VALUE};
         timeBox.addItems(timeBoxValues);
-        final CheckBox advertBox = new CheckBox();
+        timeBox.setNullSelectionAllowed(false);
+        timeBox.setValue(timeBoxValues[0]);
+        advertBox = new CheckBox("Advertisement");
 
         Button save = new Button("Save", event -> {
             int time = 0;
@@ -39,29 +61,82 @@ public class MessageForm extends FormLayout {
                 }
             }
 
-            messageData.addMessage(new Message(
-                    message.getValue(),
-                    System.currentTimeMillis(),
-                    time,
-                    advertBox.getValue()
-            ) );
+            if (messageObject == null) {
+                messageData.addMessage(new Message(
+                        message.getValue(),
+                        System.currentTimeMillis(),
+                        time,
+                        advertBox.getValue()
+                ));
+            } else {
+                Item messageBean = messageData.messageList.getItem(messageObject);
+                System.err.println(messageBean.getItemPropertyIds());
+//                messageObject.setMessage(message.getValue());
+//                messageObject.setIsAdvertisement(advertBox.getValue());
+                messageBean.getItemProperty("message").setValue(message.getValue());
+                messageBean.getItemProperty("isAdvertisement").setValue(advertBox.getValue());
+//                parent.messageList.refreshRowCache();
+            }
 
             message.clear();
 
-            Notification.show("Created new advertisement", Type.TRAY_NOTIFICATION);
+            form.setVisible(false);
+
+            parent.messageList.setValue(null);
+
+            if (messageObject == null) {
+                Notification.show("Created new message", Type.TRAY_NOTIFICATION);
+            } else {
+                Notification.show("Edit message", Type.TRAY_NOTIFICATION);
+            }
         });
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
+        Button delete = new Button("Delete", event -> {
+            messageData.removeMessage((Message) parent.messageList.getValue());
+
+            form.setVisible(false);
+
+            Notification.show("Deleted", Type.TRAY_NOTIFICATION);
+        });
+
         Button cancel = new Button("Cancel", event -> {
+            form.setVisible(false);
+
+            parent.messageList.setValue(null);
+
             Notification.show("Cancelled", Type.TRAY_NOTIFICATION);
         });
 
-
-        HorizontalLayout actions = new HorizontalLayout(save, cancel);
+        HorizontalLayout actions = new HorizontalLayout(save, delete, cancel);
         actions.setSpacing(true);
 
-        addComponents(actions);
+        form.addComponents(actions, message, timeBox, advertBox);
+        message.setSizeFull();
+        advertBox.setSizeUndefined();
+        form.setSizeFull();
+        form.setSpacing(true);
+
+        addComponents(newMessage, form);
+
+        setSizeFull();
+        setVisible(true);
+    }
+
+    public void edit(Message message) {
+        messageObject = message;
+        if (message != null) {
+            this.message.setValue(message.getMessage());
+            advertBox.setValue(message.getIsAdvertisement());
+            timeBox.setVisible(false);
+        } else {
+            this.message.clear();
+            timeBox.setVisible(true);
+            timeBox.setValue(timeBoxValues[0]);
+            advertBox.setValue(false);
+        }
+        form.setVisible(true);
     }
 
 }

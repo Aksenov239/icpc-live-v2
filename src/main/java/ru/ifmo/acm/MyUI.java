@@ -4,13 +4,13 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ChameleonTheme;
-import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.themes.ValoTheme;
+import ru.ifmo.acm.creepingline.CreepingLineView;
 import ru.ifmo.acm.login.LoginView;
 
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +21,8 @@ import javax.servlet.annotation.WebServlet;
 @Theme("mytheme")
 @Widgetset("ru.ifmo.acm.MyAppWidgetset")
 public class MyUI extends UI {
+
+    View currentView;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -45,10 +47,22 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainView.NAME, MainView.class);
 
-        menu.addItem("Logout", new MenuBar.Command() {
-            public void menuSelected(final MenuBar.MenuItem selectedItem) {
-                getSession().setAttribute("user", null);
-                getNavigator().navigateTo("");
+        getNavigator().addView(CreepingLineView.NAME, CreepingLineView.class);
+
+        menu.addItem("Creeping Line", selectedItem -> {
+            getNavigator().navigateTo(CreepingLineView.NAME);
+        });
+
+        menu.addItem("Logout", selectedItem -> {
+            getSession().setAttribute("user", null);
+            getNavigator().navigateTo("");
+        });
+
+        setPollInterval(2000);
+
+        addPollListener(event -> {
+            if (currentView instanceof CreepingLineView) {
+                ((CreepingLineView) currentView).refresh();
             }
         });
 
@@ -67,6 +81,8 @@ public class MyUI extends UI {
                 } else {
                     menu.setVisible(false);
                 }
+
+                currentView = e.getNewView();
 
                 return true;
             }
