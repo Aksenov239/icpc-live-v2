@@ -1,4 +1,4 @@
-package events;
+package ru.ifmo.acm.events;
 
 public interface RunInfo {
     boolean isJudged();

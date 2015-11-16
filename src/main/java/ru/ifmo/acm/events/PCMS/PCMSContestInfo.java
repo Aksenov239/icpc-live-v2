@@ -1,7 +1,7 @@
-package events.PCMS;
+package ru.ifmo.acm.events.PCMS;
 
-import events.ContestInfo;
-import events.TeamInfo;
+import ru.ifmo.acm.events.ContestInfo;
+import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,15 +13,8 @@ public class PCMSContestInfo extends ContestInfo {
         return standings.stream().toArray(TeamInfo[]::new);
     }
 
-    PCMSContestInfo(int teamNumber, int problemNumber) {
-        super(teamNumber, problemNumber);
-        standings = new ArrayList<>();
-        ranks = new HashMap<>();
-        currentTime = 0;
-    }
-
-    PCMSContestInfo() {
-        super(100, 11); // TODO
+    PCMSContestInfo(int problemNumber) {
+        super(problemNumber);
         standings = new ArrayList<>();
         ranks = new HashMap<>();
         currentTime = 0;

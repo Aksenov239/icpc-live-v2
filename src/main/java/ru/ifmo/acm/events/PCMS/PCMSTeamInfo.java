@@ -1,6 +1,6 @@
-package events.PCMS;
+package ru.ifmo.acm.events.PCMS;
 
-import events.TeamInfo;
+import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class PCMSTeamInfo implements TeamInfo {
     public PCMSTeamInfo(int problemsNumber) {
         problemRuns = new ArrayList[problemsNumber];
-        Arrays.setAll(problemRuns, i -> new ArrayList<PCMSRunInfo>());
+        Arrays.setAll(problemRuns, i -> new ArrayList<>());
         this.rank = 1;
     }
 
@@ -30,10 +30,6 @@ public class PCMSTeamInfo implements TeamInfo {
     public long getLastSubmitTime(int problemId) {
         int runsNumber = getRunsNumber(problemId);
         return runsNumber == 0 ? -1 : problemRuns[problemId].get(runsNumber).time;
-    }
-
-    public void setRuns(ArrayList<PCMSRunInfo>[] runs) {
-        problemRuns = runs;
     }
 
     @Override

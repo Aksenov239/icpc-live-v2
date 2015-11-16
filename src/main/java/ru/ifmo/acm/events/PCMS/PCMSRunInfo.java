@@ -1,14 +1,14 @@
-package events.PCMS;
+package ru.ifmo.acm.events.PCMS;
 
-import events.RunInfo;
+import ru.ifmo.acm.events.RunInfo;
 
 public class PCMSRunInfo implements RunInfo {
     PCMSRunInfo() {
         this.judged = true;
     }
 
-    PCMSRunInfo(String result, int problem, int team, long time, boolean firstToSolve) {
-        this();
+    PCMSRunInfo(String result, int problem, long time, boolean firstToSolve) {
+        this.judged = true;
         this.result = result;
         this.problem = problem;
         this.time = time;

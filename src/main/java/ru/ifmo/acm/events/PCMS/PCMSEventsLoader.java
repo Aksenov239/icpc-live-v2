@@ -1,12 +1,12 @@
-package events.PCMS;
+package ru.ifmo.acm.events.PCMS;
 
-import events.EventsLoader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
+import ru.ifmo.acm.events.EventsLoader;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -20,43 +20,45 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class PCMSEventsLoader extends EventsLoader {
-    public PCMSEventsLoader() {
+    public PCMSEventsLoader() throws IOException {
+        properties.load(new FileInputStream("events.properties"));
         PCMSContestInfo initial = parseInitialContestInfo();
         contestInfo = new AtomicReference<>(initial);
     }
 
-    public PCMSContestInfo parseInitialContestInfo() {
-        PCMSContestInfo initial = new PCMSContestInfo();
-        try {
-            String fn = properties.getProperty("participantsFilename");
-            String xml = new String(Files.readAllBytes(Paths.get(fn)));
-            Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
-            Element participants = doc.child(0);
-            participants.children().forEach(participant -> {
-                String participantName = participant.attr("name");
-                initial.addTeamStandings(new PCMSTeamInfo(participantName, initial.getProblemsNumber()));
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private PCMSContestInfo parseInitialContestInfo() throws IOException {
+        int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
+        PCMSContestInfo initial = new PCMSContestInfo(problemsNumber);
+        String fn = properties.getProperty("participants");
+        String xml = new String(Files.readAllBytes(Paths.get(fn)));
+        Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
+        Element participants = doc.child(0);
+        participants.children().forEach(participant -> {
+            String participantName = participant.attr("name");
+            initial.addTeamStandings(new PCMSTeamInfo(participantName, initial.getProblemsNumber()));
+        });
         return initial;
+    }
+
+    private void updateStatements() throws IOException {
+        String url = properties.getProperty("url");
+        String html = new BufferedReader(new InputStreamReader(new URL(url).openStream()))
+                .lines()
+                .collect(Collectors.joining());
+        Document doc = Jsoup.parse(html, url);
+        parseAndUpdateStandings(doc.body());
     }
 
     @Override
     public void run() {
         try {
-            properties.load(new FileInputStream("eventsLoader.properties"));
-            String url = properties.getProperty("url");
-            String html = new BufferedReader(new InputStreamReader(new URL(url).openStream()))
-                    .lines()
-                    .collect(Collectors.joining());
-
-            Document doc = Jsoup.parse(html, url);
-            parseAndUpdateStandings(doc.body());
-        } catch (IOException e) {
+            while (true) {
+                updateStatements();
+                sleep(1000);
+            }
+        } catch (IOException| InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     private void parseAndUpdateStandings(Element element) {
@@ -103,7 +105,10 @@ public class PCMSEventsLoader extends EventsLoader {
             boolean isAccepted = text.startsWith("+");
             parsedRun.result = isAccepted ? "AC" : "REJ";
             parsedRun.firstToSolve = "first-to-solve".equals(element.attr("class"));
-            parsedRun.time = isAccepted ? parseTime(((Element) element).child(0).ownText()) : currentTime;
+
+            parsedRun.time = (isAccepted && element instanceof Element)
+                    ? parseTime(((Element) element).child(0).ownText())
+                    : currentTime;
 
             return parsedRun;
         }
@@ -130,7 +135,8 @@ public class PCMSEventsLoader extends EventsLoader {
     }
 
     private PCMSContestInfo parseContestInfo(Element element) {
-        PCMSContestInfo updateContestInfo = new PCMSContestInfo();
+        int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
+        PCMSContestInfo updateContestInfo = new PCMSContestInfo(problemsNumber);
         long contestTime = parseTime(element.child(1).ownText().split("of")[0]);
         updateContestInfo.setCurrentTime(contestTime);
         element = element.child(4).child(0);
@@ -143,7 +149,11 @@ public class PCMSEventsLoader extends EventsLoader {
         return updateContestInfo;
     }
 
-    AtomicReference<PCMSContestInfo> contestInfo;
+    public static PCMSContestInfo getContestData() {
+        return contestInfo.get();
+    }
+
+    static AtomicReference<PCMSContestInfo> contestInfo;
     long currentTime;
     private Properties properties;
 }
