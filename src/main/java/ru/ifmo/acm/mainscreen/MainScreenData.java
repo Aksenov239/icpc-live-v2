@@ -27,17 +27,24 @@ public class MainScreenData {
 
     private long clockTimestamp;
     boolean isClockVisible;
-    final private Object clock = new Object();
+    final private Object clockLock = new Object();
 
     private long standingsTimestamp;
     private boolean isStandingsVisible;
     private long standingsType;
-    final private Object standings = new Object();
+    final private Object standingsLock = new Object();
+
+    private long advertisementTimestamp;
+    private boolean isAdvertisementVisible;
+    private Advertisement advertisementValue;
+    final private Object advertisementLock = new Object();
+
+    final BeanItemContainer<Advertisement> advertisements;
 
     private long[] labelsTimestamps;
     private boolean[] isLabelsVisible;
-    private String[] labelsValues;
-    final private Object[] labels = {new Object(), new Object(), new Object()};
+    private Person[] labelsValues;
+    final private Object[] labelsLock = {new Object(), new Object()};
 
     private long infoTimestamp;
     private boolean isInfoVisible;
@@ -57,7 +64,7 @@ public class MainScreenData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        advertisements = new BeanItemContainer<>(Advertisement.class);
         persons = new BeanItemContainer<>(Person.class);
 
         reload();
@@ -73,26 +80,26 @@ public class MainScreenData {
     }
 
     public void setClockVisible(boolean visible) {
-        synchronized (clock) {
+        synchronized (clockLock) {
             clockTimestamp = System.currentTimeMillis();
             isClockVisible = visible;
         }
     }
 
     public boolean isClockVisible() {
-        synchronized (clock) {
+        synchronized (clockLock) {
             return isClockVisible;
         }
     }
 
     public String clockStatus() {
-        synchronized (clock) {
-            return clockTimestamp + " " + isClockVisible;
+        synchronized (clockLock) {
+            return clockTimestamp + "\n" + isClockVisible;
         }
     }
 
     public void setStandingsVisible(boolean visible, int type) {
-        synchronized (standings) {
+        synchronized (standingsLock) {
             standingsTimestamp = System.currentTimeMillis();
             isStandingsVisible = visible;
             standingsType = type;
@@ -100,13 +107,27 @@ public class MainScreenData {
     }
 
     public String standingsStatus() {
-        synchronized (standings) {
-            return standingsTimestamp + " " + isStandingsVisible + " " + standingsType;
+        synchronized (standingsLock) {
+            return standingsTimestamp + "\n" + isStandingsVisible + "\n" + standingsType;
         }
     }
 
-    public void setLabelVisible(boolean visible, String label, int id) {
-        synchronized (labels[id]) {
+    public void setAdvertisementVisible(boolean visible, Advertisement advertisement){
+        synchronized (advertisementLock) {
+            advertisementTimestamp = System.currentTimeMillis();
+            isAdvertisementVisible = visible;
+            advertisementValue = advertisement;
+        }
+    }
+
+    public String advertisementStatus(){
+        synchronized (advertisementLock) {
+            return advertisementTimestamp + "\n" + isAdvertisementVisible + "\n" + advertisementValue;
+        }
+    }
+
+    public void setLabelVisible(boolean visible, Person label, int id) {
+        synchronized (labelsLock[id]) {
             labelsTimestamps[id] = System.currentTimeMillis();
             isLabelsVisible[id] = visible;
             labelsValues[id] = label;
@@ -115,12 +136,18 @@ public class MainScreenData {
 
     public String labelsStatus() {
         String result = "";
-        for (int i = 0; i < labels.length; i++) {
-            synchronized (labels[i]) {
-                result += labelsTimestamps[i] + " " + isLabelsVisible[i] + " " + labelsValues[i] + "\n";
+        for (int i = 0; i < labelsLock.length; i++) {
+            synchronized (labelsLock[i]) {
+                result += labelsTimestamps[i] + "\n" + isLabelsVisible[i] + "\n" + labelsValues[i].toString() + " " + "\n";
             }
         }
         return result;
+    }
+
+    public String labelStatus(int id) {
+        synchronized (labelsLock[id]) {
+            return labelsTimestamps[id] + " " + isLabelsVisible[id] + " " + labelsValues[id];
+        }
     }
 
     public void setInfoVisible(boolean visible, String type, int teamId) {
@@ -133,7 +160,7 @@ public class MainScreenData {
     }
 
     public String infoStatus() {
-        return infoTimestamp + " " + isInfoVisible + " " + infoType + " " + infoTeamNumber;
+        return infoTimestamp + "\n" + isInfoVisible + "\n" + infoType + "\n" + infoTeamNumber;
     }
 
     public void reload() {
@@ -172,6 +199,18 @@ public class MainScreenData {
             Files.move(new File(tmpFile).toPath(), new File(backupPersons).toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void addAdvertisement(Advertisement advertisement) {
+        synchronized (advertisements) {
+            advertisements.addBean(advertisement);
+        }
+    }
+
+    public void removeAdvertisement(Advertisement advertisement) {
+        synchronized (advertisements) {
+            advertisements.removeItem(advertisement);
         }
     }
 

@@ -2,8 +2,9 @@ package ru.ifmo.acm.mainscreen;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.ui.*;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Notification.Type;
 
 /**
  * Created by Aksenov239 on 15.11.2015.
@@ -15,9 +16,14 @@ public class MainScreenView extends CustomComponent implements View {
     Button clockButtonOn;
     Button clockButtonOff;
 
+    public String getClockStatus() {
+        boolean status = mainScreenData.isClockVisible();
+        return status ? clockStatuses[0] : clockStatuses[1];
+    }
+
     public Component getClockController() {
         boolean status = mainScreenData.isClockVisible;
-        clockStatus = new Label(status ? clockStatuses[0] : clockStatuses[1]);
+        clockStatus = new Label(getClockStatus());
         clockStatus.addStyleName("large");
 
         clockButtonOn = new Button("Show clock");
@@ -56,7 +62,7 @@ public class MainScreenView extends CustomComponent implements View {
 
     public Component getStandingsController() {
         String status = mainScreenData.standingsStatus();
-        String[] s = status.split(" ");
+        String[] s = status.split("\n");
         standingsStatus = new Label(Boolean.parseBoolean(s[1]) ?
                 (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
                 labelStatuses[3]
@@ -94,7 +100,129 @@ public class MainScreenView extends CustomComponent implements View {
                 standingsStatus,
                 group
         );
-        panel.setMargin(new MarginInfo(false, false, false, true) );
+        panel.setMargin(new MarginInfo(false, false, false, true));
+        panel.setSpacing(true);
+        return panel;
+    }
+
+    Label advertisementStatus;
+    TextField advertisementText;
+    Button addAdvertisement;
+    Button removeAdvertisement;
+    Button discardAdvertisement;
+    Button showAdvertisement;
+    Button hideAdvertisement;
+    Table advertisements;
+
+    public String getAdvertisementStatus() {
+        String status = mainScreenData.advertisementStatus();
+        String[] s = status.split("\n");
+        return s[1].equals("true") ? "Advertisement \"" + s[2] + "\"" : "No advertisement now";
+    }
+
+    public Component getAdvertisementController() {
+        //String status = mainScreenData.advertisementStatus();
+        //String[] s = status.split("\n");
+        advertisementStatus = new Label(getAdvertisementStatus());
+        advertisementStatus.addStyleName("large");
+
+        advertisementText = new TextField("Advertisement text: ");
+
+        addAdvertisement = new Button("Add new");
+        addAdvertisement.addClickListener(event -> {
+            if (addAdvertisement.getCaption().equals("Add new")) {
+                mainScreenData.addAdvertisement(new Advertisement(advertisementText.getValue()));
+            } else {
+                mainScreenData.advertisements.getItem(advertisements.getValue()).getItemProperty("advertisement").
+                        setValue(advertisementText.getValue());
+                advertisements.setValue(null);
+                addAdvertisement.setCaption("Add new");
+                removeAdvertisement.setVisible(false);
+                discardAdvertisement.setVisible(false);
+            }
+            advertisementText.clear();
+
+            advertisements.refreshRowCache();
+        });
+
+        removeAdvertisement = new Button("Remove selected");
+        removeAdvertisement.addClickListener(event -> {
+            if (advertisements.getValue() != null) {
+                mainScreenData.removeAdvertisement((Advertisement) advertisements.getValue());
+                advertisements.refreshRowCache();
+            } else {
+                Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
+            }
+            advertisementText.setValue("");
+            advertisements.setValue(null);
+            addAdvertisement.setCaption("Add new");
+            removeAdvertisement.setVisible(false);
+            discardAdvertisement.setVisible(false);
+        });
+        removeAdvertisement.setVisible(false);
+
+        discardAdvertisement = new Button("Discard");
+        discardAdvertisement.addClickListener(event -> {
+            advertisementText.setValue("");
+            advertisements.setValue(null);
+            addAdvertisement.setCaption("Add new");
+            removeAdvertisement.setVisible(false);
+            discardAdvertisement.setVisible(false);
+        });
+        discardAdvertisement.setVisible(false);
+        CssLayout groupAdd = new CssLayout();
+        groupAdd.addStyleName("v-component-group");
+        groupAdd.addComponents(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
+
+        advertisements = new Table();
+        advertisements.setContainerDataSource(mainScreenData.advertisements);
+        advertisements.setSelectable(true);
+        advertisements.setEditable(false);
+        advertisements.setSizeFull();
+        advertisements.addValueChangeListener(event -> {
+            if (advertisements.getValue() == null) {
+                addAdvertisement.setCaption("Add new");
+                removeAdvertisement.setVisible(false);
+                discardAdvertisement.setVisible(false);
+                advertisementText.setValue("");
+                return;
+            }
+            addAdvertisement.setCaption("Edit");
+            removeAdvertisement.setVisible(true);
+            discardAdvertisement.setVisible(true);
+            advertisementText.setValue(((Advertisement) advertisements.getValue()).getAdvertisement());
+        });
+
+        showAdvertisement = new Button("Show advertisement");
+        showAdvertisement.addClickListener(event -> {
+            if (advertisements.getValue() != null) {
+                mainScreenData.setAdvertisementVisible(true, (Advertisement) advertisements.getValue());
+                advertisementStatus.setValue(getAdvertisementStatus());
+            } else {
+                Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
+            }
+        });
+
+        hideAdvertisement = new Button("Hide advertisement");
+        hideAdvertisement.addClickListener(event -> {
+            mainScreenData.setAdvertisementVisible(false, (Advertisement) advertisements.getValue());
+            advertisementStatus.setValue(getAdvertisementStatus());
+        });
+
+        CssLayout groupControl = new CssLayout();
+        groupControl.addStyleName("v-component-group");
+        groupControl.addComponents(showAdvertisement, hideAdvertisement);
+
+        VerticalLayout panel = new VerticalLayout(
+                advertisementStatus,
+                groupAdd,
+                advertisements,
+                new HorizontalLayout(
+                        showAdvertisement,
+                        hideAdvertisement
+                )
+        );
+        panel.setMargin(new MarginInfo(false, false, false, true));
         panel.setSpacing(true);
         return panel;
     }
@@ -106,6 +234,10 @@ public class MainScreenView extends CustomComponent implements View {
     Table personsLeft;
     Table personsRight;
 
+    public Component getPersonsWidget() {
+        return null;
+    }
+
     MainScreenData mainScreenData;
 
     public MainScreenView() {
@@ -113,21 +245,25 @@ public class MainScreenView extends CustomComponent implements View {
 
         Component clockController = getClockController();
         Component standingsController = getStandingsController();
+        Component advertisementController = getAdvertisementController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController);
+        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController, advertisementController);
         mainPanel.setSpacing(true);
         setCompositionRoot(mainPanel);
     }
 
     public void refresh() {
-        clockStatus.setValue(mainScreenData.isClockVisible() ? clockStatuses[0] : clockStatuses[1]);
+        clockStatus.setValue(getClockStatus());
 
         String status = mainScreenData.standingsStatus();
-        String[] s = status.split(" ");
+        String[] s = status.split("\n");
         standingsStatus.setValue(Boolean.parseBoolean(s[1]) ?
                         (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
                         labelStatuses[3]
         );
+
+        advertisementStatus.setValue(getAdvertisementStatus());
+        advertisements.refreshRowCache();
 
         //personsLeft.refreshRowCache();
         //personsRight.refreshRowCache();
