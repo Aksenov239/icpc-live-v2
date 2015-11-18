@@ -11,43 +11,47 @@ import com.vaadin.ui.Notification.Type;
  */
 public class MainScreenView extends CustomComponent implements View {
     public static String NAME = "mainscreen";
+
+/* Clocks */
     final String[] clockStatuses = new String[]{"Clock is shown", "Clock isn't shown"};
     Label clockStatus;
     Button clockButtonOn;
     Button clockButtonOff;
-
-    public String getClockStatus() {
-        boolean status = mainScreenData.isClockVisible();
-        return status ? clockStatuses[0] : clockStatuses[1];
-    }
 
     public Component getClockController() {
         boolean status = mainScreenData.isClockVisible;
         clockStatus = new Label(getClockStatus());
         clockStatus.addStyleName("large");
 
-        clockButtonOn = new Button("Show clock");
-        clockButtonOn.addClickListener(event -> {
-            mainScreenData.setClockVisible(true);
-            clockStatus.setValue(clockStatuses[0]);
-        });
+        clockButtonOn = createClockButton("Show clock", true, 0);
+        clockButtonOff = createClockButton("Hide clock", false, 1);
 
-        clockButtonOff = new Button("Hide clock");
-        clockButtonOff.addClickListener(event -> {
-            mainScreenData.setClockVisible(false);
-            clockStatus.setValue(clockStatuses[1]);
-        });
-
-        CssLayout group = new CssLayout();
-        group.addStyleName("v-component-group");
-        group.addComponents(clockButtonOn, clockButtonOff);
+        CssLayout group = createLayout(clockButtonOn, clockButtonOff);
 
         VerticalLayout panel = new VerticalLayout(clockStatus, group);
-        panel.setMargin(new MarginInfo(false, false, false, true));
-        panel.setSpacing(true);
+//        panel.setMargin(new MarginInfo(false, false, false, true));
+//        panel.setSpacing(true);
+        setPanelDefaults(panel);
         return panel;
     }
 
+    public String getClockStatus() {
+        boolean status = mainScreenData.isClockVisible();
+        return status ? clockStatuses[0] : clockStatuses[1];
+    }
+
+    private Button createClockButton(String name, boolean visibility, int status) {
+        Button button = new Button(name);
+        button.addClickListener(event -> {
+            mainScreenData.setClockVisible(visibility);
+            clockStatus.setValue(clockStatuses[status]);
+        });
+
+        return button;
+    }
+
+
+/* Standings */
     Label standingsStatus;
     final String[] labelStatuses = new String[]{
             "Top 1 page is shown for %d seconds",
@@ -60,6 +64,31 @@ public class MainScreenView extends CustomComponent implements View {
     Button standingsShowAll;
     Button standingsHide;
 
+    public Component getStandingsController() {
+        String status = mainScreenData.standingsStatus();
+        String[] s = status.split("\n");
+        standingsStatus = new Label(Boolean.parseBoolean(s[1]) ?
+                (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
+                labelStatuses[3]
+        );
+        standingsStatus.addStyleName("large");
+        standingsShowTop1 = createStandingsControllerButton("Show first page", 0, true, 0);
+        standingsShowTop2 = createStandingsControllerButton("Show two pages", 1, true, 1);
+        standingsShowAll = createStandingsControllerButton("Show all pages", 2, true, 2);
+        standingsHide = createStandingsControllerButton("Hide", 3, false, -1);
+
+        CssLayout group = createLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsHide);
+
+        VerticalLayout panel = new VerticalLayout(
+                standingsStatus,
+                group
+        );
+//        panel.setMargin(new MarginInfo(false, false, false, true));
+//        panel.setSpacing(true);
+        setPanelDefaults(panel);
+        return panel;
+    }
+
     private Button createStandingsControllerButton(String name, int index, boolean visible, int type) {
         Button button = new Button(name);
         button.addClickListener(event -> {
@@ -70,46 +99,8 @@ public class MainScreenView extends CustomComponent implements View {
         return button;
     }
 
-    private void createShowFirstPageButton() {
-        standingsShowTop1 = createStandingsControllerButton("Show first page", 0, true, 0);
-    }
 
-    private void createShowTwoPagesButton() {
-        standingsShowTop2 = createStandingsControllerButton("Show two pages", 1, true, 1);
-    }
-
-    private void createShowAllPagesButton() {
-        standingsShowAll = createStandingsControllerButton("Show all pages", 2, true, 2);
-    }
-
-    private void createHideButton() {
-        standingsHide = createStandingsControllerButton("Hide", 3, false, -1);
-    }
-
-    public Component getStandingsController() {
-        String status = mainScreenData.standingsStatus();
-        String[] s = status.split("\n");
-        standingsStatus = new Label(Boolean.parseBoolean(s[1]) ?
-                (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
-                labelStatuses[3]
-        );
-        standingsStatus.addStyleName("large");
-        createShowFirstPageButton();
-        createShowTwoPagesButton();
-        createShowAllPagesButton();
-        createHideButton();
-
-        CssLayout group = createLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsHide);
-
-        VerticalLayout panel = new VerticalLayout(
-                standingsStatus,
-                group
-        );
-        panel.setMargin(new MarginInfo(false, false, false, true));
-        panel.setSpacing(true);
-        return panel;
-    }
-
+/* Advertisements */
     Label advertisementStatus;
     TextField advertisementText;
     Button addAdvertisement;
@@ -118,6 +109,42 @@ public class MainScreenView extends CustomComponent implements View {
     Button showAdvertisement;
     Button hideAdvertisement;
     Table advertisements;
+
+    public Component getAdvertisementController() {
+        //String status = mainScreenData.advertisementStatus();
+        //String[] s = status.split("\n");
+        advertisementStatus = new Label(getAdvertisementStatus());
+        advertisementStatus.addStyleName("large");
+
+        advertisementText = new TextField("Advertisement text: ");
+
+        createAddAdvertisementButton();
+        createRemoveAdvertisementButton();
+        createDiscardAdvertisementButton();
+
+        CssLayout groupAdd = createLayout(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
+
+        createAdvertisementTable();
+
+        createShowAdvertisementButton();
+        createHideAdvertisementButton();
+
+        CssLayout groupControl = createLayout(showAdvertisement, hideAdvertisement);
+
+        VerticalLayout panel = new VerticalLayout(
+                advertisementStatus,
+                groupAdd,
+                advertisements,
+                new HorizontalLayout(
+                        showAdvertisement,
+                        hideAdvertisement
+                )
+        );
+//        panel.setMargin(new MarginInfo(false, false, false, true));
+//        panel.setSpacing(true);
+        setPanelDefaults(panel);
+        return panel;
+    }
 
     public String getAdvertisementStatus() {
         String status = mainScreenData.advertisementStatus();
@@ -211,49 +238,8 @@ public class MainScreenView extends CustomComponent implements View {
         });
     }
 
-    private CssLayout createLayout(Component... components) {
-        CssLayout layout = new CssLayout();
-        layout.addStyleName("v-component-group");
-        layout.addComponents(components);
 
-        return layout;
-    }
-
-    public Component getAdvertisementController() {
-        //String status = mainScreenData.advertisementStatus();
-        //String[] s = status.split("\n");
-        advertisementStatus = new Label(getAdvertisementStatus());
-        advertisementStatus.addStyleName("large");
-
-        advertisementText = new TextField("Advertisement text: ");
-
-        createAddAdvertisementButton();
-        createRemoveAdvertisementButton();
-        createDiscardAdvertisementButton();
-
-        CssLayout groupAdd = createLayout(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
-
-        createAdvertisementTable();
-
-        createShowAdvertisementButton();
-        createHideAdvertisementButton();
-
-        CssLayout groupControl = createLayout(showAdvertisement, hideAdvertisement);
-
-        VerticalLayout panel = new VerticalLayout(
-                advertisementStatus,
-                groupAdd,
-                advertisements,
-                new HorizontalLayout(
-                        showAdvertisement,
-                        hideAdvertisement
-                )
-        );
-        panel.setMargin(new MarginInfo(false, false, false, true));
-        panel.setSpacing(true);
-        return panel;
-    }
-
+/* Persons */
     TextField name;
     TextField profession;
     Button addPerson;
@@ -265,6 +251,8 @@ public class MainScreenView extends CustomComponent implements View {
         return null;
     }
 
+
+/* Main screen */
     MainScreenData mainScreenData;
 
     public MainScreenView() {
@@ -298,5 +286,20 @@ public class MainScreenView extends CustomComponent implements View {
 
     public void enter(ViewChangeEvent event) {
 
+    }
+
+
+/* Utils */
+    private void setPanelDefaults(VerticalLayout panel) {
+        panel.setMargin(new MarginInfo(false, false, false, true));
+        panel.setSpacing(true);
+    }
+
+    private CssLayout createLayout(Component... components) {
+        CssLayout layout = new CssLayout();
+        layout.addStyleName("v-component-group");
+        layout.addComponents(components);
+
+        return layout;
     }
 }
