@@ -60,6 +60,32 @@ public class MainScreenView extends CustomComponent implements View {
     Button standingsShowAll;
     Button standingsHide;
 
+    private Button createStandingsControllerButton(String name, int index, boolean visible, int type) {
+        Button button = new Button(name);
+        button.addClickListener(event -> {
+            standingsStatus.setValue(String.format(labelStatuses[index], 0));
+            mainScreenData.setStandingsVisible(visible, type);
+        });
+
+        return button;
+    }
+
+    private void createShowFirstPageButton() {
+        standingsShowTop1 = createStandingsControllerButton("Show first page", 0, true, 0);
+    }
+
+    private void createShowTwoPagesButton() {
+        standingsShowTop2 = createStandingsControllerButton("Show two pages", 1, true, 1);
+    }
+
+    private void createShowAllPagesButton() {
+        standingsShowAll = createStandingsControllerButton("Show all pages", 2, true, 2);
+    }
+
+    private void createHideButton() {
+        standingsHide = createStandingsControllerButton("Hide", 3, false, -1);
+    }
+
     public Component getStandingsController() {
         String status = mainScreenData.standingsStatus();
         String[] s = status.split("\n");
@@ -68,33 +94,12 @@ public class MainScreenView extends CustomComponent implements View {
                 labelStatuses[3]
         );
         standingsStatus.addStyleName("large");
-        standingsShowTop1 = new Button("Show first page");
-        standingsShowTop1.addClickListener(event -> {
-            standingsStatus.setValue(String.format(labelStatuses[0], 0));
-            mainScreenData.setStandingsVisible(true, 0);
-        });
+        createShowFirstPageButton();
+        createShowTwoPagesButton();
+        createShowAllPagesButton();
+        createHideButton();
 
-        standingsShowTop2 = new Button("Show two pages");
-        standingsShowTop2.addClickListener(event -> {
-            standingsStatus.setValue(String.format(labelStatuses[1], 0));
-            mainScreenData.setStandingsVisible(true, 1);
-        });
-
-        standingsShowAll = new Button("Show all pages");
-        standingsShowAll.addClickListener(event -> {
-            standingsStatus.setValue(String.format(labelStatuses[2], 0));
-            mainScreenData.setStandingsVisible(true, 2);
-        });
-
-        standingsHide = new Button("Hide");
-        standingsHide.addClickListener(event -> {
-            standingsStatus.setValue(String.format(labelStatuses[3], 0));
-            mainScreenData.setStandingsVisible(false, -1);
-        });
-
-        CssLayout group = new CssLayout();
-        group.addStyleName("v-component-group");
-        group.addComponents(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsHide);
+        CssLayout group = createLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsHide);
 
         VerticalLayout panel = new VerticalLayout(
                 standingsStatus,
@@ -120,14 +125,33 @@ public class MainScreenView extends CustomComponent implements View {
         return s[1].equals("true") ? "Advertisement \"" + s[2] + "\"" : "No advertisement now";
     }
 
-    public Component getAdvertisementController() {
-        //String status = mainScreenData.advertisementStatus();
-        //String[] s = status.split("\n");
-        advertisementStatus = new Label(getAdvertisementStatus());
-        advertisementStatus.addStyleName("large");
+    private void setDefaultValues() {
+        advertisements.setValue(null);
+        addAdvertisement.setCaption("Add new");
+        removeAdvertisement.setVisible(false);
+        discardAdvertisement.setVisible(false);
+    }
 
-        advertisementText = new TextField("Advertisement text: ");
+    private void createAdvertisementTable() {
+        advertisements = new Table();
+        //advertisements.setContainerDataSource(mainScreenData.advertisements);
+        advertisements.setContainerDataSource(mainScreenData.advertisements.getContainer());
+        advertisements.setSelectable(true);
+        advertisements.setEditable(false);
+        advertisements.setSizeFull();
+        advertisements.addValueChangeListener(event -> {
+            if (advertisements.getValue() == null) {
+                setDefaultValues();
+                return;
+            }
+            addAdvertisement.setCaption("Edit");
+            removeAdvertisement.setVisible(true);
+            discardAdvertisement.setVisible(true);
+            advertisementText.setValue(((Advertisement) advertisements.getValue()).getAdvertisement());
+        });
+    }
 
+    private void createAddAdvertisementButton() {
         addAdvertisement = new Button("Add new");
         addAdvertisement.addClickListener(event -> {
             if (addAdvertisement.getCaption().equals("Add new")) {
@@ -135,16 +159,15 @@ public class MainScreenView extends CustomComponent implements View {
             } else {
                 mainScreenData.advertisements.getItem(advertisements.getValue()).getItemProperty("advertisement").
                         setValue(advertisementText.getValue());
-                advertisements.setValue(null);
-                addAdvertisement.setCaption("Add new");
-                removeAdvertisement.setVisible(false);
-                discardAdvertisement.setVisible(false);
+                setDefaultValues();
             }
             advertisementText.clear();
 
             advertisements.refreshRowCache();
         });
+    }
 
+    private void createRemoveAdvertisementButton() {
         removeAdvertisement = new Button("Remove selected");
         removeAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
@@ -154,46 +177,21 @@ public class MainScreenView extends CustomComponent implements View {
                 Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
             }
             advertisementText.setValue("");
-            advertisements.setValue(null);
-            addAdvertisement.setCaption("Add new");
-            removeAdvertisement.setVisible(false);
-            discardAdvertisement.setVisible(false);
+            setDefaultValues();
         });
         removeAdvertisement.setVisible(false);
+    }
 
+    private void createDiscardAdvertisementButton() {
         discardAdvertisement = new Button("Discard");
         discardAdvertisement.addClickListener(event -> {
             advertisementText.setValue("");
-            advertisements.setValue(null);
-            addAdvertisement.setCaption("Add new");
-            removeAdvertisement.setVisible(false);
-            discardAdvertisement.setVisible(false);
+            setDefaultValues();
         });
         discardAdvertisement.setVisible(false);
-        CssLayout groupAdd = new CssLayout();
-        groupAdd.addStyleName("v-component-group");
-        groupAdd.addComponents(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
+    }
 
-        advertisements = new Table();
-        //advertisements.setContainerDataSource(mainScreenData.advertisements);
-        advertisements.setContainerDataSource(mainScreenData.advertisements.getContainer());
-        advertisements.setSelectable(true);
-        advertisements.setEditable(false);
-        advertisements.setSizeFull();
-        advertisements.addValueChangeListener(event -> {
-            if (advertisements.getValue() == null) {
-                addAdvertisement.setCaption("Add new");
-                removeAdvertisement.setVisible(false);
-                discardAdvertisement.setVisible(false);
-                advertisementText.setValue("");
-                return;
-            }
-            addAdvertisement.setCaption("Edit");
-            removeAdvertisement.setVisible(true);
-            discardAdvertisement.setVisible(true);
-            advertisementText.setValue(((Advertisement) advertisements.getValue()).getAdvertisement());
-        });
-
+    private void createShowAdvertisementButton() {
         showAdvertisement = new Button("Show advertisement");
         showAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
@@ -203,16 +201,44 @@ public class MainScreenView extends CustomComponent implements View {
                 Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
             }
         });
+    }
 
+    private void createHideAdvertisementButton() {
         hideAdvertisement = new Button("Hide advertisement");
         hideAdvertisement.addClickListener(event -> {
             mainScreenData.setAdvertisementVisible(false, (Advertisement) advertisements.getValue());
             advertisementStatus.setValue(getAdvertisementStatus());
         });
+    }
 
-        CssLayout groupControl = new CssLayout();
-        groupControl.addStyleName("v-component-group");
-        groupControl.addComponents(showAdvertisement, hideAdvertisement);
+    private CssLayout createLayout(Component... components) {
+        CssLayout layout = new CssLayout();
+        layout.addStyleName("v-component-group");
+        layout.addComponents(components);
+
+        return layout;
+    }
+
+    public Component getAdvertisementController() {
+        //String status = mainScreenData.advertisementStatus();
+        //String[] s = status.split("\n");
+        advertisementStatus = new Label(getAdvertisementStatus());
+        advertisementStatus.addStyleName("large");
+
+        advertisementText = new TextField("Advertisement text: ");
+
+        createAddAdvertisementButton();
+        createRemoveAdvertisementButton();
+        createDiscardAdvertisementButton();
+
+        CssLayout groupAdd = createLayout(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
+
+        createAdvertisementTable();
+
+        createShowAdvertisementButton();
+        createHideAdvertisementButton();
+
+        CssLayout groupControl = createLayout(showAdvertisement, hideAdvertisement);
 
         VerticalLayout panel = new VerticalLayout(
                 advertisementStatus,
