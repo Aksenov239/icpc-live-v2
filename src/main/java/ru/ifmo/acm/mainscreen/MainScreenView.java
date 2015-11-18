@@ -175,7 +175,8 @@ public class MainScreenView extends CustomComponent implements View {
         groupAdd.addComponents(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
 
         advertisements = new Table();
-        advertisements.setContainerDataSource(mainScreenData.advertisements);
+        //advertisements.setContainerDataSource(mainScreenData.advertisements);
+        advertisements.setContainerDataSource(mainScreenData.advertisements.getContainer());
         advertisements.setSelectable(true);
         advertisements.setEditable(false);
         advertisements.setSizeFull();

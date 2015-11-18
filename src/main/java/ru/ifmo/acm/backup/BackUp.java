@@ -2,6 +2,7 @@ package ru.ifmo.acm.backup;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 
 import java.io.IOException;
@@ -76,6 +77,14 @@ public class BackUp<T> {
         synchronized (data) {
             return data.getItemIds();
         }
+    }
+
+    public BeanItemContainer<T> getContainer() {
+        return data;
+    }
+
+    public BeanItem<T> getItem(Object itemId) {
+        return data.getItem(itemId);
     }
 
     BeanItemContainer<T> data;
