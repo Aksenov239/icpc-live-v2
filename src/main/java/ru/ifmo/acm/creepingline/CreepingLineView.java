@@ -28,7 +28,7 @@ public class CreepingLineView extends CustomComponent implements View {
 //            messageForm.edit(null);
 //        });
 
-        container = messageData.messageList;
+        container = messageData.messageList.getContainer();
         messageList = new Table();
         messageList.setContainerDataSource(container);
         messageList.addGeneratedColumn("time", (Table source, Object itemId, Object columnId) -> {

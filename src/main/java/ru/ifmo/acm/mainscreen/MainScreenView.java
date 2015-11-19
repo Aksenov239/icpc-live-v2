@@ -19,7 +19,7 @@ public class MainScreenView extends CustomComponent implements View {
     Button clockButtonOff;
 
     public Component getClockController() {
-        boolean status = mainScreenData.isClockVisible;
+        boolean status = mainScreenData.clockStatus.isClockVisible();
         clockStatus = new Label(getClockStatus());
         clockStatus.addStyleName("large");
 
@@ -36,14 +36,14 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     public String getClockStatus() {
-        boolean status = mainScreenData.isClockVisible();
+        boolean status = mainScreenData.clockStatus.isClockVisible();
         return status ? clockStatuses[0] : clockStatuses[1];
     }
 
     private Button createClockButton(String name, boolean visibility, int status) {
         Button button = new Button(name);
         button.addClickListener(event -> {
-            mainScreenData.setClockVisible(visibility);
+            mainScreenData.clockStatus.setClockVisible(visibility);
             clockStatus.setValue(clockStatuses[status]);
         });
 
@@ -65,7 +65,7 @@ public class MainScreenView extends CustomComponent implements View {
     Button standingsHide;
 
     public Component getStandingsController() {
-        String status = mainScreenData.standingsStatus();
+        String status = mainScreenData.standingsStatus.standingsStatus();
         String[] s = status.split("\n");
         standingsStatus = new Label(Boolean.parseBoolean(s[1]) ?
                 (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
@@ -93,7 +93,7 @@ public class MainScreenView extends CustomComponent implements View {
         Button button = new Button(name);
         button.addClickListener(event -> {
             standingsStatus.setValue(String.format(labelStatuses[index], 0));
-            mainScreenData.setStandingsVisible(visible, type);
+            mainScreenData.standingsStatus.setStandingsVisible(visible, type);
         });
 
         return button;
@@ -147,7 +147,7 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     public String getAdvertisementStatus() {
-        String status = mainScreenData.advertisementStatus();
+        String status = mainScreenData.advertisementStatus.advertisementStatus();
         String[] s = status.split("\n");
         return s[1].equals("true") ? "Advertisement \"" + s[2] + "\"" : "No advertisement now";
     }
@@ -162,7 +162,7 @@ public class MainScreenView extends CustomComponent implements View {
     private void createAdvertisementTable() {
         advertisements = new Table();
         //advertisements.setContainerDataSource(mainScreenData.advertisements);
-        advertisements.setContainerDataSource(mainScreenData.advertisements.getContainer());
+        advertisements.setContainerDataSource(mainScreenData.advertisementStatus.getContainer());
         advertisements.setSelectable(true);
         advertisements.setEditable(false);
         advertisements.setSizeFull();
@@ -182,10 +182,11 @@ public class MainScreenView extends CustomComponent implements View {
         addAdvertisement = new Button("Add new");
         addAdvertisement.addClickListener(event -> {
             if (addAdvertisement.getCaption().equals("Add new")) {
-                mainScreenData.addAdvertisement(new Advertisement(advertisementText.getValue()));
+                mainScreenData.advertisementStatus.addAdvertisement(new Advertisement(advertisementText.getValue()));
             } else {
-                mainScreenData.advertisements.getItem(advertisements.getValue()).getItemProperty("advertisement").
-                        setValue(advertisementText.getValue());
+//                mainScreenData.advertisements.getItem(advertisements.getValue()).getItemProperty("advertisement").
+//                        setValue(advertisementText.getValue());
+                mainScreenData.advertisementStatus.setValue(advertisements.getValue(), advertisementText.getValue());
                 setDefaultValues();
             }
             advertisementText.clear();
@@ -198,7 +199,7 @@ public class MainScreenView extends CustomComponent implements View {
         removeAdvertisement = new Button("Remove selected");
         removeAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
-                mainScreenData.removeAdvertisement((Advertisement) advertisements.getValue());
+                mainScreenData.advertisementStatus.removeAdvertisement((Advertisement) advertisements.getValue());
                 advertisements.refreshRowCache();
             } else {
                 Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
@@ -222,7 +223,7 @@ public class MainScreenView extends CustomComponent implements View {
         showAdvertisement = new Button("Show advertisement");
         showAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
-                mainScreenData.setAdvertisementVisible(true, (Advertisement) advertisements.getValue());
+                mainScreenData.advertisementStatus.setAdvertisementVisible(true, (Advertisement) advertisements.getValue());
                 advertisementStatus.setValue(getAdvertisementStatus());
             } else {
                 Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
@@ -233,7 +234,7 @@ public class MainScreenView extends CustomComponent implements View {
     private void createHideAdvertisementButton() {
         hideAdvertisement = new Button("Hide advertisement");
         hideAdvertisement.addClickListener(event -> {
-            mainScreenData.setAdvertisementVisible(false, (Advertisement) advertisements.getValue());
+            mainScreenData.advertisementStatus.setAdvertisementVisible(false, (Advertisement) advertisements.getValue());
             advertisementStatus.setValue(getAdvertisementStatus());
         });
     }
@@ -270,7 +271,7 @@ public class MainScreenView extends CustomComponent implements View {
     public void refresh() {
         clockStatus.setValue(getClockStatus());
 
-        String status = mainScreenData.standingsStatus();
+        String status = mainScreenData.standingsStatus.standingsStatus();
         String[] s = status.split("\n");
         standingsStatus.setValue(Boolean.parseBoolean(s[1]) ?
                         (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
