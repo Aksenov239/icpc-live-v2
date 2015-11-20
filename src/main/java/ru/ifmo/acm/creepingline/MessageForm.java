@@ -69,13 +69,14 @@ public class MessageForm extends FormLayout {
                         advertBox.getValue()
                 ));
             } else {
-                Item messageBean = messageData.messageList.getItem(messageObject);
-                System.err.println(messageBean.getItemPropertyIds());
+                synchronized (messageData.messageList.getContainer()) {
+                    Item messageBean = messageData.messageList.getItem(messageObject);
 //                messageObject.setMessage(message.getValue());
 //                messageObject.setIsAdvertisement(advertBox.getValue());
-                messageBean.getItemProperty("message").setValue(message.getValue());
-                messageBean.getItemProperty("isAdvertisement").setValue(advertBox.getValue());
+                    messageBean.getItemProperty("message").setValue(message.getValue());
+                    messageBean.getItemProperty("isAdvertisement").setValue(advertBox.getValue());
 //                parent.messageList.refreshRowCache();
+                }
             }
 
             message.clear();

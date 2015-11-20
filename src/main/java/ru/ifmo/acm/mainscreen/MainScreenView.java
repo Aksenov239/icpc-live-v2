@@ -12,7 +12,7 @@ import com.vaadin.ui.Notification.Type;
 public class MainScreenView extends CustomComponent implements View {
     public static String NAME = "mainscreen";
 
-/* Clocks */
+    /* Clocks */
     final String[] clockStatuses = new String[]{"Clock is shown", "Clock isn't shown"};
     Label clockStatus;
     Button clockButtonOn;
@@ -26,7 +26,7 @@ public class MainScreenView extends CustomComponent implements View {
         clockButtonOn = createClockButton("Show clock", true, 0);
         clockButtonOff = createClockButton("Hide clock", false, 1);
 
-        CssLayout group = createLayout(clockButtonOn, clockButtonOff);
+        CssLayout group = createGroupLayout(clockButtonOn, clockButtonOff);
 
         VerticalLayout panel = new VerticalLayout(clockStatus, group);
 //        panel.setMargin(new MarginInfo(false, false, false, true));
@@ -51,7 +51,7 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
 
-/* Standings */
+    /* Standings */
     Label standingsStatus;
     final String[] labelStatuses = new String[]{
             "Top 1 page is shown for %d seconds",
@@ -77,7 +77,7 @@ public class MainScreenView extends CustomComponent implements View {
         standingsShowAll = createStandingsControllerButton("Show all pages", 2, true, 2);
         standingsHide = createStandingsControllerButton("Hide", 3, false, -1);
 
-        CssLayout group = createLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsHide);
+        CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsHide);
 
         VerticalLayout panel = new VerticalLayout(
                 standingsStatus,
@@ -100,7 +100,7 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
 
-/* Advertisements */
+    /* Advertisements */
     Label advertisementStatus;
     TextField advertisementText;
     Button addAdvertisement;
@@ -109,6 +109,7 @@ public class MainScreenView extends CustomComponent implements View {
     Button showAdvertisement;
     Button hideAdvertisement;
     Table advertisements;
+    String[] addAdvertisementButtonStatus = {"Add new", "Edit"};
 
     public Component getAdvertisementController() {
         //String status = mainScreenData.advertisementStatus();
@@ -122,23 +123,20 @@ public class MainScreenView extends CustomComponent implements View {
         createRemoveAdvertisementButton();
         createDiscardAdvertisementButton();
 
-        CssLayout groupAdd = createLayout(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
+        CssLayout groupAdd = createGroupLayout(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
 
         createAdvertisementTable();
 
         createShowAdvertisementButton();
         createHideAdvertisementButton();
 
-        CssLayout groupControl = createLayout(showAdvertisement, hideAdvertisement);
+        CssLayout groupControl = createGroupLayout(showAdvertisement, hideAdvertisement);
 
         VerticalLayout panel = new VerticalLayout(
                 advertisementStatus,
                 groupAdd,
                 advertisements,
-                new HorizontalLayout(
-                        showAdvertisement,
-                        hideAdvertisement
-                )
+                groupControl
         );
 //        panel.setMargin(new MarginInfo(false, false, false, true));
 //        panel.setSpacing(true);
@@ -154,7 +152,7 @@ public class MainScreenView extends CustomComponent implements View {
 
     private void setDefaultValues() {
         advertisements.setValue(null);
-        addAdvertisement.setCaption("Add new");
+        addAdvertisement.setCaption(addAdvertisementButtonStatus[0]);
         removeAdvertisement.setVisible(false);
         discardAdvertisement.setVisible(false);
     }
@@ -171,7 +169,7 @@ public class MainScreenView extends CustomComponent implements View {
                 setDefaultValues();
                 return;
             }
-            addAdvertisement.setCaption("Edit");
+            addAdvertisement.setCaption(addAdvertisementButtonStatus[1]);
             removeAdvertisement.setVisible(true);
             discardAdvertisement.setVisible(true);
             advertisementText.setValue(((Advertisement) advertisements.getValue()).getAdvertisement());
@@ -179,9 +177,9 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     private void createAddAdvertisementButton() {
-        addAdvertisement = new Button("Add new");
+        addAdvertisement = new Button(addAdvertisementButtonStatus[0]);
         addAdvertisement.addClickListener(event -> {
-            if (addAdvertisement.getCaption().equals("Add new")) {
+            if (addAdvertisement.getCaption().equals(addAdvertisementButtonStatus[0])) {
                 mainScreenData.advertisementStatus.addAdvertisement(new Advertisement(advertisementText.getValue()));
             } else {
 //                mainScreenData.advertisements.getItem(advertisements.getValue()).getItemProperty("advertisement").
@@ -240,20 +238,195 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
 
-/* Persons */
+    /* Persons */
+    Label[] personStatus = new Label[2];
     TextField name;
     TextField profession;
-    Button addPerson;
+    Button addPersonButton;
+    Person lastPerson;
+    String[] addPersonButtonStatus = {"Add new", "Edit"};
+    Button removePersonButton;
+    Button discardPersonButton;
 
-    Table personsLeft;
-    Table personsRight;
+    Table[] persons = new Table[2];
 
-    public Component getPersonsWidget() {
-        return null;
+    Button[] showPerson = new Button[2];
+    Button[] hidePerson = new Button[2];
+    String[] captionPersons = {"left", "right"};
+    Button showBothPersons;
+    Button hideBothPersons;
+
+    public Component personController(int id) {
+        createPersonsTable(id);
+        createPersonButtons(id);
+
+        Component showControl = createGroupLayout(showPerson[id], hidePerson[id]);
+        return new VerticalLayout(
+                personStatus[id],
+                persons[id],
+                showControl
+        );
     }
 
+    public Component getPersonsController() {
+        createPersonTextFields();
+        VerticalLayout person = new VerticalLayout(name, profession);
+        person.setMargin(new MarginInfo(false, true, false, false));
 
-/* Main screen */
+        createAddPersonButton();
+        createRemovePersonButton();
+        createDiscardPersonButton();
+
+        Component buttonPersonsControl = createGroupLayout(addPersonButton, removePersonButton, discardPersonButton);
+
+        HorizontalLayout personsControl = new HorizontalLayout(
+                person,
+                buttonPersonsControl
+        );
+        personsControl.setComponentAlignment(buttonPersonsControl, Alignment.MIDDLE_LEFT);
+
+        createPersonStatuses();
+        Component controllerLeft = personController(0);
+        Component controllerRight = personController(1);
+        HorizontalLayout showControl = new HorizontalLayout(controllerLeft, controllerRight);
+        showControl.setSizeFull();
+        showControl.setExpandRatio(controllerLeft, 1);
+        showControl.setExpandRatio(controllerRight, 1);
+
+        createBothPersonButtons();
+        Component bothControl = createGroupLayout(showBothPersons, hideBothPersons);
+
+        VerticalLayout result = new VerticalLayout(personsControl, showControl, bothControl);
+
+        setPersonFormDefault();
+
+        result.setMargin(new MarginInfo(false, false, false, true));
+        result.setComponentAlignment(bothControl, Alignment.MIDDLE_CENTER);
+        result.setSizeFull();
+
+        return result;
+    }
+
+    public void setPersonFormDefault() {
+        removePersonButton.setVisible(false);
+        discardPersonButton.setVisible(false);
+        addPersonButton.setCaption(addPersonButtonStatus[0]);
+        persons[0].setValue(null);
+        persons[1].setValue(null);
+        name.clear();
+        profession.clear();
+    }
+
+    public String getPersonStatus(int id) {
+        String[] z = mainScreenData.personStatus.labelStatus(id).split("\n");
+        return z[1].equals("true") ? "Show " + z[2] : "Nothing is shown";
+    }
+
+    public void createPersonStatuses() {
+        personStatus[0] = new Label("Left caption:");
+        personStatus[1] = new Label("Right caption:");
+    }
+
+    public void createPersonTextFields() {
+        name = new TextField("Name:");
+        profession = new TextField("Caption:");
+    }
+
+    public void createAddPersonButton() {
+        addPersonButton = new Button(addPersonButtonStatus[0]);
+        addPersonButton.addClickListener(event -> {
+            if (addPersonButton.getCaption().equals(addPersonButtonStatus[0])) {
+                mainScreenData.personStatus.addPerson(new Person(name.getValue(), profession.getValue()));
+                setPersonFormDefault();
+            } else {
+                if (lastPerson != null) {
+                    mainScreenData.personStatus.setValue(lastPerson, "name", name.getValue());
+                    mainScreenData.personStatus.setValue(lastPerson, "position", profession.getValue());
+                }
+                setPersonFormDefault();
+            }
+        });
+    }
+
+    public void createRemovePersonButton() {
+        removePersonButton = new Button("Delete");
+        removePersonButton.addClickListener(event -> {
+            if (lastPerson != null) {
+                mainScreenData.personStatus.removePerson(lastPerson);
+            }
+            setPersonFormDefault();
+        });
+    }
+
+    public void createDiscardPersonButton() {
+        discardPersonButton = new Button("Discard");
+        discardPersonButton.addClickListener(event -> {
+            setPersonFormDefault();
+        });
+    }
+
+    public void createPersonsTable(int id) {
+        persons[id] = new Table();
+        Table table = persons[id];
+        table.setContainerDataSource(mainScreenData.personStatus.getContainer());
+        table.setSelectable(true);
+        table.setEditable(false);
+        table.setSizeFull();
+
+        table.addValueChangeListener(event -> {
+            if (table.getValue() == null) {
+                return;
+            }
+            lastPerson = (Person) table.getValue();
+            name.setValue(lastPerson.getName());
+            profession.setValue(lastPerson.getPosition());
+            addPersonButton.setCaption(addPersonButtonStatus[1]);
+            removePersonButton.setVisible(true);
+            discardPersonButton.setVisible(true);
+        });
+    }
+
+    public void createPersonButtons(int id) {
+        showPerson[id] = new Button("Show " + captionPersons[id] + " person");
+        //showLeftPerson = new Button("Show " + caption + " person");
+        showPerson[id].addClickListener(event -> {
+            if (persons[id].getValue() != null) {
+                mainScreenData.personStatus.setLabelVisible(true, (Person) persons[id].getValue(), id);
+            } else {
+                Notification.show("You need to choose " + captionPersons[id] + " person", Type.WARNING_MESSAGE);
+            }
+        });
+        hidePerson[id] = new Button("Hide " + captionPersons[id] + " person");
+        hidePerson[id].addClickListener(event -> {
+
+            mainScreenData.personStatus.setLabelVisible(false, null, id);
+        });
+    }
+
+    public void createBothPersonButtons() {
+        showBothPersons = new Button("Show both persons");
+        hideBothPersons = new Button("Hide both persons");
+        showBothPersons.addClickListener(event -> {
+            for (int i = 0; i < 2; i++) {
+                if (persons[i].getValue() == null) {
+                    Notification.show("You need to choose " + captionPersons[i] + " person", Type.WARNING_MESSAGE);
+                    return;
+                }
+            }
+            for (int i = 0; i < 2; i++) {
+                mainScreenData.personStatus.setLabelVisible(true, (Person) persons[i].getValue(), i);
+            }
+        });
+
+        hideBothPersons.addClickListener(event -> {
+            for (int i = 0; i < 2; i++) {
+                //S;
+                mainScreenData.personStatus.setLabelVisible(false, null, i);
+            }
+        });
+    }
+
+    /* Main screen */
     MainScreenData mainScreenData;
 
     public MainScreenView() {
@@ -263,8 +436,18 @@ public class MainScreenView extends CustomComponent implements View {
         Component standingsController = getStandingsController();
         Component advertisementController = getAdvertisementController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController, advertisementController);
-        mainPanel.setSpacing(true);
+        VerticalLayout mainLeftPanel = new VerticalLayout(clockController, standingsController, advertisementController);
+        mainLeftPanel.setSpacing(true);
+
+        Component mainRightPanel = getPersonsController();
+
+        HorizontalLayout mainPanel = new HorizontalLayout(mainLeftPanel, mainRightPanel);
+        mainPanel.setExpandRatio(mainLeftPanel, 1);
+        mainPanel.setExpandRatio(mainRightPanel, 1);
+        mainPanel.setSizeFull();
+
+        //mainPanel.setSpacing(true);
+
         setCompositionRoot(mainPanel);
     }
 
@@ -281,8 +464,10 @@ public class MainScreenView extends CustomComponent implements View {
         advertisementStatus.setValue(getAdvertisementStatus());
         advertisements.refreshRowCache();
 
-        //personsLeft.refreshRowCache();
-        //personsRight.refreshRowCache();
+        for (int i = 0; i < 2; i++) {
+            personStatus[i].setValue(getPersonStatus(i));
+            persons[i].refreshRowCache();
+        }
     }
 
     public void enter(ViewChangeEvent event) {
@@ -290,13 +475,13 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
 
-/* Utils */
+    /* Utils */
     private void setPanelDefaults(VerticalLayout panel) {
         panel.setMargin(new MarginInfo(false, false, false, true));
         panel.setSpacing(true);
     }
 
-    private CssLayout createLayout(Component... components) {
+    private CssLayout createGroupLayout(Component... components) {
         CssLayout layout = new CssLayout();
         layout.addStyleName("v-component-group");
         layout.addComponents(components);

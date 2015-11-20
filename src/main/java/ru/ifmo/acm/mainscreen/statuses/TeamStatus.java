@@ -8,7 +8,7 @@ public class TeamStatus {
         infoTeamNumber = teamId;
     }
 
-    public String infoStatus() {
+    public synchronized String infoStatus() {
         return infoTimestamp + "\n" + isInfoVisible + "\n" + infoType + "\n" + infoTeamNumber;
     }
 
@@ -16,5 +16,4 @@ public class TeamStatus {
     private boolean isInfoVisible;
     private String infoType;
     private int infoTeamNumber;
-    final private Object info = new Object();
 }

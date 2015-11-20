@@ -19,11 +19,19 @@ public static MainScreenData getMainScreenData() {
     private MainScreenData() {
         Properties properties = new Properties();
         try {
-            properties.load(getClass().getResourceAsStream("/persons.properties"));
-            String backupPersons = properties.getProperty("backup.file.name");
+            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+
+            String backupAdvertisements = properties.getProperty("backup.advertisements");
+            advertisementStatus = new AdvertisementStatus(backupAdvertisements);
+
+            String backupPersons = properties.getProperty("backup.persons");
+            personStatus = new PersonStatus(backupPersons);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+        clockStatus = new ClockStatus();
+        standingsStatus = new StandingsStatus();
     }
 
     private static MainScreenData mainScreenData;

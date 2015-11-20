@@ -1,5 +1,6 @@
 package ru.ifmo.acm.mainscreen.statuses;
 
+import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.mainscreen.Person;
 
@@ -7,9 +8,13 @@ public class PersonStatus {
     public PersonStatus(String backupFilename) {
         this.backupFilename = backupFilename;
         persons = new BackUp<>(Person.class, backupFilename);
+        labelsTimestamps = new long[2];
+        isLabelsVisible = new boolean[2];
+        labelsValues = new Person[2];
     }
 
     public synchronized void setLabelVisible(boolean visible, Person label, int id) {
+        System.err.println("Set visible " + visible + " " + labelsValues[id] + " " + label);
         labelsTimestamps[id] = System.currentTimeMillis();
         isLabelsVisible[id] = visible;
         labelsValues[id] = label;
@@ -27,7 +32,10 @@ public class PersonStatus {
 
     public String labelStatus(int id) {
         synchronized (labelsLock[id]) {
-            return labelsTimestamps[id] + " " + isLabelsVisible[id] + " " + labelsValues[id];
+            if (labelsValues[id] == null) {
+                setLabelVisible(false, null , id);
+            }
+            return labelsTimestamps[id] + "\n" + isLabelsVisible[id] + "\n" + (labelsValues[id] != null ? labelsValues[id].getName() : "");
         }
     }
 
@@ -43,6 +51,14 @@ public class PersonStatus {
 //            persons.removeItem(person);
 //        }
         persons.removeItem(person);
+    }
+
+    public void setValue(Object key, String property, String value) {
+        persons.setProperty(key, property, value);
+    }
+
+    public BeanItemContainer<Person> getContainer() {
+        return persons.getContainer();
     }
 
     private long[] labelsTimestamps;
