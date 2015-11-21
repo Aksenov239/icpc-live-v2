@@ -5,9 +5,10 @@ import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.mainscreen.Advertisement;
 
 public class AdvertisementStatus {
-    public AdvertisementStatus(String backupFilename) {
+    public AdvertisementStatus(String backupFilename, long timeToShow) {
         this.backupFilename = backupFilename;
         advertisements = new BackUp<>(Advertisement.class, backupFilename);
+        this.timeToShow = timeToShow;
     }
 
     public synchronized void setAdvertisementVisible(boolean visible, Advertisement advertisement) {
@@ -15,6 +16,14 @@ public class AdvertisementStatus {
             advertisementTimestamp = System.currentTimeMillis();
             isAdvertisementVisible = visible;
             advertisementValue = advertisement;
+        }
+    }
+
+    public synchronized void update() {
+        synchronized (advertisementLock) {
+            if (System.currentTimeMillis() > advertisementTimestamp + timeToShow) {
+                isAdvertisementVisible = false;
+            }
         }
     }
 
@@ -46,11 +55,12 @@ public class AdvertisementStatus {
         advertisements.setProperty(key, "advertisement", value);
     }
 
-    private long advertisementTimestamp;
-    private boolean isAdvertisementVisible;
-    private Advertisement advertisementValue;
+    public long advertisementTimestamp;
+    public boolean isAdvertisementVisible;
+    public Advertisement advertisementValue;
     final private Object advertisementLock = new Object();
 
     final private BackUp<Advertisement> advertisements;
     final String backupFilename;
+    final long timeToShow;
 }

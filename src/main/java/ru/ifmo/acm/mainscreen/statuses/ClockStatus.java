@@ -14,7 +14,7 @@ public class ClockStatus {
         return clockTimestamp + "\n" + isClockVisible;
     }
 
-    private long clockTimestamp;
-    private boolean isClockVisible;
+    public long clockTimestamp;
+    public boolean isClockVisible;
     final private Object clockLock = new Object();
 }

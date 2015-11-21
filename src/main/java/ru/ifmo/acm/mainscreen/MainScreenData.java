@@ -22,10 +22,12 @@ public static MainScreenData getMainScreenData() {
             properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
 
             String backupAdvertisements = properties.getProperty("backup.advertisements");
-            advertisementStatus = new AdvertisementStatus(backupAdvertisements);
+            long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
+            advertisementStatus = new AdvertisementStatus(backupAdvertisements, timeAdvertisement);
 
             String backupPersons = properties.getProperty("backup.persons");
-            personStatus = new PersonStatus(backupPersons);
+            long timePerson = Long.parseLong(properties.getProperty("person.time"));
+            personStatus = new PersonStatus(backupPersons, timePerson);
 
         } catch (IOException e) {
             e.printStackTrace();

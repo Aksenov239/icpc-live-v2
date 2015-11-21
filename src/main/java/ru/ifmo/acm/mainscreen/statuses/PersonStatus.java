@@ -5,12 +5,13 @@ import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.mainscreen.Person;
 
 public class PersonStatus {
-    public PersonStatus(String backupFilename) {
+    public PersonStatus(String backupFilename, long timeToShow) {
         this.backupFilename = backupFilename;
         persons = new BackUp<>(Person.class, backupFilename);
         labelsTimestamps = new long[2];
         isLabelsVisible = new boolean[2];
         labelsValues = new Person[2];
+        this.timeToShow = timeToShow;
     }
 
     public synchronized void setLabelVisible(boolean visible, Person label, int id) {
@@ -18,6 +19,16 @@ public class PersonStatus {
         labelsTimestamps[id] = System.currentTimeMillis();
         isLabelsVisible[id] = visible;
         labelsValues[id] = label;
+    }
+
+    public void update() {
+        for (int id = 0; id < 2; id++) {
+            synchronized (labelsLock[id]) {
+                if (labelsTimestamps[id] > System.currentTimeMillis() + timeToShow) {
+                    isLabelsVisible[id] = false;
+                }
+            }
+        }
     }
 
     public String labelsStatus() {
@@ -68,4 +79,5 @@ public class PersonStatus {
 
     final BackUp<Person> persons;
     String backupFilename;
+    long timeToShow;
 }
