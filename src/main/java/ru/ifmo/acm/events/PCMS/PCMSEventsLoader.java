@@ -34,8 +34,12 @@ public class PCMSEventsLoader extends EventsLoader {
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
         Element participants = doc.child(0);
         participants.children().forEach(participant -> {
+            String id = participant.attr("id");
             String participantName = participant.attr("name");
-            initial.addTeamStandings(new PCMSTeamInfo(participantName, initial.getProblemsNumber()));
+            String shortName = participant.attr("short");
+
+            PCMSTeamInfo team = new PCMSTeamInfo(id, participantName, shortName, initial.getProblemsNumber());
+            initial.addTeamStandings(team);
         });
         return initial;
     }
