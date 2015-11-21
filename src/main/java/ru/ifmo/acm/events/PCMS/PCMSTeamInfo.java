@@ -12,9 +12,15 @@ public class PCMSTeamInfo implements TeamInfo {
         this.rank = 1;
     }
 
-    public PCMSTeamInfo(String name, int problemsNumber) {
+    public PCMSTeamInfo(String id, String name, String shortName, int problemsNumber) {
         this(problemsNumber);
+        this.id = id;
         this.name = name;
+        this.shortName = shortName;
+    }
+
+    public PCMSTeamInfo(String name, int problemsNumber) {
+        this(null, name, null, problemsNumber);
     }
 
     public void addRun(PCMSRunInfo run, int problemId) {
@@ -52,10 +58,15 @@ public class PCMSTeamInfo implements TeamInfo {
         return solved;
     }
 
-    public int rank;
+    public String id;
+
     public String name;
+    public String shortName;
+
+    public int rank;
     public int solved;
     public int penalty;
+
 
     protected ArrayList<PCMSRunInfo>[] problemRuns;
 }
