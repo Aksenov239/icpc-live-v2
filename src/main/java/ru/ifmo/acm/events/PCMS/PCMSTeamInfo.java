@@ -23,6 +23,13 @@ public class PCMSTeamInfo implements TeamInfo {
         this(null, name, null, problemsNumber);
     }
 
+    public PCMSTeamInfo(PCMSTeamInfo pcmsTeamInfo) {
+        this(pcmsTeamInfo.id, pcmsTeamInfo.name, pcmsTeamInfo.shortName, pcmsTeamInfo.problemRuns.length);
+        for (int i = 0; i < pcmsTeamInfo.problemRuns.length; i++) {
+            problemRuns[i].addAll(pcmsTeamInfo.problemRuns[i]);
+        }
+    }
+
     public void addRun(PCMSRunInfo run, int problemId) {
         if (run != null) {
             problemRuns[problemId].add(run);

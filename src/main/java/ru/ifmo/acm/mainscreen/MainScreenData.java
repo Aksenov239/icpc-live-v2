@@ -29,6 +29,7 @@ public static MainScreenData getMainScreenData() {
             long timePerson = Long.parseLong(properties.getProperty("person.time"));
             personStatus = new PersonStatus(backupPersons, timePerson);
 
+            teamStatus = new TeamStatus();
         } catch (IOException e) {
             e.printStackTrace();
         }

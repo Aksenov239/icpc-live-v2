@@ -25,5 +25,7 @@ public abstract class ContestInfo {
         return currentTime;
     }
 
+    public abstract TeamInfo getParticipant(String name);
+
     public abstract TeamInfo[] getStandings();
 }

@@ -20,13 +20,25 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class PCMSEventsLoader extends EventsLoader {
-    public PCMSEventsLoader() throws IOException {
-        properties.load(new FileInputStream("events.properties"));
-        PCMSContestInfo initial = parseInitialContestInfo();
-        contestInfo = new AtomicReference<>(initial);
+
+    private static PCMSEventsLoader instance;
+
+    public static EventsLoader getInstance() {
+        if (instance == null) {
+            instance = new PCMSEventsLoader();
+            try {
+                properties.load(new FileInputStream("events.properties"));
+                PCMSContestInfo initial = parseInitialContestInfo();
+                contestInfo = new AtomicReference<>(initial);
+                instance.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return instance;
     }
 
-    private PCMSContestInfo parseInitialContestInfo() throws IOException {
+    private static PCMSContestInfo parseInitialContestInfo() throws IOException {
         int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
         PCMSContestInfo initial = new PCMSContestInfo(problemsNumber);
         String fn = properties.getProperty("participants");
@@ -55,13 +67,16 @@ public class PCMSEventsLoader extends EventsLoader {
 
     @Override
     public void run() {
-        try {
-            while (true) {
-                updateStatements();
-                sleep(1000);
+        while (true) {
+            try {
+                while (true) {
+                    updateStatements();
+                    sleep(1000);
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+
             }
-        } catch (IOException| InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
@@ -73,7 +88,6 @@ public class PCMSEventsLoader extends EventsLoader {
             element.children().forEach(this::parseAndUpdateStandings);
         }
     }
-
 
 
     private long parseTime(String s) {
@@ -123,7 +137,7 @@ public class PCMSEventsLoader extends EventsLoader {
     private PCMSTeamInfo parseTeamStandings(Element element) {
         int problemsNumber = contestInfo.get().getProblemsNumber();
         String name = element.child(1).html();
-        PCMSTeamInfo parsedTeam = contestInfo.get().getParticipant(name);
+        PCMSTeamInfo parsedTeam = new PCMSTeamInfo(contestInfo.get().getParticipant(name));
         parsedTeam.rank = Integer.parseInt(element.child(0).html());
 
         for (int i = 0; i < problemsNumber; i++) {
@@ -153,11 +167,11 @@ public class PCMSEventsLoader extends EventsLoader {
         return updateContestInfo;
     }
 
-    public static PCMSContestInfo getContestData() {
+    public PCMSContestInfo getContestData() {
         return contestInfo.get();
     }
 
     static AtomicReference<PCMSContestInfo> contestInfo;
     long currentTime;
-    private Properties properties;
+    private static Properties properties;
 }

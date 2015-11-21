@@ -19,7 +19,7 @@ public class MainScreenView extends CustomComponent implements View {
     Button clockButtonOff;
 
     public Component getClockController() {
-        boolean status = mainScreenData.clockStatus.isClockVisible();
+        //boolean status = mainScreenData.clockStatus.isClockVisible();
         clockStatus = new Label(getClockStatus());
         clockStatus.addStyleName("large");
 
