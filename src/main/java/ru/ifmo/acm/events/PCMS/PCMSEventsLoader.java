@@ -106,11 +106,9 @@ public class PCMSEventsLoader extends EventsLoader {
                 return 0;
             case '+':
                 return standing.length() > 1 ? Integer.parseInt(standing.substring(1)) : 1;
-            case '-':
+            default: // - or ?
                 return Integer.parseInt(standing.substring(1));
         }
-
-        return 0;
     }
 
     private PCMSRunInfo parseRun(Node element, PCMSTeamInfo previousStandings, int problemId) {
@@ -119,16 +117,16 @@ public class PCMSEventsLoader extends EventsLoader {
         boolean isNewRun = (previousStandings.getRunsNumber(problemId) != attemptsNumber);
 
         if (isNewRun) {
-            PCMSRunInfo parsedRun = new PCMSRunInfo();
             boolean isAccepted = text.startsWith("+");
-            parsedRun.result = isAccepted ? "AC" : "REJ";
-            parsedRun.firstToSolve = "first-to-solve".equals(element.attr("class"));
+            boolean isJudged = !text.startsWith("?"); // ? for frozen results
+            String result = (isJudged) ? (isAccepted ? "AC" : "REJ") : "FROZEN";
+            boolean firstToSolve = "first-to-solve".equals(element.attr("class"));
 
-            parsedRun.time = (isAccepted && element instanceof Element)
+            long time = (isAccepted && element instanceof Element)
                     ? parseTime(((Element) element).child(0).ownText())
                     : currentTime;
 
-            return parsedRun;
+            return new PCMSRunInfo(isJudged, result, problemId, time, firstToSolve);
         }
 
         return null;

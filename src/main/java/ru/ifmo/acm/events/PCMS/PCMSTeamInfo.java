@@ -56,6 +56,11 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     @Override
+    public String getShortName() {
+        return shortName;
+    }
+
+    @Override
     public int getPenalty() {
         return penalty;
     }

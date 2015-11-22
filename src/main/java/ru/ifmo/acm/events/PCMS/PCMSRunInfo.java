@@ -8,7 +8,11 @@ public class PCMSRunInfo implements RunInfo {
     }
 
     PCMSRunInfo(String result, int problem, long time, boolean firstToSolve) {
-        this.judged = true;
+        this(true, result, problem, time, firstToSolve);
+    }
+
+    PCMSRunInfo(boolean judged, String result, int problem, long time, boolean firstToSolve) {
+        this.judged = judged;
         this.result = result;
         this.problem = problem;
         this.time = time;
