@@ -26,8 +26,10 @@ public class PCMSEventsLoader extends EventsLoader {
     public static EventsLoader getInstance() {
         if (instance == null) {
             instance = new PCMSEventsLoader();
+            properties = new Properties();
             try {
-                properties.load(new FileInputStream("events.properties"));
+                properties.load(PCMSEventsLoader.class.getClassLoader().getResourceAsStream("/events.properties"));
+                //properties.load(new FileInputStream("src/main/resources/events.properties"));
                 PCMSContestInfo initial = parseInitialContestInfo();
                 contestInfo = new AtomicReference<>(initial);
                 instance.start();
@@ -48,7 +50,7 @@ public class PCMSEventsLoader extends EventsLoader {
         participants.children().forEach(participant -> {
             String id = participant.attr("id");
             String participantName = participant.attr("name");
-            String shortName = participant.attr("short");
+            String shortName = id; //participant.attr("short");
 
             PCMSTeamInfo team = new PCMSTeamInfo(id, participantName, shortName, initial.getProblemsNumber());
             initial.addTeamStandings(team);

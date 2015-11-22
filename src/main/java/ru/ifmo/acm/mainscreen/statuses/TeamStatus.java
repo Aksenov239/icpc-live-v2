@@ -16,20 +16,24 @@ public class TeamStatus {
         TeamInfo[] teamInfos = info.getStandings();
         teamNames = new String[teamInfos.length];
         for (int i = 0; i < teamNames.length; i++) {
-            teamNames[i] = teamInfos[i].getShortName();
+            teamNames[i] = teamInfos[i].getName();
         }
         Arrays.sort(teamNames);
     }
 
-    public synchronized void setInfoVisible(boolean visible, String type, String teamName) {
+    public synchronized boolean setInfoVisible(boolean visible, String type, String teamName) {
+        if (visible && isInfoVisible) {
+            return false;
+        }
         infoTimestamp = System.currentTimeMillis();
         isInfoVisible = visible;
         infoType = type;
         infoTeam = info.getParticipant(teamName);
+        return true;
     }
 
     public synchronized String infoStatus() {
-        return infoTimestamp + "\n" + isInfoVisible + "\n" + infoType + "\n" + infoTeam.getName();
+        return infoTimestamp + "\n" + isInfoVisible + "\n" + infoType + "\n" + (infoTeam == null ? null : infoTeam.getName());
     }
 
     private long infoTimestamp;

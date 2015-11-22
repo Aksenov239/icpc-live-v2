@@ -14,6 +14,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.creepingline.CreepingLineView;
 import ru.ifmo.acm.creepingline.MessageRequestHandlers;
 import ru.ifmo.acm.login.LoginView;
+import ru.ifmo.acm.mainscreen.MainScreenTeamView;
 import ru.ifmo.acm.mainscreen.MainScreenView;
 
 import javax.servlet.annotation.WebServlet;
@@ -54,8 +55,14 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenView.NAME, MainScreenView.class);
 
+        getNavigator().addView(MainScreenTeamView.NAME, MainScreenTeamView.class);
+
         menu.addItem("Main screen", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
+        });
+
+        menu.addItem("Team view (MS)", selectedItem -> {
+            getNavigator().navigateTo(MainScreenTeamView.NAME);
         });
 
         menu.addItem("Creeping Line", selectedItem -> {
@@ -75,6 +82,9 @@ public class MyUI extends UI {
             }
             if (currentView instanceof MainScreenView) {
                 ((MainScreenView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenTeamView) {
+                ((MainScreenTeamView) currentView).refresh();
             }
         });
 
