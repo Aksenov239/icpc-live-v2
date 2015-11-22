@@ -15,6 +15,18 @@ public class StandingsStatus {
         }
     }
 
+    public long getStandingsTimestamp() {
+        return standingsTimestamp;
+    }
+
+    public boolean isStandingsVisible() {
+        return isStandingsVisible;
+    }
+
+    public long getStandingsType() {
+        return standingsType;
+    }
+
     private long standingsTimestamp;
     private boolean isStandingsVisible;
     private long standingsType;
