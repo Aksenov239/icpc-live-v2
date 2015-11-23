@@ -2,6 +2,8 @@ package ru.ifmo.acm.mainscreen.statuses;
 
 import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.backup.BackUp;
+import ru.ifmo.acm.datapassing.AdvertisementData;
+import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.mainscreen.Advertisement;
 
 public class AdvertisementStatus {
@@ -11,23 +13,29 @@ public class AdvertisementStatus {
         this.timeToShow = timeToShow;
     }
 
-    public synchronized void setAdvertisementVisible(boolean visible, Advertisement advertisement) {
+    public void recache() {
+        Data.cache.refresh(AdvertisementData.class);
+    }
+
+    public void setAdvertisementVisible(boolean visible, Advertisement advertisement) {
         synchronized (advertisementLock) {
             advertisementTimestamp = System.currentTimeMillis();
             isAdvertisementVisible = visible;
             advertisementValue = advertisement;
         }
+        recache();
     }
 
-    public synchronized void update() {
+    public void update() {
         synchronized (advertisementLock) {
             if (System.currentTimeMillis() > advertisementTimestamp + timeToShow) {
                 isAdvertisementVisible = false;
             }
         }
+        recache();
     }
 
-    public synchronized String advertisementStatus() {
+    public String advertisementStatus() {
         synchronized (advertisementLock) {
             return advertisementTimestamp + "\n" + isAdvertisementVisible + "\n" + advertisementValue;
         }

@@ -463,11 +463,13 @@ public class MainScreenView extends CustomComponent implements View {
 
         advertisementStatus.setValue(getAdvertisementStatus());
         advertisements.refreshRowCache();
+        mainScreenData.advertisementStatus.update();
 
         for (int i = 0; i < 2; i++) {
             personStatus[i].setValue(getPersonStatus(i));
             persons[i].refreshRowCache();
         }
+        mainScreenData.personStatus.update();
     }
 
     public void enter(ViewChangeEvent event) {

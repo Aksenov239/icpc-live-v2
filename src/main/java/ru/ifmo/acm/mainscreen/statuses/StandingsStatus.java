@@ -1,30 +1,44 @@
 package ru.ifmo.acm.mainscreen.statuses;
 
+import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.datapassing.StandingsData;
+
 public class StandingsStatus {
-    public synchronized void setStandingsVisible(boolean visible, int type) {
+    public void recache() {
+        Data.cache.refresh(StandingsData.class);
+    }
+
+    public void setStandingsVisible(boolean visible, int type) {
         synchronized (standingsLock) {
             standingsTimestamp = System.currentTimeMillis();
             isStandingsVisible = visible;
             standingsType = type;
         }
+        recache();
     }
 
-    public synchronized String standingsStatus() {
+    public String standingsStatus() {
         synchronized (standingsLock) {
             return standingsTimestamp + "\n" + isStandingsVisible + "\n" + standingsType;
         }
     }
 
     public long getStandingsTimestamp() {
-        return standingsTimestamp;
+        synchronized (standingsLock) {
+            return standingsTimestamp;
+        }
     }
 
     public boolean isStandingsVisible() {
-        return isStandingsVisible;
+        synchronized (standingsLock) {
+            return isStandingsVisible;
+        }
     }
 
     public long getStandingsType() {
-        return standingsType;
+        synchronized (standingsLock) {
+            return standingsType;
+        }
     }
 
     private long standingsTimestamp;

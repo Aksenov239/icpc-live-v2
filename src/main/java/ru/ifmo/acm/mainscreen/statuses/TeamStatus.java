@@ -21,6 +21,10 @@ public class TeamStatus {
         Arrays.sort(teamNames);
     }
 
+    public void recache() {
+        //Data.cache.refresh(TeamData.class);
+    }
+
     public synchronized boolean setInfoVisible(boolean visible, String type, String teamName) {
         if (visible && isInfoVisible) {
             return false;

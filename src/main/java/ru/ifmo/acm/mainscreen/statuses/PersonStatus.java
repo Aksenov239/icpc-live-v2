@@ -3,6 +3,7 @@ package ru.ifmo.acm.mainscreen.statuses;
 import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.mainscreen.Person;
+import ru.ifmo.acm.datapassing.Data;
 
 public class PersonStatus {
     public PersonStatus(String backupFilename, long timeToShow) {
@@ -14,11 +15,18 @@ public class PersonStatus {
         this.timeToShow = timeToShow;
     }
 
-    public synchronized void setLabelVisible(boolean visible, Person label, int id) {
-        System.err.println("Set visible " + visible + " " + labelsValues[id] + " " + label);
-        labelsTimestamps[id] = System.currentTimeMillis();
-        isLabelsVisible[id] = visible;
-        labelsValues[id] = label;
+    private void recache() {
+        //Data.cache.refresh(PersonData.class);
+    }
+
+    public void setLabelVisible(boolean visible, Person label, int id) {
+        //System.err.println("Set visible " + visible + " " + labelsValues[id] + " " + label);
+        synchronized (labelsLock[id]) {
+            labelsTimestamps[id] = System.currentTimeMillis();
+            isLabelsVisible[id] = visible;
+            labelsValues[id] = label;
+        }
+        recache();
     }
 
     public void update() {
@@ -29,6 +37,7 @@ public class PersonStatus {
                 }
             }
         }
+        recache();
     }
 
     public String labelsStatus() {

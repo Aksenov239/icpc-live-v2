@@ -4,6 +4,8 @@ import ru.ifmo.acm.backup.BackUp;
 
 import java.io.IOException;
 import java.util.*;
+import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.datapassing.CreepingLineData;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -99,16 +101,22 @@ public class MessageData {
 //        }
 //    }
 
+    private void recache() {
+        Data.cache.refresh(CreepingLineData.class);
+    }
+
     public void removeMessage(Message message) {
 //        synchronized (messageList) {
 //            messageList.removeItem(message);
 //        }
         messageList.removeItem(message);
+        recache();
     }
 
     public void addMessage(Message message) {
         // messageList.addBean(message);
         messageList.addItem(message);
+        recache();
     }
 
     public List<Message> getMessages() {

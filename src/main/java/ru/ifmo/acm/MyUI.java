@@ -12,7 +12,7 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.creepingline.CreepingLineView;
-import ru.ifmo.acm.creepingline.MessageRequestHandlers;
+import ru.ifmo.acm.datapassing.DataRequestHandler;
 import ru.ifmo.acm.login.LoginView;
 import ru.ifmo.acm.mainscreen.MainScreenTeamView;
 import ru.ifmo.acm.mainscreen.MainScreenView;
@@ -116,7 +116,7 @@ public class MyUI extends UI {
 
         getNavigator().navigateTo(LoginView.NAME);
 
-        VaadinSession.getCurrent().addRequestHandler(new MessageRequestHandlers());
+        VaadinSession.getCurrent().addRequestHandler(new DataRequestHandler());
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
