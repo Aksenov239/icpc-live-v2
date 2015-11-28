@@ -2,6 +2,7 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.net.Preparation;
 import ru.ifmo.acm.backend.player.TickPlayer;
+import ru.ifmo.acm.datapassing.Data;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -45,7 +46,10 @@ public class ClockWidget extends Widget {
 
     private void update() {
         if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            if (Preparation.dataLoader.getDataBackend().clockData.isVisible) {
+            Data data = Preparation.dataLoader.getDataBackend();
+            if (data == null)
+                return;
+            if (data.clockData.isVisible) {
                 setVisible(true);
             } else {
                 setVisible(false);
@@ -62,7 +66,7 @@ public class ClockWidget extends Widget {
         drawRect(g, x, y, WIDTH, HEIGHT, MAIN_COLOR, opacity);
         g.setColor(Color.WHITE);
         g.setFont(clockFont);
-        long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
+        long time = Preparation.eventsLoader.getContestData().getCurrentTime();
         if (time > 5 * 60 * 60) {
             time = 5 * 60 * 60;
         }

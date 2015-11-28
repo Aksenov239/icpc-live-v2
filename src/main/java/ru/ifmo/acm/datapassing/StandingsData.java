@@ -7,9 +7,7 @@ public class StandingsData implements CachedData {
     @Override
     public StandingsData initialize() {
         StandingsStatus status = MainScreenData.getMainScreenData().standingsStatus;
-        standingsTimestamp = status.getStandingsTimestamp();
-        isStandingsVisible = status.isStandingsVisible();
-        standingsType = status.getStandingsType();
+        status.initialize(this);
 
         return this;
     }

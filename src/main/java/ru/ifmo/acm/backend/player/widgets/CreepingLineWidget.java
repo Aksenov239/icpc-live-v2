@@ -2,14 +2,13 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.net.Preparation;
 import ru.ifmo.acm.backend.player.TickPlayer;
+import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
-
-//import ru.ifmo.acm.backend.player.widgets.controllers.Controller;
 
 
 /**
@@ -32,6 +31,10 @@ public class CreepingLineWidget extends Widget {
 
     private void update() {
         if (lastUpdate + updateWait < System.currentTimeMillis()) {
+            Data data = Preparation.dataLoader.getDataBackend();
+            if (data == null) {
+                return;
+            }
             for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
                 String text = message.getMessage();
                 if (!inQueue.contains(text)) {

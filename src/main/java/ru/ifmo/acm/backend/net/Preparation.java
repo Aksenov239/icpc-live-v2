@@ -22,10 +22,12 @@ public class Preparation {
     public static DataLoader dataLoader;
 
     public static void prepareDataLoader() {
-        dataLoader = new DataLoader();
+        dataLoader = new DataLoader();dataLoader.backendInitialize();
     }
 
     public static void prepareNetwork(final String login, final String password) {
+        if (login == null || password == null)
+            return;
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {

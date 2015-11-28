@@ -18,6 +18,9 @@ import ru.ifmo.acm.mainscreen.MainScreenTeamView;
 import ru.ifmo.acm.mainscreen.MainScreenView;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import ru.ifmo.acm.datapassing.DataLoader;
 
 /**
  *
@@ -74,7 +77,7 @@ public class MyUI extends UI {
             getNavigator().navigateTo("");
         });
 
-        setPollInterval(2000);
+        setPollInterval(1000);
 
         addPollListener(event -> {
             if (currentView instanceof CreepingLineView) {
@@ -86,6 +89,7 @@ public class MyUI extends UI {
             if (currentView instanceof MainScreenTeamView) {
                 ((MainScreenTeamView) currentView).refresh();
             }
+            DataLoader.iterateFrontend();
         });
 
         getNavigator().addViewChangeListener(new ViewChangeListener() {
@@ -117,7 +121,10 @@ public class MyUI extends UI {
         getNavigator().navigateTo(LoginView.NAME);
 
         VaadinSession.getCurrent().addRequestHandler(new DataRequestHandler());
+        //new DataLoader().frontendInitialize();
     }
+
+    //}
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)

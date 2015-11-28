@@ -22,11 +22,16 @@ public abstract class ScreenGenerator {
         this.height = height;
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        //}
+        properties = new Properties();
+        try {
+            properties.load(getClass().getClassLoader().getResourceAsStream("mainscreen.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Preparation.prepareEventsLoader();
         Preparation.prepareDataLoader();
-        Preparation.prepareNetwork(properties.getProperty("login"), properties.getProperty("password"));
+        Preparation.prepareNetwork(properties.getProperty("login", null), properties.getProperty("password", null));
     }
 
     public final BufferedImage getScreen() {

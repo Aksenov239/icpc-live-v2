@@ -14,9 +14,7 @@ public class AdvertisementData implements CachedData {
 
     public AdvertisementData initialize() {
         AdvertisementStatus status = MainScreenData.getMainScreenData().advertisementStatus;
-        timestamp = status.advertisementTimestamp;
-        isVisible = status.isAdvertisementVisible;
-        advertisement = status.advertisementValue;
+        status.initialize(this);
         return this;
     }
 }

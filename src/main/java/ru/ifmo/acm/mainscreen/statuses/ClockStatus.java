@@ -26,7 +26,12 @@ public class ClockStatus {
         return clockTimestamp + "\n" + isClockVisible;
     }
 
-    public long clockTimestamp;
-    public boolean isClockVisible;
+    public synchronized void initialize(ClockData status){
+        status.timestamp = clockTimestamp;
+        status.isVisible = isClockVisible;
+    }
+
+    private long clockTimestamp;
+    private boolean isClockVisible;
     final private Object clockLock = new Object();
 }

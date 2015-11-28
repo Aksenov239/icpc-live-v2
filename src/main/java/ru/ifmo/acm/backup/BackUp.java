@@ -23,6 +23,7 @@ public class BackUp<T> {
 
         reload();
 
+        //TODO Add this thread to contextListener queue
         new Timer().scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
@@ -73,7 +74,7 @@ public class BackUp<T> {
         }
     }
 
-    public void setProperty(Object item, String property, String value){
+    public void setProperty(Object item, String property, String value) {
         synchronized (data) {
             data.getItem(item).getItemProperty(property).setValue(value);
         }

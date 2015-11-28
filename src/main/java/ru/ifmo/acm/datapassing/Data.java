@@ -14,6 +14,7 @@ public class Data implements CachedData {
     public ClockData clockData;
     public AdvertisementData advertisementData;
     public StandingsData standingsData;
+    public PersonData personData;
     //TODO write TeamData file
     //public TeamData teamData;
 
@@ -28,14 +29,13 @@ public class Data implements CachedData {
     public static LoadingCache<Class<? extends CachedData>, CachedData> cache =
             CacheBuilder.newBuilder().build(loader);
 
-
-
     public Data initialize() {
         try {
             creepingLineData = (CreepingLineData) cache.get(CreepingLineData.class);
             clockData = (ClockData) cache.get(ClockData.class);
             advertisementData = (AdvertisementData) cache.get(AdvertisementData.class);
             standingsData = (StandingsData) cache.get(StandingsData.class);
+            personData = (PersonData) cache.get(PersonData.class);
             //teamData = new TeamData().initialize();
         } catch (Exception e) {
             e.printStackTrace();

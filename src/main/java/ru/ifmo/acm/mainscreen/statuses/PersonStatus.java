@@ -2,8 +2,9 @@ package ru.ifmo.acm.mainscreen.statuses;
 
 import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.backup.BackUp;
-import ru.ifmo.acm.mainscreen.Person;
 import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.mainscreen.Person;
+import ru.ifmo.acm.datapassing.PersonData;
 
 public class PersonStatus {
     public PersonStatus(String backupFilename, long timeToShow) {
@@ -16,7 +17,7 @@ public class PersonStatus {
     }
 
     private void recache() {
-        //Data.cache.refresh(PersonData.class);
+        Data.cache.refresh(PersonData.class);
     }
 
     public void setLabelVisible(boolean visible, Person label, int id) {
@@ -30,14 +31,18 @@ public class PersonStatus {
     }
 
     public void update() {
+        boolean change = false;
         for (int id = 0; id < 2; id++) {
             synchronized (labelsLock[id]) {
                 if (labelsTimestamps[id] > System.currentTimeMillis() + timeToShow) {
                     isLabelsVisible[id] = false;
+                    change = true;
                 }
             }
         }
-        recache();
+        if (change) {
+            recache();
+        }
     }
 
     public String labelsStatus() {
@@ -53,7 +58,7 @@ public class PersonStatus {
     public String labelStatus(int id) {
         synchronized (labelsLock[id]) {
             if (labelsValues[id] == null) {
-                setLabelVisible(false, null , id);
+                setLabelVisible(false, null, id);
             }
             return labelsTimestamps[id] + "\n" + isLabelsVisible[id] + "\n" + (labelsValues[id] != null ? labelsValues[id].getName() : "");
         }
@@ -79,6 +84,16 @@ public class PersonStatus {
 
     public BeanItemContainer<Person> getContainer() {
         return persons.getContainer();
+    }
+
+    public void initialize(PersonData data) {
+        for (int id = 0; id < 2; id++) {
+            synchronized (labelsLock[id]) {
+                data.timestamp[id] = labelsTimestamps[id];
+                data.isVisible[id] = isLabelsVisible[id];
+                data.label[id] = labelsValues[id] == null ? new Person("", "") : labelsValues[id];
+            }
+        }
     }
 
     private long[] labelsTimestamps;

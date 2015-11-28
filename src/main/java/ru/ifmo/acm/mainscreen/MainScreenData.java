@@ -1,5 +1,7 @@
 package ru.ifmo.acm.mainscreen;
 
+
+import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.mainscreen.statuses.*;
 
 import java.io.IOException;
@@ -9,9 +11,10 @@ import java.util.Properties;
  * Created by Aksenov239 on 15.11.2015.
  */
 public class MainScreenData {
-public static MainScreenData getMainScreenData() {
+    public static MainScreenData getMainScreenData() {
         if (mainScreenData == null) {
             mainScreenData = new MainScreenData();
+            //new DataLoader().frontendInitialize();
         }
         return mainScreenData;
     }
@@ -22,11 +25,14 @@ public static MainScreenData getMainScreenData() {
             properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
 
             String backupAdvertisements = properties.getProperty("backup.advertisements");
-            long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
+
+            long latency = Long.parseLong(properties.getProperty("latency.time"));
+
+            long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time") + latency);
             advertisementStatus = new AdvertisementStatus(backupAdvertisements, timeAdvertisement);
 
             String backupPersons = properties.getProperty("backup.persons");
-            long timePerson = Long.parseLong(properties.getProperty("person.time"));
+            long timePerson = Long.parseLong(properties.getProperty("person.time") + latency);
             personStatus = new PersonStatus(backupPersons, timePerson);
 
             teamStatus = new TeamStatus();

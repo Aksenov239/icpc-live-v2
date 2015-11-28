@@ -12,8 +12,7 @@ public class ClockData implements CachedData {
 
     public ClockData initialize() {
         ClockStatus status = MainScreenData.getMainScreenData().clockStatus;
-        timestamp = status.clockTimestamp;
-        isVisible = status.isClockVisible;
+        status.initialize(this);
         return this;
     }
 }

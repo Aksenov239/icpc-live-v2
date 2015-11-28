@@ -27,12 +27,16 @@ public class AdvertisementStatus {
     }
 
     public void update() {
+        boolean change = false;
         synchronized (advertisementLock) {
             if (System.currentTimeMillis() > advertisementTimestamp + timeToShow) {
                 isAdvertisementVisible = false;
+                change = true;
             }
         }
-        recache();
+        if (change) {
+            recache();
+        }
     }
 
     public String advertisementStatus() {
@@ -42,14 +46,14 @@ public class AdvertisementStatus {
     }
 
     public void addAdvertisement(Advertisement advertisement) {
-//        synchronized (advertisements) {
-//            advertisements.addBean(advertisement);
+//        synchronized (advertisementLock) {
+//            advertisements.addItem(advertisement);
 //        }
         advertisements.addItem(advertisement);
     }
 
     public void removeAdvertisement(Advertisement advertisement) {
-//        synchronized (advertisements) {
+        //synchronized (advertisements) {
 //            advertisements.removeItem(advertisement);
 //        }
         advertisements.removeItem(advertisement);
@@ -59,13 +63,21 @@ public class AdvertisementStatus {
         return advertisements.getContainer();
     }
 
+    public void initialize(AdvertisementData data) {
+        synchronized (advertisementLock) {
+            data.timestamp = advertisementTimestamp;
+            data.isVisible = isAdvertisementVisible;
+            data.advertisement = advertisementValue == null ? new Advertisement("") : new Advertisement(advertisementValue.getAdvertisement());
+        }
+    }
+
     public void setValue(Object key, String value) {
         advertisements.setProperty(key, "advertisement", value);
     }
 
-    public long advertisementTimestamp;
-    public boolean isAdvertisementVisible;
-    public Advertisement advertisementValue;
+    private long advertisementTimestamp;
+    private boolean isAdvertisementVisible;
+    private Advertisement advertisementValue;
     final private Object advertisementLock = new Object();
 
     final private BackUp<Advertisement> advertisements;

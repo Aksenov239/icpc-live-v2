@@ -41,6 +41,14 @@ public class StandingsStatus {
         }
     }
 
+    public void initialize(StandingsData data) {
+        synchronized (standingsLock) {
+            data.standingsTimestamp = standingsTimestamp;
+            data.isStandingsVisible = isStandingsVisible;
+            data.standingsType = standingsType;
+        }
+    }
+
     private long standingsTimestamp;
     private boolean isStandingsVisible;
     private long standingsType;
