@@ -24,11 +24,13 @@ public class BackUp<T> {
         reload();
 
         Thread schedule = new Thread(() -> {
-            backup();
-            try {
-                Thread.sleep(60000L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while (true) {
+                backup();
+                try {
+                    Thread.sleep(60000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         ContextListener.addThread(schedule);
