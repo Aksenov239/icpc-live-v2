@@ -95,7 +95,7 @@ public class BackUp<T> {
         return data.getItem(itemId);
     }
 
-    SynchronizedBeanItemContainer<T> data;
+    BeanItemContainer<T> data;
     Path backupFile;
     static final Gson gson = new GsonBuilder().create();
     final Class<T> type;
