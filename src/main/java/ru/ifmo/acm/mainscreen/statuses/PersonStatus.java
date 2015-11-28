@@ -34,7 +34,7 @@ public class PersonStatus {
         boolean change = false;
         for (int id = 0; id < 2; id++) {
             synchronized (labelsLock[id]) {
-                if (labelsTimestamps[id] > System.currentTimeMillis() + timeToShow) {
+                if (labelsTimestamps[id] + timeToShow < System.currentTimeMillis()) {
                     isLabelsVisible[id] = false;
                     change = true;
                 }

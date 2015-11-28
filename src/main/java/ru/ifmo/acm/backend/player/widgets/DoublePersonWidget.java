@@ -28,6 +28,9 @@ public class DoublePersonWidget extends Widget {
 
     public void update() {
         if (lastUpdate + updateWait < System.currentTimeMillis()) {
+            if (Preparation.dataLoader.getDataBackend() == null)
+                return;
+
             PersonData personData = Preparation.dataLoader.getDataBackend().personData;
 
             //System.err.println(Arrays.toString(personData.isVisible));

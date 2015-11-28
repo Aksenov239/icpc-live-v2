@@ -92,6 +92,10 @@ public class MainScreenView extends CustomComponent implements View {
     private Button createStandingsControllerButton(String name, int index, boolean visible, int type) {
         Button button = new Button(name);
         button.addClickListener(event -> {
+            if (visible && mainScreenData.standingsStatus.isStandingsVisible()) {
+                Notification.show("You should hide standings first", Type.WARNING_MESSAGE);
+                return;
+            }
             standingsStatus.setValue(String.format(labelStatuses[index], 0));
             mainScreenData.standingsStatus.setStandingsVisible(visible, type);
         });
@@ -460,6 +464,7 @@ public class MainScreenView extends CustomComponent implements View {
                         (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
                         labelStatuses[3]
         );
+        mainScreenData.standingsStatus.update();
 
         advertisementStatus.setValue(getAdvertisementStatus());
         advertisements.refreshRowCache();

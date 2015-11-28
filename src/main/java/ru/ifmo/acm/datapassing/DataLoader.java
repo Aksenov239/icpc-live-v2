@@ -32,10 +32,14 @@ public class DataLoader {
         for (PrintWriter pw :openSockets) {
             pw.close();
         }
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (serverSocket != null) {
+            try {
+                serverSocket.close();
+                serverSocket = null;
+                System.err.println("Socket is closed!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

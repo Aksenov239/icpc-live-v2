@@ -23,6 +23,7 @@ public class PCMSContestInfo extends ContestInfo {
     void addTeamStandings(PCMSTeamInfo teamInfo) {
         standings.add(teamInfo);
         positions.put(teamInfo.name, standings.size() - 1);
+        teamNumber = standings.size();
     }
 
     PCMSTeamInfo getParticipant(Integer teamRank) {
@@ -43,5 +44,6 @@ public class PCMSContestInfo extends ContestInfo {
     protected int totalRuns;
     protected int acceptedRuns;
 
-    private Map<String, Integer> positions;
+    //private Map<String, Integer> positions;
+    public Map<String, Integer> positions;
 }

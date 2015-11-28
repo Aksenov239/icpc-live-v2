@@ -48,7 +48,7 @@ public class ContextListener implements ServletContextListener {
         DataLoader.free();
         threadsList.forEach(thread -> {
             if (thread != null && thread.isAlive()) {
-                thread.interrupt();
+                thread.stop();
             }
         });
     }

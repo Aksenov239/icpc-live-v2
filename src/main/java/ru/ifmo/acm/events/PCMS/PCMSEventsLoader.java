@@ -9,10 +9,8 @@ import org.jsoup.parser.Parser;
 import ru.ifmo.acm.events.EventsLoader;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -31,7 +29,7 @@ public class PCMSEventsLoader extends EventsLoader {
                 properties.load(PCMSEventsLoader.class.getClassLoader().getResourceAsStream("events.properties"));
                 //properties.load(new FileInputStream("src/main/resources/events.properties"));
                 PCMSContestInfo initial = parseInitialContestInfo();
-                contestInfo = new AtomicReference<>(initial);
+                contestInfo.set(initial);
 //                instance.start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,7 +58,8 @@ public class PCMSEventsLoader extends EventsLoader {
 
     private void updateStatements() throws IOException {
         String url = properties.getProperty("url");
-        String html = new BufferedReader(new InputStreamReader(new URL(url).openStream()))
+//        String html = new BufferedReader(new InputStreamReader(new URL(url).openStream()))
+        String html = new BufferedReader(new FileReader(url))
                 .lines()
                 .collect(Collectors.joining());
         Document doc = Jsoup.parse(html, url);
@@ -69,6 +68,7 @@ public class PCMSEventsLoader extends EventsLoader {
 
     @Override
     public void run() {
+        //System.err.println(check.getName() + " " + check.getShortName());
         while (true) {
             try {
                 while (true) {
@@ -137,7 +137,10 @@ public class PCMSEventsLoader extends EventsLoader {
     private PCMSTeamInfo parseTeamStandings(Element element) {
         int problemsNumber = contestInfo.get().getProblemsNumber();
         String name = element.child(1).html();
+        //PCMSTeamInfo check = contestInfo.get().getParticipant(name);
+        //System.err.println(check.getName() + " " + check.getShortName() + " " + name + " " + check.getRank());
         PCMSTeamInfo parsedTeam = new PCMSTeamInfo(contestInfo.get().getParticipant(name));
+//        System.err.println(parsedTeam.getName() + " " + parsedTeam.getShortName() + " " + name + " " + check.getRank());
         parsedTeam.rank = Integer.parseInt(element.child(0).html());
 
         for (int i = 0; i < problemsNumber; i++) {
@@ -161,7 +164,8 @@ public class PCMSEventsLoader extends EventsLoader {
         for (int i = 1; i < element.childNodeSize(); i++) {
             if ("rankl".equals(element.child(i).child(0).attr("class"))) {
                 PCMSTeamInfo team = parseTeamStandings(element.child(i));
-                updateContestInfo.standings.add(team);
+                //updateContestInfo.standings.add(team);
+                updateContestInfo.addTeamStandings(team);
             }
         }
         return updateContestInfo;
@@ -171,7 +175,7 @@ public class PCMSEventsLoader extends EventsLoader {
         return contestInfo.get();
     }
 
-    static AtomicReference<PCMSContestInfo> contestInfo;
+    static AtomicReference<PCMSContestInfo> contestInfo = new AtomicReference<>();
     long currentTime;
     private static Properties properties;
 }

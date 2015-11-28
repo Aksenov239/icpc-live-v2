@@ -26,13 +26,14 @@ public class MainScreenGenerator extends ScreenGenerator {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-        widgets = new Widget[5];
+        widgets = new Widget[6];
         widgets[0] = new GreenScreenWidget();
         widgets[0].setVisible(true);
         widgets[1] = new ClockWidget(updateWait);
         widgets[2] = new CreepingLineWidget(updateWait);
         widgets[3] = new DoublePersonWidget(updateWait, timePerson);
         widgets[4] = new AdvertisementWidget(updateWait, timeAdvertisement);
+        widgets[5] = new StandingsWidget(updateWait);
     }
 
 }

@@ -35,12 +35,13 @@ public class MainScreenData {
             long timePerson = Long.parseLong(properties.getProperty("person.time") + latency);
             personStatus = new PersonStatus(backupPersons, timePerson);
 
+            standingsStatus = new StandingsStatus(latency);
+
             teamStatus = new TeamStatus();
         } catch (IOException e) {
             e.printStackTrace();
         }
         clockStatus = new ClockStatus();
-        standingsStatus = new StandingsStatus();
     }
 
     private static MainScreenData mainScreenData;
