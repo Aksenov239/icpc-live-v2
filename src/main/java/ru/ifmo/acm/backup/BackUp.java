@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,7 +19,7 @@ import java.util.TimerTask;
 public class BackUp<T> {
     public BackUp(Class<T> type, String backupFileName) {
         this.type = type;
-        this.data = new BeanItemContainer<T>(type);
+        this.data = new SynchronizedBeanItemContainer<T>(type);
         this.backupFile = Paths.get(backupFileName);
 
         reload();
@@ -94,7 +95,7 @@ public class BackUp<T> {
         return data.getItem(itemId);
     }
 
-    BeanItemContainer<T> data;
+    SynchronizedBeanItemContainer<T> data;
     Path backupFile;
     static final Gson gson = new GsonBuilder().create();
     final Class<T> type;
