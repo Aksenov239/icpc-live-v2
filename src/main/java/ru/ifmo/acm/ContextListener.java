@@ -1,18 +1,21 @@
+package ru.ifmo.acm;
+
 import ru.ifmo.acm.datapassing.DataLoader;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @WebListener("Context listener for doing something or other.")
 public class ContextListener implements ServletContextListener {
-
-    Thread dataLoader;
-
     // Vaadin app deploying/launching.
     @Override
     public void contextInitialized(ServletContextEvent contextEvent) {
+        Thread dataLoader;
+
         ServletContext context = contextEvent.getServletContext();
         dataLoader = new Thread(() -> {
             while (true) {
@@ -26,16 +29,25 @@ public class ContextListener implements ServletContextListener {
         });
         dataLoader.setDaemon(true);
         dataLoader.start();
+
+        threadsList.add(dataLoader);
     }
 
     // Vaadin app un-deploying/shutting down.
     @Override
     public void contextDestroyed(ServletContextEvent contextEvent) {
         ServletContext context = contextEvent.getServletContext();
-        if (dataLoader != null && dataLoader.isAlive()) {
-            dataLoader.stop();
-        }
-        DataLoader.free();
+
+        threadsList.forEach(thread -> {
+            if (thread != null && thread.isAlive()) {
+                thread.interrupt();
+            }
+        });
     }
 
+    public static void addThread(Thread thread) {
+        threadsList.add(thread);
+    }
+
+    static private BlockingQueue<Thread> threadsList = new LinkedBlockingQueue<>();
 }
