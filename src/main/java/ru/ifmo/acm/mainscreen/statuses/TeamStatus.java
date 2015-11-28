@@ -1,16 +1,17 @@
 package ru.ifmo.acm.mainscreen.statuses;
 
+import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.events.ContestInfo;
+
 import java.util.Arrays;
 
 public class TeamStatus {
     public final ContestInfo info;
     public final String[] teamNames;
 
-    public TeamStatus(){
+    public TeamStatus() {
         EventsLoader loader = PCMSEventsLoader.getInstance();
         info = loader.getContestData();
         TeamInfo[] teamInfos = info.getStandings();

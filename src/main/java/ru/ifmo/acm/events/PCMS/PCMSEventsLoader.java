@@ -32,7 +32,7 @@ public class PCMSEventsLoader extends EventsLoader {
                 //properties.load(new FileInputStream("src/main/resources/events.properties"));
                 PCMSContestInfo initial = parseInitialContestInfo();
                 contestInfo = new AtomicReference<>(initial);
-                instance.start();
+//                instance.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

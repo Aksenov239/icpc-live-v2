@@ -1,13 +1,14 @@
 package ru.ifmo.acm.backend.net;
 
+import ru.ifmo.acm.datapassing.DataLoader;
+import ru.ifmo.acm.events.EventsLoader;
+import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
+
 import javax.net.ssl.*;
 import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import ru.ifmo.acm.events.EventsLoader;
-import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
-import ru.ifmo.acm.datapassing.DataLoader;
 
 /**
  * Created by aksenov on 15.04.2015.
@@ -17,12 +18,14 @@ public class Preparation {
 
     public static void prepareEventsLoader() {
         eventsLoader = PCMSEventsLoader.getInstance();
+        eventsLoader.start();
     }
 
     public static DataLoader dataLoader;
 
     public static void prepareDataLoader() {
-        dataLoader = new DataLoader();dataLoader.backendInitialize();
+        dataLoader = new DataLoader();
+        dataLoader.backendInitialize();
     }
 
     public static void prepareNetwork(final String login, final String password) {

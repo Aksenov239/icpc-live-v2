@@ -1,6 +1,8 @@
 package ru.ifmo.acm;
 
 import ru.ifmo.acm.datapassing.DataLoader;
+import ru.ifmo.acm.mainscreen.MainScreenData;
+import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -8,6 +10,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 
 @WebListener("Context listener for doing something or other.")
 public class ContextListener implements ServletContextListener {
@@ -30,6 +33,10 @@ public class ContextListener implements ServletContextListener {
         dataLoader.setDaemon(true);
         dataLoader.start();
 
+        MainScreenData.getMainScreenData();
+
+        PCMSEventsLoader.getInstance();
+
         threadsList.add(dataLoader);
     }
 
@@ -38,6 +45,7 @@ public class ContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent contextEvent) {
         ServletContext context = contextEvent.getServletContext();
 
+        DataLoader.free();
         threadsList.forEach(thread -> {
             if (thread != null && thread.isAlive()) {
                 thread.interrupt();
