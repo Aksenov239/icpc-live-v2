@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 
 import java.io.IOException;
@@ -13,8 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class BackUp<T> {
     public BackUp(Class<T> type, String backupFileName) {
@@ -24,15 +23,25 @@ public class BackUp<T> {
 
         reload();
 
-        //TODO Add this thread to contextListener queue
-        new Timer().scheduleAtFixedRate(
-                new TimerTask() {
-                    public void run() {
-                        backup();
-                    }
-                },
-                0L,
-                60000L);
+        Thread schedule = new Thread(() -> {
+            backup();
+            try {
+                Thread.sleep(60000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        ContextListener.addThread(schedule);
+
+//        //TODO Add this thread to contextListener queue
+//        new Timer().scheduleAtFixedRate(
+//                new TimerTask() {
+//                    public void run() {
+//                        backup();
+//                    }
+//                },
+//                0L,
+//                60000L);
     }
 
     public void reload() {
