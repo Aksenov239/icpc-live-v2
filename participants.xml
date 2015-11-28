@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<parties
+ id = 'ru.ifmo.camp.lyon.2015-10.20151026.runs'
+ xmlai-process = 'http://neerc.ifmo.ru/develop/pcms2/xmlai/default-rules.xml'
+>
+    <party id = 'orig1' name = '*SPb ITMO University 1 (Kovsharov, Bardashevich, Smykalov)' />
+    <party id = 'orig2' name = '*SPb State University 1 (Ershov, Pyshkin, Gordeev)' />
+    <party id = 'orig3' name = '*SPb State University 3 (Simonov, Logunov, Ryazanov)' />
+    <party id = 'orig4' name = '*SPb ITMO University 3 (Budin, Latyshev, Yakutov)' />
+    <party id = 'orig5' name = '*SPb ITMO University 2 (Belonogov, Podtelkin, Zban)' />
+    <party id = 'orig6' name = '*SPb Academic University 1 (Bogomolov, Podguzov, Smirnov)' />
+    <party id = 'orig7' name = '*SPb State University 2 (Savchenkov, Makarov, Sayranov)' />
+    <party id = 'orig8' name = '*SPb ITMO University 4 (Kisialiou, Berinchik, Korchagin)' />
+    <party id = 'orig9' name = '*SPb State University 4 (Gulikov, Malinovskii, Kulikov)' />
+    <party id = 'orig10' name = '*SPb Academic University 7 (Moskvitin, Smirnov, Plyushchenko)' />
+    <party id = 'orig11' name = '*Northern (Arctic) Federal University 1 (Popovich, Chesnokov, Dodin)' />
+    <party id = 'orig12' name = '*SPb Academic University 4 (Rebryk, Zhidkov, Stepanov)' />
+    <party id = 'orig13' name = '*SPb Academic University 6 (Zuev, Vinnichenko, Belova)' />
+    <party id = 'orig14' name = '*SPb Academic University 2 (Chernikova, Labutin, Shcherbin)' />
+    <party id = 'orig15' name = '*SPb Academic University 5 (Kravchenko, Nikonov, Rozplokhas)' />
+    <party id = 'orig16' name = '*SPb ITMO University 5 (Sushencev, Ohanjanyan, Sazanovich)' />
+    <party id = 'orig17' name = '*SPb ITMO University 7 (Turaev, Kostlivtsev, Burakov)' />
+    <party id = 'orig18' name = '*SPb Academic University 8 (Sofronova, Olhovskiy, Tonkih)' />
+    <party id = 'orig19' name = '*SPb Academic University 3 (Bugakova, Kravchenko, Tretyakova)' />
+    <party id = 'orig20' name = '*SPb ITMO University 13 (Yaglamunov, Romanova, Smorodin)' />
+    <party id = 'orig21' name = '*Petrozavodsk State University 1 (Ermishin, Starkov, Pyatin)' />
+    <party id = 'orig22' name = '*SPb Academic University 10 (Pilyugin, Mordberg, Geller)' />
+    <party id = 'orig23' name = '*SPb ITMO University 8 (Zamyatin, Filippov, Peresadin)' />
+    <party id = 'orig24' name = '*Petrozavodsk State University 2 (Ermolin, Titov, Alkin)' />
+    <party id = 'orig25' name = '*SPb State Polytechnic University 1 (Svitkin, Vinokhodov, Tretiakov)' />
+    <party id = 'orig26' name = '*SPb ITMO University 11 (Maltsev, Elkin, Tupikina)' />
+    <party id = 'orig27' name = '*SPb ITMO University 6 (Zabashta, Alexandrov, Kolobov)' />
+    <party id = 'orig28' name = '*SPb ITMO University 10 (Sultanov, Arkhipov, Vorobyev)' />
+    <party id = 'orig29' name = '*SPb ITMO University 17 (Kongoev, Startsev, Kaberov)' />
+    <party id = 'orig30' name = '*SPb ITMO University 18 (Antonov, Topayev, Ryabchikov)' />
+    <party id = 'orig31' name = '*SPb State University 6 (Chudov, Lysov, Krasnoryadtseva)' />
+    <party id = 'orig32' name = '*SPb ITMO University 14 (Gilevich, Timchenko, Krasnotsvetov)' />
+    <party id = 'orig33' name = '*Pskov State University 1 (Shalabod, Shantarin, Dmitriev)' />
+    <party id = 'orig34' name = '*SPb ITMO University 12 (Novik, Lebedev, Kupriyanov)' />
+    <party id = 'orig35' name = '*SPb State University 5 (Pyankov, Plotkin, Gorislavskiy)' />
+    <party id = 'orig36' name = '*SPb ITMO University 15 (Ignashov, Strashkov, Savelyev)' />
+    <party id = 'orig37' name = '*Northern (Arctic) Federal University 2 (Guriev, Urusovskiy, Rudniy)' />
+    <party id = 'orig38' name = '*Petrozavodsk State University 3 (Dubinin, Golovachuk, Kukushkin)' />
+    <party id = 'orig39' name = '*SPb State University 9 (Antopol, Balakina, Pervakov)' />
+    <party id = 'orig40' name = '*SPb State University 15 (Lagutin, Evseev, Avetyan)' />
+    <party id = 'orig41' name = '*SPb State University 12 (Kravchenko, Derkunskii, Dashku)' />
+    <party id = 'orig42' name = '*SPb State Polytechnic University 3 (Egorov, Serov, Harfush)' />
+    <party id = 'orig43' name = '*SPb ITMO University 9 (Shkarupin, Klyamar, Trofimov)' />
+    <party id = 'orig44' name = '*SPb SU of Telecommunications 1 (Tarasov, Yastrebov, Kiselev)' />
+    <party id = 'orig45' name = '*SPb Academic University 9 (Vasilyev, Stepanov, Serebro)' />
+    <party id = 'orig46' name = '*SPb State University 7 (Miroshnichenko, Ivanova, Ninalalov)' />
+    <party id = 'orig47' name = '*SPb State University 14 (Musatian, Smirnov, Minaev)' />
+    <party id = 'orig48' name = '*SPb State University 8 (Kanteev, Pravdyukov, Chugaev)' />
+    <party id = 'orig49' name = '*SPb Electrotechnical University 2 (Shabashov, Chumakov, Grebenuk)' />
+    <party id = 'orig50' name = '*Pskov State University 2 (Fedorov, Smirnov, Ivanova)' />
+    <party id = 'orig51' name = '*SPb Electrotechnical University 1 (Chulanov, Yakushkin, Skorospelov)' />
+    <party id = 'orig52' name = '*SPb Electrotechnical University 6 (Savinov, Filatov, Filatov)' />
+    <party id = 'orig53' name = '*Mozhaisky Military Space Academy 1 (Ilatovskiy, Aniskovich, Kulik)' />
+    <party id = 'orig54' name = '*Mozhaisky Military Space Academy 3 (Fomichev, Klimkina, Garkavenko)' />
+    <party id = 'orig55' name = '*Mozhaisky Military Space Academy 4 (Konyakhin, Antonov, Semchenkov)' />
+    <party id = 'orig56' name = '*Mozhaisky Military Space Academy 2 (Kravchenko, Lukin, Ovchinnikov)' />
+    <party id = 'orig57' name = '*SPb SU of Telecommunications 4 (Diakonov, Syrman, Matveev)' />
+    <party id = 'orig58' name = '*SPb State University 10 (Scherbakov, Chaplygina, Permyakov)' />
+    <party id = 'orig59' name = '*SPb State University 13 (Nebogatikov, Mallabaev, Plotnikov)' />
+    <party id = 'orig60' name = '*SPb Electrotechnical University 4 (Smolyakov, Bachinskiy, Dvoretsky)' />
+    <party id = 'orig61' name = '*SPb State University 16 (Shabanov, Miloserdov, Shumilov)' />
+    <party id = 'orig62' name = '*Makarov SU of Maritime and Inland Shipping (Vasetsky, Loginov, Lukushin)' />
+    <party id = 'orig63' name = '*SPb State University 11 (Polezhaev, Belousov, Egorov)' />
+    <party id = 'orig64' name = '*Military Academy of Communications 2 (Morozov, Starostin, Melekhin)' />
+    <party id = 'orig65' name = '*SPb Baltic State Technical University 3 (Stepanov, Matveev, Babich)' />
+    <party id = 'orig66' name = '*SPb Electrotechnical University 3 (Babinov, Kuzmin, Mikhal)' />
+    <party id = 'orig67' name = '*Military Academy of Communications 1 (Sharov, Kornienko, Levkin)' />
+    <party id = 'orig68' name = '*SPb SI of Technology 1 (Ekzaryan, Gricenko, Belkovsky)' />
+    <party id = 'orig69' name = '*SPb SU of Telecommunications 2 (Karavaev, Tetka, Gerkulesov)' />
+    <party id = 'orig70' name = '*SPb State Polytechnic University 2 (Ekimovsky, Kapralov, Dashkov)' />
+    <party id = 'orig71' name = '*SPb SU of Telecommunications 3 (Dudakov, Mardanov, Shustov)' />
+    <party id = 'orig72' name = '*Mozhaisky Military Space Academy 5 (Kozhevnikov, Borisov, Hovanskiy)' />
+    <party id = 'orig73' name = '*SPb SU of Architecture and Civil Engineering 1 (Zgoda, Buivolov, Pyzhov)' />
+    <party id = 'orig74' name = '*SPb Baltic State Technical University 2 (Penzin, Pavlenko, Kabanets)' />
+    <party id = 'orig75' name = '*SPb State Polytechnic University 5 (Konyukh, Ignatenko, Mayorov)' />
+    <party id = 'orig76' name = '*SPb State Polytechnic University 4 (Ivanov, Svintsov, Chirkov)' />
+    <party id = 'orig77' name = '*SPb Baltic State Technical University 1 (Gabidullin, Davydenko, Elokhin)' />
+    <party id = 'orig78' name = '*SPb SU of Telecommunications 5 (Kozlov, Michail, Goncharov)' />
+    <party id = 'orig79' name = '*SPb SI of Technology 3 (Danilko, Sitdykova, Boger)' />
+    <party id = 'orig80' name = '*SPb U of Humanities and Social Sciences (Aleksenko, Plotnikov, Yashenko)' />
+    <party id = 'orig81' name = '*Mikhailovskaya Military Artillery Academy 1 (Shovkin, Klimenko, Budukin)' />
+    <party id = 'orig82' name = '*SPb SI of Technology 2 (Matyunin, Kamaev, Zeldes)' />
+    <party id = 'orig83' name = '*SPb SU of Trade and Economics (Chernyy, Lassal, Yussa)' />
+    <party id = 'orig84' name = '*SPb SU of Architecture and Civil Engineering 2 (Zadumkin, Tushin, Kamenev)' />
+    <party id = 'orig85' name = '*SPb Baltic State Technical University 4 (Sayapin, Kovalev, Somov)' />
+    <party id = 'orig86' name = '*Mikhailovskaya Military Artillery Academy 3 (Babenkov, Timofeev, Yakimanskiy)' />
+    <party id = 'orig87' name = '*SPb Electrotechnical University 5 (Golubev, Khramtsov, Khodos)' />
+    <party id = 'orig88' name = '*SPb Forest Technical Academy (Dumov, Dmitrienko, Aleksandrov)' />
+    <party id = 'orig89' name = '*Kuznetsov Naval Academy (Gorbunov, Ahmetov, Ivanov)' />
+    <party id = 'orig90' name = '*SPb SU of Economics 1 (Ivanova, Pliner, Gadalova)' />
+    <party id = 'orig91' name = '*SPb SU of Economics 2 (Karabaza, Sinko, Mikhailovsky)' />
+    <party id = 'orig92' name = '*Mikhailovskaya Military Artillery Academy 2 (Zaharov, Tatjanin, Baranov)' />
+</parties>
