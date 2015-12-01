@@ -1,6 +1,6 @@
 package ru.ifmo.acm.backend.player.generator;
 
-import ru.ifmo.acm.backend.net.Preparation;
+import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.awt.*;

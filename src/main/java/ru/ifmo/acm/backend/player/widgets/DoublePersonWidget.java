@@ -1,6 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import ru.ifmo.acm.backend.net.Preparation;
+import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.PersonData;
 
 import java.awt.*;

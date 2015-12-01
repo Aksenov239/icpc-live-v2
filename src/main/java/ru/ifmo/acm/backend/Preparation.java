@@ -1,4 +1,4 @@
-package ru.ifmo.acm.backend.net;
+package ru.ifmo.acm.backend;
 
 import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.events.EventsLoader;

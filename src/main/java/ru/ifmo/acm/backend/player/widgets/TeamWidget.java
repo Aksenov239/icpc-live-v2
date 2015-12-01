@@ -1,14 +1,13 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import ru.ifmo.acm.backend.net.Preparation;
+import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Properties;
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * @author: pashka
@@ -81,7 +80,7 @@ public abstract class TeamWidget extends VideoWidget {
         if (inChange.get() || team == null) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             inChange.set(false);
-        ///}
+        }
         if (URL.contains("info")) {
             return;
         }
