@@ -98,8 +98,8 @@ public class MainScreenView extends CustomComponent implements View {
                 Notification.show("You should hide standings first", Type.WARNING_MESSAGE);
                 return;
             }
-            standingsStatus.setValue(String.format(labelStatuses[index], 0));
             mainScreenData.standingsStatus.setStandingsVisible(visible, type);
+            standingsStatus.setValue(getStandingsStatus());
         });
 
         return button;
