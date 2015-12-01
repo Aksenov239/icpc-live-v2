@@ -39,9 +39,15 @@ public class AdvertisementStatus {
         }
     }
 
-    public String advertisementStatus() {
+//    public String advertisementStatus() {
+//        synchronized (advertisementLock) {
+//            return advertisementTimestamp + "\n" + isAdvertisementVisible + "\n" + advertisementValue;
+//        }
+//    }
+
+    public AdvertisementData advertisementStatus() {
         synchronized (advertisementLock) {
-            return advertisementTimestamp + "\n" + isAdvertisementVisible + "\n" + advertisementValue;
+            return new AdvertisementData().initialize();
         }
     }
 

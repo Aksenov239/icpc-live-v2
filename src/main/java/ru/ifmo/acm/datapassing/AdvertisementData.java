@@ -17,4 +17,17 @@ public class AdvertisementData implements CachedData {
         status.initialize(this);
         return this;
     }
+
+//    public AdvertisementData() {
+//    }
+//
+//    public AdvertisementData(long timestamp, boolean isVisible, Advertisement advertisement) {
+//        this.timestamp = timestamp;
+//        this.isVisible = isVisible;
+//        this.advertisement = advertisement;
+//    }
+
+    public String toString() {
+        return isVisible ? "Advertisement \"" + advertisement.getAdvertisement() + "\"" : "No advertisement now";
+    }
 }

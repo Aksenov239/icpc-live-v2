@@ -12,15 +12,14 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.creepingline.CreepingLineView;
+import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.datapassing.DataRequestHandler;
 import ru.ifmo.acm.login.LoginView;
+import ru.ifmo.acm.mainscreen.MainScreenStandingsView;
 import ru.ifmo.acm.mainscreen.MainScreenTeamView;
 import ru.ifmo.acm.mainscreen.MainScreenView;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import ru.ifmo.acm.datapassing.DataLoader;
 
 /**
  *
@@ -60,8 +59,14 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenTeamView.NAME, MainScreenTeamView.class);
 
+        getNavigator().addView(MainScreenStandingsView.NAME, MainScreenStandingsView.class);
+
         menu.addItem("Main screen", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
+        });
+
+        menu.addItem("Standings view", selectedItem -> {
+            getNavigator().navigateTo(MainScreenStandingsView.NAME);
         });
 
         menu.addItem("Team view (MS)", selectedItem -> {
@@ -85,6 +90,9 @@ public class MyUI extends UI {
             }
             if (currentView instanceof MainScreenView) {
                 ((MainScreenView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenStandingsView) {
+                ((MainScreenStandingsView) currentView).refresh();
             }
             if (currentView instanceof MainScreenTeamView) {
                 ((MainScreenTeamView) currentView).refresh();

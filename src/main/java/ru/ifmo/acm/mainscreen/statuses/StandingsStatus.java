@@ -7,7 +7,7 @@ import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 
 public class StandingsStatus {
     private int teamNumber;
-    private long latency;
+    private static long latency;
 
     public StandingsStatus(long latency) {
         this.latency = latency;
@@ -30,8 +30,8 @@ public class StandingsStatus {
         recache();
     }
 
-    public long getTotalTime() {
-        return StandingsWidget.totalTime(standingsType, PCMSEventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
+    public static long getTotalTime(int type) {
+        return StandingsWidget.totalTime(type, PCMSEventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
     }
 
     public void update() {
@@ -39,8 +39,7 @@ public class StandingsStatus {
         synchronized (standingsLock) {
             //System.err.println(PCMSEventsLoader.getInstance().getContestData().getTeamsNumber());
             if (System.currentTimeMillis() > standingsTimestamp +
-                    StandingsWidget.totalTime(standingsType,
-                            PCMSEventsLoader.getInstance().getContestData().getTeamsNumber()) + latency) {
+                    getTotalTime(standingsType)) {
                 isStandingsVisible = false;
                 change = true;
             }
@@ -52,7 +51,7 @@ public class StandingsStatus {
     public StandingsData standingsStatus() {
         synchronized (standingsLock) {
             // return standingsTimestamp + "\n" + isStandingsVisible + "\n" + standingsType;
-            return new StandingsData(standingsTimestamp, isStandingsVisible, standingsType);
+            return new StandingsData().initialize();
         }
     }
 
