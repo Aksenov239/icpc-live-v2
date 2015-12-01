@@ -27,5 +27,9 @@ public abstract class ContestInfo {
 
     public abstract TeamInfo getParticipant(String name);
 
+    public abstract TeamInfo getParticipant(int id);
+
     public abstract TeamInfo[] getStandings();
+
+    public abstract long[] firstTimeSolved();
 }

@@ -35,14 +35,27 @@ public class PCMSContestInfo extends ContestInfo {
         return getParticipant(teamRank);
     }
 
+    public PCMSTeamInfo getParticipant(int id) {
+       for (PCMSTeamInfo team: standings) {
+           if (team.getId() == id) {
+               return team;
+           }
+       }
+        return null;
+    }
+
     Integer getParticipantRankByName(String participantName) {
         return positions.get(participantName);
     }
 
+    public long[] firstTimeSolved() {
+        return timeFirstSolved;
+    }
 
     protected ArrayList<PCMSTeamInfo> standings;
     protected int totalRuns;
     protected int acceptedRuns;
+    protected long[] timeFirstSolved;
 
     //private Map<String, Integer> positions;
     public Map<String, Integer> positions;

@@ -1,5 +1,6 @@
 package ru.ifmo.acm.events.PCMS;
 
+import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class PCMSTeamInfo implements TeamInfo {
         this.rank = 1;
     }
 
-    public PCMSTeamInfo(String id, String name, String shortName, int problemsNumber) {
+    public PCMSTeamInfo(int id, String name, String shortName, int problemsNumber) {
         this(problemsNumber);
         this.id = id;
         this.name = name;
@@ -20,7 +21,7 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     public PCMSTeamInfo(String name, int problemsNumber) {
-        this(null, name, null, problemsNumber);
+        this(-1, name, null, problemsNumber);
     }
 
     public PCMSTeamInfo(PCMSTeamInfo pcmsTeamInfo) {
@@ -42,7 +43,11 @@ public class PCMSTeamInfo implements TeamInfo {
 
     public long getLastSubmitTime(int problemId) {
         int runsNumber = getRunsNumber(problemId);
-        return runsNumber == 0 ? -1 : problemRuns[problemId].get(runsNumber).time;
+        return runsNumber == 0 ? -1 : problemRuns[problemId].get(runsNumber).getTime();
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
@@ -70,7 +75,11 @@ public class PCMSTeamInfo implements TeamInfo {
         return solved;
     }
 
-    public String id;
+    public ArrayList<RunInfo>[] getRuns() {
+        return problemRuns;
+    }
+
+    public int id;
 
     public String name;
     public String shortName;
@@ -80,5 +89,5 @@ public class PCMSTeamInfo implements TeamInfo {
     public int penalty;
 
 
-    protected ArrayList<PCMSRunInfo>[] problemRuns;
+    protected ArrayList<RunInfo>[] problemRuns;
 }

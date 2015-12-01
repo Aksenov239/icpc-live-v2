@@ -7,12 +7,15 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import ru.ifmo.acm.events.EventsLoader;
+import ru.ifmo.acm.events.RunInfo;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -45,14 +48,15 @@ public class PCMSEventsLoader extends EventsLoader {
         String xml = new String(Files.readAllBytes(Paths.get(fn)));
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
         Element participants = doc.child(0);
-        participants.children().forEach(participant -> {
-            String id = participant.attr("id");
+        int id = 0;
+        for (Element participant : participants.children()) {
+            id++;
             String participantName = participant.attr("name");
-            String shortName = id; //participant.attr("short");
+            String shortName = participant.attr("id");
 
             PCMSTeamInfo team = new PCMSTeamInfo(id, participantName, shortName, initial.getProblemsNumber());
             initial.addTeamStandings(team);
-        });
+        }
         return initial;
     }
 
@@ -121,7 +125,7 @@ public class PCMSEventsLoader extends EventsLoader {
         if (isNewRun) {
             boolean isAccepted = text.startsWith("+");
             boolean isJudged = !text.startsWith("?"); // ? for frozen results
-            String result = (isJudged) ? (isAccepted ? "AC" : "REJ") : "FROZEN";
+            String result = (isJudged) ? (isAccepted ? "AC" : "REJ") : "";
             boolean firstToSolve = "first-to-solve".equals(element.attr("class"));
 
             long time = (isAccepted && element instanceof Element)
@@ -160,12 +164,22 @@ public class PCMSEventsLoader extends EventsLoader {
         PCMSContestInfo updateContestInfo = new PCMSContestInfo(problemsNumber);
         long contestTime = parseTime(element.child(1).ownText().split("of")[0]);
         updateContestInfo.setCurrentTime(contestTime);
+        updateContestInfo.timeFirstSolved = new long[problemsNumber];
+        Arrays.fill(updateContestInfo.timeFirstSolved, Long.MAX_VALUE);
         element = element.child(4).child(0);
         for (int i = 1; i < element.childNodeSize(); i++) {
             if ("rankl".equals(element.child(i).child(0).attr("class"))) {
                 PCMSTeamInfo team = parseTeamStandings(element.child(i));
                 //updateContestInfo.standings.add(team);
                 updateContestInfo.addTeamStandings(team);
+                List<RunInfo>[] runs = team.getRuns();
+                for (int j = 0; j < problemsNumber; j++) {
+                    for (RunInfo run : runs[j]) {
+                        if (run.getResult().equals("AC")) {
+                            updateContestInfo.timeFirstSolved[j] = Math.min(run.getTime(), updateContestInfo.timeFirstSolved[j]);
+                        }
+                    }
+                }
             }
         }
         return updateContestInfo;

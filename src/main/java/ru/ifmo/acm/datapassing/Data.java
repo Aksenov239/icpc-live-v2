@@ -15,8 +15,7 @@ public class Data implements CachedData {
     public AdvertisementData advertisementData;
     public StandingsData standingsData;
     public PersonData personData;
-    //TODO write TeamData file
-    //public TeamData teamData;
+    public TeamData teamData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -36,7 +35,8 @@ public class Data implements CachedData {
             advertisementData = (AdvertisementData) cache.get(AdvertisementData.class);
             standingsData = (StandingsData) cache.get(StandingsData.class);
             personData = (PersonData) cache.get(PersonData.class);
-            //teamData = new TeamData().initialize();
+            teamData = (TeamData) cache.get(TeamData.class);
+            //System.err.println(teamData);
         } catch (Exception e) {
             e.printStackTrace();
         }

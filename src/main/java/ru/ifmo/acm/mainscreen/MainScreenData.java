@@ -37,7 +37,9 @@ public class MainScreenData {
 
             standingsStatus = new StandingsStatus(latency);
 
-            teamStatus = new TeamStatus();
+            int sleepTime = Integer.parseInt(properties.getProperty("sleep.time"));
+
+            teamStatus = new TeamStatus(sleepTime);
         } catch (IOException e) {
             e.printStackTrace();
         }

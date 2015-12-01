@@ -4,6 +4,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
+import ru.ifmo.acm.backend.player.widgets.TeamWidget;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -14,10 +15,9 @@ public class MainScreenTeamView extends CustomComponent implements View {
     Label teamStatus;
     Button teamShow;
     Button teamHide;
-    final String[] types = {"screen", "camera", "info"};
+    final String[] types = TeamWidget.types;
     ComboBox type;
     ListSelect teamSelection;
-    String[] teams;
 
     private String getTeamStatus() {
         String status = mainScreenData.teamStatus.infoStatus();
@@ -49,11 +49,18 @@ public class MainScreenTeamView extends CustomComponent implements View {
         teamSelection.setHeight("100%");
         teamSelection.setSizeFull();
         teamSelection.setRows(mainScreenData.teamStatus.teamNames.length);
+        teamSelection.addValueChangeListener(event -> {
+            if (mainScreenData.teamStatus.isVisible() &&
+                    !mainScreenData.teamStatus.setInfoVisible(true, (String) type.getValue(), (String)teamSelection.getValue())) {
+                teamSelection.setValue(mainScreenData.teamStatus.getTeam().getName());
+                Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
+            }
+        });
 
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
             if (!mainScreenData.teamStatus.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
-                Notification.show("You need to hide first", Type.WARNING_MESSAGE);
+                Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
             }
         });
 
