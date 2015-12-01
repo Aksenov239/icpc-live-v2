@@ -12,7 +12,13 @@ public class StandingsData implements CachedData {
         return this;
     }
 
+    public StandingsData(long standingsTimestamp, boolean isStandingsVisible, int standingsType) {
+        this.standingsTimestamp = standingsTimestamp;
+        this.isStandingsVisible = isStandingsVisible;
+        this.standingsType = standingsType;
+    }
+
     public long standingsTimestamp;
     public boolean isStandingsVisible;
-    public long standingsType;
+    public int standingsType;
 }

@@ -13,6 +13,10 @@ public class StandingsStatus {
         this.latency = latency;
     }
 
+    public long getLatency() {
+        return latency;
+    }
+
     public void recache() {
         Data.cache.refresh(StandingsData.class);
     }
@@ -24,6 +28,10 @@ public class StandingsStatus {
             standingsType = type;
         }
         recache();
+    }
+
+    public long getTotalTime() {
+        return StandingsWidget.totalTime(standingsType, PCMSEventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
     }
 
     public void update() {
@@ -41,9 +49,10 @@ public class StandingsStatus {
             recache();
     }
 
-    public String standingsStatus() {
+    public StandingsData standingsStatus() {
         synchronized (standingsLock) {
-            return standingsTimestamp + "\n" + isStandingsVisible + "\n" + standingsType;
+            // return standingsTimestamp + "\n" + isStandingsVisible + "\n" + standingsType;
+            return new StandingsData(standingsTimestamp, isStandingsVisible, standingsType);
         }
     }
 
@@ -75,6 +84,6 @@ public class StandingsStatus {
 
     private long standingsTimestamp;
     private boolean isStandingsVisible;
-    private long standingsType;
+    private int standingsType;
     final private Object standingsLock = new Object();
 }

@@ -5,6 +5,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
+import ru.ifmo.acm.datapassing.StandingsData;
 
 /**
  * Created by Aksenov239 on 15.11.2015.
@@ -55,8 +56,8 @@ public class MainScreenView extends CustomComponent implements View {
     Label standingsStatus;
     final String[] labelStatuses = new String[]{
             "Top 1 page is shown for %d seconds",
-            "Top 2 pages are shown for %d seconds",
-            "All pages are shown for %d seconds",
+            "Top 2 pages are remaining for %d seconds",
+            "All pages are remaining for %d seconds",
             "Standings aren't shown"
     };
     Button standingsShowTop1;
@@ -65,12 +66,13 @@ public class MainScreenView extends CustomComponent implements View {
     Button standingsHide;
 
     public Component getStandingsController() {
-        String status = mainScreenData.standingsStatus.standingsStatus();
-        String[] s = status.split("\n");
-        standingsStatus = new Label(Boolean.parseBoolean(s[1]) ?
-                (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
-                labelStatuses[3]
-        );
+//        String status = mainScreenData.standingsStatus.standingsStatus();
+//        String[] s = status.split("\n");
+//        standingsStatus = new Label(Boolean.parseBoolean(s[1]) ?
+//                (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
+//                labelStatuses[3]
+//        );
+        standingsStatus = new Label(getStandingsStatus());
         standingsStatus.addStyleName("large");
         standingsShowTop1 = createStandingsControllerButton("Show first page", 0, true, 0);
         standingsShowTop2 = createStandingsControllerButton("Show two pages", 1, true, 1);
@@ -455,15 +457,34 @@ public class MainScreenView extends CustomComponent implements View {
         setCompositionRoot(mainPanel);
     }
 
+//    public String getAdvertisementStatus() {
+//        String status = mainScreenData.advertisementStatus.advertisementStatus();
+//        String[] s = status.split("\n");
+//        return s[1].equals("true") ? "Advertisement \"" + s[2] + "\"" : "No advertisement now";
+//    }
+
+
+    public String getStandingsStatus() {
+        StandingsData status = mainScreenData.standingsStatus.standingsStatus();
+        if (status.isStandingsVisible) {
+            long time = status.standingsType == 0
+                    ? System.currentTimeMillis() - status.standingsTimestamp / 1000
+                    : mainScreenData.standingsStatus.getTotalTime() - System.currentTimeMillis();
+            return String.format(labelStatuses[status.standingsType], time);
+        }
+        return labelStatuses[3];
+    }
+
     public void refresh() {
         clockStatus.setValue(getClockStatus());
 
-        String status = mainScreenData.standingsStatus.standingsStatus();
-        String[] s = status.split("\n");
-        standingsStatus.setValue(Boolean.parseBoolean(s[1]) ?
-                        (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
-                        labelStatuses[3]
-        );
+//        String status = mainScreenData.standingsStatus.standingsStatus();
+//        String[] s = status.split("\n");
+//        standingsStatus.setValue(Boolean.parseBoolean(s[1]) ?
+//                        (String.format(labelStatuses[Integer.parseInt(s[2])], (System.currentTimeMillis() - Long.parseLong(s[0])) / 1000)) :
+//                        labelStatuses[3]
+//        );
+        standingsStatus.setValue(getStandingsStatus());
         mainScreenData.standingsStatus.update();
 
         advertisementStatus.setValue(getAdvertisementStatus());
