@@ -468,8 +468,8 @@ public class MainScreenView extends CustomComponent implements View {
         StandingsData status = mainScreenData.standingsStatus.standingsStatus();
         if (status.isStandingsVisible) {
             long time = status.standingsType == 0
-                    ? System.currentTimeMillis() - status.standingsTimestamp / 1000
-                    : mainScreenData.standingsStatus.getTotalTime() - System.currentTimeMillis();
+                    ? (System.currentTimeMillis() - status.standingsTimestamp) / 1000
+                    : (status.standingsTimestamp + mainScreenData.standingsStatus.getTotalTime() - System.currentTimeMillis()) / 1000;
             return String.format(labelStatuses[status.standingsType], time);
         }
         return labelStatuses[3];
