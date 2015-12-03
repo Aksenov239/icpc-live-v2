@@ -16,6 +16,7 @@ public class Data implements CachedData {
     public StandingsData standingsData;
     public PersonData personData;
     public TeamData teamData;
+    public CameraData cameraData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -36,6 +37,7 @@ public class Data implements CachedData {
             standingsData = (StandingsData) cache.get(StandingsData.class);
             personData = (PersonData) cache.get(PersonData.class);
             teamData = (TeamData) cache.get(TeamData.class);
+            cameraData = (CameraData) cache.get(CameraData.class);
             //System.err.println(teamData);
         } catch (Exception e) {
             e.printStackTrace();

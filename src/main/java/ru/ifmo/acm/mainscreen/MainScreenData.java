@@ -40,6 +40,8 @@ public class MainScreenData {
             int sleepTime = Integer.parseInt(properties.getProperty("sleep.time"));
 
             teamStatus = new TeamStatus(sleepTime);
+
+            cameraStatus = new CameraStatus(sleepTime);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,4 +55,5 @@ public class MainScreenData {
     public PersonStatus personStatus;
     public StandingsStatus standingsStatus;
     public TeamStatus teamStatus;
+    public CameraStatus cameraStatus;
 }
