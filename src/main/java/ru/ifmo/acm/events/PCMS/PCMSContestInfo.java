@@ -1,6 +1,7 @@
 package ru.ifmo.acm.events.PCMS;
 
 import ru.ifmo.acm.events.ContestInfo;
+import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.ArrayList;
@@ -20,6 +21,30 @@ public class PCMSContestInfo extends ContestInfo {
         currentTime = 0;
     }
 
+    public void fillTimeFirstSolved() {
+        standings.forEach(teamInfo -> {
+            ArrayList<RunInfo>[] runs = teamInfo.getRuns();
+            for (int i = 0; i < runs.length; i++) {
+                for (RunInfo run : runs[i]) {
+                    if (run.isAccepted()) {
+                        timeFirstSolved[i] = Math.min(timeFirstSolved[i], run.getTime());
+                    }
+                }
+            }
+        });
+    }
+
+    public void calculateRanks() {
+        standings.get(0).rank = 1;
+        for (int i = 1; i < standings.size(); i++) {
+            if (TeamInfo.comparator.compare(standings.get(i), standings.get(i - 1)) == 0) {
+                standings.get(i).rank = standings.get(i - 1).rank;
+            } else {
+                standings.get(i).rank = i + 1;
+            }
+        }
+    }
+
     void addTeamStandings(PCMSTeamInfo teamInfo) {
         standings.add(teamInfo);
         positions.put(teamInfo.name, standings.size() - 1);
@@ -36,11 +61,11 @@ public class PCMSContestInfo extends ContestInfo {
     }
 
     public PCMSTeamInfo getParticipant(int id) {
-       for (PCMSTeamInfo team: standings) {
-           if (team.getId() == id) {
-               return team;
-           }
-       }
+        for (PCMSTeamInfo team: standings) {
+            if (team.getId() == id) {
+                return team;
+            }
+        }
         return null;
     }
 
@@ -52,6 +77,10 @@ public class PCMSContestInfo extends ContestInfo {
         return timeFirstSolved;
     }
 
+    public long getTotalTime() {
+        return totalTime;
+    }
+
     protected ArrayList<PCMSTeamInfo> standings;
     protected int totalRuns;
     protected int acceptedRuns;
@@ -59,4 +88,5 @@ public class PCMSContestInfo extends ContestInfo {
 
     //private Map<String, Integer> positions;
     public Map<String, Integer> positions;
+    public boolean frozen;
 }

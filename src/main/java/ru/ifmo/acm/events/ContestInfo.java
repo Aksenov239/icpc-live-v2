@@ -4,6 +4,7 @@ public abstract class ContestInfo {
     protected int teamNumber;
     protected final int problemNumber;
     protected long currentTime;
+    protected final long totalTime = 5 * 60 * 60; // TODO
 
     protected ContestInfo(int problemNumber) {
         this.problemNumber = problemNumber;

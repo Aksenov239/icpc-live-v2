@@ -5,6 +5,7 @@ import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class PCMSTeamInfo implements TeamInfo {
     public PCMSTeamInfo(int problemsNumber) {
@@ -35,6 +36,10 @@ public class PCMSTeamInfo implements TeamInfo {
         if (run != null) {
             problemRuns[problemId].add(run);
         }
+    }
+
+    public void addRuns(ArrayList<PCMSRunInfo> runs, int problemId) {
+        problemRuns[problemId].addAll(runs);
     }
 
     public int getRunsNumber(int problemId) {
@@ -87,7 +92,6 @@ public class PCMSTeamInfo implements TeamInfo {
     public int rank;
     public int solved;
     public int penalty;
-
 
     protected ArrayList<RunInfo>[] problemRuns;
 }
