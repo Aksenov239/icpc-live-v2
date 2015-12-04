@@ -15,6 +15,7 @@ import ru.ifmo.acm.creepingline.CreepingLineView;
 import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.datapassing.DataRequestHandler;
 import ru.ifmo.acm.login.LoginView;
+import ru.ifmo.acm.mainscreen.MainScreenCameraView;
 import ru.ifmo.acm.mainscreen.MainScreenStandingsView;
 import ru.ifmo.acm.mainscreen.MainScreenTeamView;
 import ru.ifmo.acm.mainscreen.MainScreenView;
@@ -61,6 +62,8 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenStandingsView.NAME, MainScreenStandingsView.class);
 
+        getNavigator().addView(MainScreenCameraView.NAME, MainScreenCameraView.class);
+
         menu.addItem("Main screen", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
         });
@@ -71,6 +74,10 @@ public class MyUI extends UI {
 
         menu.addItem("Team view (MS)", selectedItem -> {
             getNavigator().navigateTo(MainScreenTeamView.NAME);
+        });
+
+        menu.addItem("Cameras (MS)", selectedItem -> {
+           getNavigator().navigateTo(MainScreenCameraView.NAME);
         });
 
         menu.addItem("Creeping Line", selectedItem -> {
@@ -97,6 +104,10 @@ public class MyUI extends UI {
             if (currentView instanceof MainScreenTeamView) {
                 ((MainScreenTeamView) currentView).refresh();
             }
+            if (currentView instanceof MainScreenCameraView) {
+                ((MainScreenCameraView) currentView).refresh();
+            }
+
             DataLoader.iterateFrontend();
         });
 

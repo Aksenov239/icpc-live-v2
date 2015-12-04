@@ -25,12 +25,19 @@ public class DataLoader {
     }
 
     private static ServerSocket serverSocket;
-    private static List<PrintWriter> openSockets;
+    private static List<PrintWriter> openPW;
+    private static List<BufferedReader> openBR;
     private static int soTimeout;
 
-    public static synchronized void free(){
-        for (PrintWriter pw :openSockets) {
+    public static synchronized void free() {
+        for (PrintWriter pw : openPW) {
             pw.close();
+        }
+        for (BufferedReader br : openBR) {
+            try {
+                br.close();
+            } catch (IOException e) {
+            }
         }
         if (serverSocket != null) {
             try {
@@ -59,18 +66,40 @@ public class DataLoader {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                openSockets = new ArrayList<>();
+                openPW = new ArrayList<>();
+                openBR = new ArrayList<>();
                 soTimeout = Integer.parseInt(properties.getProperty("data.sotimeout", "200"));
             }
             try {
                 serverSocket.setSoTimeout(soTimeout);
                 Socket newSocket = serverSocket.accept();
-                openSockets.add(new PrintWriter(newSocket.getOutputStream()));
+//                PrintWriter pw = new PrintWriter(newSocket.getOutputStream());
+//                pw.println(getDataFrontend());
+                openPW.add(new PrintWriter(newSocket.getOutputStream()));
+                openBR.add(new BufferedReader(new InputStreamReader(newSocket.getInputStream())));
                 System.err.println("Accepted socket");
             } catch (Exception e) {
             }
-            List<PrintWriter> newOpenSockets = new ArrayList<>();
-            for (PrintWriter pw : openSockets) {
+            List<PrintWriter> newOpenPW = new ArrayList<>();
+            List<BufferedReader> newOpenBR = new ArrayList<>();
+            for (int i = 0; i < openPW.size(); i++) {
+                PrintWriter pw = openPW.get(i);
+                BufferedReader br = openBR.get(i);
+                boolean send = false;
+                //System.err.println("Start waiting");
+                try {
+                    while (br.ready()) {
+                        br.readLine();
+                        //System.err.println("Ready to send");
+                        send = true;
+                    }
+                } catch (IOException e) {
+                    System.err.println("Client socket is closed");
+                    continue;
+                }
+                //System.err.println("I'm fucking ready!");
+                if (!send)
+                    continue;
                 String data = getDataFrontend();
                 System.err.println(data);
                 pw.println(getDataFrontend());
@@ -79,9 +108,11 @@ public class DataLoader {
                     System.err.println("Client socket is closed");
                     continue;
                 }
-                newOpenSockets.add(pw);
+                newOpenPW.add(pw);
+                newOpenBR.add(br);
             }
-            openSockets = newOpenSockets;
+            openPW = newOpenPW;
+            openBR = newOpenBR;
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -107,13 +138,20 @@ public class DataLoader {
             while (true) {
                 try (Socket socket = new Socket(host, port)) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter writer = new PrintWriter(socket.getOutputStream());
                     while (!socket.isClosed()) {
+                        writer.println("ready");
+                        writer.flush();
 //                    System.err.println("Trying to read");
                         String line = reader.readLine();
 //                    System.out.println(line);
                         Data newData = gson.fromJson(line, Data.class);
                         if (newData != null)
                             data.set(newData);
+                        if (writer.checkError()) {
+                            System.err.println("Socket closed");
+                            break;
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
