@@ -109,7 +109,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     public void refresh() {
         clockStatus.setValue(getClockStatus());
         standingsStatus.setValue(getStandingsStatus());
-        mainScreenData.standingsStatus.update();
+        mainScreenData.update();
     }
 
     public MainScreenStandingsView() {

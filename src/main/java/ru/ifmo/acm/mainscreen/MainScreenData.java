@@ -32,7 +32,7 @@ public class MainScreenData {
             advertisementStatus = new AdvertisementStatus(backupAdvertisements, timeAdvertisement);
 
             String backupPersons = properties.getProperty("backup.persons");
-            long timePerson = Long.parseLong(properties.getProperty("person.time") + latency);
+            long timePerson = Long.parseLong(properties.getProperty("person.time")) + latency;
             personStatus = new PersonStatus(backupPersons, timePerson);
 
             standingsStatus = new StandingsStatus(latency);
@@ -46,6 +46,12 @@ public class MainScreenData {
             e.printStackTrace();
         }
         clockStatus = new ClockStatus();
+    }
+
+    public void update() {
+      advertisementStatus.update();
+      personStatus.update();
+      standingsStatus.update();
     }
 
     private static MainScreenData mainScreenData;

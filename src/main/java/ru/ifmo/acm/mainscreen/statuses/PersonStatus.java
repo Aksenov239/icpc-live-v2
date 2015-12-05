@@ -32,6 +32,7 @@ public class PersonStatus {
 
     public void update() {
         boolean change = false;
+//        System.err.println(labelsTimestamps[0] + " " + timeToShow + " " + System.currentTimeMillis());
         for (int id = 0; id < 2; id++) {
             synchronized (labelsLock[id]) {
                 if (labelsTimestamps[id] + timeToShow < System.currentTimeMillis()) {

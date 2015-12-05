@@ -104,7 +104,7 @@ public class DataLoader {
                 }
                 if (send) {
                     String data = getDataFrontend();
-                    System.err.println(data);
+//                    System.err.println(data);
                     pw.println(getDataFrontend());
                     pw.flush();
                     ntries = 0;
