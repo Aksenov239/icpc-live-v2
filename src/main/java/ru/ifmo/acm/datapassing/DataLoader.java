@@ -155,16 +155,18 @@ public class DataLoader {
                     while (!socket.isClosed()) {
                         writer.println("ready");
                         writer.flush();
+                        if (writer.checkError()) {
+                            System.err.println("Socket closed");
+                            break;
+                        }
+
 //                    System.err.println("Trying to read");
                         String line = reader.readLine();
 //                    System.out.println(line);
                         Data newData = gson.fromJson(line, Data.class);
                         if (newData != null)
                             data.set(newData);
-                        if (writer.checkError()) {
-                            System.err.println("Socket closed");
-                            break;
-                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
