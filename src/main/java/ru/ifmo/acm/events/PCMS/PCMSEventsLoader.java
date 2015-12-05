@@ -7,7 +7,7 @@ import org.jsoup.parser.Parser;
 import ru.ifmo.acm.events.EventsLoader;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.net.URL;
 
 public class PCMSEventsLoader extends EventsLoader {
 
@@ -61,7 +62,9 @@ public class PCMSEventsLoader extends EventsLoader {
 //                .collect(Collectors.joining());
 //        Document doc = Jsoup.parse(html, url);
 //        parseAndUpdateStandings(doc.body());
-        String xml = new BufferedReader(new FileReader(url))
+
+        //String xml = new BufferedReader(new FileReader(url))
+        String xml = new BufferedReader(new InputStreamReader((new URL(url)).openStream()))
                 .lines()
                 .collect(Collectors.joining());
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
@@ -75,7 +78,7 @@ public class PCMSEventsLoader extends EventsLoader {
             try {
                 while (true) {
                     updateStatements();
-                    sleep(1000);
+                    sleep(5000);
                 }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -99,11 +102,12 @@ public class PCMSEventsLoader extends EventsLoader {
 
         long previousStartTime = contestInfo.get().getStartTime();
         long currentTime = Long.parseLong(element.attr("time"));
+        //System.err.println("Time now " + currentTime);
         if (previousStartTime == 0) {
             // if (previousStartTime < System.currentTimeMillis() - currentTime)
             updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);
         } else {
-            updatedContestInfo.setStartTime(Long.parseLong(element.attr("time")));
+            updatedContestInfo.setStartTime(previousStartTime);
         }
         updatedContestInfo.frozen = "yes".equals(element.attr("frozen"));
 

@@ -33,6 +33,7 @@ public class BackUp<T> {
                 }
             }
         });
+        schedule.start();
         ContextListener.addThread(schedule);
 
 //        //TODO Add this thread to contextListener queue

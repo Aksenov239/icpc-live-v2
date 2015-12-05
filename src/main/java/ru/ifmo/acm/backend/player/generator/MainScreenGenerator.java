@@ -28,9 +28,9 @@ public class MainScreenGenerator extends ScreenGenerator {
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
         widgets = new Widget[7];
-        //widgets[0] = new GreenScreenWidget();
-        //widgets[0].setVisible(true);
-        widgets[0] = new CameraVideoWidget(updateWait, width, height, Integer.parseInt(properties.getProperty("sleep.time")));
+        widgets[0] = new GreenScreenWidget();
+        widgets[0].setVisible(true);
+        //widgets[0] = new CameraVideoWidget(updateWait, width, height, Integer.parseInt(properties.getProperty("sleep.time")));
         widgets[1] = new TeamInfoWidget(
                 updateWait,
                 width,

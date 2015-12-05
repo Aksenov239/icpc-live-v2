@@ -28,7 +28,7 @@ public class MainScreenData {
 
             long latency = Long.parseLong(properties.getProperty("latency.time"));
 
-            long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time") + latency);
+            long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time")) + latency;
             advertisementStatus = new AdvertisementStatus(backupAdvertisements, timeAdvertisement);
 
             String backupPersons = properties.getProperty("backup.persons");

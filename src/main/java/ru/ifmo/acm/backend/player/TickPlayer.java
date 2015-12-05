@@ -96,7 +96,7 @@ public class TickPlayer {
                     public void run() {
                         imagePane.repaint();
                     }
-                }, 0L, 25);// : 40);//40L);
+                }, 0L, 40);//40L);
 
 //
     }
