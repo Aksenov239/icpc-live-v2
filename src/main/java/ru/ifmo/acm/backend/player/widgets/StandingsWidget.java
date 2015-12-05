@@ -61,7 +61,7 @@ public class StandingsWidget extends Widget {
     public void setState(long type) {
         switch ((int) type) {
             case 0:
-                LENGTH = 12;
+                LENGTH = Math.min(12, contestData.getTeamsNumber());
                 start = 0;
                 timer = -Integer.MAX_VALUE;
                 break;
@@ -69,7 +69,7 @@ public class StandingsWidget extends Widget {
                 TOP_PAGE_STANDING_TIME = 10000;
                 STANDING_TIME = 10000;
                 PERIOD = STANDING_TIME + MOVING_TIME;
-                LENGTH = 24;
+                LENGTH = Math.min(24, contestData.getTeamsNumber());
                 start = 0;
                 timer = 0;
                 break;

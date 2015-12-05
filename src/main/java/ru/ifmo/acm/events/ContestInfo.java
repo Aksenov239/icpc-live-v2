@@ -3,8 +3,8 @@ package ru.ifmo.acm.events;
 public abstract class ContestInfo {
     protected int teamNumber;
     protected final int problemNumber;
-    protected long currentTime;
-    protected final long totalTime = 5 * 60 * 60; // TODO
+    protected long startTime = 0;
+    protected final long totalTime = 0;
 
     protected ContestInfo(int problemNumber) {
         this.problemNumber = problemNumber;
@@ -18,12 +18,16 @@ public abstract class ContestInfo {
         return problemNumber;
     }
 
-    public void setCurrentTime(long time) {
-        this.currentTime = time;
+    public long getStartTime(){
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 
     public long getCurrentTime() {
-        return currentTime;
+        return startTime == 0 ? 0 : Math.min(System.currentTimeMillis() - startTime, 5 * 60 * 60 * 100);
     }
 
     public abstract TeamInfo getParticipant(String name);

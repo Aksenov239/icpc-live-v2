@@ -88,7 +88,7 @@ public class CreepingLineWidget extends Widget {
             }
         }
         for (Message message : messagesOnScreen) {
-            message.position -= V * dt;
+            message.position -= 10;//V * dt;
             if (message.position + message.width >= 0) {
                 g.drawString(message.message, (float) message.position, height - (int) (9 * TickPlayer.scale));
             }

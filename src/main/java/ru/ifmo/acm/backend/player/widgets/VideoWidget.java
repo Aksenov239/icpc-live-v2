@@ -24,7 +24,7 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
     protected String URL;
 
     public VideoWidget(int x, int y, int width, int height, int sleepTime) {
-        this.URL = "";
+        this.URL = null;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -33,11 +33,18 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
         image = player.getImage();
         this.sleepTime = sleepTime;
         inChange = new AtomicBoolean();
-        ready = new AtomicBoolean();
+        ready = new AtomicBoolean(true);
         stopped = new AtomicBoolean();
     }
 
     public void change(final String url) {
+        if (url == null) {
+            if (!stopped.get()) {
+                URL = null;
+                stop();
+            }
+            return;
+        }
         new Thread() {
             public void run() {
                 ready.set(false);
@@ -65,6 +72,7 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
         if (player != null && !stopped.get())
             player.stop();
         stopped.set(true);
+        URL = null;
     }
 
     public boolean readyToShow() {

@@ -46,7 +46,7 @@ public class PCMSEventsLoader extends EventsLoader {
         for (Element participant : participants.children()) {
             id++;
             String participantName = participant.attr("name");
-            String shortName = participant.attr("id");
+            String shortName = participant.attr("shortname");
 
             PCMSTeamInfo team = new PCMSTeamInfo(id, participantName, shortName, initial.getProblemsNumber());
             initial.addTeamStandings(team);
@@ -96,7 +96,15 @@ public class PCMSEventsLoader extends EventsLoader {
     private PCMSContestInfo parseContestInfo(Element element) {
         int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
         PCMSContestInfo updatedContestInfo = new PCMSContestInfo(problemsNumber);
-        updatedContestInfo.setCurrentTime(Long.parseLong(element.attr("time")));
+
+        long previousStartTime = contestInfo.get().getStartTime();
+        long currentTime = Long.parseLong(element.attr("time"));
+        if (previousStartTime == 0) {
+            // if (previousStartTime < System.currentTimeMillis() - currentTime)
+            updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);
+        } else {
+            updatedContestInfo.setStartTime(Long.parseLong(element.attr("time")));
+        }
         updatedContestInfo.frozen = "yes".equals(element.attr("frozen"));
 
         element.children().forEach(session -> {
@@ -141,7 +149,7 @@ public class PCMSEventsLoader extends EventsLoader {
     private PCMSRunInfo parseRunInfo(Element element, int problemId) {
         long time = Long.parseLong(element.attr("time"));
         boolean isFrozen = time >= contestInfo.get().getTotalTime();
-        String result = isFrozen ? "Frozen" : ("yes".equals(element.attr("accepted")) ? "AC" : "REJ");
+        String result = isFrozen ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "REJ");
 
         return new PCMSRunInfo(!isFrozen, result, problemId, time);
     }

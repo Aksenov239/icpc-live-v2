@@ -27,6 +27,7 @@ public class DataLoader {
     private static ServerSocket serverSocket;
     private static List<PrintWriter> openPW;
     private static List<BufferedReader> openBR;
+    private static List<Integer> tries;
     private static int soTimeout;
 
     public static synchronized void free() {
@@ -68,6 +69,7 @@ public class DataLoader {
                 }
                 openPW = new ArrayList<>();
                 openBR = new ArrayList<>();
+                tries = new ArrayList<>();
                 soTimeout = Integer.parseInt(properties.getProperty("data.sotimeout", "200"));
             }
             try {
@@ -77,14 +79,17 @@ public class DataLoader {
 //                pw.println(getDataFrontend());
                 openPW.add(new PrintWriter(newSocket.getOutputStream()));
                 openBR.add(new BufferedReader(new InputStreamReader(newSocket.getInputStream())));
+                tries.add(0);
                 System.err.println("Accepted socket");
             } catch (Exception e) {
             }
             List<PrintWriter> newOpenPW = new ArrayList<>();
             List<BufferedReader> newOpenBR = new ArrayList<>();
+            List<Integer> newTries = new ArrayList<>();
             for (int i = 0; i < openPW.size(); i++) {
                 PrintWriter pw = openPW.get(i);
                 BufferedReader br = openBR.get(i);
+                int ntries = tries.get(i);
                 boolean send = false;
                 //System.err.println("Start waiting");
                 try {
@@ -97,22 +102,30 @@ public class DataLoader {
                     System.err.println("Client socket is closed");
                     continue;
                 }
-                //System.err.println("I'm fucking ready!");
-                if (!send)
-                    continue;
-                String data = getDataFrontend();
-                System.err.println(data);
-                pw.println(getDataFrontend());
-                pw.flush();
-                if (pw.checkError()) {
-                    System.err.println("Client socket is closed");
-                    continue;
+                if (send) {
+                    String data = getDataFrontend();
+                    System.err.println(data);
+                    pw.println(getDataFrontend());
+                    pw.flush();
+                    ntries = 0;
+                    if (pw.checkError()) {
+                        System.err.println("Client socket is closed");
+                        continue;
+                    }
+                } else {
+                    ntries++;
+                    if (ntries == 5) {
+                        System.err.println("Client socket is closed");
+                        continue;
+                    }
                 }
                 newOpenPW.add(pw);
                 newOpenBR.add(br);
+                newTries.add(ntries);
             }
             openPW = newOpenPW;
             openBR = newOpenBR;
+            tries = newTries;
         } catch (Throwable e) {
             e.printStackTrace();
         }
