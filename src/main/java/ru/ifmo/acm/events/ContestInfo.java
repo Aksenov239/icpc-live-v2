@@ -27,7 +27,7 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
-        return startTime == 0 ? 0 : Math.min(System.currentTimeMillis() - startTime, 5 * 60 * 60 * 100);
+        return startTime == 0 ? 0 : System.currentTimeMillis() - startTime;
     }
 
     public abstract TeamInfo getParticipant(String name);
