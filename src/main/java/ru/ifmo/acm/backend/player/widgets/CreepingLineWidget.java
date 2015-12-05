@@ -5,6 +5,8 @@ import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -36,7 +38,13 @@ public class CreepingLineWidget extends Widget {
                 return;
             }
             for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
-                String text = message.getMessage();
+                byte[] bytes = message.getMessage().getBytes();
+                String text = null;
+                try {
+                    text = new String(bytes, "Windows-1251");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 if (!inQueue.contains(text)) {
                     inQueue.add(text);
                     messagesQueue.add(text);
@@ -88,7 +96,7 @@ public class CreepingLineWidget extends Widget {
             }
         }
         for (Message message : messagesOnScreen) {
-            message.position -= 10;//V * dt;
+            message.position -= 3;//10;//V * dt;
             if (message.position + message.width >= 0) {
                 g.drawString(message.message, (float) message.position, height - (int) (9 * TickPlayer.scale));
             }

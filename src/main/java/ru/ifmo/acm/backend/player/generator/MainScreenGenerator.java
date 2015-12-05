@@ -10,8 +10,8 @@ import ru.ifmo.acm.backend.player.TickPlayer;
  * Created by aksenov on 14.04.2015.
  */
 public class MainScreenGenerator extends ScreenGenerator {
-    private static final int width = 1920;
-    private static final int height = 1080;
+    private static final int width = 1920 / 2;
+    private static final int height = 1080 / 2;
 
     public MainScreenGenerator() throws IOException {
         super(width, height);

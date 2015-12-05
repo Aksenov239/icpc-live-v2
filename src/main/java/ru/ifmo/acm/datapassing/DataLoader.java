@@ -2,12 +2,10 @@ package ru.ifmo.acm.datapassing;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -77,8 +75,8 @@ public class DataLoader {
                 Socket newSocket = serverSocket.accept();
 //                PrintWriter pw = new PrintWriter(newSocket.getOutputStream());
 //                pw.println(getDataFrontend());
-                openPW.add(new PrintWriter(newSocket.getOutputStream()));
-                openBR.add(new BufferedReader(new InputStreamReader(newSocket.getInputStream())));
+                openPW.add(new PrintWriter(new OutputStreamWriter(newSocket.getOutputStream(), StandardCharsets.UTF_8)));
+                openBR.add(new BufferedReader(new InputStreamReader(newSocket.getInputStream(), StandardCharsets.UTF_8)));
                 tries.add(0);
                 System.err.println("Accepted socket");
             } catch (Exception e) {
@@ -150,8 +148,8 @@ public class DataLoader {
         new Thread(() -> {
             while (true) {
                 try (Socket socket = new Socket(host, port)) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
                     while (!socket.isClosed()) {
                         writer.println("ready");
                         writer.flush();
