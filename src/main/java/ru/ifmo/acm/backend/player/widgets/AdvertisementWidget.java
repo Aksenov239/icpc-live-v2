@@ -31,12 +31,13 @@ public class AdvertisementWidget extends Widget {
             //System.err.println(data.advertisementData.isVisible);
             if (lastVisibleChange + duration < System.currentTimeMillis()) {
                 data.advertisementData.isVisible = false;
-            }
-            if (!widget.isVisible() && data.advertisementData.isVisible) {
+            } 
+            if (widget.isVisible() ^ data.advertisementData.isVisible) {
                 lastVisibleChange = System.currentTimeMillis();
             }
             widget.setVisible(data.advertisementData.isVisible);
             widget.setCaption(data.advertisementData.advertisement.getAdvertisement(), null);
+            
             lastUpdate = System.currentTimeMillis();
         }
     }
