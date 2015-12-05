@@ -222,66 +222,6 @@
     <party id = 'U320' shortname="TUIT Urgench 1" name = 'TUIT Urgench Branch 1 (Ibadullayev, Iskandarov, Sultonov)' />
 
 
-<party id = "G126" name = "Qafqaz University 1 (Valiyev, Ahmadov, Hajiyev)"/>
-<party id = "G137" name = "Qafqaz University 2 (Mammadov, Sarayev, Allahverdiyev)"/>
-<party id = "G151" name = "Qafqaz University 3 (Kerimov, Huseynov, Hajili)"/>
-<party id = "G166" name = "Baku Branch of Moscow State University 1 (Yahyayev, Veliyev, Kazimi)"/>
-<party id = "G131" name = "Baku State University 6 (Talibov, Mammadov, Badalov)"/>
-<party id = "G140" name = "Baku State University 1 (Gasimov, Garibzade, Khidirov)"/>
-<party id = "G181" name = "Azerbaijan State University of Oil and Industry 2 (Musabeyli, Mammadov, Hesenov)"/>
-<party id = "G205" name = "ADA University 2 (Mustafali, Isgandarli, Hasanov)"/>
-<party id = "G112" name = "ADA University 3 (Hasanov, Fahradov, Suleymanov)"/>
-<party id = "G133" name = "ADA University 10 (Huseynzade, Farzaliyev, Sadigov)"/>
-<party id = "G094" name = "Baku Higher Oil School 1 (Huseynli, Bakhshili, Alikhanov)"/>
-<party id = "G118" name = "Azerbaijan University 2 (Kerimli, Mammadova, Usubov)"/>
-<party id = "G043" name = "Khazar University 1 (Aziz, Atakishiyev, Mammadov)"/>
-<party id = "G051" name = "Yerevan State University 1 (Sahakyan, Mamikonyan, Harutyunyan)"/>
-<party id = "G208" name = "Yerevan State University 2 (Hambardzumyan, Karagulyan, Galstyan)"/>
-<party id = "G113" name = "Yerevan State University 4 (Topchyan, Hindoyan, Tamazyan)"/>
-<party id = "G039" name = "American University of Armenia 1 (Vahagn Gevorgyan, Sparik Hayrapetyan, Levon Stepanyan)"/>
-<party id = "G202" name = "American University of Armenia 2 (Sergey Hovakimyan, Sipan Muradyan, Arman Zakaryan)"/>
-<party id = "G127" name = "Russian-Armenian (Slavonick) State University 1 (Hakobyan, Arakelyan, Grigoryan)"/>
-<party id = "G070" name = "Russian-Armenian (Slavonick) State University 2 (Oganesyan, Ioanisyan, Lalayan)"/>
-<party id = "G091" name = "Russian-Armenian (Slavonick) State University 3 (Margaryan, Charchyan, Karabakhtsyan)"/>
-<party id = "G169" name = "SEUA 2 (Manukyan, Siradeghyan, Hovsepyan)"/>
-<party id = "G130" name = "SEUA 1 (Manukyan, Andriasyan, Adamyan)"/>
-<party id = "G177" name = "Tbilisi Freeuni 5: Sakhelashvili Mamuka, Pataraia Gigi,Abuladze Tornike"/>
-<party id = "G075" name = "Tbilisi Freeuni 1: Tskhovrebov Alexander, Nishnianidze Giorgi, Azizyan Alexandr"/>
-<party id = "G086" name = "Tbilisi Freeuni 3: Magaltadze Gela, Donadze Nika, Khaduri Irakli"/>
-<party id = "G190" name = "Tbilisi Freeuni 7: Popkhadze Irakli, Silagadze Shota, Margvelashvili Irakli"/>
-<party id = "G012" name = "Tbilisi Freeuni 8: Tabatadze Vakhtang, Bezhashvili Mariam,Sakevarashvili Archil"/>
-<party id = "G198" name = "Tbilisi SANGU 1: Barnabishvili Sandro, Tsotsoria Beqa, Khundzakishvili Giorgi"/>
-<party id = "G099" name = "Tbilisi SANGU 2: Meladze Tsotne, Chubinidze Giorgi, Kavtaradze Guga-Giorgi"/>
-<party id = "G083" name = "Tbilisi SU 5: Modrekiladze Beqa, Chelidze Bichiko, Chakhvadze Tsotne"/>
-<party id = "G047" name = "Tbilisi SU 2: Latsabidze Giorgi, Dzamashvili Giorgi, Shonia Saba"/>
-<party id = "G106" name = "Tbilisi SU 7: Bukuri Nino, Babunashvili Guja, Gachechiladze Giorgi"/>
-<party id = "G019" name = "Tbilisi SU 3: Kapanadze Ilia, Chargeishvili Mariam, Gobronidze Ioseb"/>
-<party id = "G123" name = "Tbilisi SU Geo-French: Rekhviashvili Luka, Gozalishvili Anzor, Sultanishvili Gela"/>
-<party id = "G135" name = "Georgian TU 1: Khutsihvili Lida, Varamashvili Davit, Sirbiladze Davit"/>
-<party id = "G050" name = "Kutaisi ATSU 1: Khantadze Aleko, Butskhrikidze Irakli, Gogsadze Leri"/>
-<party id = "G095" name = "Batumi SU 1: Meskhidze Zurab, Gorgodze Giorgi, Pasieshvili Demid"/>
-<party id = "G122" name = "Tbilisi IBSU_1: Avanashvili Shalva, Tskhvediani Besiki, Amashukeli Lasha"/>
-<party id = "G022" name = "Tbilisi IBSU_2: Mamaiashvili Natia, Morchiladze Anri, Merabov Alexander"/>
-<party id = "G090" name = "Tbilisi IBSU_4: Tsitsagi Ana, Bagdavadze Tamaz, Tchokhonelidze Mariam"/>
-<party id = "G058" name = "Tbilisi CU 1: Kankava Nodar, Margvelashvili Rolandi, Botsvadze Giorgi"/>
-<party id = "G155" name = "Tbilisi UG_1: Bakhtadze Alexsi, Zakashvili Giorgi, Janjgava Giorgi"/>
-<party id = "G015" name = "* Baku State University 5 (Aghabayli, Nabiyev, Gadirli)"/>
-<party id = "G098" name = "* Nakhchivan State University (Eliyeva, Rzayev, Rzazade)"/>
-<party id = "G079" name = "* AUA 10 (Arbi Zadoori, Martin Marutyan, Erik Harutyunyan)"/>
-<party id = "G063" name = "* Yerevan RAU Veterans : Piliposyan Eduard, Gevorgyan Grigor"/>
-<party id = "G055" name = "* Tbilisi Freeuni Super: Saghinadze Giorgi, Mandzulashvili Tornike, Tsimakuridze Nika  "/>
-<party id = "G154" name = "* Tbilisi IBSU_3: Miruashvili Sandro, Batiashvili Giorgi, Gochitashvili Ilia"/>
-<party id = "G066" name = "* Tbilisi UG_2: Kusiani Levan, Archaia Saba, Kvikvinia Roma"/>
-<party id = "G120" name = "* Batumi SU 2: Khalvashi Giorgi, Khozrevanidze Gocha, Beria Giorgi"/>
-<party id = "G062" name = "* Tbilisi SU 8: Mtsituri Vasiko, Bregvadze Tengiz, Kloyan Manvel"/>
-<party id = "G078" name = "* Georgian TU 2: Milorava Konstantine, Tutberidze Giorgi, Bojgua Mary"/>
-<party id = "G067" name = "* Sch_Tbilisi Demireli_Mziuri: Skhirtladze Giorgi, Chkhaidze Nugzar, Kldiashvili Giorgi"/>
-<party id = "G071" name = "* Sch_Kutaisi #1: Bukhnikashvili Lasha, Tsutskhashvili Bakur, Baghdavadze Giorgi"/>
-<party id = "G082" name = "* Sch_Tbilisi Mziuri_Komarovi_Vekua: Losaberidze Nika, Tavdgiridze Saba, Bejanishvili David"/>
-<party id = "G186" name = "* Sch_Tbilisi Mziuri_G1: Khvedelidze Dato, Salia Nika, Kharabadze Aleksandre"/>
-<party id = "G035" name = "* Sch_Tbilisi Komarovi 1: Gamezardashvili Vano, Khokhiashvili Sandro, Gamezardashvili Baqar"/>
-<party id = "G142" name = "* Sch_Tbilisi Mziuri_G2: Kapanadze Ioane, Skhirtladze Aleksandre, Borashvili Leqso"/>
-
 <party id = "G126" shortname="Qafqaz U 1" name = "Qafqaz University 1 (Valiyev, Ahmadov, Hajiyev)"/>
 <party id = "G137" shortname="Qafqaz U 2" name = "Qafqaz University 2 (Mammadov, Sarayev, Allahverdiyev)"/>
 <party id = "G151" shortname="Qafqaz U 1" name = "Qafqaz University 3 (Kerimov, Huseynov, Hajili)"/>
