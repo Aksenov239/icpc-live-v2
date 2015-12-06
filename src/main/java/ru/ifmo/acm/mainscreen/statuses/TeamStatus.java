@@ -20,7 +20,7 @@ public class TeamStatus {
         TeamInfo[] teamInfos = info.getStandings();
         teamNames = new String[teamInfos.length];
         for (int i = 0; i < teamNames.length; i++) {
-            teamNames[i] = teamInfos[i].getName();
+            teamNames[i] = teamInfos[i].getShortName();
         }
         Arrays.sort(teamNames);
         this.changeTime = changeTime;
@@ -31,7 +31,7 @@ public class TeamStatus {
     }
 
     public synchronized boolean setInfoVisible(boolean visible, String type, String teamName) {
-        if (infoTeam != null && (infoTeam.getName().equals(teamName) || (infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
+        if (infoTeam != null && (infoTeam.getShortName().equals(teamName) || (infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
             return false;
         }
         infoTimestamp = System.currentTimeMillis();

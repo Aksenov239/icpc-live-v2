@@ -40,7 +40,7 @@ public class TeamInfoWidget extends TeamWidget {
                     //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                     int hall = data.teamData.teamId / 100;
                     int place = data.teamData.teamId % 100;
-                    change(String.format(urlTemplates.get(data.teamData.infoType), hall, place));
+                    //change(String.format(urlTemplates.get(data.teamData.infoType), hall, place));
                     teamId = data.teamData.teamId;
                 }
             }

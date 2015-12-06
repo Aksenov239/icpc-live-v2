@@ -7,15 +7,15 @@ import org.jsoup.parser.Parser;
 import ru.ifmo.acm.events.EventsLoader;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.net.URL;
 
 public class PCMSEventsLoader extends EventsLoader {
 
@@ -47,9 +47,10 @@ public class PCMSEventsLoader extends EventsLoader {
         for (Element participant : participants.children()) {
             id++;
             String participantName = participant.attr("name");
+            String alias = participant.attr("id");
             String shortName = participant.attr("shortname");
 
-            PCMSTeamInfo team = new PCMSTeamInfo(id, participantName, shortName, initial.getProblemsNumber());
+            PCMSTeamInfo team = new PCMSTeamInfo(id, alias, participantName, shortName, initial.getProblemsNumber());
             initial.addTeamStandings(team);
         }
         return initial;
@@ -103,7 +104,7 @@ public class PCMSEventsLoader extends EventsLoader {
         long previousStartTime = contestInfo.get().getStartTime();
         long currentTime = Long.parseLong(element.attr("time"));
         //System.err.println("Time now " + currentTime);
-        if (previousStartTime == 0) {
+        if (previousStartTime == 0 && currentTime != 0) {
             // if (previousStartTime < System.currentTimeMillis() - currentTime)
             updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);
         } else {
@@ -125,9 +126,9 @@ public class PCMSEventsLoader extends EventsLoader {
     }
 
     private PCMSTeamInfo parseTeamInfo(Element element) {
-        String name = element.attr("party");
-        PCMSTeamInfo oldTeamInfo = new PCMSTeamInfo(contestInfo.get().getParticipant(name));
-        PCMSTeamInfo teamInfo = new PCMSTeamInfo(oldTeamInfo.id, name, oldTeamInfo.getShortName(), contestInfo.get().getProblemsNumber());
+        String alias = element.attr("alias");
+        PCMSTeamInfo oldTeamInfo = new PCMSTeamInfo(contestInfo.get().getParticipant(alias));
+        PCMSTeamInfo teamInfo = new PCMSTeamInfo(oldTeamInfo.id, oldTeamInfo.alias, oldTeamInfo.name, oldTeamInfo.getShortName(), contestInfo.get().getProblemsNumber());
 
         teamInfo.solved = Integer.parseInt(element.attr("solved"));
         teamInfo.penalty = Integer.parseInt(element.attr("penalty"));
