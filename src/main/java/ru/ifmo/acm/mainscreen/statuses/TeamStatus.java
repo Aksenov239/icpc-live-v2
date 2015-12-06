@@ -32,17 +32,24 @@ public class TeamStatus {
     }
 
     public synchronized boolean setInfoVisible(boolean visible, String type, String teamName) {
-        String alias = null;
-        if (teamName != null) {
-            alias = teamName.split(":")[1];
+        if (visible) {
+          String alias = null;
+          if (teamName != null) {
+              alias = teamName.split(":")[1];
+          }
+          if (infoTeam != null && (((PCMSTeamInfo)infoTeam).getAlias().equals(alias))
+             && isInfoVisible) {
+//             || (infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
+              return false;
+          }
+          infoTimestamp = System.currentTimeMillis();
+          isInfoVisible = visible;
+          infoType = type;
+          infoTeam = info.getParticipant(alias);
+          System.err.println(alias + " " + infoTeam.getId());
+        } else {
+          isInfoVisible = false;
         }
-        if (alias != null && (infoTeam.getShortName().equals(alias) || (infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
-            return false;
-        }
-        infoTimestamp = System.currentTimeMillis();
-        isInfoVisible = visible;
-        infoType = type;
-        infoTeam = info.getParticipant(teamName);
 
         recache();
         return true;

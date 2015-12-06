@@ -89,7 +89,7 @@ public class MyUI extends UI {
             getNavigator().navigateTo("");
         });
 
-        setPollInterval(1000);
+        setPollInterval(3000);
 
         addPollListener(event -> {
             if (currentView instanceof CreepingLineView) {
