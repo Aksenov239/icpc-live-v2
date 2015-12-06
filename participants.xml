@@ -121,7 +121,7 @@
 <party id = 'B002' shortname="IMCS SFU 1" name = 'IMCS SFU 1 (Nesterenko, Goncharik, Ryabushev)' />
 <party id = 'B003' shortname="ISTU" name = 'ISTU (Gerasimov, Zhurov, Pyatykh)' />
 <party id = 'B004' shortname="Siberian SUTI 4" name = 'Siberian SUTI 4 (Bessonov, Bykovskiy, Boldakov)' />
-<party id = 'B005' shortname="ZabGU" name = 'ZabGU (Yutkanakov, Perfiliev, Kashtankin)' />
+<party id = 'B005' shortname="ZabSU" name = 'ZabSU (Yutkanakov, Perfiliev, Kashtankin)' />
 <party id = 'B006' shortname="KSTU2" name = 'KSTU2 (Bolotbek, Alimbaev, Aliaskarova)' />
 <party id = 'B007' shortname="OmSU1" name = 'OmSU1 (Valchuk, Kudyk, Evsyukov)' />
 <party id = 'B008' shortname="Far Eastern STU 1" name = 'Far Eastern S Transport U: 1 (Toropov, Usmanov, Pisaniy)' />
@@ -146,25 +146,25 @@
 <party id = 'B027' shortname="Kazahstan MSU" name = 'Kazahstan br of MSU (Ghuravskaya, Kamalbekov, Abayuly)' />
 <party id = 'B028' shortname="Altai STU 5" name = 'Altai STU 5 (Galkin, Kozlov, Kozlov)' />
 <party id = 'B029' shortname="Rubtsovsk II 1" name = 'Rubtsovsk II 1 (Sitnik, Dabylov, Shpakov)' />
-<party id = 'B030' shortname="KemSU2" name = 'KemSU2 (Zemlyanukhin, Bashkirova, Chernousov)' />
-<party id = 'B031' shortname="OmSTU_1" name = 'OmSTU_1 (Chumlyakov, Trubin, Hvoryh)' />
+<party id = 'B030' shortname="KemSU 2" name = 'KemSU2 (Zemlyanukhin, Bashkirova, Chernousov)' />
+<party id = 'B031' shortname="OmSTU 1" name = 'OmSTU_1 (Chumlyakov, Trubin, Hvoryh)' />
 <party id = 'B032' shortname="Kyrgyz SUB 1" name = 'Kyrgyz SU of Building 1 (Mazurov, Baitakova, Esenbek)' />
 <party id = 'B033' shortname="Novosibirsk SU 3" name = 'Novosibirsk SU 3 (Dudin, Ilin, Malykh)' />
 <party id = 'B034' shortname="Siberian SUTI 2" name = 'Siberian SUTI 2 (Chusovitin, Mironenko, Aniskina)' />
-<party id = 'B035' shortname="NEFU1" name = 'NEFU1 (Dyakonov, Prokopiev, Khokholov)' />
+<party id = 'B035' shortname="NEFU 1" name = 'NEFU1 (Dyakonov, Prokopiev, Khokholov)' />
 <party id = 'B036' shortname="Irkutsk SU 1" name = 'Irkutsk SU 1 (Apanovich, Semenov, Skuratov)' />
 <party id = 'B037' shortname="Tomsk SU" name = 'Tomsk SU (Zhukovskaja, Kotov, Milovanov)' />
 <party id = 'B038' shortname="Tomsk SU of CSR 2" name = 'Tomsk SU of CSR 2 (Bukreyev, Starikov, Rogazinskiy)' />
 <party id = 'B039' shortname="Novosibirsk SPU 4" name = 'Novosibirsk SpedU 4 (Aisen, Orlov, Savitskaya)' />
 <party id = 'B040' shortname="Altai STU 4" name = 'Altai STU 4 (Danilin, Ananev, Oreschenko)' />
-<party id = 'B041' shortname="OmSU2" name = 'OmSU2 (Krivosheeva, Shatov, Sakhno)' />
+<party id = 'B041' shortname="Omsk SU 2" name = 'OmSU2 (Krivosheeva, Shatov, Sakhno)' />
 <party id = 'B042' shortname="American UCA 1" name = 'American U Central Asia 1 (Derkenbaev, Kydyraliev, Kim)' />
 <party id = 'B043' shortname="Novosibirsk STU 2" name = 'Novosibirsk STU 2 (Rogoza, Prokopyev, Tolstobrov)' />
 <party id = 'B044' shortname="Novosibirsk SU 1" name = 'Novosibirsk SU 1 (Matveev, Andreenko, Seredkin)' />
 <party id = 'B045' shortname="Irkutsk ISRU" name = 'Irkutsk ISRU (Khonyakov, Mukhometzianov, Tolstikov)' />
 <party id = 'B046' shortname="Tomsk PU 3" name = 'Tomsk PU 3 (Zhuravlev, Komarov, Cherepov)' />
 
-<party id = 'B048' shortname="" name = 'Far Eastern FU: 11Babel (Kirpa, Utin, Makhliarchuk)' />
+<party id = 'B048' shortname="Far Eastern FU 3" name = 'Far Eastern FU 3 (Kirpa, Utin, Makhliarchuk)' />
 
 <party id = 'B013' shortname="" name = '' />
 <party id = 'B025' shortname="" name = '' />
@@ -181,8 +181,8 @@
     <party id = 'U108' shortname="NU 3" name = 'NU 3 (Jubatyrov, Khaitov, Orynkul)' />
     <party id = 'U109' shortname="Kazakh-British TU 1" name = 'Kazakh-British TU 1 (Mussayev, Nurmash, Utemuratov)' />
     <party id = 'U110' shortname="NUUz 2" name = 'NUUz 2 (Habibullayev, Mattiev, Yuldashev)' />
-    <party id = 'U111' shortname="GulSU_1" name = 'GulSU_1 (Mamaziyayev, Tursunboyev, Xalmuratov)' />
-    <party id = 'U112' shortname="IAAU-2" name = 'IAAU-2 (Akylbek, Baibagyshev, Nyshanbaev)' />
+    <party id = 'U111' shortname="Gulistan SU 1" name = 'GulSU_1 (Mamaziyayev, Tursunboyev, Xalmuratov)' />
+    <party id = 'U112' shortname="IAAU 2" name = 'IAAU-2 (Akylbek, Baibagyshev, Nyshanbaev)' />
     <party id = 'U113' shortname="Tashkent UIT 4" name = 'Tashkent U of IT 4 (Axmadaliyev, Qambaraliyev, Sirojiddinov)' />
     <party id = 'U201' shortname="Kazakh NU 3" name = 'Kazakh NU 3 (Abdikerimova, Jantassov, Kuatov)' />
     <party id = 'U202' shortname="MSU Tashkent 3" name = 'MSU Tashkent 3 (Korolev, Kosimov, Shin)' />
@@ -194,7 +194,7 @@
     <party id = 'U208' shortname="UrSU 2" name = 'UrSU 2 (Ismoilov, Matlatipov, Sabirov)' />
     <party id = 'U211' shortname="IITU 6" name = 'IITU 6 (Dushayev, Kydyrali, Mukay)' />
     <party id = 'U212' shortname="Tashkent U of IT 3" name = 'Tashkent U of IT 3 (Axrorov, Nasriddinov, Sharipov)' />
-    <party id = 'U214' shortname="ISLOM_TIU_IVAT_4" name = 'ISLOM_TIU_IVAT_4 (Abdurasulov, Husanov, Mullamuhamedov)' />
+    <party id = 'U214' shortname="ISLOM TIU IVAT 4" name = 'ISLOM_TIU_IVAT_4 (Abdurasulov, Husanov, Mullamuhamedov)' />
     <party id = 'U215' shortname="NU 2" name = 'NU 2 (Kassenov, Serikov, Zarlyk)' />
     <party id = 'U216' shortname="TUIT Samarkand 1" name = 'TUIT of Samarkand Branch 1 (Narzullayev, Ramatov, Raupov)' />
     <party id = 'U217' shortname="ENU 329" name = 'ENU 329 (Amandos, Sultan, Yessenbayev)' />
@@ -208,15 +208,15 @@
     <party id = 'U305' shortname="NUUz 1" name = 'NUUz 1 (Abdurakhmonov, Shohrux, Umarov)' />
     <party id = 'U306' shortname="MSU Tashkent 1" name = 'MSU Tashkent 1 (Akhmedshin, Bistrigova, Soliev)' />
     <party id = 'U307' shortname="Machine Building" name = 'Machine Building (Abdukamilov, Iminov, Jumaboyev)' />
-    <party id = 'U308' shortname="ENU-FIT" name = 'ENU-FIT (Batirkhan, Karakozha, Muslim)' />
+    <party id = 'U308' shortname="ENU" name = 'ENU-FIT (Batirkhan, Karakozha, Muslim)' />
     <party id = 'U309' shortname="IITU 2" name = 'IITU 2 (Chzhen, Dauirkhan, Talgatov)' />
     <party id = 'U310' shortname="TUIT Urgench 2" name = 'TUIT Urgench Branch 2 (Aminov, Davronov, Jumaboyev)' />
     <party id = 'U311' shortname="Kazakh NU 2" name = 'Kazakh NU 2 (Adetbekov, Kapezov, Namazbaev)' />
     <party id = 'U312' shortname="TCTI" name = 'TCTI (Azamatov, Mavlyanova, Shomansurov)' />
     <party id = 'U313' shortname="Tashkent UIT 8" name = 'Tashkent U of IT 8 (Hairov, Mumin, Zarbiyev)' />
     <party id = 'U314' shortname="SDU4" name = 'SDU4 (Omarov, Seitov, Zigangirov)' />
-    <party id = 'U315' shortname="INHA_2" name = 'INHA_2 (Ismatov, Kamolov, Yusupov)' />
-    <party id = 'U317' shortname="KazNU-CSSE" name = 'KazNU-CSSE (Lesbek, Salimzhanov, Zhanbolat)' />
+    <party id = 'U315' shortname="INHA 2" name = 'INHA_2 (Ismatov, Kamolov, Yusupov)' />
+    <party id = 'U317' shortname="Kazakh NU 4" name = 'KazNU-CSSE (Lesbek, Salimzhanov, Zhanbolat)' />
     <party id = 'U318' shortname="TUIT Fergana" name = 'TUIT Fergana (Abdujabborov, Gafurov, Muxtorov)' />
     <party id = 'U319' shortname="IITU 1" name = 'IITU 1 (Kim, Satylkhanov, Sultan)' />
     <party id = 'U320' shortname="TUIT Urgench 1" name = 'TUIT Urgench Branch 1 (Ibadullayev, Iskandarov, Sultonov)' />
@@ -224,7 +224,7 @@
 
 <party id = "G126" shortname="Qafqaz U 1" name = "Qafqaz University 1 (Valiyev, Ahmadov, Hajiyev)"/>
 <party id = "G137" shortname="Qafqaz U 2" name = "Qafqaz University 2 (Mammadov, Sarayev, Allahverdiyev)"/>
-<party id = "G151" shortname="Qafqaz U 1" name = "Qafqaz University 3 (Kerimov, Huseynov, Hajili)"/>
+<party id = "G151" shortname="Qafqaz U 3" name = "Qafqaz University 3 (Kerimov, Huseynov, Hajili)"/>
 <party id = "G166" shortname="Baku Br of MSU 1" name = "Baku Branch of Moscow State University 1 (Yahyayev, Veliyev, Kazimi)"/>
 <party id = "G131" shortname="Baku SU 6" name = "Baku State University 6 (Talibov, Mammadov, Badalov)"/>
 <party id = "G140" shortname="Baku SU 1" name = "Baku State University 1 (Gasimov, Garibzade, Khidirov)"/>
