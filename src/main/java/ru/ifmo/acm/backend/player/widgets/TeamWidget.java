@@ -81,7 +81,7 @@ public abstract class TeamWidget extends VideoWidget {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             inChange.set(false);
         }
-        if (URL.contains("info")) {
+        if (URL == null || URL.contains("info")) {
             return;
         }
         if (team == null) return;

@@ -2,12 +2,10 @@ package ru.ifmo.acm.datapassing;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,6 +25,7 @@ public class DataLoader {
     private static ServerSocket serverSocket;
     private static List<PrintWriter> openPW;
     private static List<BufferedReader> openBR;
+    private static List<Integer> tries;
     private static int soTimeout;
 
     public static synchronized void free() {
@@ -68,6 +67,7 @@ public class DataLoader {
                 }
                 openPW = new ArrayList<>();
                 openBR = new ArrayList<>();
+                tries = new ArrayList<>();
                 soTimeout = Integer.parseInt(properties.getProperty("data.sotimeout", "200"));
             }
             try {
@@ -75,16 +75,19 @@ public class DataLoader {
                 Socket newSocket = serverSocket.accept();
 //                PrintWriter pw = new PrintWriter(newSocket.getOutputStream());
 //                pw.println(getDataFrontend());
-                openPW.add(new PrintWriter(newSocket.getOutputStream()));
-                openBR.add(new BufferedReader(new InputStreamReader(newSocket.getInputStream())));
+                openPW.add(new PrintWriter(new OutputStreamWriter(newSocket.getOutputStream(), StandardCharsets.UTF_8)));
+                openBR.add(new BufferedReader(new InputStreamReader(newSocket.getInputStream(), StandardCharsets.UTF_8)));
+                tries.add(0);
                 System.err.println("Accepted socket");
             } catch (Exception e) {
             }
             List<PrintWriter> newOpenPW = new ArrayList<>();
             List<BufferedReader> newOpenBR = new ArrayList<>();
+            List<Integer> newTries = new ArrayList<>();
             for (int i = 0; i < openPW.size(); i++) {
                 PrintWriter pw = openPW.get(i);
                 BufferedReader br = openBR.get(i);
+                int ntries = tries.get(i);
                 boolean send = false;
                 //System.err.println("Start waiting");
                 try {
@@ -97,22 +100,30 @@ public class DataLoader {
                     System.err.println("Client socket is closed");
                     continue;
                 }
-                //System.err.println("I'm fucking ready!");
-                if (!send)
-                    continue;
-                String data = getDataFrontend();
-                System.err.println(data);
-                pw.println(getDataFrontend());
-                pw.flush();
-                if (pw.checkError()) {
-                    System.err.println("Client socket is closed");
-                    continue;
+                if (send) {
+                    String data = getDataFrontend();
+//                    System.err.println(data);
+                    pw.println(getDataFrontend());
+                    pw.flush();
+                    ntries = 0;
+                    if (pw.checkError()) {
+                        System.err.println("Client socket is closed");
+                        continue;
+                    }
+                } else {
+                    ntries++;
+                    if (ntries == 5) {
+                        System.err.println("Client socket is closed");
+                        continue;
+                    }
                 }
                 newOpenPW.add(pw);
                 newOpenBR.add(br);
+                newTries.add(ntries);
             }
             openPW = newOpenPW;
             openBR = newOpenBR;
+            tries = newTries;
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -137,21 +148,23 @@ public class DataLoader {
         new Thread(() -> {
             while (true) {
                 try (Socket socket = new Socket(host, port)) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
                     while (!socket.isClosed()) {
                         writer.println("ready");
                         writer.flush();
+                        if (writer.checkError()) {
+                            System.err.println("Socket closed");
+                            break;
+                        }
+
 //                    System.err.println("Trying to read");
                         String line = reader.readLine();
 //                    System.out.println(line);
                         Data newData = gson.fromJson(line, Data.class);
                         if (newData != null)
                             data.set(newData);
-                        if (writer.checkError()) {
-                            System.err.println("Socket closed");
-                            break;
-                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

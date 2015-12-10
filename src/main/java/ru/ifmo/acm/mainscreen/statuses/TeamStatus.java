@@ -1,13 +1,14 @@
 package ru.ifmo.acm.mainscreen.statuses;
 
+import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.datapassing.TeamData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
+import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.Arrays;
-import ru.ifmo.acm.datapassing.Data;
-import ru.ifmo.acm.datapassing.TeamData;
 
 public class TeamStatus {
     public final ContestInfo info;
@@ -20,7 +21,7 @@ public class TeamStatus {
         TeamInfo[] teamInfos = info.getStandings();
         teamNames = new String[teamInfos.length];
         for (int i = 0; i < teamNames.length; i++) {
-            teamNames[i] = teamInfos[i].getName();
+            teamNames[i] = teamInfos[i].getShortName() + " :" + ((PCMSTeamInfo) teamInfos[i]).getAlias();
         }
         Arrays.sort(teamNames);
         this.changeTime = changeTime;
@@ -31,13 +32,24 @@ public class TeamStatus {
     }
 
     public synchronized boolean setInfoVisible(boolean visible, String type, String teamName) {
-        if (infoTeam != null && (infoTeam.getName().equals(teamName) || (infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
-            return false;
+        if (visible) {
+          String alias = null;
+          if (teamName != null) {
+              alias = teamName.split(":")[1];
+          }
+          if (infoTeam != null && (((PCMSTeamInfo)infoTeam).getAlias().equals(alias))
+             && isInfoVisible) {
+//             || (infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
+              return false;
+          }
+          infoTimestamp = System.currentTimeMillis();
+          isInfoVisible = visible;
+          infoType = type;
+          infoTeam = info.getParticipant(alias);
+          System.err.println(alias + " " + infoTeam.getId());
+        } else {
+          isInfoVisible = false;
         }
-        infoTimestamp = System.currentTimeMillis();
-        isInfoVisible = visible;
-        infoType = type;
-        infoTeam = info.getParticipant(teamName);
 
         recache();
         return true;

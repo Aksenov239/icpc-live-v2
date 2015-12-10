@@ -350,13 +350,15 @@ public class MainScreenView extends CustomComponent implements View {
     public void refresh() {
         advertisementStatus.setValue(getAdvertisementStatus());
         advertisements.refreshRowCache();
-        mainScreenData.advertisementStatus.update();
+        //mainScreenData.advertisementStatus.update();
 
         for (int i = 0; i < 2; i++) {
             personStatus[i].setValue(getPersonStatus(i));
             persons[i].refreshRowCache();
         }
-        mainScreenData.personStatus.update();
+        //mainScreenData.personStatus.update();
+
+        mainScreenData.update();
     }
 
     public void enter(ViewChangeEvent event) {

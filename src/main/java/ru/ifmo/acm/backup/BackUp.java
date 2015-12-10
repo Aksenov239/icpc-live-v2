@@ -8,8 +8,8 @@ import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +36,7 @@ public class BackUp<T> {
                 }
             }
         });
+        schedule.start();
         ContextListener.addThread(schedule);
 
 //        //TODO Add this thread to contextListener queue
@@ -65,7 +66,7 @@ public class BackUp<T> {
     public void backup() {
         try {
             Path tmpFile = Paths.get(backupFile.toString() + ".tmp");
-            PrintWriter out = new PrintWriter(tmpFile.toFile());
+            PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(tmpFile.toFile()), StandardCharsets.UTF_8));
             synchronized (data) {
                 data.getItemIds().forEach(v -> out.println(gson.toJson(v)));
             }

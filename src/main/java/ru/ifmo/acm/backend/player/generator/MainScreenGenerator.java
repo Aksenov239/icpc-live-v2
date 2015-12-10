@@ -10,8 +10,8 @@ import ru.ifmo.acm.backend.player.TickPlayer;
  * Created by aksenov on 14.04.2015.
  */
 public class MainScreenGenerator extends ScreenGenerator {
-    private static final int width = 1920;
-    private static final int height = 1080;
+    private static final int width = 1920 / 2;
+    private static final int height = 1080 / 2;
 
     public MainScreenGenerator() throws IOException {
         super(width, height);
@@ -30,6 +30,7 @@ public class MainScreenGenerator extends ScreenGenerator {
         widgets = new Widget[7];
         widgets[0] = new GreenScreenWidget();
         widgets[0].setVisible(true);
+        //widgets[0] = new CameraVideoWidget(updateWait, width, height, Integer.parseInt(properties.getProperty("sleep.time")));
         widgets[1] = new TeamInfoWidget(
                 updateWait,
                 width,

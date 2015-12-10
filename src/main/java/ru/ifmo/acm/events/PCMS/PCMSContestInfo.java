@@ -18,7 +18,7 @@ public class PCMSContestInfo extends ContestInfo {
         super(problemNumber);
         standings = new ArrayList<>();
         positions = new HashMap<>();
-        currentTime = 0;
+        //currentTime = 0;
     }
 
     public void fillTimeFirstSolved() {
@@ -47,7 +47,7 @@ public class PCMSContestInfo extends ContestInfo {
 
     void addTeamStandings(PCMSTeamInfo teamInfo) {
         standings.add(teamInfo);
-        positions.put(teamInfo.name, standings.size() - 1);
+        positions.put(teamInfo.getAlias(), standings.size() - 1);
         teamNumber = standings.size();
     }
 

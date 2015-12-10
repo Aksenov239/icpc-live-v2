@@ -28,8 +28,10 @@ public class AdvertisementStatus {
 
     public void update() {
         boolean change = false;
+        //System.err.println("Update! " + advertisementTimestamp + " " + timeToShow + " " + System.currentTimeMillis());
         synchronized (advertisementLock) {
             if (System.currentTimeMillis() > advertisementTimestamp + timeToShow) {
+                //System.err.println("Big idle for advert");
                 isAdvertisementVisible = false;
                 change = true;
             }

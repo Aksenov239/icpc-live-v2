@@ -8,10 +8,10 @@ import ru.ifmo.acm.datapassing.Data;
 /**
  * @author: Aksenov239
  */
-public abstract class CameraVideoWidget extends VideoWidget {
+public class CameraVideoWidget extends VideoWidget {
 
-    public CameraVideoWidget(long updateWait, int x, int y, int width, int height, int sleepTime) {
-        super(x, y, width, height, sleepTime);
+    public CameraVideoWidget(long updateWait, int width, int height, int sleepTime) {
+        super(0, 0, width, height, sleepTime);
         this.updateWait = updateWait;
         setVisible(true);
     }
@@ -26,7 +26,7 @@ public abstract class CameraVideoWidget extends VideoWidget {
                 return;
             }
 
-            if (!data.cameraData.cameraUrl.equals(URL) && !inChange.get()) {
+            if (data.cameraData.cameraUrl != null && !data.cameraData.cameraUrl.equals(URL) && !inChange.get() && ready.get()) {
                 change(data.cameraData.cameraUrl);
             }
             lastUpdate = System.currentTimeMillis();

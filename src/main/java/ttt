@@ -1,0 +1,26 @@
+
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : zoo.local
+
+Ethernet adapter VirtualBox Host-Only Network:
+
+   Connection-specific DNS Suffix  . : 
+   Link-local IPv6 Address . . . . . : fe80::cc7:2652:6626:8372%16
+   IPv4 Address. . . . . . . . . . . : 10.0.0.1
+   Subnet Mask . . . . . . . . . . . : 255.0.0.0
+   Default Gateway . . . . . . . . . : 
+
+Tunnel adapter Teredo Tunneling Pseudo-Interface:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{521B7143-CE20-49E2-9EDF-EAA5745535CE}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 

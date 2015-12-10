@@ -7,8 +7,9 @@ import org.jsoup.parser.Parser;
 import ru.ifmo.acm.events.EventsLoader;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -46,9 +47,10 @@ public class PCMSEventsLoader extends EventsLoader {
         for (Element participant : participants.children()) {
             id++;
             String participantName = participant.attr("name");
-            String shortName = participant.attr("id");
+            String alias = participant.attr("id");
+            String shortName = participant.attr("shortname");
 
-            PCMSTeamInfo team = new PCMSTeamInfo(id, participantName, shortName, initial.getProblemsNumber());
+            PCMSTeamInfo team = new PCMSTeamInfo(id, alias, participantName, shortName, initial.getProblemsNumber());
             initial.addTeamStandings(team);
         }
         return initial;
@@ -61,7 +63,9 @@ public class PCMSEventsLoader extends EventsLoader {
 //                .collect(Collectors.joining());
 //        Document doc = Jsoup.parse(html, url);
 //        parseAndUpdateStandings(doc.body());
-        String xml = new BufferedReader(new FileReader(url))
+
+        //String xml = new BufferedReader(new FileReader(url))
+        String xml = new BufferedReader(new InputStreamReader((new URL(url)).openStream()))
                 .lines()
                 .collect(Collectors.joining());
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
@@ -75,7 +79,7 @@ public class PCMSEventsLoader extends EventsLoader {
             try {
                 while (true) {
                     updateStatements();
-                    sleep(1000);
+                    sleep(5000);
                 }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -96,7 +100,16 @@ public class PCMSEventsLoader extends EventsLoader {
     private PCMSContestInfo parseContestInfo(Element element) {
         int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
         PCMSContestInfo updatedContestInfo = new PCMSContestInfo(problemsNumber);
-        updatedContestInfo.setCurrentTime(Long.parseLong(element.attr("time")));
+
+        long previousStartTime = contestInfo.get().getStartTime();
+        long currentTime = Long.parseLong(element.attr("time"));
+        //System.err.println("Time now " + currentTime);
+        if (previousStartTime == 0 && currentTime != 0) {
+            // if (previousStartTime < System.currentTimeMillis() - currentTime)
+            updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);
+        } else {
+            updatedContestInfo.setStartTime(previousStartTime);
+        }
         updatedContestInfo.frozen = "yes".equals(element.attr("frozen"));
 
         element.children().forEach(session -> {
@@ -113,9 +126,9 @@ public class PCMSEventsLoader extends EventsLoader {
     }
 
     private PCMSTeamInfo parseTeamInfo(Element element) {
-        String name = element.attr("party");
-        PCMSTeamInfo oldTeamInfo = new PCMSTeamInfo(contestInfo.get().getParticipant(name));
-        PCMSTeamInfo teamInfo = new PCMSTeamInfo(oldTeamInfo.id, name, oldTeamInfo.getShortName(), contestInfo.get().getProblemsNumber());
+        String alias = element.attr("alias");
+        PCMSTeamInfo oldTeamInfo = new PCMSTeamInfo(contestInfo.get().getParticipant(alias));
+        PCMSTeamInfo teamInfo = new PCMSTeamInfo(oldTeamInfo.id, oldTeamInfo.alias, oldTeamInfo.name, oldTeamInfo.getShortName(), contestInfo.get().getProblemsNumber());
 
         teamInfo.solved = Integer.parseInt(element.attr("solved"));
         teamInfo.penalty = Integer.parseInt(element.attr("penalty"));
@@ -141,7 +154,7 @@ public class PCMSEventsLoader extends EventsLoader {
     private PCMSRunInfo parseRunInfo(Element element, int problemId) {
         long time = Long.parseLong(element.attr("time"));
         boolean isFrozen = time >= contestInfo.get().getTotalTime();
-        String result = isFrozen ? "Frozen" : ("yes".equals(element.attr("accepted")) ? "AC" : "REJ");
+        String result = isFrozen ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "REJ");
 
         return new PCMSRunInfo(!isFrozen, result, problemId, time);
     }

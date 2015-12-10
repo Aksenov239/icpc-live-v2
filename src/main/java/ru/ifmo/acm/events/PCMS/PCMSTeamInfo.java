@@ -8,25 +8,28 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class PCMSTeamInfo implements TeamInfo {
+    String alias;
+
     public PCMSTeamInfo(int problemsNumber) {
         problemRuns = new ArrayList[problemsNumber];
         Arrays.setAll(problemRuns, i -> new ArrayList<>());
         this.rank = 1;
     }
 
-    public PCMSTeamInfo(int id, String name, String shortName, int problemsNumber) {
+    public PCMSTeamInfo(int id, String alias, String name, String shortName, int problemsNumber) {
         this(problemsNumber);
         this.id = id;
+        this.alias = alias;
         this.name = name;
         this.shortName = shortName;
     }
 
     public PCMSTeamInfo(String name, int problemsNumber) {
-        this(-1, name, null, problemsNumber);
+        this(-1, "", name, null, problemsNumber);
     }
 
     public PCMSTeamInfo(PCMSTeamInfo pcmsTeamInfo) {
-        this(pcmsTeamInfo.id, pcmsTeamInfo.name, pcmsTeamInfo.shortName, pcmsTeamInfo.problemRuns.length);
+        this(pcmsTeamInfo.id, pcmsTeamInfo.alias, pcmsTeamInfo.name, pcmsTeamInfo.shortName, pcmsTeamInfo.problemRuns.length);
         for (int i = 0; i < pcmsTeamInfo.problemRuns.length; i++) {
             problemRuns[i].addAll(pcmsTeamInfo.problemRuns[i]);
         }
@@ -58,6 +61,10 @@ public class PCMSTeamInfo implements TeamInfo {
     @Override
     public int getRank() {
         return rank;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 
     @Override
