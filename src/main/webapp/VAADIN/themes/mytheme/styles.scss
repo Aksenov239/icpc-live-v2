@@ -8,4 +8,8 @@
   @include addons;
   @include mytheme;
 
+  .v-select-optiongroup .v-select-option {
+      float: left;
+      width: 250px;
+  }
 }

@@ -33,4 +33,9 @@
   @include valo;
 
   // Insert your own theme rules here
+  .v-select-optiongroup-horizontalgroup .v-select-option {
+      float: left;
+      width: 150px;
+  }
+
 }

@@ -37,9 +37,9 @@ public class TeamStatus {
           if (teamName != null) {
               alias = teamName.split(":")[1];
           }
-          if (infoTeam != null && (((PCMSTeamInfo)infoTeam).getAlias().equals(alias))
-             && isInfoVisible) {
-//             || (infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
+          if (infoTeam != null && ((((PCMSTeamInfo)infoTeam).getAlias().equals(alias)
+//             && isInfoVisible)) {
+             || infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
               return false;
           }
           infoTimestamp = System.currentTimeMillis();
@@ -59,8 +59,8 @@ public class TeamStatus {
         return isInfoVisible;
     }
 
-    public synchronized TeamInfo getTeam() {
-        return infoTeam;
+    public synchronized String getTeamString() {
+        return infoTeam.getShortName() + " :" + ((PCMSTeamInfo)infoTeam).getAlias();
     }
 
     public synchronized String infoStatus() {
