@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.ContextListener;
+import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 
 import java.io.IOException;
@@ -23,13 +24,15 @@ public class BackUp<T> {
 
         reload();
 
-        Thread schedule = new Thread(() -> {
-            while (true) {
-                backup();
-                try {
-                    Thread.sleep(60000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        Utils.StoppedThread schedule = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+            public void run() {
+                while (!stop) {
+                    backup();
+                    try {
+                        Thread.sleep(60000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

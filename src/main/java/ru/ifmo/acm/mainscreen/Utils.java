@@ -19,4 +19,22 @@ public class Utils {
 
         return layout;
     }
+
+    public static abstract class StoppedRunnable implements Runnable {
+        public volatile boolean stop;
+    }
+
+    public static class StoppedThread extends Thread {
+        private StoppedRunnable runnable;
+
+        public StoppedThread(StoppedRunnable runnable) {
+            super(runnable);
+            this.runnable = runnable;
+        }
+
+        public void interrupt() {
+            runnable.stop = true;
+            super.interrupt();
+        }
+    }
 }
