@@ -40,9 +40,13 @@ public class TeamInfoWidget extends TeamWidget {
                 if (!isVisible() || (data.teamData.teamId != teamId && !inChange.get())) {
                     //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                     PCMSTeamInfo team = (PCMSTeamInfo) Preparation.eventsLoader.getContestData().getParticipant(data.teamData.teamId);
-                    int id = Integer.parseInt(team.getAlias().substring(1));
-                    int hall = id / 100;
-                    int place = id % 100;
+                    if (team == null) {
+                        setVisible(false);
+                        return;
+                    }
+                    int aliasId = Integer.parseInt(team.getAlias().substring(1));
+                    int hall = aliasId / 100;
+                    int place = aliasId % 100;
                     System.err.println("change " + hall + " " + place);
                     //change(String.format(urlTemplates.get(data.teamData.infoType), hall, place));
                     teamId = data.teamData.teamId;
