@@ -16,6 +16,7 @@ public class AdvertisementWidget extends Widget {
         widget = new CaptionWidget(POSITION_CENTER);
         this.updateWait = updateWait;
         this.duration = duration;
+        setVisible(false);
     }
 
     private long updateWait;

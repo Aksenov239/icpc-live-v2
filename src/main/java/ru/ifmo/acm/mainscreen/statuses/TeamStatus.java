@@ -76,7 +76,7 @@ public class TeamStatus {
         data.timestamp = infoTimestamp;
         data.isTeamVisible = isInfoVisible;
         data.infoType = infoType;
-        data.teamId = infoTeam == null ? -1 : Integer.parseInt(((PCMSTeamInfo) infoTeam).getAlias().substring(1));
+        data.teamId = infoTeam == null ? -1 : infoTeam.getId();
     }
 
     private long infoTimestamp;

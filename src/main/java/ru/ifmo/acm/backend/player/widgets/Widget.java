@@ -26,7 +26,7 @@ public abstract class Widget {
     public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
 
 
-    long last;
+    long last = 0;
     double opacity = 1;
     double textOpacity = 1;
     double opacityState = 1;
@@ -37,7 +37,10 @@ public abstract class Widget {
 
     protected int changeOpacity() {
         long time = System.currentTimeMillis();
-        int dt = (int) (time - last);
+        if (last == 0) {
+            opacityState = visible ? 1 : 0;
+        }
+        int dt = last == 0 ? 0 : (int) (time - last);
         last = time;
         if (isVisible()) {
             setOpacityState(Math.min(opacityState + dt * V, 1));
