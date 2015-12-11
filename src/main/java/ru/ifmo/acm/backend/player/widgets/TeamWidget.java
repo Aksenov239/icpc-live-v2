@@ -53,7 +53,7 @@ public abstract class TeamWidget extends VideoWidget {
     private static final Color GREEN = new Color(27, 155, 82);//Color.decode("0x33ff00");
     private static final Color RED = Color.decode("0xaa0000");
     private static final Color YELLOW = new Color(250, 200, 82);//Color.decode("0x33ff00");
-    private TeamInfo team;
+    protected TeamInfo team;
 
     public static final int PERIOD = 500;
 
@@ -76,15 +76,16 @@ public abstract class TeamWidget extends VideoWidget {
         if (!isVisible())
             return;
 
-        g.drawImage(image, x, y, null);
-        if (inChange.get() || team == null) {
+        //g.drawImage(image, x, y, null);
+        /*if (inChange.get() || team == null) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             inChange.set(false);
         }
         if (URL == null || URL.contains("info")) {
             return;
-        }
-        if (team == null) return;
+        }*/
+        team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+//        if (team == null) return;
         g.setFont(FONT1);
         int dx = (int) (this.width * 0.52);
         int dy = (int) (this.height * 0.9);

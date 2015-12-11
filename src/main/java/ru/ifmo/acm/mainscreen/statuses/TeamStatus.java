@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class TeamStatus {
     public final ContestInfo info;
-    public final String[] teamNames;
+    public String[] teamNames;
     private long changeTime;
 
     public TeamStatus(long changeTime) {
@@ -20,9 +20,13 @@ public class TeamStatus {
         info = loader.getContestData();
         TeamInfo[] teamInfos = info.getStandings();
         teamNames = new String[teamInfos.length];
+        int l = 0;
         for (int i = 0; i < teamNames.length; i++) {
-            teamNames[i] = teamInfos[i].getShortName() + " :" + ((PCMSTeamInfo) teamInfos[i]).getAlias();
+            if (((PCMSTeamInfo) teamInfos[i]).getAlias().startsWith("S")) {
+                teamNames[l++] = teamInfos[i].getShortName() + " :" + ((PCMSTeamInfo) teamInfos[i]).getAlias();
+            }
         }
+        teamNames = Arrays.copyOf(teamNames, l);
         Arrays.sort(teamNames);
         this.changeTime = changeTime;
     }
@@ -33,22 +37,23 @@ public class TeamStatus {
 
     public synchronized boolean setInfoVisible(boolean visible, String type, String teamName) {
         if (visible) {
-          String alias = null;
-          if (teamName != null) {
-              alias = teamName.split(":")[1];
-          }
-          if (infoTeam != null && ((((PCMSTeamInfo)infoTeam).getAlias().equals(alias)
+            String alias = null;
+            if (teamName != null) {
+                alias = teamName.split(":")[1];
+            }
+            if (infoTeam != null && ((((PCMSTeamInfo) infoTeam).getAlias().equals(alias)
 //             && isInfoVisible)) {
-             || infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
-              return false;
-          }
-          infoTimestamp = System.currentTimeMillis();
-          isInfoVisible = visible;
-          infoType = type;
-          infoTeam = info.getParticipant(alias);
-          System.err.println(alias + " " + infoTeam.getId());
+                    || infoTimestamp + changeTime > System.currentTimeMillis()) && isInfoVisible)) {
+                return false;
+            }
+            infoTimestamp = System.currentTimeMillis();
+            isInfoVisible = visible;
+            infoType = type;
+            infoTeam = info.getParticipant(alias);
+            System.err.println(alias + " " + infoTeam.getId());
         } else {
-          isInfoVisible = false;
+            isInfoVisible = false;
+            infoTimestamp = System.currentTimeMillis();
         }
 
         recache();
@@ -71,7 +76,7 @@ public class TeamStatus {
         data.timestamp = infoTimestamp;
         data.isTeamVisible = isInfoVisible;
         data.infoType = infoType;
-        data.teamId = infoTeam == null ? -1 : infoTeam.getId();
+        data.teamId = infoTeam == null ? -1 : Integer.parseInt(((PCMSTeamInfo) infoTeam).getAlias().substring(1));
     }
 
     private long infoTimestamp;

@@ -2,6 +2,7 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 
 import java.awt.*;
 
