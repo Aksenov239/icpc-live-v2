@@ -110,7 +110,17 @@ public class MessageForm extends FormLayout {
             Notification.show("Cancelled", Type.TRAY_NOTIFICATION);
         });
 
-        HorizontalLayout actions = new HorizontalLayout(save, delete, cancel);
+        Button post = new Button("Tweet", event -> {
+            TwitterLoader.getInstance().postMessage(message.getValue());
+            message.clear();
+            form.setVisible(false);
+
+            parent.messageList.setValue(null);
+
+            Notification.show("Tweeted new message", Type.TRAY_NOTIFICATION);
+        });
+
+        HorizontalLayout actions = new HorizontalLayout(save, delete, cancel, post);
         actions.setSpacing(true);
 
         form.addComponents(actions, message, timeBox, advertBox);

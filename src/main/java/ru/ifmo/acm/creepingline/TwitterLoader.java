@@ -39,6 +39,14 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         return updates;
     }
 
+    void postMessage(String message) {
+        try {
+            Status status = twitter.updateStatus(message);
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         while (!stop) {
@@ -48,7 +56,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
                     Message message = new Message(tweet.getText(), System.currentTimeMillis(), duration, false);
                     MessageData.getMessageData().addMessage(message);
                 });
-                Thread.sleep(5000);
+                Thread.sleep(60000);
             } catch (InterruptedException | TwitterException e) {
                 e.printStackTrace();
             }
