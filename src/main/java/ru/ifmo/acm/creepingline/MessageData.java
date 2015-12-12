@@ -1,11 +1,13 @@
 package ru.ifmo.acm.creepingline;
 
+import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
 
 import java.io.IOException;
 import java.util.*;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.CreepingLineData;
+import ru.ifmo.acm.mainscreen.Utils;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -50,6 +52,21 @@ public class MessageData {
                         tick();
                     }
                 }, 0L, 2000L);
+        Utils.StoppedThread update = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+            @Override
+            public void run() {
+                while (!stop) {
+                    tick();
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        update.start();
+        ContextListener.addThread(update);
     }
 
     //final List<Message> messageList;

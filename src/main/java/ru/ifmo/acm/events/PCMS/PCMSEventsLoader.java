@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class PCMSEventsLoader extends EventsLoader {
         int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
         PCMSContestInfo initial = new PCMSContestInfo(problemsNumber);
         String fn = properties.getProperty("participants");
-        String xml = new String(Files.readAllBytes(Paths.get(fn)));
+        String xml = new String(Files.readAllBytes(Paths.get(fn)), StandardCharsets.UTF_8);
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
         Element participants = doc.child(0);
         int id = 0;
@@ -65,7 +66,7 @@ public class PCMSEventsLoader extends EventsLoader {
 //        parseAndUpdateStandings(doc.body());
 
         //String xml = new BufferedReader(new FileReader(url))
-        String xml = new BufferedReader(new InputStreamReader((new URL(url)).openStream()))
+        String xml = new BufferedReader(new InputStreamReader((new URL(url)).openStream(), StandardCharsets.UTF_8))
                 .lines()
                 .collect(Collectors.joining());
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
@@ -104,7 +105,7 @@ public class PCMSEventsLoader extends EventsLoader {
         long previousStartTime = contestInfo.get().getStartTime();
         long currentTime = Long.parseLong(element.attr("time"));
         //System.err.println("Time now " + currentTime);
-        if (previousStartTime == 0 && currentTime != 0) {
+        if (previousStartTime == 0 && !"before".equals(element.attr("status"))) {
             // if (previousStartTime < System.currentTimeMillis() - currentTime)
             updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);
         } else {
@@ -152,9 +153,9 @@ public class PCMSEventsLoader extends EventsLoader {
     }
 
     private PCMSRunInfo parseRunInfo(Element element, int problemId) {
-        long time = Long.parseLong(element.attr("time"));
-        boolean isFrozen = time >= contestInfo.get().getTotalTime();
-        String result = isFrozen ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "REJ");
+        long time = Long.parseLong(element.attr("time")) / 1000;
+        boolean isFrozen = time >= 4 * 60 * 60;
+        String result = isFrozen ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "WA");
 
         return new PCMSRunInfo(!isFrozen, result, problemId, time);
     }

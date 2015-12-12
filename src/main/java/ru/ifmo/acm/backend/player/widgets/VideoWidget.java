@@ -54,6 +54,7 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 JComponent component = player.getComponent();
                 player.setComponent(null);
                 player2.setComponent(component);
@@ -69,8 +70,9 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
     }
 
     public void stop() {
-        if (player != null && !stopped.get())
+        if (player != null && !stopped.get() && getPlayer().isPlaying()) {
             player.stop();
+        }
         stopped.set(true);
         URL = null;
     }

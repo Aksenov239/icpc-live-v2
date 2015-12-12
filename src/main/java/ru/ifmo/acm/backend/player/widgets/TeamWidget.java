@@ -76,15 +76,17 @@ public abstract class TeamWidget extends VideoWidget {
         if (!isVisible())
             return;
 
-        //g.drawImage(image, x, y, null);
-        /*if (inChange.get() || team == null) {
+        if (team != null && URL != null) {
+            g.drawImage(image, x, y, null);
+        }
+        if (inChange.get() || team == null) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             inChange.set(false);
         }
         if (URL == null || URL.contains("info")) {
             return;
-        }*/
-        team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+        }
+//        team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (team == null) return;
         g.setFont(FONT1);
         int dx = (int) (this.width * 0.52);

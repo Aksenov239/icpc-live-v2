@@ -18,6 +18,7 @@ public class PCMSContestInfo extends ContestInfo {
         super(problemNumber);
         standings = new ArrayList<>();
         positions = new HashMap<>();
+        timeFirstSolved = new long[problemNumber];
         //currentTime = 0;
     }
 

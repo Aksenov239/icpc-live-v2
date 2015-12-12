@@ -32,6 +32,7 @@ public class PlayerInImage {
 //        mediaPlayer.addMediaOptions(":file-caching=1500");
 //        mediaPlayer.setStandardMediaOptions(":file-caching=1500");
 //        mediaPlayer.setVolume(0);
+        mediaPlayer.setAspectRatio("4:3");
         if (media != null)
             mediaPlayer.playMedia(media, ":file-caching=0");
         System.err.println("PLAY!!! " + media);
