@@ -23,7 +23,6 @@ public class TwitterLoader extends Thread {
             duration = Long.parseLong(properties.getProperty("twitter.message.duration"));
             List<Status> updates = twitter.getUserTimeline(account);
             lastId = (updates.size() > 0) ? updates.get(0).getId() : -1;
-            lastId = twitter.getUserTimeline(account).get(0).getId();
         } catch (IOException | TwitterException e) {
             e.printStackTrace();
         }
