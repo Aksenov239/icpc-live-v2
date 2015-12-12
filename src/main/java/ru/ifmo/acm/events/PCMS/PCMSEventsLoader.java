@@ -58,19 +58,23 @@ public class PCMSEventsLoader extends EventsLoader {
     }
 
     private void updateStatements() throws IOException {
-        String url = properties.getProperty("url");
+        try {
+            String url = properties.getProperty("url");
 //        String html = new BufferedReader(new FileReader(url))
 //                .lines()
 //                .collect(Collectors.joining());
 //        Document doc = Jsoup.parse(html, url);
 //        parseAndUpdateStandings(doc.body());
 
-        //String xml = new BufferedReader(new FileReader(url))
-        String xml = new BufferedReader(new InputStreamReader((new URL(url)).openStream(), StandardCharsets.UTF_8))
-                .lines()
-                .collect(Collectors.joining());
-        Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
-        parseAndUpdateStandings(doc);
+            //String xml = new BufferedReader(new FileReader(url))
+            String xml = new BufferedReader(new InputStreamReader((new URL(url)).openStream(), StandardCharsets.UTF_8))
+                    .lines()
+                    .collect(Collectors.joining());
+            Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
+            parseAndUpdateStandings(doc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

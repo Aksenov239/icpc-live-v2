@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
  * @author: pashka
  */
 public class GreenScreenWidget extends Widget {
-    private final Color color = Color.black;
+    private final Color color = new Color(100, 150, 120);
 
     public GreenScreenWidget() {
     }

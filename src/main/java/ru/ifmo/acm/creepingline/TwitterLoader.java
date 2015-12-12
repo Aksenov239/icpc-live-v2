@@ -1,12 +1,13 @@
 package ru.ifmo.acm.creepingline;
 
+import ru.ifmo.acm.mainscreen.Utils;
 import twitter4j.*;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-public class TwitterLoader extends Thread {
+public class TwitterLoader extends Utils.StoppedRunnable {
     public static TwitterLoader getInstance() {
         if (instance == null) {
             instance = new TwitterLoader();
@@ -40,14 +41,14 @@ public class TwitterLoader extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (!stop) {
             try {
                 List<Status> updates = getUpdates();
                 updates.forEach(tweet -> {
                     Message message = new Message(tweet.getText(), System.currentTimeMillis(), duration, false);
                     MessageData.getMessageData().addMessage(message);
                 });
-                sleep(5000);
+                Thread.sleep(5000);
             } catch (InterruptedException | TwitterException e) {
                 e.printStackTrace();
             }

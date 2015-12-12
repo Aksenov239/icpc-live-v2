@@ -59,7 +59,9 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
                 player.setComponent(null);
                 player2.setComponent(component);
                 inChange.set(true);
-                player.stop();
+                if (!stopped.get()) {
+                    player.stop();
+                }
                 player = player2;
                 image = player2.getImage();
                 ready.set(true);
@@ -70,7 +72,7 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
     }
 
     public void stop() {
-        if (player != null && !stopped.get() && getPlayer().isPlaying()) {
+        if (player != null && !stopped.get()) {
             player.stop();
         }
         stopped.set(true);

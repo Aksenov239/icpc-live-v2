@@ -99,6 +99,7 @@ public abstract class TeamWidget extends VideoWidget {
             return;
         }
         g.setColor(Color.WHITE);
+        g.setColor(new Color(0, 0, 30));
         g.fillRect(x, y, this.width - widthVideo, height);
 //        team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (team == null) return;

@@ -1,5 +1,6 @@
 package ru.ifmo.acm;
 
+import ru.ifmo.acm.creepingline.MessageData;
 import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
@@ -39,6 +40,8 @@ public class ContextListener implements ServletContextListener {
         MainScreenData.getMainScreenData();
 
         PCMSEventsLoader.getInstance();
+
+        MessageData.getMessageData();
 
         threadsList.add(dataLoader);
     }

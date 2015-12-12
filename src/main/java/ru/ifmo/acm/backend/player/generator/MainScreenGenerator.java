@@ -1,17 +1,17 @@
 package ru.ifmo.acm.backend.player.generator;
 
+import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.backend.player.widgets.*;
 
 import java.io.IOException;
 import java.util.Properties;
-import ru.ifmo.acm.backend.player.TickPlayer;
 
 /**
  * Created by aksenov on 14.04.2015.
  */
 public class MainScreenGenerator extends ScreenGenerator {
-    private static final int width = 1920 / 2;
-    private static final int height = 1080 / 2;
+    private static final int width = 1280;//1920 / 2;
+    private static final int height = 720;//1080 / 2;
 
     public MainScreenGenerator() throws IOException {
         super(width, height);
@@ -35,6 +35,7 @@ public class MainScreenGenerator extends ScreenGenerator {
                 updateWait,
                 width,
                 height - (int)(32 * TickPlayer.scale),
+                4. / 3,
                 Integer.parseInt(properties.getProperty("sleep.time"))
         );
         widgets[2] = new ClockWidget(updateWait);

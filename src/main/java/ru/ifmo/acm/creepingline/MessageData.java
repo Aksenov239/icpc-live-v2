@@ -18,6 +18,9 @@ public class MessageData {
     public static MessageData getMessageData() {
         if (messageData == null) {
             messageData = new MessageData();
+            Utils.StoppedThread twitterThread = new Utils.StoppedThread(TwitterLoader.getInstance());
+            twitterThread.start();
+            ContextListener.addThread(twitterThread);
         }
         return messageData;
     }
@@ -46,12 +49,7 @@ public class MessageData {
 //                0L,
 //                60000L);
 
-        new Timer().scheduleAtFixedRate(
-                new TimerTask() {
-                    public void run() {
-                        tick();
-                    }
-                }, 0L, 2000L);
+//                }, 0L, 2000L);
         Utils.StoppedThread update = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
             public void run() {
