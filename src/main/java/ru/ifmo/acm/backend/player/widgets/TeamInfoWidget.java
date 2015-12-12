@@ -12,8 +12,8 @@ import java.awt.*;
 public class TeamInfoWidget extends TeamWidget {
     private int teamId;
 
-    public TeamInfoWidget(long updateWait, int width, int height, int sleepTime) {
-        super(0, 0, width, height, sleepTime);
+    public TeamInfoWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
+        super(0, 0, width, height, aspectRatio, sleepTime);
 
         this.updateWait = updateWait;
 

@@ -31,8 +31,20 @@ public abstract class TeamWidget extends VideoWidget {
         }
     }
 
-    public TeamWidget(int x, int y, int width, int height, int sleepTime) {
-        super(x, y, width, height, sleepTime);
+    private int xVideo;
+    private int yVideo;
+    private int widthVideo;
+    private int heightVideo;
+    private int width;
+    private int height;
+    public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
+        super(x, y, (int)(height * aspectRatio), height, sleepTime);
+        this.width = width;
+        this.height = height;
+        this.widthVideo = (int)(height * aspectRatio);
+        this.heightVideo = height;
+        this.xVideo = x + width - widthVideo;
+        this.yVideo = y;
     }
 
     protected abstract int getTeamId();
@@ -77,7 +89,7 @@ public abstract class TeamWidget extends VideoWidget {
             return;
 
         if (team != null && URL != null) {
-            g.drawImage(image, x, y, null);
+            g.drawImage(image, xVideo, yVideo, null);
         }
         if (inChange.get() || team == null) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
@@ -86,6 +98,8 @@ public abstract class TeamWidget extends VideoWidget {
         if (URL == null || URL.contains("info")) {
             return;
         }
+        g.setColor(Color.WHITE);
+        g.fillRect(x, y, this.width - widthVideo, height);
 //        team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (team == null) return;
         g.setFont(FONT1);
