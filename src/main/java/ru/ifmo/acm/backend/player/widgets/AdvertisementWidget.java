@@ -30,16 +30,15 @@ public class AdvertisementWidget extends Widget {
             if (data == null)
                 return;
             //System.err.println(data.advertisementData.isVisible);
-            if (widget.isVisible() && lastVisibleChange + duration < System.currentTimeMillis()) {
-                data.advertisementData.isVisible = false;
+            lastVisibleChange = data.advertisementData.timestamp;
+            if (lastVisibleChange + duration < System.currentTimeMillis()) {
+                widget.setVisible(false);
             } else {
-              if (widget.isVisible() ^ data.advertisementData.isVisible) {
-                  lastVisibleChange = System.currentTimeMillis();
-              }
+                widget.setVisible(data.advertisementData.isVisible);
+                if (widget.isVisible())
+                    widget.setCaption(data.advertisementData.advertisement.getAdvertisement(), null);
             }
-            widget.setVisible(data.advertisementData.isVisible);
-            widget.setCaption(data.advertisementData.advertisement.getAdvertisement(), null);
-            
+
             lastUpdate = System.currentTimeMillis();
         }
     }

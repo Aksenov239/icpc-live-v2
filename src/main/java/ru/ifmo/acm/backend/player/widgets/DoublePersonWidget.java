@@ -41,7 +41,8 @@ public class DoublePersonWidget extends Widget {
                 leftWidget.setVisible(false);
             } else {
                 leftWidget.setVisible(personData.isVisible[0]);
-                leftWidget.setCaption(personData.label[0].getName(), personData.label[0].getPosition());
+                if (!leftWidget.isVisible())
+                    leftWidget.setCaption(personData.label[0].getName(), personData.label[0].getPosition());
             }
 
             lastVisibleChangeRight = personData.timestamp[1];
@@ -49,7 +50,8 @@ public class DoublePersonWidget extends Widget {
                 rightWidget.setVisible(false);
             } else {
                 rightWidget.setVisible(personData.isVisible[1]);
-                rightWidget.setCaption(personData.label[1].getName(), personData.label[1].getPosition());
+                if (!rightWidget.isVisible())
+                    rightWidget.setCaption(personData.label[1].getName(), personData.label[1].getPosition());
             }
 
             lastUpdate = System.currentTimeMillis();
