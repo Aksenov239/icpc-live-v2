@@ -37,6 +37,6 @@ public class Main {
 //        creepingLinePainter.addMessage("OMG, It really works!");
 //        new TickPlayer("Main screen", new GreenScreenGenerator());
         TickPlayer.scale = 1.;// * 1080 / 720 0.5;
-        new TickPlayer("Main screen", new MainScreenGenerator()).frame.setLocation(1600, 0);
+        new TickPlayer("Main screen", new MainScreenGenerator()).frame.setLocation(0, 0);
     }
 }
