@@ -41,7 +41,7 @@ public class DoublePersonWidget extends Widget {
                 leftWidget.setVisible(false);
             } else {
                 leftWidget.setVisible(personData.isVisible[0]);
-                if (!leftWidget.isVisible())
+                if (leftWidget.isVisible())
                     leftWidget.setCaption(personData.label[0].getName(), personData.label[0].getPosition());
             }
 
@@ -50,7 +50,7 @@ public class DoublePersonWidget extends Widget {
                 rightWidget.setVisible(false);
             } else {
                 rightWidget.setVisible(personData.isVisible[1]);
-                if (!rightWidget.isVisible())
+                if (rightWidget.isVisible())
                     rightWidget.setCaption(personData.label[1].getName(), personData.label[1].getPosition());
             }
 
