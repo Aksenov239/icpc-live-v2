@@ -6,13 +6,14 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author: pashka
  */
 public abstract class VideoWidget extends Widget implements PlayerWidget {
-    protected PlayerInImage player;
-    protected BufferedImage image;
+    private PlayerInImage player;
+    protected AtomicReference<BufferedImage> image;
     protected AtomicBoolean inChange;
     protected AtomicBoolean ready;
     protected AtomicBoolean stopped;
@@ -21,16 +22,16 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
     protected int width;
     protected int height;
     protected int sleepTime;
-    protected String URL;
+    protected AtomicReference<String> URL;
 
     public VideoWidget(int x, int y, int width, int height, int sleepTime) {
-        this.URL = null;
+        this.URL = new AtomicReference<>(null);
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         player = new PlayerInImage(width, height, null, null);
-        image = player.getImage();
+        image = new AtomicReference<BufferedImage>(player.getImage());
         this.sleepTime = sleepTime;
         inChange = new AtomicBoolean();
         ready = new AtomicBoolean(true);
@@ -40,14 +41,14 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
     public void change(final String url) {
         if (url == null) {
             if (!stopped.get()) {
-                URL = null;
+                URL.set(null);
                 stop();
             }
             return;
         }
+        ready.set(false);
         new Thread() {
             public void run() {
-                ready.set(false);
                 PlayerInImage player2 = new PlayerInImage(width, height, null, url);
                 try {
                     Thread.sleep(sleepTime);
@@ -63,9 +64,9 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
                     player.stop();
                 }
                 player = player2;
-                image = player2.getImage();
+                image.set(player2.getImage());
                 ready.set(true);
-                URL = url;
+                URL.set(url);
                 stopped.set(false);
             }
         }.start();
@@ -76,7 +77,7 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
             player.stop();
         }
         stopped.set(true);
-        URL = null;
+        URL.set(null);
     }
 
     public boolean readyToShow() {

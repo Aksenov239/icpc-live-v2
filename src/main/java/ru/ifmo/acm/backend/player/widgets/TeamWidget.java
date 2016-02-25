@@ -88,14 +88,14 @@ public abstract class TeamWidget extends VideoWidget {
         if (!isVisible())
             return;
 
-        if (team != null && URL != null) {
-            g.drawImage(image, xVideo, yVideo, null);
+        if (team != null && URL.get() != null) {
+            g.drawImage(image.get(), xVideo, yVideo, null);
         }
         if (inChange.get() || team == null) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             inChange.set(false);
         }
-        if (URL == null || URL.contains("info")) {
+        if (URL.get() == null || URL.get().contains("info")) {
             return;
         }
         g.setColor(Color.WHITE);

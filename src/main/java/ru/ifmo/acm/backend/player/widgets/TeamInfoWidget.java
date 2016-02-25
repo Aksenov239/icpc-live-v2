@@ -39,7 +39,7 @@ public class TeamInfoWidget extends TeamWidget {
             } else {
                 setVisible(true);
                 //System.err.println(data.teamData.teamId + " " + teamId + " " + ready.get());
-                if (!isVisible() || (data.teamData.teamId != teamId && ready.get())) {
+                if (data.teamData.teamId != teamId && ready.get()) {
                     //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                     PCMSTeamInfo team = (PCMSTeamInfo) Preparation.eventsLoader.getContestData().getParticipant(data.teamData.teamId);
                     if (team == null) {
