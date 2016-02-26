@@ -36,6 +36,6 @@ public class CameraVideoWidget extends VideoWidget {
     public void paint(Graphics2D g, int width, int height) {
         update();
 
-        g.drawImage(image, x, y, null);
+       // g.drawImage(image, x, y, null);
     }
 }
