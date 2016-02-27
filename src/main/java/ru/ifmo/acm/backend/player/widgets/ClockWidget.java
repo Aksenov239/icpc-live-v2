@@ -36,6 +36,10 @@ public class ClockWidget extends Widget {
         setOpacityState(1);
     }
 
+    public int getHeight() {
+        return HEIGHT;
+    }
+
     public ClockWidget(long updateWait) {
         initialization();
         this.updateWait = updateWait;

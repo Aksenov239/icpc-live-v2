@@ -106,7 +106,8 @@ public abstract class Widget {
         drawRect(g, x, y, width, height, color, opacity);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
-        float yy = (float) (y + (height * (1 - MARGIN_BOTTOM)));
+        FontMetrics wh = g.getFontMetrics();
+        float yy = (float) (y + 1. * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent();
         if (position == POSITION_LEFT) {
             float xx = x + (float) (height * MARGIN);
             g.drawString(text, xx, yy);
@@ -140,6 +141,5 @@ public abstract class Widget {
         x += (int) (width * (SOLVED_WIDTH + SPLIT));
         drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (width * PENALTY_WIDTH), height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
     }
-
 
 }
