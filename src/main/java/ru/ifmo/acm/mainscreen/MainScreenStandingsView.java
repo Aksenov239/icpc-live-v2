@@ -80,11 +80,11 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     private Button createStandingsControllerButton(String name, boolean visible, int type) {
         Button button = new Button(name);
         button.addClickListener(event -> {
-            if (visible && mainScreenData.standingsStatus.isStandingsVisible()) {
+            if (visible && mainScreenData.standingsData.isStandingsVisible()) {
                 Notification.show("You should hide standings first", Notification.Type.WARNING_MESSAGE);
                 return;
             }
-            mainScreenData.standingsStatus.setStandingsVisible(visible, type);
+            mainScreenData.standingsData.setStandingsVisible(visible, type);
             standingsStatus.setValue(getStandingsStatus());
         });
 
@@ -100,7 +100,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 //            return String.format(labelStatuses[status.standingsType], time);
 //        }
 //        return labelStatuses[3];
-        return mainScreenData.standingsStatus.standingsStatus().toString();
+        return mainScreenData.standingsData.toString();
     }
 
     /* mainscreen */

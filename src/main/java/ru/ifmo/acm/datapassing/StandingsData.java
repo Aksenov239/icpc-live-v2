@@ -1,34 +1,25 @@
 package ru.ifmo.acm.datapassing;
 
+import ru.ifmo.acm.backend.player.widgets.StandingsWidget;
+import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
-import ru.ifmo.acm.mainscreen.statuses.StandingsStatus;
-
-import static ru.ifmo.acm.mainscreen.statuses.StandingsStatus.getTotalTime;
 
 public class StandingsData implements CachedData {
     @Override
     public StandingsData initialize() {
-        StandingsStatus status = MainScreenData.getMainScreenData().standingsStatus;
-        status.initialize(this);
+        StandingsData data = MainScreenData.getMainScreenData().standingsData;
+        this.timestamp = data.timestamp;
+        this.isVisible = data.isVisible;
+        this.standingsType = data.standingsType;
 
         return this;
     }
 
-//    public StandingsData() {
-//    }
-//
-//    public StandingsData(long standingsTimestamp, boolean isStandingsVisible, int standingsType) {
-//        this.standingsTimestamp = standingsTimestamp;
-//        this.isStandingsVisible = isStandingsVisible;
-//        this.standingsType = standingsType;
-//    }
-
-
     public String toString() {
-        if (isStandingsVisible) {
+        if (isVisible) {
             long time = standingsType == 0
-                    ? (System.currentTimeMillis() - standingsTimestamp) / 1000
-                    : (standingsTimestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
+                    ? (System.currentTimeMillis() - timestamp) / 1000
+                    : (timestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
             return String.format(labelStatuses[standingsType], time);
         }
         return labelStatuses[3];
@@ -41,7 +32,65 @@ public class StandingsData implements CachedData {
             "Standings aren't shown"
     };
 
-    public long standingsTimestamp;
-    public boolean isStandingsVisible;
+    public long getLatency() {
+        return latency;
+    }
+
+    public void recache() {
+        Data.cache.refresh(StandingsData.class);
+    }
+
+    public void setStandingsVisible(boolean visible, int type) {
+        synchronized (standingsLock) {
+            timestamp = System.currentTimeMillis();
+            isVisible = visible;
+            standingsType = type;
+        }
+
+        recache();
+    }
+
+    public static long getTotalTime(int type) {
+        return StandingsWidget.totalTime(type, PCMSEventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
+    }
+
+    public void update() {
+        boolean change = false;
+        synchronized (standingsLock) {
+            //System.err.println(PCMSEventsLoader.getInstance().getContestData().getTeamsNumber());
+            if (System.currentTimeMillis() > timestamp +
+                    getTotalTime(standingsType)) {
+                isVisible = false;
+                change = true;
+            }
+        }
+        if (change)
+            recache();
+    }
+
+    public long getStandingsTimestamp() {
+        synchronized (standingsLock) {
+            return timestamp;
+        }
+    }
+
+    public boolean isStandingsVisible() {
+        synchronized (standingsLock) {
+            return isVisible;
+        }
+    }
+
+    public long getStandingsType() {
+        synchronized (standingsLock) {
+            return standingsType;
+        }
+    }
+
+    public long timestamp;
+    public boolean isVisible;
     public int standingsType;
+
+    public static long latency;
+
+    final private Object standingsLock = new Object();
 }

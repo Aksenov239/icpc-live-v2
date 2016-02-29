@@ -101,7 +101,7 @@ public class StandingsWidget extends Widget {
             if (data == null) {
                 return;
             }
-            if (data.standingsData.isStandingsVisible) {
+            if (data.standingsData.isStandingsVisible()) {
                 if (!isVisible() && contestData != null) {
                     //  lastVisibleChange = System.currentTimeMillis();
                     setState(data.standingsData.standingsType);

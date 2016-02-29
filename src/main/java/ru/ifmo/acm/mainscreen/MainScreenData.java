@@ -2,6 +2,7 @@ package ru.ifmo.acm.mainscreen;
 
 
 import ru.ifmo.acm.datapassing.ClockData;
+import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.mainscreen.statuses.*;
 
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class MainScreenData {
             long timePerson = Long.parseLong(properties.getProperty("person.time")) + latency;
             personStatus = new PersonStatus(backupPersons, timePerson);
 
-            standingsStatus = new StandingsStatus(latency);
+            standingsData = new StandingsData();
+            StandingsData.latency = latency;
 
             int sleepTime = Integer.parseInt(properties.getProperty("sleep.time"));
 
@@ -51,7 +53,7 @@ public class MainScreenData {
     public void update() {
       advertisementStatus.update();
       personStatus.update();
-      standingsStatus.update();
+      standingsData.update();
     }
 
     private static MainScreenData mainScreenData;
@@ -59,7 +61,7 @@ public class MainScreenData {
     public AdvertisementStatus advertisementStatus;
     public ClockData clockData;
     public PersonStatus personStatus;
-    public StandingsStatus standingsStatus;
+    public StandingsData standingsData;
     public TeamStatus teamStatus;
     public CameraStatus cameraStatus;
 }
