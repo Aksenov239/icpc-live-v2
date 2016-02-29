@@ -31,14 +31,14 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     }
 
     public String getClockStatus() {
-        boolean status = mainScreenData.clockStatus.isClockVisible();
+        boolean status = mainScreenData.clockData.isClockVisible();
         return status ? clockStatuses[0] : clockStatuses[1];
     }
 
     private Button createClockButton(String name, boolean visibility, int status) {
         Button button = new Button(name);
         button.addClickListener(event -> {
-            mainScreenData.clockStatus.setClockVisible(visibility);
+            mainScreenData.clockData.setClockVisible(visibility);
             clockStatus.setValue(clockStatuses[status]);
         });
 

@@ -53,7 +53,7 @@ public class ClockWidget extends Widget {
             Data data = Preparation.dataLoader.getDataBackend();
             if (data == null)
                 return;
-            if (data.clockData.isVisible) {
+            if (data.clockData.isClockVisible()) {
                 setVisible(true);
             } else {
                 setVisible(false);

@@ -1,7 +1,7 @@
 package ru.ifmo.acm.mainscreen;
 
 
-import ru.ifmo.acm.datapassing.DataLoader;
+import ru.ifmo.acm.datapassing.ClockData;
 import ru.ifmo.acm.mainscreen.statuses.*;
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class MainScreenData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        clockStatus = new ClockStatus();
+        clockData = new ClockData();
     }
 
     public void update() {
@@ -57,7 +57,7 @@ public class MainScreenData {
     private static MainScreenData mainScreenData;
 
     public AdvertisementStatus advertisementStatus;
-    public ClockStatus clockStatus;
+    public ClockData clockData;
     public PersonStatus personStatus;
     public StandingsStatus standingsStatus;
     public TeamStatus teamStatus;
