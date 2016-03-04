@@ -10,8 +10,20 @@ import java.util.Properties;
  * Created by aksenov on 14.04.2015.
  */
 public class MainScreenGenerator extends ScreenGenerator {
-    public static final int width = 1280;//1920 / 2;
-    public static final int height = 720;//1080 / 2;
+    public static final int width;//1920 / 2;
+    public static final int height;//1080 / 2;
+
+    static {
+        Properties properties = new Properties();
+        try {
+            properties.load(MainScreenGenerator.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        width = Integer.parseInt(properties.getProperty("width", "1280"));
+        height = Integer.parseInt(properties.getProperty("height", "720"));
+        TickPlayer.scale = 1. * width / 1280;
+    }
 
     public MainScreenGenerator() throws IOException {
         super(width, height);
