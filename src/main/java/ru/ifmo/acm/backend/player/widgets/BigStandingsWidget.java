@@ -130,8 +130,8 @@ public class BigStandingsWidget extends Widget {
         }
         contestData = Preparation.eventsLoader.getContestData();
         if (contestData == null || contestData.getStandings() == null) return;
-        if (LENGTH == 0)
-            LENGTH = contestData.getTeamsNumber();
+        LENGTH = Math.min(contestData.getTeamsNumber(), contestData.getStandings().length);
+
         int dt = changeOpacity();
 
         if (opacityState > 0) {
@@ -140,14 +140,16 @@ public class BigStandingsWidget extends Widget {
                 if (timer >= PERIOD) {
                     timer -= PERIOD;
                     start += TEAMS_ON_PAGE;
+                    if (start >= LENGTH && !controlled) {
+                        start = 0;
+                        timer = -TOP_PAGE_STANDING_TIME + STANDING_TIME;
+                    }
                 }
             }
             int dy = 0;
             if (timer >= STANDING_TIME) {
-                if (start + TEAMS_ON_PAGE >= LENGTH) {
-                    if (controlled) {
-                        setVisible(false);
-                    }
+                if (start + TEAMS_ON_PAGE >= LENGTH && controlled) {
+                    setVisible(false);
                 } else {
                     double t = (timer - STANDING_TIME) * 1.0 / MOVING_TIME;
                     dy = (int) ((2 * t * t * t - 3 * t * t) * MOVING_HEIGHT);
@@ -157,10 +159,9 @@ public class BigStandingsWidget extends Widget {
             if (start < LENGTH) {
                 drawTeams(g, SPACE_X, (int) (PLATE_HEIGHT + 2 * SPACE_Y + dy), contestData, start);
             }
-            if (start + TEAMS_ON_PAGE < LENGTH) {
-                if (start + TEAMS_ON_PAGE >= LENGTH)
-                    start = -TEAMS_ON_PAGE;
-                drawTeams(g, SPACE_X, (int) (PLATE_HEIGHT + 2 * SPACE_Y + dy + MOVING_HEIGHT), contestData, start + TEAMS_ON_PAGE);
+            if (start + TEAMS_ON_PAGE < LENGTH || !controlled) {
+                int nextPage = start + TEAMS_ON_PAGE < LENGTH ? start + TEAMS_ON_PAGE : 0;
+                drawTeams(g, SPACE_X, (int) (PLATE_HEIGHT + 2 * SPACE_Y + dy + MOVING_HEIGHT), contestData, nextPage);
             }
             drawHead(g, SPACE_X, (int) SPACE_Y, contestData.getProblemsNumber());
         } else {
