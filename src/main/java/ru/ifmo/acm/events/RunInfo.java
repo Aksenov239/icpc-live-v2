@@ -6,4 +6,5 @@ public interface RunInfo {
     String getResult();
     int getProblemNumber();
     long getTime();
+    int getTeam();
 }

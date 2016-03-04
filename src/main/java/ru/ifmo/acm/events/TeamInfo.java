@@ -1,5 +1,6 @@
 package ru.ifmo.acm.events;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface TeamInfo {
 
     int getSolvedProblemsNumber();
 
-    List<RunInfo>[] getRuns();
+    Collection<RunInfo>[] getRuns();
 
     Comparator<TeamInfo> comparator = new Comparator<TeamInfo>() {
         @Override
