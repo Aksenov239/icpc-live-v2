@@ -7,7 +7,6 @@ import ru.ifmo.acm.events.TeamInfo;
  * @author: pashka
  */
 public abstract class Widget {
-
     public final static double OPACITY = 1;
 
     public static final double MARGIN = 0.2;
