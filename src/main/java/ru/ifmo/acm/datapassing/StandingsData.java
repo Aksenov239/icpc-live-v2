@@ -1,6 +1,7 @@
 package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.backend.player.widgets.StandingsWidget;
+import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
@@ -51,7 +52,7 @@ public class StandingsData implements CachedData {
     }
 
     public static long getTotalTime(int type) {
-        return StandingsWidget.totalTime(type, PCMSEventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
+        return StandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
     }
 
     public void update() {
