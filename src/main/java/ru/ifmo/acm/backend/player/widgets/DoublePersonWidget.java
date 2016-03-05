@@ -52,9 +52,9 @@ public class DoublePersonWidget extends Widget {
 
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
-        leftWidget.paint(g, width, height);
-        rightWidget.paint(g, width, height);
+        leftWidget.paintImpl(g, width, height);
+        rightWidget.paintImpl(g, width, height);
     }
 }

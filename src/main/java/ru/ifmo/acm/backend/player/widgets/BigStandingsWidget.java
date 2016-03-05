@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * @author: pashka
  */
-public class BigStandingsWidget extends Widget {
+public class BigStandingsWidget extends Widget implements Scalable {
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
@@ -113,7 +113,7 @@ public class BigStandingsWidget extends Widget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
         g = (Graphics2D) g.create();
         g.translate(baseX, baseY);

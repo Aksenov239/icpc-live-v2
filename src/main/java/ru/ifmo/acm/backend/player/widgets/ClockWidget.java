@@ -13,14 +13,14 @@ import java.io.IOException;
 /**
  * @author: pashka
  */
-public class ClockWidget extends Widget {
+public class ClockWidget extends Widget implements Scalable {
 
     private BufferedImage clock;
-    private final int x = (int) (1160 * TickPlayer.scale);
-    private final int y = (int) (20 * TickPlayer.scale);
-    private final int WIDTH = (int) (93 * TickPlayer.scale);
-    private final int HEIGHT = (int) (31 * TickPlayer.scale);
-    Font clockFont = Font.decode("ALS Schlange sans " + (int) (24 * TickPlayer.scale));
+    private final int x = 1160;
+    private final int y = 20;
+    private final int WIDTH = 93;
+    private final int HEIGHT = 31;
+    Font clockFont = Font.decode("ALS Schlange sans " + 24);
     private long start;
 
     private void initialization() {
@@ -55,7 +55,7 @@ public class ClockWidget extends Widget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
 //        g.drawImage(clock, x, y, null);
         update();
         changeOpacity();
@@ -73,8 +73,8 @@ public class ClockWidget extends Widget {
         int w1 = g.getFontMetrics().charWidth('0');
         int w2 = g.getFontMetrics().charWidth(':');
         String timeS = String.format("%d:%02d:%02d", h, m, s);
-        int dx = (int) ((clock.getWidth() * TickPlayer.scale - w1 * 5 - w2 * 2) / 2 + 1);
-        int dy = (int) (clock.getHeight() * TickPlayer.scale * 0.75);
+        int dx = (int) ((clock.getWidth() - w1 * 5 - w2 * 2) / 2 + 1);
+        int dy = (int) (clock.getHeight() * 0.75);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         for (int i = 0; i < timeS.length(); i++) {
             char c = timeS.charAt(i);

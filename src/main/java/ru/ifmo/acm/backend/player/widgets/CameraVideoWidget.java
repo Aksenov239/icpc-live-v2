@@ -22,7 +22,7 @@ public class CameraVideoWidget extends VideoWidget {
         lastUpdate = System.currentTimeMillis();
     }
 
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
 
        // g.drawImage(image, x, y, null);

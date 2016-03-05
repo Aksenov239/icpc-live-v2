@@ -43,7 +43,17 @@ public abstract class Widget {
         this.updateWait = updateWait;
     }
 
-    public abstract void paint(Graphics2D g, int width, int height);
+    protected abstract void paintImpl(Graphics2D g, int width, int height);
+
+    public void paint(Graphics2D g, int width, int height, double scale) {
+        if (this instanceof Scalable && scale != 1) {
+            g = (Graphics2D) g.create();
+            g.scale(scale, scale);
+            width = (int) Math.round(width * scale);
+            height = (int) Math.round(height * scale);
+        }
+        paintImpl(g, width, height);
+    }
 
     private static final double V = 0.001;
 

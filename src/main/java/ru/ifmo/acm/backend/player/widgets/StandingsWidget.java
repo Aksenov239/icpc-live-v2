@@ -16,23 +16,18 @@ import java.io.IOException;
 /**
  * @author: pashka
  */
-public class StandingsWidget extends Widget {
+public class StandingsWidget extends Widget implements Scalable {
 
     private static final int MOVING_TIME = 500;
-    private final int PLATE_WIDTH = (int) (326 * TickPlayer.scale);
+    private final int PLATE_WIDTH = 326;
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     public int PERIOD = STANDING_TIME + MOVING_TIME;
     public int LENGTH;
-    private final int X1 = (int) (31 * TickPlayer.scale);
-    private final int X2 = (int) (55 * TickPlayer.scale);
-    private final int X3 = (int) (275 * TickPlayer.scale);
-    private final int X4 = (int) (314 * TickPlayer.scale);
-    private final double DX = 349 * TickPlayer.scale;
-    private final int Y1 = (int) (65 * TickPlayer.scale);
-    private final double DY = 35 * TickPlayer.scale;
+    private final double DX = 349;
+    private final double DY = 35;
     public final static int TEAMS_ON_PAGE = 12;
-    public final Font FONT = Font.decode("Open Sans Italic " + (int) (22 * TickPlayer.scale));
+    public final Font FONT = Font.decode("Open Sans Italic " + 22);
 
     private final BufferedImage image;
     //double opacity;
@@ -104,7 +99,7 @@ public class StandingsWidget extends Widget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
 //        standings = StandingsLoader.getLoaded();
         contestData = Preparation.eventsLoader.getContestData();
@@ -131,7 +126,7 @@ public class StandingsWidget extends Widget {
                 }
             }
             int x = (int) ((width - (DX + DX + PLATE_WIDTH)) / 2);
-            int y = (int) (height - 32 * TickPlayer.scale - 4.5 * DY);
+            int y = (int) (height - 32 - 4.5 * DY);
 //            g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
             if (start < LENGTH) {
                 drawStandings(g, x + dx, y, contestData, start);

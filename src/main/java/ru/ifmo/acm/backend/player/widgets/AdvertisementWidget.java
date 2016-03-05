@@ -1,6 +1,5 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
@@ -36,8 +35,8 @@ public class AdvertisementWidget extends Widget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
-        widget.paint(g, width, height);
+        widget.paintImpl(g, width, height);
     }
 }
