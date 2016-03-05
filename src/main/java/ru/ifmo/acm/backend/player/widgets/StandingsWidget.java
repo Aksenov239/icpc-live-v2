@@ -3,6 +3,7 @@ package ru.ifmo.acm.backend.player.widgets;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
@@ -58,14 +59,14 @@ public class StandingsWidget extends Widget {
     private long lastUpdate;
     // private long lastVisibleChange = Long.MAX_VALUE / 2;
 
-    public void setState(long type) {
-        switch ((int) type) {
-            case 0:
+    public void setState(StandingsData.StandingsType type) {
+        switch (type) {
+            case ONE_PAGE:
                 LENGTH = Math.min(12, contestData.getTeamsNumber());
                 start = 0;
                 timer = -Integer.MAX_VALUE;
                 break;
-            case 1:
+            case TWO_PAGES:
                 TOP_PAGE_STANDING_TIME = 10000;
                 STANDING_TIME = 10000;
                 PERIOD = STANDING_TIME + MOVING_TIME;
@@ -73,7 +74,7 @@ public class StandingsWidget extends Widget {
                 start = 0;
                 timer = 0;
                 break;
-            case 2:
+            case ALL_PAGES:
                 TOP_PAGE_STANDING_TIME = 10000;
                 STANDING_TIME = 5000;
                 PERIOD = STANDING_TIME + MOVING_TIME;
@@ -84,14 +85,15 @@ public class StandingsWidget extends Widget {
         setVisible(true);
     }
 
-    public static long totalTime(long type, int teamNumber) {
+    public static long totalTime(StandingsData.StandingsType type, int teamNumber) {
         int pages = teamNumber / TEAMS_ON_PAGE;
-        if (type == 0) {
-            return Integer.MAX_VALUE;
-        } else if (type == 1) {
-            return 2 * STANDING_TIME + MOVING_TIME;
-        } else {
-            return (pages - 1) * (STANDING_TIME + MOVING_TIME) + TOP_PAGE_STANDING_TIME;
+        switch (type) {
+            case ONE_PAGE:
+                return Integer.MAX_VALUE;
+            case TWO_PAGES:
+                return 2 * STANDING_TIME + MOVING_TIME;
+            default:
+                return (pages - 1) * (STANDING_TIME + MOVING_TIME) + TOP_PAGE_STANDING_TIME;
         }
     }
 
@@ -101,7 +103,7 @@ public class StandingsWidget extends Widget {
             if (data == null) {
                 return;
             }
-            if (data.standingsData.isStandingsVisible()) {
+            if (data.standingsData.isStandingsVisible() && !data.standingsData.isBig()) {
                 if (!isVisible() && contestData != null) {
                     //  lastVisibleChange = System.currentTimeMillis();
                     setState(data.standingsData.standingsType);
