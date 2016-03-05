@@ -38,7 +38,7 @@ public abstract class TeamWidget extends VideoWidget {
     private int width;
     private int height;
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
-        super(x, y, (int)(height * aspectRatio), height, sleepTime);
+        super(x, y, (int)(height * aspectRatio), height, sleepTime, 0);
         this.width = width;
         this.height = height;
         this.widthVideo = (int)(height * aspectRatio);

@@ -1,6 +1,9 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import java.awt.*;
+
+import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
 
 /**
@@ -29,6 +32,16 @@ public abstract class Widget {
     double opacity = 1;
     double textOpacity = 1;
     double opacityState = 1;
+
+    protected long updateWait;
+    protected long lastUpdate;
+
+    public Widget() {
+    }
+
+    public Widget(long updateWait) {
+        this.updateWait = updateWait;
+    }
 
     public abstract void paint(Graphics2D g, int width, int height);
 
@@ -141,4 +154,17 @@ public abstract class Widget {
         drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (width * PENALTY_WIDTH), height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
     }
 
+    protected void update() {
+        if (lastUpdate + updateWait < System.currentTimeMillis()) {
+            Data data = Preparation.dataLoader.getDataBackend();
+            if (data == null) {
+                return;
+            }
+            updateImpl(data);
+            lastUpdate = System.currentTimeMillis();
+        }
+    }
+
+    protected void updateImpl(Data data) {
+    }
 }

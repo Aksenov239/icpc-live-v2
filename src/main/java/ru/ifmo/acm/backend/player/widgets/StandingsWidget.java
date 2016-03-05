@@ -43,6 +43,7 @@ public class StandingsWidget extends Widget {
     private ContestInfo contestData;
 
     public StandingsWidget(long updateWait) {
+        super(updateWait);
         BufferedImage image;
         try {
             image = ImageIO.read(new File("pics/standings.png"));
@@ -51,13 +52,7 @@ public class StandingsWidget extends Widget {
         }
         this.image = image;
         last = System.currentTimeMillis();
-
-        this.updateWait = updateWait;
     }
-
-    private long updateWait;
-    private long lastUpdate;
-    // private long lastVisibleChange = Long.MAX_VALUE / 2;
 
     public void setState(StandingsData.StandingsType type) {
         switch (type) {
@@ -97,21 +92,14 @@ public class StandingsWidget extends Widget {
         }
     }
 
-    public void update() {
-        if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null) {
-                return;
+    protected void update(Data data) {
+        if (data.standingsData.isStandingsVisible() && !data.standingsData.isBig()) {
+            if (!isVisible() && contestData != null) {
+                //  lastVisibleChange = System.currentTimeMillis();
+                setState(data.standingsData.standingsType);
             }
-            if (data.standingsData.isStandingsVisible() && !data.standingsData.isBig()) {
-                if (!isVisible() && contestData != null) {
-                    //  lastVisibleChange = System.currentTimeMillis();
-                    setState(data.standingsData.standingsType);
-                }
-            } else {
-                setVisible(false);
-            }
-            lastUpdate = System.currentTimeMillis();
+        } else {
+            setVisible(false);
         }
     }
 

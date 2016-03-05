@@ -38,6 +38,7 @@ public class BigStandingsWidget extends Widget {
     private ContestInfo contestData;
 
     public BigStandingsWidget(int x, int y, int width, int height, long updateWait, boolean controlled) {
+        super(updateWait);
         last = System.currentTimeMillis();
         baseX = x;
         baseY = y;
@@ -61,9 +62,6 @@ public class BigStandingsWidget extends Widget {
 
         font = Font.decode("Open Sans Italic " + (int) (plateHeight * 0.7));
     }
-
-    private long updateWait;
-    private long lastUpdate;
 
     public void setState(StandingsData.StandingsType type) {
         switch (type) {
@@ -102,22 +100,16 @@ public class BigStandingsWidget extends Widget {
         }
     }
 
-    public void update() {
-        if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null) {
-                return;
+    protected void update(Data data) {
+        if (data.standingsData.isStandingsVisible() && data.standingsData.isBig()) {
+            if (!isVisible() && contestData != null) {
+                //  lastVisibleChange = System.currentTimeMillis();
+                setState(data.standingsData.getStandingsType());
             }
-            if (data.standingsData.isStandingsVisible() && data.standingsData.isBig()) {
-                if (!isVisible() && contestData != null) {
-                    //  lastVisibleChange = System.currentTimeMillis();
-                    setState(data.standingsData.getStandingsType());
-                }
-            } else {
-                setVisible(false);
-            }
-            lastUpdate = System.currentTimeMillis();
+        } else {
+            setVisible(false);
         }
+        lastUpdate = System.currentTimeMillis();
     }
 
     @Override

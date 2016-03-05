@@ -41,25 +41,17 @@ public class ClockWidget extends Widget {
     }
 
     public ClockWidget(long updateWait) {
+        super(updateWait);
         initialization();
-        this.updateWait = updateWait;
     }
 
-    private long updateWait = 0;
-    private long lastUpdate = 0;
-
-    private void update() {
-        if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null)
-                return;
-            if (data.clockData.isClockVisible()) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
-            lastUpdate = System.currentTimeMillis();
+    protected void update(Data data) {
+        if (data.clockData.isClockVisible()) {
+            setVisible(true);
+        } else {
+            setVisible(false);
         }
+        lastUpdate = System.currentTimeMillis();
     }
 
     @Override

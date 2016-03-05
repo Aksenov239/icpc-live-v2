@@ -28,34 +28,25 @@ public class CreepingLineWidget extends Widget {
 
     long last;
 
-    private long lastUpdate;
-    private long updateWait;
-
-    private void update() {
-        if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null) {
-                return;
+    protected void update(Data data) {
+        for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
+            byte[] bytes = message.getMessage().getBytes();
+            String text = null;
+            try {
+                text = new String(bytes, "Windows-1251");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
-                byte[] bytes = message.getMessage().getBytes();
-                String text = null;
-                try {
-                    text = new String(bytes, "Windows-1251");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                if (!inQueue.contains(text)) {
-                    inQueue.add(text);
-                    messagesQueue.add(text);
-                }
+            if (!inQueue.contains(text)) {
+                inQueue.add(text);
+                messagesQueue.add(text);
             }
-            lastUpdate = System.currentTimeMillis();
         }
+        lastUpdate = System.currentTimeMillis();
     }
 
     public CreepingLineWidget(long updateWait) {
-        this.updateWait = updateWait;
+        super(updateWait);
     }
 
     Font messageFont = Font.decode("Open Sans " + (int) (20 * TickPlayer.scale));
