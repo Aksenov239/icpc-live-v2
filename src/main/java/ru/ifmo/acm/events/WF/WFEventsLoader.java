@@ -29,6 +29,48 @@ public class WFEventsLoader extends EventsLoader {
         return contestInfo;
     }
 
+    public WFTestInfo readTest(XMLEventReader xmlEventReader) throws XMLStreamException {
+        WFTestInfo test = new WFTestInfo();
+        while (true) {
+            XMLEvent xmlEvent = xmlEventReader.nextEvent();
+            if (xmlEvent.isStartElement()) {
+                StartElement startElement = xmlEvent.asStartElement();
+                String name = startElement.getName().getLocalPart();
+                xmlEvent = xmlEventReader.nextEvent();
+                switch (name) {
+                    case "id":
+                        test.id = Integer.parseInt(xmlEvent.asCharacters().getData());
+                        break;
+                    case "judged":
+                        test.judged = Boolean.parseBoolean(xmlEvent.asCharacters().getData());
+                        break;
+                    case "run-id":
+                        test.run = Integer.parseInt(xmlEvent.asCharacters().getData());
+                        break;
+                    case "result":
+                        test.result = xmlEvent.asCharacters().getData();
+                        break;
+                    case "solved":
+                        test.solved = Boolean.parseBoolean(xmlEvent.asCharacters().getData());
+                        break;
+                    case "time":
+                        test.time = (long) (Double.parseDouble(xmlEvent.asCharacters().getData()) * 1000);
+                        break;
+                    case "timestamp":
+                        test.timestamp = Double.parseDouble(xmlEvent.asCharacters().getData());
+                        break;
+                }
+            }
+            if (xmlEvent.isEndElement()) {
+                EndElement endElement = xmlEvent.asEndElement();
+                if (endElement.getName().getLocalPart().equals("test")) {
+                    break;
+                }
+            }
+        }
+        return test;
+    }
+
     public WFRunInfo readRun(XMLEventReader xmlEventReader) throws XMLStreamException {
         WFRunInfo run = new WFRunInfo();
         while (true) {
@@ -191,6 +233,10 @@ public class WFEventsLoader extends EventsLoader {
                                         contestInfo.recalcStandings();
                                     }
                                 }
+                                break;
+                            case "test":
+                                WFTestInfo test = readTest(xmlEventReader);
+                                contestInfo.addTest(test);
                                 break;
                             case "language":
                                 readLanguage(xmlEventReader);

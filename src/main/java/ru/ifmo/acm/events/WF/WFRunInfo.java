@@ -14,6 +14,23 @@ public class WFRunInfo implements RunInfo {
     public int team;
     public double time;
     public double timestamp;
+    private int passed;
+    private int total;
+
+    public void addTest(WFTestInfo test) {
+        if (total == 0) {
+            total = test.total;
+        }
+        passed = test.id;
+    }
+
+    public int getPassedTestsNumber() {
+        return passed;
+    }
+
+    public int getTotalTestsNumber() {
+        return total;
+    }
 
     public int getId() {
         return id;

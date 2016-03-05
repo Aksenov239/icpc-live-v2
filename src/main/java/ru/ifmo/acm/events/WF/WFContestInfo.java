@@ -92,6 +92,12 @@ public class WFContestInfo extends ContestInfo {
         }
     }
 
+    public void addTest(WFTestInfo test) {
+        if (runExists(test.id)) {
+            runs[test.id].add(test);
+        }
+    }
+
     @Override
     public TeamInfo getParticipant(String name) {
         for (int i = 0; i < teamNumber; i++) {
