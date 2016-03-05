@@ -39,7 +39,7 @@ public class MainScreenGenerator extends ScreenGenerator {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-        widgets = new Widget[7];
+        widgets = new Widget[8];
         widgets[0] = new GreenScreenWidget();
         widgets[0].setVisible(true);
         //widgets[0] = new CameraVideoWidget(updateWait, width, height, Integer.parseInt(properties.getProperty("sleep.time")));
@@ -50,7 +50,7 @@ public class MainScreenGenerator extends ScreenGenerator {
                 4. / 3,
                 Integer.parseInt(properties.getProperty("sleep.time"))
         );
-        //widgets[2] = new BigStandingsWidget(0, 0, width, height - (int) (32 * TickPlayer.scale), updateWait, false);
+        widgets[7] = new BigStandingsWidget(0, 0, width, height - (int) (32 * TickPlayer.scale), updateWait, false);
         widgets[2] = new ClockWidget(updateWait);
         widgets[3] = new CreepingLineWidget(updateWait);
         widgets[4] = new DoublePersonWidget(updateWait, timePerson);

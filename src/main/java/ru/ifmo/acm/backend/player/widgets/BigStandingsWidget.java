@@ -6,6 +6,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFContestInfo;
 
 import java.awt.*;
 import java.util.Collection;

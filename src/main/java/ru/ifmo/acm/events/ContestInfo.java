@@ -1,8 +1,8 @@
 package ru.ifmo.acm.events;
 
 public abstract class ContestInfo {
-    protected int teamNumber;
-    protected int problemNumber = 0;
+    public int teamNumber;
+    public int problemNumber = 0;
     protected long startTime = 0;
     protected final long totalTime = 0;
 

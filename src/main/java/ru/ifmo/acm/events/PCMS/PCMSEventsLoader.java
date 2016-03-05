@@ -19,25 +19,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class PCMSEventsLoader extends EventsLoader {
+    public PCMSEventsLoader() throws IOException {
+        properties = new Properties();
+        properties.load(this.getClass().getClassLoader().getResourceAsStream("events.properties"));
 
-    private static PCMSEventsLoader instance;
-
-    public static EventsLoader getInstance() {
-        if (instance == null) {
-            instance = new PCMSEventsLoader();
-            properties = new Properties();
-            try {
-                properties.load(PCMSEventsLoader.class.getClassLoader().getResourceAsStream("events.properties"));
-                PCMSContestInfo initial = parseInitialContestInfo();
-                contestInfo.set(initial);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return instance;
-    }
-
-    private static PCMSContestInfo parseInitialContestInfo() throws IOException {
         int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
         PCMSContestInfo initial = new PCMSContestInfo(problemsNumber);
         String fn = properties.getProperty("participants");
@@ -54,7 +39,7 @@ public class PCMSEventsLoader extends EventsLoader {
             PCMSTeamInfo team = new PCMSTeamInfo(id, alias, participantName, shortName, initial.getProblemsNumber());
             initial.addTeamStandings(team);
         }
-        return initial;
+        contestInfo.set(initial);
     }
 
     private void updateStatements() throws IOException {
@@ -168,6 +153,6 @@ public class PCMSEventsLoader extends EventsLoader {
         return contestInfo.get();
     }
 
-    static AtomicReference<PCMSContestInfo> contestInfo = new AtomicReference<>();
-    private static Properties properties;
+    AtomicReference<PCMSContestInfo> contestInfo = new AtomicReference<PCMSContestInfo>();
+    private Properties properties;
 }

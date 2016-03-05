@@ -15,6 +15,10 @@ public class WFRunInfo implements RunInfo {
     public double time;
     public double timestamp;
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public boolean isAccepted() {
         return "AC".equals(result);

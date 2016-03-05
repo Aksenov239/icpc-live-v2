@@ -12,7 +12,7 @@ public class WFTeamInfo implements TeamInfo {
 
     private ArrayBlockingQueue<RunInfo>[] problem_runs;
 
-    public int id;
+    public int id = -1;
     public int rank;
     public String name;
 

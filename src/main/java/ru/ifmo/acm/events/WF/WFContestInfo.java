@@ -5,27 +5,24 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by aksenov on 05.05.2015.
  */
 public class WFContestInfo extends ContestInfo {
-    private ArrayBlockingQueue<RunInfo> runs;
+    private WFRunInfo[] runs;
     String[] languages;
     private WFTeamInfo[] teamInfos;
     public long[] timeFirstSolved;
-    int teamNumber;
-    int problemNumber;
 
-    private WFTeamInfo[] standings;
+    private WFTeamInfo[] standings = null;
 
     public WFContestInfo() {
         teamInfos = new WFTeamInfo[200];
         timeFirstSolved = new long[20];
         languages = new String[4];
-        runs = new ArrayBlockingQueue<RunInfo>(1000000);
+        runs = new WFRunInfo[1000000];
     }
 
     public void shrink(int teamNumber, int problemNumber, int languageNumber) {
@@ -51,7 +48,7 @@ public class WFContestInfo extends ContestInfo {
                     WFRunInfo wfrun = (WFRunInfo) run;
                     if ("AC".equals(run.getResult())) {
                         team.solved++;
-                        int time = wfrun.getTeam() / 60 / 1000;
+                        int time = (int) (wfrun.getTime() / 60 / 1000);
                         team.penalty += wrong * 20 + time;
                         team.lastAccepted = Math.max(team.lastAccepted, time);
                         timeFirstSolved[j] = Math.min(timeFirstSolved[j], wfrun.getTime());
@@ -80,23 +77,25 @@ public class WFContestInfo extends ContestInfo {
         teamInfos[team.getId()] = team;
     }
 
-    public void addRun(RunInfo run){
-        runs.add(run);
-        teamInfos[run.getTeam()].addRun(run, run.getProblemNumber() - 1);
+    public boolean runExists(int id) {
+        return runs[id] != null;
     }
 
-    public int getTeamNumber() {
-        return teamNumber;
+    public WFRunInfo getRun(int id) {
+        return runs[id];
     }
 
-    public int getProblemNumber() {
-        return problemNumber;
+    public void addRun(WFRunInfo run) {
+        if (!runExists(run.getId())) {
+            runs[run.getId()] = run;
+            teamInfos[run.getTeam()].addRun(run, run.getProblemNumber());
+        }
     }
 
     @Override
     public TeamInfo getParticipant(String name) {
         for (int i = 0; i < teamNumber; i++) {
-            if (teamInfos[i + 1].getName().equals(name) || teamInfos[i + 1].getShortName().equals(name)){
+            if (teamInfos[i + 1].getName().equals(name) || teamInfos[i + 1].getShortName().equals(name)) {
                 return teamInfos[i + 1];
             }
         }

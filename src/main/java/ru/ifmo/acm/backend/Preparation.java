@@ -17,7 +17,7 @@ public class Preparation {
     public static EventsLoader eventsLoader;
 
     public static void prepareEventsLoader() {
-        eventsLoader = PCMSEventsLoader.getInstance();
+        eventsLoader = EventsLoader.getInstance();
         eventsLoader.start();
     }
 
