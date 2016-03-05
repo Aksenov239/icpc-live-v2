@@ -3,6 +3,7 @@ package ru.ifmo.acm.backend.player.widgets;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
@@ -15,23 +16,18 @@ import java.io.IOException;
 /**
  * @author: pashka
  */
-public class StandingsWidget extends Widget {
+public class StandingsWidget extends Widget implements Scalable {
 
     private static final int MOVING_TIME = 500;
-    private final int PLATE_WIDTH = (int) (326 * TickPlayer.scale);
+    private final int PLATE_WIDTH = 326;
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     public int PERIOD = STANDING_TIME + MOVING_TIME;
     public int LENGTH;
-    private final int X1 = (int) (31 * TickPlayer.scale);
-    private final int X2 = (int) (55 * TickPlayer.scale);
-    private final int X3 = (int) (275 * TickPlayer.scale);
-    private final int X4 = (int) (314 * TickPlayer.scale);
-    private final double DX = 349 * TickPlayer.scale;
-    private final int Y1 = (int) (65 * TickPlayer.scale);
-    private final double DY = 35 * TickPlayer.scale;
+    private final double DX = 349;
+    private final double DY = 35;
     public final static int TEAMS_ON_PAGE = 12;
-    public final Font FONT = Font.decode("Open Sans Italic " + (int) (22 * TickPlayer.scale));
+    public final Font FONT = Font.decode("Open Sans Italic " + 22);
 
     private final BufferedImage image;
     //double opacity;
@@ -42,6 +38,7 @@ public class StandingsWidget extends Widget {
     private ContestInfo contestData;
 
     public StandingsWidget(long updateWait) {
+        super(updateWait);
         BufferedImage image;
         try {
             image = ImageIO.read(new File("pics/standings.png"));
@@ -50,22 +47,16 @@ public class StandingsWidget extends Widget {
         }
         this.image = image;
         last = System.currentTimeMillis();
-
-        this.updateWait = updateWait;
     }
 
-    private long updateWait;
-    private long lastUpdate;
-    // private long lastVisibleChange = Long.MAX_VALUE / 2;
-
-    public void setState(long type) {
-        switch ((int) type) {
-            case 0:
+    public void setState(StandingsData.StandingsType type) {
+        switch (type) {
+            case ONE_PAGE:
                 LENGTH = Math.min(12, contestData.getTeamsNumber());
                 start = 0;
                 timer = -Integer.MAX_VALUE;
                 break;
-            case 1:
+            case TWO_PAGES:
                 TOP_PAGE_STANDING_TIME = 10000;
                 STANDING_TIME = 10000;
                 PERIOD = STANDING_TIME + MOVING_TIME;
@@ -73,7 +64,7 @@ public class StandingsWidget extends Widget {
                 start = 0;
                 timer = 0;
                 break;
-            case 2:
+            case ALL_PAGES:
                 TOP_PAGE_STANDING_TIME = 10000;
                 STANDING_TIME = 5000;
                 PERIOD = STANDING_TIME + MOVING_TIME;
@@ -84,37 +75,31 @@ public class StandingsWidget extends Widget {
         setVisible(true);
     }
 
-    public static long totalTime(long type, int teamNumber) {
+    public static long totalTime(StandingsData.StandingsType type, int teamNumber) {
         int pages = teamNumber / TEAMS_ON_PAGE;
-        if (type == 0) {
-            return Integer.MAX_VALUE;
-        } else if (type == 1) {
-            return 2 * STANDING_TIME + MOVING_TIME;
-        } else {
-            return (pages - 1) * (STANDING_TIME + MOVING_TIME) + TOP_PAGE_STANDING_TIME;
+        switch (type) {
+            case ONE_PAGE:
+                return Integer.MAX_VALUE;
+            case TWO_PAGES:
+                return 2 * STANDING_TIME + MOVING_TIME;
+            default:
+                return (pages - 1) * (STANDING_TIME + MOVING_TIME) + TOP_PAGE_STANDING_TIME;
         }
     }
 
-    public void update() {
-        if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null) {
-                return;
+    protected void update(Data data) {
+        if (data.standingsData.isStandingsVisible() && !data.standingsData.isBig()) {
+            if (!isVisible() && contestData != null) {
+                //  lastVisibleChange = System.currentTimeMillis();
+                setState(data.standingsData.standingsType);
             }
-            if (data.standingsData.isStandingsVisible()) {
-                if (!isVisible() && contestData != null) {
-                    //  lastVisibleChange = System.currentTimeMillis();
-                    setState(data.standingsData.standingsType);
-                }
-            } else {
-                setVisible(false);
-            }
-            lastUpdate = System.currentTimeMillis();
+        } else {
+            setVisible(false);
         }
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
 //        standings = StandingsLoader.getLoaded();
         contestData = Preparation.eventsLoader.getContestData();
@@ -141,7 +126,7 @@ public class StandingsWidget extends Widget {
                 }
             }
             int x = (int) ((width - (DX + DX + PLATE_WIDTH)) / 2);
-            int y = (int) (height - 32 * TickPlayer.scale - 4.5 * DY);
+            int y = (int) (height - 32 - 4.5 * DY);
 //            g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
             if (start < LENGTH) {
                 drawStandings(g, x + dx, y, contestData, start);

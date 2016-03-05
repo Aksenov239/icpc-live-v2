@@ -16,7 +16,7 @@ public class GreenScreenWidget extends Widget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         if (isVisible()) {
             g.setColor(color);
             g.fillRect(0, 0, width, height);

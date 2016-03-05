@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.generator;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.awt.*;
@@ -17,10 +18,12 @@ public class ScreenGenerator {
     private BufferedImage image;
     protected int width;
     protected int height;
+    private double scale;
 
-    public ScreenGenerator(int width, int height, Properties properties) {
+    public ScreenGenerator(int width, int height, Properties properties, double scale) {
         this.width = width;
         this.height = height;
+        this.scale = scale;
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         Preparation.prepareEventsLoader();
@@ -34,7 +37,7 @@ public class ScreenGenerator {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
         for (Widget widget : widgets) {
-            if (widget != null) widget.paint(g2, width, height);
+            if (widget != null) widget.paint(g2, width, height, scale);
         }
         return image;
     }
