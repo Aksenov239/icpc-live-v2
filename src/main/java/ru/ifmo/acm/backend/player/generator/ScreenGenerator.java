@@ -5,29 +5,23 @@ import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
  * Created by aksenov on 14.04.2015.
  */
-public abstract class ScreenGenerator {
-    protected Widget[] widgets;
+public class ScreenGenerator {
+    protected List<Widget> widgets = new ArrayList<>();
     private BufferedImage image;
-    private int width;
-    private int height;
-    protected Properties properties;
+    protected int width;
+    protected int height;
 
-    public ScreenGenerator(int width, int height) {
+    public ScreenGenerator(int width, int height, Properties properties) {
         this.width = width;
         this.height = height;
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("mainscreen.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         Preparation.prepareEventsLoader();
         Preparation.prepareDataLoader();
@@ -51,5 +45,13 @@ public abstract class ScreenGenerator {
 
     public int getHeight() {
         return height;
+    }
+
+    public void addWidget(Widget widget) {
+        widgets.add(widget);
+    }
+
+    public void removeWidget(Widget widget) {
+        widgets.remove(widget);
     }
 }

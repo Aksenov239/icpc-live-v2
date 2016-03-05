@@ -11,7 +11,8 @@ import java.awt.event.ActionListener;
 public class GreenScreenWidget extends Widget {
     private final Color color = new Color(100, 150, 120);
 
-    public GreenScreenWidget() {
+    public GreenScreenWidget(boolean isVisible) {
+        setVisible(isVisible);
     }
 
     @Override

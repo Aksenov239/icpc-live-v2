@@ -6,13 +6,10 @@ import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.TimerTask;
 
 public class TickPlayer {
-    private static final int FRAME_RATE = Integer.getInteger("tickrate", 25);
-
     ImagePane imagePane;
     ScreenGenerator generator;
     private Point initialClick;
@@ -21,11 +18,10 @@ public class TickPlayer {
     public final JFrame frame;
 
 
-    public TickPlayer(String name, ScreenGenerator generator) throws InterruptedException, InvocationTargetException {
-        this(name, generator, generator.getWidth(), generator.getHeight());
-    }
+    public TickPlayer(String name, ScreenGenerator generator, int frameRate) throws InterruptedException, InvocationTargetException {
+        int width = generator.getWidth();
+        int height = generator.getHeight();
 
-    public TickPlayer(String name, ScreenGenerator generator, int width, int height) throws InterruptedException, InvocationTargetException {
         this.generator = generator;
 
         imagePane = new ImagePane();
@@ -92,7 +88,7 @@ public class TickPlayer {
                     public void run() {
                         imagePane.repaint();
                     }
-                }, 0L, 1000 / FRAME_RATE);
+                }, 0L, 1000 / frameRate);
     }
 
     @SuppressWarnings("serial")
