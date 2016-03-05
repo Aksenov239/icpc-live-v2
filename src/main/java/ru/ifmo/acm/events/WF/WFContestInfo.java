@@ -12,20 +12,32 @@ import java.util.concurrent.ArrayBlockingQueue;
  * Created by aksenov on 05.05.2015.
  */
 public class WFContestInfo extends ContestInfo {
-    ArrayBlockingQueue<RunInfo> runs;
-    String[] languages = new String[4];
-    WFTeamInfo[] teamInfos = new WFTeamInfo[200];
-    public double[] timeFirstSolved = new double[20];
+    private ArrayBlockingQueue<RunInfo> runs;
+    String[] languages;
+    private WFTeamInfo[] teamInfos;
+    public long[] timeFirstSolved;
     int teamNumber;
     int problemNumber;
 
-    WFTeamInfo[] standings;
-    public long startTime;
+    private WFTeamInfo[] standings;
+
+    public WFContestInfo() {
+        teamInfos = new WFTeamInfo[200];
+        timeFirstSolved = new long[20];
+        languages = new String[4];
+        runs = new ArrayBlockingQueue<RunInfo>(1000000);
+    }
+
+    public void shrink(int teamNumber, int problemNumber, int languageNumber) {
+        teamInfos = Arrays.copyOf(teamInfos, teamNumber);
+        timeFirstSolved = Arrays.copyOf(timeFirstSolved, problemNumber);
+        languages = Arrays.copyOf(languages, languageNumber);
+    }
 
     void recalcStandings() {
-        standings = new WFTeamInfo[teamNumber];
+        WFTeamInfo[] standings = new WFTeamInfo[teamNumber];
         int n = 0;
-        Arrays.fill(timeFirstSolved, 1e100);
+        Arrays.fill(timeFirstSolved, Integer.MAX_VALUE);
         for (WFTeamInfo team : teamInfos) {
             if (team == null) continue;
 
@@ -37,14 +49,14 @@ public class WFContestInfo extends ContestInfo {
                 int wrong = 0;
                 for (RunInfo run : runs) {
                     WFRunInfo wfrun = (WFRunInfo) run;
-                    if (run.getResult().equals("AC")) {
+                    if ("AC".equals(run.getResult())) {
                         team.solved++;
-                        int time = (int) wfrun.time / 60;
+                        int time = wfrun.getTeam() / 60 / 1000;
                         team.penalty += wrong * 20 + time;
                         team.lastAccepted = Math.max(team.lastAccepted, time);
-                        timeFirstSolved[j] = Math.min(timeFirstSolved[j], wfrun.time);
+                        timeFirstSolved[j] = Math.min(timeFirstSolved[j], wfrun.getTime());
                         break;
-                    } else if (wfrun.result.length() > 0) {
+                    } else if (wfrun.getResult().length() > 0) {
                         wrong++;
                     }
                 }
@@ -52,56 +64,25 @@ public class WFContestInfo extends ContestInfo {
             standings[n++] = team;
         }
 
-        Comparator<WFTeamInfo> comparator = new Comparator<WFTeamInfo>() {
-            @Override
-            public int compare(WFTeamInfo o1, WFTeamInfo o2) {
-                if (o1.solved != o2.solved) {
-                    return -Integer.compare(o1.solved, o2.solved);
-                }
-                if (o1.penalty != o2.penalty) {
-                    return Integer.compare(o1.penalty, o2.penalty);
-                }
-                return Integer.compare(o1.lastAccepted, o2.lastAccepted);
-            }
-        };
-        Arrays.sort(standings, 0, n, comparator);
+        Arrays.sort(standings, 0, n, TeamInfo.comparator);
 
         for (int i = 0; i < n; i++) {
-            if (i > 0 && comparator.compare(standings[i], standings[i - 1]) == 0) {
+            if (i > 0 && TeamInfo.comparator.compare(standings[i], standings[i - 1]) == 0) {
                 standings[i].rank = standings[i - 1].rank;
             } else {
                 standings[i].rank = i + 1;
             }
         }
+        this.standings = standings;
     }
 
-    public TeamInfo getTeamInfo(int teamId) {
-        return teamInfos[teamId];
+    public void addTeam(WFTeamInfo team) {
+        teamInfos[team.getId()] = team;
     }
 
-    public int getPosition(int teamId) {
-        if (standings == null) {
-            return 1;
-        }
-        for (int i = 0; i < standings.length; i++) {
-            if (standings[i].id == teamId) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public int getId(int position) {
-        return standings == null ? teamInfos[position + 1].id : standings[position].id;
-    }
-
-    public int getIdByName(String name) {
-        for (int i = 0; i < teamNumber; i++) {
-            if (teamInfos[i + 1].name.equals(name) || teamInfos[i + 1].shortName.equals(name)) {
-                return i + 1;
-            }
-        }
-        return -1;
+    public void addRun(RunInfo run){
+        runs.add(run);
+        teamInfos[run.getTeam()].addRun(run, run.getProblemNumber() - 1);
     }
 
     public int getTeamNumber() {
@@ -114,12 +95,17 @@ public class WFContestInfo extends ContestInfo {
 
     @Override
     public TeamInfo getParticipant(String name) {
+        for (int i = 0; i < teamNumber; i++) {
+            if (teamInfos[i + 1].getName().equals(name) || teamInfos[i + 1].getShortName().equals(name)){
+                return teamInfos[i + 1];
+            }
+        }
         return null;
     }
 
     @Override
     public TeamInfo getParticipant(int id) {
-        return null;
+        return teamInfos[id];
     }
 
     public TeamInfo[] getStandings() {
@@ -128,6 +114,6 @@ public class WFContestInfo extends ContestInfo {
 
     @Override
     public long[] firstTimeSolved() {
-        return new long[0];
+        return timeFirstSolved;
     }
 }

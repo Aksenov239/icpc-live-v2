@@ -91,6 +91,10 @@ public class PCMSTeamInfo implements TeamInfo {
         return problemRuns;
     }
 
+    public int getLastAccepted() {
+        return 0;
+    }
+
     public int id;
 
     public String name;

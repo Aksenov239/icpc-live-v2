@@ -3,7 +3,6 @@ package ru.ifmo.acm.events.WF;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.RunInfo;
-import ru.ifmo.acm.events.TeamInfo;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -21,7 +20,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by aksenov on 16.04.2015.
@@ -31,14 +29,13 @@ public class WFEventsLoader extends EventsLoader {
     private String url;
 
     private static WFContestInfo contestInfo;
-    private static ContestInfo returnContestInfo;
 
     public WFEventsLoader(String url) {
         this.url = url;
     }
 
     public ContestInfo getContestData() {
-        return returnContestInfo;
+        return contestInfo;
     }
 
     public WFRunInfo readRun(XMLEventReader xmlEventReader) throws XMLStreamException {
@@ -87,7 +84,7 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public WFTeamInfo readTeam(XMLEventReader xmlEventReader) throws XMLStreamException {
-        WFTeamInfo team = new WFTeamInfo(contestInfo.problemNumber);
+        WFTeamInfo team = new WFTeamInfo(contestInfo.getProblemNumber());
         while (true) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
@@ -100,7 +97,7 @@ public class WFEventsLoader extends EventsLoader {
                     case "university":
 //                        team.name = xmlEvent.asCharacters().getData();
 //                        team.name = xmlEvent.toString();//asCharacters().getData();
-                        team.name = xmlEventReader.getElementText();//"Team " + team.id;
+                        team.name = xmlEventReader.getElementText();
                         team.shortName = shortName(team.name);
                         break;
                     case "region":
@@ -153,13 +150,9 @@ public class WFEventsLoader extends EventsLoader {
                 URL url = new URL(this.url);
 
                 contestInfo = new WFContestInfo();
-                if (returnContestInfo == null) {
-                    returnContestInfo = contestInfo;
-                }
-                contestInfo.runs = new ArrayBlockingQueue<>(1000000);
 
                 Properties properties = new Properties();
-                properties.load(getClass().getClassLoader().getResourceAsStream("generator.properties"));
+                properties.load(getClass().getClassLoader().getResourceAsStream("events.properties"));
 
                 String login = properties.getProperty("login");
                 String password = properties.getProperty("password");
@@ -186,13 +179,9 @@ public class WFEventsLoader extends EventsLoader {
                             case "run":
                                 RunInfo run = readRun(xmlEventReader);
                                 System.err.println("new run: " + (int) (run.getTime() / 60) + " " + run.getTeam() + " " + (char) ('A' + run.getProblemNumber() - 1) + " " + run.getResult());
-                                if (run.getTime() <= 240 * 60 || run.getResult().length() == 0) {
-                                    contestInfo.runs.add(run);
-                                    contestInfo.teamInfos[run.getTeam()].addRun(run, run.getProblemNumber() - 1);
-                                    if (run.getTime() > (System.currentTimeMillis() - contestInfo.startTime) / 1000 - 600) {
-                                        if (returnContestInfo != contestInfo) {
-                                            returnContestInfo = contestInfo;
-                                        }
+                                if (run.getTime() <= 4 * 60 * 60 || run.getResult().length() == 0) {
+                                    contestInfo.addRun(run);
+                                    if (run.getTime() > contestInfo.getCurrentTime() / 1000 - 600) {
                                         contestInfo.recalcStandings();
                                     }
                                 }
@@ -203,7 +192,7 @@ public class WFEventsLoader extends EventsLoader {
                             case "team":
                                 WFTeamInfo team = readTeam(xmlEventReader);
                                 if (team != null) {
-                                    contestInfo.teamInfos[team.getId()] = team;
+                                    contestInfo.addTeam(team);
                                     contestInfo.teamNumber++;
                                 }
                                 contestInfo.recalcStandings();
@@ -212,15 +201,13 @@ public class WFEventsLoader extends EventsLoader {
                                 contestInfo.problemNumber++;
                                 break;
                             case "starttime":
-                                contestInfo.startTime = (long) (Double.parseDouble(xmlEventReader.getElementText().replace(",", ".")) * 1000);
+                                contestInfo.setStartTime((long) (Double.parseDouble(xmlEventReader.getElementText().replace(",", ".")) * 1000));
                                 break;
                         }
                     }
                 }
-                if (returnContestInfo != contestInfo) {
-                    contestInfo.recalcStandings();
-                    returnContestInfo = contestInfo;
-                }
+                contestInfo.recalcStandings();
+                //}
                 break;
             } catch (IOException | XMLStreamException e) {
                 e.printStackTrace();

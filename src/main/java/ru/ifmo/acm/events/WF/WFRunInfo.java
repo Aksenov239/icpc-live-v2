@@ -37,7 +37,7 @@ public class WFRunInfo implements RunInfo {
 
     @Override
     public long getTime() {
-        return (long) Math.floor(timestamp);
+        return (long) (time * 1000);
     }
 
     @Override

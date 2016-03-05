@@ -32,12 +32,12 @@ public class WFTeamInfo implements TeamInfo {
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 
     @Override
     public int getRank() {
-        return 0;
+        return rank;
     }
 
     @Override
@@ -62,6 +62,10 @@ public class WFTeamInfo implements TeamInfo {
 
     public ArrayBlockingQueue<RunInfo>[] getRuns() {
         return problem_runs;
+    }
+
+    public int getLastAccepted() {
+        return lastAccepted;
     }
 
     public ArrayBlockingQueue<RunInfo> getRunsByProblem(int problemId) {
