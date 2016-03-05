@@ -17,7 +17,7 @@ public class WFRunInfo implements RunInfo {
     private int passed;
     private int total;
 
-    public void addTest(WFTestInfo test) {
+    public void add(WFTestInfo test) {
         if (total == 0) {
             total = test.total;
         }
