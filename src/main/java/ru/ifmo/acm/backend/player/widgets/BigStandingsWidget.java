@@ -6,7 +6,6 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.events.WF.WFContestInfo;
 
 import java.awt.*;
 import java.util.Collection;
@@ -15,9 +14,8 @@ import java.util.Collection;
  * @author: pashka
  */
 public class BigStandingsWidget extends Widget {
-
     private static final int MOVING_TIME = 500;
-    private final int PLATE_WIDTH;
+    private final int plateWidth;
     private final double PLATE_HEIGHT;
     private final double SPACE_VS_PLATE = 0.05;
     private final double SPACE_Y;
@@ -36,6 +34,10 @@ public class BigStandingsWidget extends Widget {
     private final double DY = 35 * TickPlayer.scale;
     public final static int TEAMS_ON_PAGE = 12;
     public final Font FONT = Font.decode("Open Sans Italic " + (int) (22 * TickPlayer.scale));
+
+    private final Font teamNameFont;
+
+    private boolean visible = true;
 
     int timer;
     int start;
@@ -56,8 +58,8 @@ public class BigStandingsWidget extends Widget {
             setVisible(true);
         }
 
-        PLATE_WIDTH = (int) (width * 0.9);
-        SPACE_X = (width - PLATE_WIDTH) / 2;
+        plateWidth = (int) (width * 0.9);
+        SPACE_X = (width - plateWidth) / 2;
         double total = (TEAMS_ON_PAGE + 1) * (1 + SPACE_VS_PLATE) + SPACE_VS_PLATE;
         PLATE_HEIGHT = height / total;
         SPACE_Y = PLATE_HEIGHT * SPACE_VS_PLATE;
@@ -65,6 +67,8 @@ public class BigStandingsWidget extends Widget {
         MOVING_HEIGHT = (int) (PLATE_HEIGHT * ((1 + SPACE_VS_PLATE) * TEAMS_ON_PAGE + SPACE_VS_PLATE));
 
         this.updateWait = updateWait;
+
+        teamNameFont = Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.7));
     }
 
     private long updateWait;
@@ -127,6 +131,8 @@ public class BigStandingsWidget extends Widget {
 
     @Override
     public void paint(Graphics2D g, int width, int height) {
+        g.translate(X, Y);
+        g.clip(new Rectangle(0, 0, WIDTH, HEIGHT));
         if (controlled) {
             update();
         }
@@ -194,42 +200,58 @@ public class BigStandingsWidget extends Widget {
 
     private void drawHead(Graphics2D g, int x, int y, int problemsNumber) {
         g.setFont(Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.5)));
-        drawTextInRect(g, "Rank", x, y, (int) (PLATE_WIDTH * RANK_WIDTH), (int) PLATE_HEIGHT,
+        drawTextInRect(g, "Rank", x, y, (int) (plateWidth * RANK_WIDTH), (int) PLATE_HEIGHT,
                 POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-        x += (int) (PLATE_WIDTH * (RANK_WIDTH + SPLIT_WIDTH));
-        drawTextInRect(g, "Name", x, y, (int) (PLATE_WIDTH * NAME_WIDTH), (int) PLATE_HEIGHT,
+        x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
+        drawTextInRect(g, "Name", x, y, (int) (plateWidth * NAME_WIDTH), (int) PLATE_HEIGHT,
                 POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-        x += (int) (PLATE_WIDTH * (NAME_WIDTH + SPLIT_WIDTH));
-        int PROBLEM_WIDTH = (int) ((PLATE_WIDTH - x - PLATE_WIDTH * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / problemsNumber);
+        x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
+        int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / problemsNumber);
         for (int i = 0; i < problemsNumber; i++) {
             drawTextInRect(g, "" + (char) ('A' + i), x, y, PROBLEM_WIDTH, (int) PLATE_HEIGHT,
                     POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-            x += (int) (PLATE_WIDTH * SPLIT_WIDTH) + PROBLEM_WIDTH;
+            x += (int) (plateWidth * SPLIT_WIDTH) + PROBLEM_WIDTH;
         }
-        drawTextInRect(g, "Total", x, y, (int) (PLATE_WIDTH * TOTAL_WIDTH), (int) PLATE_HEIGHT,
+        drawTextInRect(g, "Total", x, y, (int) (plateWidth * TOTAL_WIDTH), (int) PLATE_HEIGHT,
                 POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-        x += (int) (PLATE_WIDTH * (TOTAL_WIDTH + SPLIT_WIDTH));
-        drawTextInRect(g, "Penalty", x, y, (int) (PLATE_WIDTH * PENALTY_WIDTH), (int) PLATE_HEIGHT,
+        x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
+        drawTextInRect(g, "Penalty", x, y, (int) (plateWidth * PENALTY_WIDTH), (int) PLATE_HEIGHT,
                 POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
     }
 
+    private String getShortName(Graphics2D g, String fullName) {
+        int fullWidth = g.getFontMetrics(teamNameFont).stringWidth(fullName);
+        double limit = NAME_WIDTH * plateWidth / 1.05;
+        if (fullWidth <= limit) {
+            return fullName;
+        }
+        for (int i = fullName.length() - 1; i >= 0; i--) {
+            String currentName = fullName.substring(0, i) + "...";
+            int currentWidth = g.getFontMetrics(teamNameFont).stringWidth(currentName);
+            if (currentWidth <= limit) {
+                return currentName;
+            }
+        }
+        return "";
+    }
+
     private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y) {
-        g.setFont(Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.7)));
+        Font font = teamNameFont;
+        g.setFont(font);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                (int) (PLATE_WIDTH * RANK_WIDTH), (int) PLATE_HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+                (int) (plateWidth * RANK_WIDTH), (int) PLATE_HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
 
-        x += (int) (PLATE_WIDTH * (RANK_WIDTH + SPLIT_WIDTH));
+        x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
 
-        int nameWidth = g.getFontMetrics(Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.7))).stringWidth(team.getName());
-        g.setFont(Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.7 * Math.min(NAME_WIDTH * PLATE_WIDTH / nameWidth / 1.1, 1))));
-        drawTextInRect(g, team.getName(), x, y,
-                (int) (PLATE_WIDTH * NAME_WIDTH), (int) PLATE_HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+        String name = getShortName(g, team.getShortName());
+        drawTextInRect(g, name, x, y,
+                (int) (plateWidth * NAME_WIDTH), (int) PLATE_HEIGHT, POSITION_LEFT, ADDITIONAL_COLOR, Color.white, opacityState);
 
-        x += (int) (PLATE_WIDTH * (NAME_WIDTH + SPLIT_WIDTH));
+        x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
 
         g.setFont(Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.5)));
         Collection<RunInfo>[] runs = team.getRuns();
-        int PROBLEM_WIDTH = (int) ((PLATE_WIDTH - x - PLATE_WIDTH * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / runs.length);
+        int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / runs.length);
         for (int i = 0; i < runs.length; i++) {
             int total = 0;
             String status = "";
@@ -250,14 +272,24 @@ public class BigStandingsWidget extends Widget {
             prefix = "";
             drawTextInRect(g, prefix + (total != 0 ? total : ""), x, y,
                     PROBLEM_WIDTH, (int) PLATE_HEIGHT, POSITION_CENTER, statusColor, Color.black, opacityState);
-            x += PROBLEM_WIDTH + (int) (PLATE_WIDTH * SPLIT_WIDTH);
+            x += PROBLEM_WIDTH + (int) (plateWidth * SPLIT_WIDTH);
         }
 
-        g.setFont(Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.7)));
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, (int) (PLATE_WIDTH * TOTAL_WIDTH),
+        g.setFont(font);
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, (int) (plateWidth * TOTAL_WIDTH),
                 (int) PLATE_HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-        x += (int) (PLATE_WIDTH * (TOTAL_WIDTH + SPLIT_WIDTH));
-        drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (PLATE_WIDTH * PENALTY_WIDTH),
+        x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
+        drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (plateWidth * PENALTY_WIDTH),
                 (int) PLATE_HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+    }
+
+    @Override
+    public boolean isVisible() {
+        return visible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }
