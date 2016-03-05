@@ -25,6 +25,15 @@ public class WFContestInfo extends ContestInfo {
         runs = new WFRunInfo[1000000];
     }
 
+    public void clear() {
+        teamNumber = 0;
+        problemNumber = 0;
+        Arrays.fill(teamInfos, null);
+        Arrays.fill(timeFirstSolved, 0);
+        Arrays.fill(languages, null);
+        Arrays.fill(runs, null);
+    }
+
     public void shrink(int teamNumber, int problemNumber, int languageNumber) {
         teamInfos = Arrays.copyOf(teamInfos, teamNumber);
         timeFirstSolved = Arrays.copyOf(timeFirstSolved, problemNumber);

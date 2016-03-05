@@ -22,7 +22,7 @@ import java.util.Properties;
  */
 public class WFEventsLoader extends EventsLoader {
 
-    private static WFContestInfo contestInfo;
+    private static WFContestInfo contestInfo = new WFContestInfo();
 
     public ContestInfo getContestData() {
         //(
@@ -189,9 +189,8 @@ public class WFEventsLoader extends EventsLoader {
 
     public void run() {
         while (true) {
+            contestInfo.clear();
             try {
-                contestInfo = new WFContestInfo();
-
                 Properties properties = new Properties();
                 properties.load(getClass().getClassLoader().getResourceAsStream("events.properties"));
 
