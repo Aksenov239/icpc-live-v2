@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.TimerTask;
 
 public class TickPlayer {
-    private static final int FRAME_RATE = 25;
+    private static final int FRAME_RATE = Integer.getInteger("tickrate", 25);
 
     ImagePane imagePane;
     ScreenGenerator generator;
