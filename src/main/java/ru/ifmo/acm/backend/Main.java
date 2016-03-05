@@ -14,9 +14,6 @@ import java.lang.reflect.InvocationTargetException;
  * @author: pashka
  */
 public class Main {
-
-    public static final String FILENAME = "video-short.mp4";
-
     public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
         new Main().run();
     }
@@ -33,10 +30,6 @@ public class Main {
             NativeLibrary.addSearchPath("vlc", "/Applications/VLC.app/Contents/MacOS/lib");
         }
 
-//        Thread.sleep(10000);
-//        creepingLinePainter.addMessage("OMG, It really works!");
-//        new TickPlayer("Main screen", new GreenScreenGenerator());
-//        TickPlayer.scale = 1.;// * 1080 / 720 0.5;
         new TickPlayer("Main screen", new MainScreenGenerator()).frame.setLocation(0, 0);
     }
 }
