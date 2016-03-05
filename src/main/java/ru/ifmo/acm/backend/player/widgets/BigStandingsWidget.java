@@ -8,6 +8,7 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
+import java.util.Collection;
 
 /**
  * @author: pashka
@@ -226,7 +227,7 @@ public class BigStandingsWidget extends Widget {
         x += (int) (PLATE_WIDTH * (NAME_WIDTH + SPLIT_WIDTH));
 
         g.setFont(Font.decode("Open Sans Italic " + (int) (PLATE_HEIGHT * 0.5)));
-        java.util.List<RunInfo>[] runs = team.getRuns();
+        Collection<RunInfo>[] runs = team.getRuns();
         int PROBLEM_WIDTH = (int) ((PLATE_WIDTH - x - PLATE_WIDTH * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / runs.length);
         for (int i = 0; i < runs.length; i++) {
             int total = 0;
