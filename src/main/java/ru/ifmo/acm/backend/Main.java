@@ -57,9 +57,10 @@ public class Main {
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
         generator.addWidget(new StandingsWidget(updateWait));
-        generator.addWidget(new BigStandingsWidget((int) (64 * TickPlayer.scale), (int) (64 * TickPlayer.scale),
+        generator.addWidget(new QueueWidget(100));
+        /*generator.addWidget(new BigStandingsWidget((int) (64 * TickPlayer.scale), (int) (64 * TickPlayer.scale),
                 width - (int) (128 * TickPlayer.scale),
-                height - (int) (128 * TickPlayer.scale), updateWait, false));
+                height - (int) (128 * TickPlayer.scale), updateWait, false));*/
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 
