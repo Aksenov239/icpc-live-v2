@@ -7,14 +7,14 @@ import java.awt.*;
 /**
  * @author: pashka
  */
-public class CaptionWidget extends Widget {
+public class CaptionWidget extends Widget implements Scalable {
 
-    private final int MARGIN = (int) (30 * TickPlayer.scale);
-    private final int Y = (int) (580 * TickPlayer.scale);
-    private final int HEIGHT1 = (int) (60 * TickPlayer.scale);
-    private final int HEIGHT2 = (int) (30 * TickPlayer.scale);
-    private final Font FONT1 = Font.decode("Open Sans " + (int)(40 * TickPlayer.scale));
-    private final Font FONT2 = Font.decode("Open Sans " + (int)(20 * TickPlayer.scale));
+    private final int MARGIN = 30;
+    private final int Y = 580;
+    private final int HEIGHT1 = 60;
+    private final int HEIGHT2 = 30;
+    private final Font FONT1 = Font.decode("Open Sans " + 40);
+    private final Font FONT2 = Font.decode("Open Sans " + 20);
 
     private String caption;
     private String description;
@@ -30,7 +30,7 @@ public class CaptionWidget extends Widget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         changeOpacity();
         if (opacity > 0) {
             int x1;

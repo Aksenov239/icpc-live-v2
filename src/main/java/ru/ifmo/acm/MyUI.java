@@ -28,7 +28,6 @@ import javax.servlet.annotation.WebServlet;
 @Theme("mytheme")
 @Widgetset("ru.ifmo.acm.MyAppWidgetset")
 public class MyUI extends UI {
-
     View currentView;
 
     @Override

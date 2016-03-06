@@ -39,4 +39,6 @@ public abstract class ContestInfo {
     public abstract TeamInfo[] getStandings();
 
     public abstract long[] firstTimeSolved();
+    
+    public abstract RunInfo[] getRuns();
 }

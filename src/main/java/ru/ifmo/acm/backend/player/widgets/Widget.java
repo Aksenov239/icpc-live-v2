@@ -1,13 +1,15 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import java.awt.*;
+
+import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
 
 /**
  * @author: pashka
  */
 public abstract class Widget {
-
     public final static double OPACITY = 1;
 
     public static final double MARGIN = 0.2;
@@ -25,13 +27,35 @@ public abstract class Widget {
     public final static Color BRONZE_COLOR = new Color(180, 122, 124);
     public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
 
+    private static final int POINTS_IN_ROUND = 3;
+    private static final double ROUND_RADIUS = 2;
 
     long last = 0;
     double opacity = 1;
     double textOpacity = 1;
     double opacityState = 1;
 
-    public abstract void paint(Graphics2D g, int width, int height);
+    protected long updateWait;
+    protected long lastUpdate;
+
+    public Widget() {
+    }
+
+    public Widget(long updateWait) {
+        this.updateWait = updateWait;
+    }
+
+    protected abstract void paintImpl(Graphics2D g, int width, int height);
+
+    public void paint(Graphics2D g, int width, int height, double scale) {
+        if (this instanceof Scalable && scale != 1) {
+            g = (Graphics2D) g.create();
+            g.scale(scale, scale);
+            width = (int) Math.round(width / scale);
+            height = (int) Math.round(height / scale);
+        }
+        paintImpl(g, width, height);
+    }
 
     private static final double V = 0.001;
 
@@ -78,10 +102,26 @@ public abstract class Widget {
         y += (height - hh) / 2;
         height = hh;
 
-        int dx = (int) (0.1 * height);
-        int[] xx = new int[]{x - dx, x + width - dx, x + width + dx, x + dx};
-        int[] yy = new int[]{y + height, y + height, y, y};
-        g.fill(new Polygon(xx, yy, 4));
+
+        int[] xx = new int[POINTS_IN_ROUND * 4];
+        int[] yy = new int[POINTS_IN_ROUND * 4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < POINTS_IN_ROUND; j++) {
+                int t = i * POINTS_IN_ROUND + j;
+                double a = Math.PI / 2 * j / (POINTS_IN_ROUND - 1);
+                int dx = new int[]{0, 1, 0, -1}[i];
+                int dy = new int[]{1, 0, -1, 0}[i];
+                double baseX = (i == 0 || i == 3 ? x + ROUND_RADIUS : x + width - ROUND_RADIUS);
+                double baseY = (i == 2 || i == 3 ? y + ROUND_RADIUS : y + height - ROUND_RADIUS);
+
+                double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
+                double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
+                tx -= (ty - (y + height / 2)) * 0.2;
+                xx[t] = (int) Math.round(tx);
+                yy[t] = (int) Math.round(ty);
+            }
+        }
+        g.fill(new Polygon(xx, yy, xx.length));
     }
 
     static final int POSITION_LEFT = 0;
@@ -142,4 +182,17 @@ public abstract class Widget {
         drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (width * PENALTY_WIDTH), height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
     }
 
+    protected void update() {
+        if (lastUpdate + updateWait < System.currentTimeMillis()) {
+            Data data = Preparation.dataLoader.getDataBackend();
+            if (data == null) {
+                return;
+            }
+            updateImpl(data);
+            lastUpdate = System.currentTimeMillis();
+        }
+    }
+
+    protected void updateImpl(Data data) {
+    }
 }

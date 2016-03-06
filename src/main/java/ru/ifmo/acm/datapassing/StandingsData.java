@@ -12,26 +12,17 @@ public class StandingsData implements CachedData {
         this.timestamp = data.timestamp;
         this.isVisible = data.isVisible;
         this.standingsType = data.standingsType;
+        this.isBig = data.isBig;
 
         return this;
     }
 
     public String toString() {
-        if (isVisible) {
-            long time = standingsType == 0
-                    ? (System.currentTimeMillis() - timestamp) / 1000
-                    : (timestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
-            return String.format(labelStatuses[standingsType], time);
-        }
-        return labelStatuses[3];
+        long time = standingsType == StandingsType.ONE_PAGE
+                ? (System.currentTimeMillis() - timestamp) / 1000
+                : (timestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
+        return String.format(standingsType.label, time) + (isBig() ? ". Big standings are shown" : ". Compact standings are shown");
     }
-
-    private final static String[] labelStatuses = new String[]{
-            "Top 1 page is shown for %d seconds",
-            "Top 2 pages are remaining for %d seconds",
-            "All pages are remaining for %d seconds",
-            "Standings aren't shown"
-    };
 
     public long getLatency() {
         return latency;
@@ -41,17 +32,18 @@ public class StandingsData implements CachedData {
         Data.cache.refresh(StandingsData.class);
     }
 
-    public void setStandingsVisible(boolean visible, int type) {
+    public void setStandingsVisible(boolean visible, StandingsType type, boolean isBig) {
         synchronized (standingsLock) {
             timestamp = System.currentTimeMillis();
             isVisible = visible;
             standingsType = type;
+            this.isBig = isBig;
         }
 
         recache();
     }
 
-    public static long getTotalTime(int type) {
+    public static long getTotalTime(StandingsType type) {
         return StandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
     }
 
@@ -62,6 +54,7 @@ public class StandingsData implements CachedData {
             if (System.currentTimeMillis() > timestamp +
                     getTotalTime(standingsType)) {
                 isVisible = false;
+                standingsType = StandingsType.HIDE;
                 change = true;
             }
         }
@@ -81,17 +74,39 @@ public class StandingsData implements CachedData {
         }
     }
 
-    public long getStandingsType() {
+    public StandingsType getStandingsType() {
         synchronized (standingsLock) {
             return standingsType;
         }
     }
 
+    public boolean isBig() {
+        return isBig;
+    }
+
+    public void setBig(boolean big) {
+        isBig = big;
+    }
+
     public long timestamp;
     public boolean isVisible;
-    public int standingsType;
+    public StandingsType standingsType = StandingsType.HIDE;
+    public boolean isBig;
 
     public static long latency;
 
     final private Object standingsLock = new Object();
+
+    public enum StandingsType {
+        ONE_PAGE("Top 1 page is shown for %d seconds"),
+        TWO_PAGES("Top 2 pages are remaining for %d seconds"),
+        ALL_PAGES("All pages are remaining for %d seconds"),
+        HIDE("Standings aren't shown");
+
+        public final String label;
+
+        StandingsType(String label) {
+            this.label = label;
+        }
+    }
 }

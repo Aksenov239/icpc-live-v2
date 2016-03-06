@@ -16,11 +16,11 @@ import java.util.Set;
 /**
  * @author: pashka
  */
-public class CreepingLineWidget extends Widget {
+public class CreepingLineWidget extends Widget implements Scalable {
 
     private static final double V = 0.1;
-    private double SEPARATOR = 50 * TickPlayer.scale;
-    public int HEIGHT = (int) (32 * TickPlayer.scale);
+    private double SEPARATOR = 50;
+    public int HEIGHT = 32;
 
     Queue<String> messagesQueue = new ArrayDeque<String>(100);
     ArrayDeque<Message> messagesOnScreen = new ArrayDeque<Message>();
@@ -28,40 +28,31 @@ public class CreepingLineWidget extends Widget {
 
     long last;
 
-    private long lastUpdate;
-    private long updateWait;
-
-    private void update() {
-        if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null) {
-                return;
+    protected void update(Data data) {
+        for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
+            byte[] bytes = message.getMessage().getBytes();
+            String text = null;
+            try {
+                text = new String(bytes, "Windows-1251");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
-                byte[] bytes = message.getMessage().getBytes();
-                String text = null;
-                try {
-                    text = new String(bytes, "Windows-1251");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                if (!inQueue.contains(text)) {
-                    inQueue.add(text);
-                    messagesQueue.add(text);
-                }
+            if (!inQueue.contains(text)) {
+                inQueue.add(text);
+                messagesQueue.add(text);
             }
-            lastUpdate = System.currentTimeMillis();
         }
+        lastUpdate = System.currentTimeMillis();
     }
 
     public CreepingLineWidget(long updateWait) {
-        this.updateWait = updateWait;
+        super(updateWait);
     }
 
-    Font messageFont = Font.decode("Open Sans " + (int) (20 * TickPlayer.scale));
+    Font messageFont = Font.decode("Open Sans " + 20);
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
 //            g2.setColor(Color.red);
 //            g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
@@ -98,7 +89,7 @@ public class CreepingLineWidget extends Widget {
         for (Message message : messagesOnScreen) {
             message.position -= 3;//10;//V * dt;
             if (message.position + message.width >= 0) {
-                g.drawString(message.message, (float) message.position, height - (int) (9 * TickPlayer.scale));
+                g.drawString(message.message, (float) message.position, height - 9);
             }
         }
         while (messagesOnScreen.size() > 0 && messagesOnScreen.getFirst().position + messagesOnScreen.getFirst().width < 0) {

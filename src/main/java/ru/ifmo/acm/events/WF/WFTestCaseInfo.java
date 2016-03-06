@@ -3,7 +3,7 @@ package ru.ifmo.acm.events.WF;
 /**
  * Created by aksenov on 16.04.2015.
  */
-public class WFTestInfo {
+public class WFTestCaseInfo {
     public int id;
     public boolean judged;
     public int total;
@@ -12,4 +12,5 @@ public class WFTestInfo {
     public int run;
     public long time;
     public double timestamp;
+	public int judgementId;
 }

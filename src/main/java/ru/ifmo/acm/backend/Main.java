@@ -2,11 +2,13 @@ package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
 import ru.ifmo.acm.backend.player.TickPlayer;
-import ru.ifmo.acm.backend.player.generator.MainScreenGenerator;
+import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
+import ru.ifmo.acm.backend.player.widgets.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
 
 //import org.json.JSONException;
 
@@ -15,7 +17,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class Main {
 
-    public static final String FILENAME = "video-short.mp4";
+    public static final int BASE_WIDTH = 1280;
+    public static final int BASE_HEIGHT = 720;
 
     public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
         new Main().run();
@@ -33,10 +36,42 @@ public class Main {
             NativeLibrary.addSearchPath("vlc", "/Applications/VLC.app/Contents/MacOS/lib");
         }
 
-//        Thread.sleep(10000);
-//        creepingLinePainter.addMessage("OMG, It really works!");
-//        new TickPlayer("Main screen", new GreenScreenGenerator());
-//        TickPlayer.scale = 1.;// * 1080 / 720 0.5;
-        new TickPlayer("Main screen", new MainScreenGenerator()).frame.setLocation(0, 0);
+        Properties properties = readProperties();
+        int width = Integer.parseInt(properties.getProperty("width", "1280"));
+        int height = Integer.parseInt(properties.getProperty("height", "720"));
+        int frameRate = Integer.parseInt(properties.getProperty("rate", "25"));
+
+        ScreenGenerator generator = new ScreenGenerator(width, height, properties, (double) width / BASE_WIDTH);
+        long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
+        long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
+        long timePerson = Long.parseLong(properties.getProperty("person.time"));
+
+        generator.addWidget(new GreenScreenWidget(true));
+        generator.addWidget(new TeamInfoWidget(
+                updateWait,
+                BASE_WIDTH,
+                BASE_HEIGHT - 32,
+                4. / 3,
+                Integer.parseInt(properties.getProperty("sleep.time"))
+        ));
+        generator.addWidget(new ClockWidget(updateWait));
+        generator.addWidget(new CreepingLineWidget(updateWait));
+        generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
+        generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
+        generator.addWidget(new StandingsWidget(updateWait));
+        generator.addWidget(new QueueWidget(100));
+        generator.addWidget(new BigStandingsWidget(64, 64,
+                BASE_WIDTH - 128, BASE_HEIGHT - 128, updateWait, false));
+        new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
+    }
+
+    private Properties readProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.load(ScreenGenerator.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return properties;
     }
 }

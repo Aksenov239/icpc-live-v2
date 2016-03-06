@@ -11,11 +11,12 @@ import java.awt.event.ActionListener;
 public class GreenScreenWidget extends Widget {
     private final Color color = new Color(100, 150, 120);
 
-    public GreenScreenWidget() {
+    public GreenScreenWidget(boolean isVisible) {
+        setVisible(isVisible);
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         if (isVisible()) {
             g.setColor(color);
             g.fillRect(0, 0, width, height);

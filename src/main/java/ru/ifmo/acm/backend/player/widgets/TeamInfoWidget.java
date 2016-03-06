@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * @author: pashka
  */
-public class TeamInfoWidget extends TeamWidget {
+public class TeamInfoWidget extends TeamWidget implements Scalable {
     private int teamId;
 
     public TeamInfoWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
@@ -60,9 +60,9 @@ public class TeamInfoWidget extends TeamWidget {
         }
     }
 
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
-        super.paint(g, width, height);
+        super.paintImpl(g, width, height);
     }
 
     protected int getTeamId() {
