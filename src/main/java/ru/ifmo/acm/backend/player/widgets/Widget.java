@@ -49,8 +49,8 @@ public abstract class Widget {
         if (this instanceof Scalable && scale != 1) {
             g = (Graphics2D) g.create();
             g.scale(scale, scale);
-            width = (int) Math.round(width * scale);
-            height = (int) Math.round(height * scale);
+            width = (int) Math.round(width / scale);
+            height = (int) Math.round(height / scale);
         }
         paintImpl(g, width, height);
     }
