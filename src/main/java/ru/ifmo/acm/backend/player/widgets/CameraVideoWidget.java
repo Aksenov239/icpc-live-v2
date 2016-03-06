@@ -1,9 +1,9 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import java.awt.*;
-
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
+
+import java.awt.*;
 
 /**
  * @author: Aksenov239
@@ -26,8 +26,8 @@ public class CameraVideoWidget extends VideoWidget {
                 return;
             }
 
-            if (data.cameraData.cameraUrl != null && !data.cameraData.cameraUrl.equals(URL) && !inChange.get() && ready.get()) {
-                change(data.cameraData.cameraUrl);
+            if (data.cameraData.cameraURL != null && !data.cameraData.cameraURL.equals(URL) && !inChange.get() && ready.get()) {
+                change(data.cameraData.cameraURL);
             }
             lastUpdate = System.currentTimeMillis();
         }

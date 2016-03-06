@@ -3,7 +3,7 @@ package ru.ifmo.acm.mainscreen;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
-import ru.ifmo.acm.mainscreen.statuses.CameraStatus;
+import ru.ifmo.acm.datapassing.MainScreenProperties;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -15,7 +15,7 @@ public class MainScreenCameraView extends CustomComponent implements View {
     Button[] cameraButtons;
 
     private String getCameraStatus() {
-        String status = mainScreenData.cameraStatus.cameraStatus();
+        String status = mainScreenData.cameraData.cameraStatus();
         String[] z = status.split("\n");
 
         ;
@@ -26,13 +26,13 @@ public class MainScreenCameraView extends CustomComponent implements View {
     public Component getControllerTeam() {
         cameraStatus = new Label("Camera " + getCameraStatus());
 
-        cameraButtons = new Button[CameraStatus.cameraNames.length];
+        cameraButtons = new Button[MainScreenProperties.cameraNumber];
 
         for (int i = 0; i < cameraButtons.length; i++) {
-            cameraButtons[i] = new Button(CameraStatus.cameraNames[i]);
+            cameraButtons[i] = new Button(MainScreenProperties.cameraNames[i]);
             final int id = i;
             cameraButtons[i].addClickListener(event -> {
-                if (!mainScreenData.cameraStatus.setCameraNumber(id)) {
+                if (!mainScreenData.cameraData.setCameraNumber(id)) {
                     Notification.show("You need to wait 30 seconds first");
                 }
             });

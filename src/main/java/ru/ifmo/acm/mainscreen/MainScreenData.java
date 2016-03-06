@@ -1,12 +1,7 @@
 package ru.ifmo.acm.mainscreen;
 
 
-import ru.ifmo.acm.datapassing.ClockData;
-import ru.ifmo.acm.datapassing.StandingsData;
-import ru.ifmo.acm.mainscreen.statuses.*;
-
-import java.io.IOException;
-import java.util.Properties;
+import ru.ifmo.acm.datapassing.*;
 
 /**
  * Created by Aksenov239 on 15.11.2015.
@@ -21,47 +16,26 @@ public class MainScreenData {
     }
 
     private MainScreenData() {
-        Properties properties = new Properties();
-        try {
-            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
-
-            String backupAdvertisements = properties.getProperty("backup.advertisements");
-
-            long latency = Long.parseLong(properties.getProperty("latency.time"));
-
-            long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time")) + latency;
-            advertisementStatus = new AdvertisementStatus(backupAdvertisements, timeAdvertisement);
-
-            String backupPersons = properties.getProperty("backup.persons");
-            long timePerson = Long.parseLong(properties.getProperty("person.time")) + latency;
-            personStatus = new PersonStatus(backupPersons, timePerson);
-
-            standingsData = new StandingsData();
-            StandingsData.latency = latency;
-
-            int sleepTime = Integer.parseInt(properties.getProperty("sleep.time"));
-
-            teamStatus = new TeamStatus(sleepTime);
-
-            cameraStatus = new CameraStatus(sleepTime);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        advertisementData = new AdvertisementData();
+        personData = new PersonData();
+        standingsData = new StandingsData();
+        teamData = new TeamData();
+        cameraData = new CameraData();
         clockData = new ClockData();
     }
 
     public void update() {
-      advertisementStatus.update();
-      personStatus.update();
+      advertisementData.update();
+      personData.update();
       standingsData.update();
     }
 
     private static MainScreenData mainScreenData;
 
-    public AdvertisementStatus advertisementStatus;
+    public AdvertisementData advertisementData;
     public ClockData clockData;
-    public PersonStatus personStatus;
+    public PersonData personData;
     public StandingsData standingsData;
-    public TeamStatus teamStatus;
-    public CameraStatus cameraStatus;
+    public TeamData teamData;
+    public CameraData cameraData;
 }

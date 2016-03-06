@@ -4,8 +4,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
