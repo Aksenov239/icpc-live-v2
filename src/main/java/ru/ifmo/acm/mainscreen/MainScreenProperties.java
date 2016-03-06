@@ -1,4 +1,4 @@
-package ru.ifmo.acm.datapassing;
+package ru.ifmo.acm.mainscreen;
 
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.events.ContestInfo;
@@ -6,15 +6,13 @@ import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.mainscreen.Advertisement;
-import ru.ifmo.acm.mainscreen.Person;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
 
 public class MainScreenProperties {
-    private MainScreenProperties() {
+    public MainScreenProperties() {
         Properties properties = new Properties();
         try {
             properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
@@ -57,35 +55,24 @@ public class MainScreenProperties {
         backupAdvertisements = new BackUp<>(Advertisement.class, backupAdvertisementsFilename);
     }
 
-    public static MainScreenProperties getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new MainScreenProperties();
-        }
-
-        return INSTANCE;
-    }
-
     // Person
-    public static long latency;
-    public static BackUp<Person> backupPersons;
-    public static String backupPersonsFilename;
-    public static long personTimeToShow;
+    public final long latency;
+    public final BackUp<Person> backupPersons;
+    public final String backupPersonsFilename;
+    public final long personTimeToShow;
 
     // Team
-    public static int sleepTime;
-    public static ContestInfo contestInfo;
-    public static String[] teamNames;
+    public final int sleepTime;
+    public final ContestInfo contestInfo;
+    public String[] teamNames;
 
     // Camera
-    public static int cameraNumber;
-    public static String[] cameraURLs;
-    public static String[] cameraNames;
+    public final int cameraNumber;
+    public final String[] cameraURLs;
+    public final String[] cameraNames;
 
     // Advertisement
-    public static String backupAdvertisementsFilename;
-    public static long timeAdvertisement;
-    public static BackUp<Advertisement> backupAdvertisements;
-
-    private static MainScreenProperties INSTANCE = null;
-
+    public final String backupAdvertisementsFilename;
+    public final long timeAdvertisement;
+    public final BackUp<Advertisement> backupAdvertisements;
 }

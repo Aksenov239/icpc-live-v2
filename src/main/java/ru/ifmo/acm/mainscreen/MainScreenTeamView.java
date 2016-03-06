@@ -6,7 +6,6 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.backend.player.widgets.TeamWidget;
-import ru.ifmo.acm.datapassing.MainScreenProperties;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -54,7 +53,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         //teamSelection.setRows(mainScreenData.teamStatus.teamNames.length);
 
         teamSelection = new OptionGroup();
-        for (String name : MainScreenProperties.getInstance().teamNames) {
+        for (String name : MainScreenData.getProperties().teamNames) {
             teamSelection.addItem(name);
         }
         teamSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);

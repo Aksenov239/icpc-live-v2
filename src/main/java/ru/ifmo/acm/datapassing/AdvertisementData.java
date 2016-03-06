@@ -25,7 +25,7 @@ public class AdvertisementData implements CachedData {
     public void update() {
         boolean change = false;
         synchronized (advertisementLock) {
-            if (System.currentTimeMillis() > timestamp + MainScreenProperties.getInstance().timeAdvertisement) {
+            if (System.currentTimeMillis() > timestamp + MainScreenData.getProperties().timeAdvertisement) {
                 //System.err.println("Big idle for advert");
                 isVisible = false;
                 change = true;
@@ -41,19 +41,19 @@ public class AdvertisementData implements CachedData {
     }
 
     public void setValue(Object key, String value) {
-        MainScreenProperties.getInstance().backupAdvertisements.setProperty(key, "advertisement", value);
+        MainScreenData.getProperties().backupAdvertisements.setProperty(key, "advertisement", value);
     }
 
     public BeanItemContainer<Advertisement> getContainer() {
-        return MainScreenProperties.getInstance().backupAdvertisements.getContainer();
+        return MainScreenData.getProperties().backupAdvertisements.getContainer();
     }
 
     public void removeAdvertisement(Advertisement advertisement) {
-        MainScreenProperties.getInstance().backupAdvertisements.removeItem(advertisement);
+        MainScreenData.getProperties().backupAdvertisements.removeItem(advertisement);
     }
 
     public void addAdvertisement(Advertisement advertisement) {
-        MainScreenProperties.getInstance().backupAdvertisements.addItem(advertisement);
+        MainScreenData.getProperties().backupAdvertisements.addItem(advertisement);
     }
 
     public void setAdvertisementVisible(boolean visible, Advertisement advertisement) {

@@ -31,13 +31,13 @@ public class TeamData implements CachedData {
             }
             if (teamInfo != null && ((((PCMSTeamInfo) teamInfo).getAlias().equals(alias)
 //             && isInfoVisible)) {
-                    || timestamp + MainScreenProperties.getInstance().sleepTime > System.currentTimeMillis()) && isVisible)) {
+                    || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible)) {
                 return false;
             }
             timestamp = System.currentTimeMillis();
             isVisible = true;
             infoType = type;
-            teamInfo = MainScreenProperties.getInstance().contestInfo.getParticipant(alias);
+            teamInfo = MainScreenData.getProperties().contestInfo.getParticipant(alias);
             System.err.println(alias + " " + teamInfo.getId());
         } else {
             isVisible = false;

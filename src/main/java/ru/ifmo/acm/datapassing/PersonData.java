@@ -43,7 +43,7 @@ public class PersonData implements CachedData{
 //        System.err.println(labelsTimestamps[0] + " " + timeToShow + " " + System.currentTimeMillis());
         for (int id = 0; id < 2; id++) {
             synchronized (labelsLock[id]) {
-                if (timestamp[id] + MainScreenProperties.getInstance().personTimeToShow < System.currentTimeMillis()) {
+                if (timestamp[id] + MainScreenData.getProperties().personTimeToShow < System.currentTimeMillis()) {
                     isVisible[id] = false;
                     change = true;
                 }
@@ -74,19 +74,19 @@ public class PersonData implements CachedData{
     }
 
     public void addPerson(Person person) {
-        MainScreenProperties.getInstance().backupPersons.addItem(person);
+        MainScreenData.getProperties().backupPersons.addItem(person);
     }
 
     public void removePerson(Person person) {
-        MainScreenProperties.getInstance().backupPersons.removeItem(person);
+        MainScreenData.getProperties().backupPersons.removeItem(person);
     }
 
     public void setValue(Object key, String property, String value) {
-        MainScreenProperties.getInstance().backupPersons.setProperty(key, property, value);
+        MainScreenData.getProperties().backupPersons.setProperty(key, property, value);
     }
 
     public BeanItemContainer<Person> getContainer() {
-        return MainScreenProperties.getInstance().backupPersons.getContainer();
+        return MainScreenData.getProperties().backupPersons.getContainer();
     }
 
     public long getTimestamp(int id) {
