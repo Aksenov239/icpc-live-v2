@@ -59,8 +59,8 @@ public class BigStandingsWidget extends Widget implements Scalable {
         movingHeight = (int) (plateHeight * ((1 + SPACE_VS_PLATE) * TEAMS_ON_PAGE + SPACE_VS_PLATE));
 
         this.updateWait = updateWait;
-
         font = Font.decode("Open Sans Italic " + (int) (plateHeight * 0.7));
+        this.setVisible(false);
     }
 
     public void setState(StandingsData.StandingsType type) {
