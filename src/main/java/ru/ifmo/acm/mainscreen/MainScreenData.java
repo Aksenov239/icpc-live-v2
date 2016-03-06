@@ -47,10 +47,16 @@ public class MainScreenData {
 
     private static MainScreenData mainScreenData;
 
+    public static MainScreenProperties getProperties() {
+        return mainScreenData.mainScreenProperties;
+    }
+
     public AdvertisementData advertisementData;
     public ClockData clockData;
     public PersonData personData;
     public StandingsData standingsData;
     public TeamData teamData;
     public CameraData cameraData;
+
+    private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

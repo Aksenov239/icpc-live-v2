@@ -6,7 +6,7 @@ public class CameraData implements CachedData {
     public CameraData() {
         timestamp = System.currentTimeMillis();
         cameraNumber = 0;
-        cameraURL = MainScreenProperties.getInstance().cameraURLs[0];
+        cameraURL = MainScreenData.getProperties().cameraURLs[0];
     }
 
     @Override
@@ -23,9 +23,9 @@ public class CameraData implements CachedData {
     }
 
     public synchronized boolean setCameraNumber(int cameraNumber) {
-        if (timestamp + MainScreenProperties.getInstance().sleepTime < System.currentTimeMillis()) {
+        if (timestamp + MainScreenData.getProperties().sleepTime < System.currentTimeMillis()) {
             this.cameraNumber = cameraNumber;
-            cameraURL = MainScreenProperties.getInstance().cameraURLs[cameraNumber];
+            cameraURL = MainScreenData.getProperties().cameraURLs[cameraNumber];
             timestamp = System.currentTimeMillis();
             recache();
 
@@ -35,7 +35,7 @@ public class CameraData implements CachedData {
     }
 
     public synchronized String cameraStatus() {
-        return timestamp + "\n" + MainScreenProperties.getInstance().cameraNames[cameraNumber];
+        return timestamp + "\n" + MainScreenData.getProperties().cameraNames[cameraNumber];
     }
 
     public long timestamp;

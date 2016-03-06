@@ -3,7 +3,6 @@ package ru.ifmo.acm.mainscreen;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
-import ru.ifmo.acm.datapassing.MainScreenProperties;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -26,10 +25,10 @@ public class MainScreenCameraView extends CustomComponent implements View {
     public Component getControllerTeam() {
         cameraStatus = new Label("Camera " + getCameraStatus());
 
-        cameraButtons = new Button[MainScreenProperties.cameraNumber];
+        cameraButtons = new Button[MainScreenData.getProperties().cameraNumber];
 
         for (int i = 0; i < cameraButtons.length; i++) {
-            cameraButtons[i] = new Button(MainScreenProperties.cameraNames[i]);
+            cameraButtons[i] = new Button(MainScreenData.getProperties().cameraNames[i]);
             final int id = i;
             cameraButtons[i].addClickListener(event -> {
                 if (!mainScreenData.cameraData.setCameraNumber(id)) {
