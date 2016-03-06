@@ -27,6 +27,8 @@ public abstract class Widget {
     public final static Color BRONZE_COLOR = new Color(180, 122, 124);
     public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
 
+    private static final int POINTS_IN_ROUND = 3;
+    private static final double ROUND_RADIUS = 2;
 
     long last = 0;
     double opacity = 1;
@@ -100,10 +102,26 @@ public abstract class Widget {
         y += (height - hh) / 2;
         height = hh;
 
-        int dx = (int) (0.1 * height);
-        int[] xx = new int[]{x - dx, x + width - dx, x + width + dx, x + dx};
-        int[] yy = new int[]{y + height, y + height, y, y};
-        g.fill(new Polygon(xx, yy, 4));
+
+        int[] xx = new int[POINTS_IN_ROUND * 4];
+        int[] yy = new int[POINTS_IN_ROUND * 4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < POINTS_IN_ROUND; j++) {
+                int t = i * POINTS_IN_ROUND + j;
+                double a = Math.PI / 2 * j / (POINTS_IN_ROUND - 1);
+                int dx = new int[]{0, 1, 0, -1}[i];
+                int dy = new int[]{1, 0, -1, 0}[i];
+                double baseX = (i == 0 || i == 3 ? x + ROUND_RADIUS : x + width - ROUND_RADIUS);
+                double baseY = (i == 2 || i == 3 ? y + ROUND_RADIUS : y + height - ROUND_RADIUS);
+
+                double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
+                double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
+                tx -= (ty - (y + height / 2)) * 0.2;
+                xx[t] = (int) Math.round(tx);
+                yy[t] = (int) Math.round(ty);
+            }
+        }
+        g.fill(new Polygon(xx, yy, xx.length));
     }
 
     static final int POSITION_LEFT = 0;
