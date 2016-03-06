@@ -17,13 +17,13 @@ public class BigStandingsWidget extends Widget implements Scalable {
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
-    private static final double SPACE_VS_PLATE = 0.05;
+    private static final double SPACE_VS_PLATE = 0.1;
     public static int PERIOD = STANDING_TIME + MOVING_TIME;
-    public final static int TEAMS_ON_PAGE = 12;
+    public final static int TEAMS_ON_PAGE = 16;
 
     private final int plateWidth;
     private final double plateHeight;
-    private final double spaceY;
+    private final int spaceY;
     private final int spaceX;
     private final int movingHeight;
     public int length;
@@ -54,13 +54,13 @@ public class BigStandingsWidget extends Widget implements Scalable {
         spaceX = 0;
         double total = (TEAMS_ON_PAGE + 1) * (1 + SPACE_VS_PLATE) + SPACE_VS_PLATE;
         plateHeight = height / total;
-        spaceY = plateHeight * SPACE_VS_PLATE;
+        spaceY = (int) (plateHeight * SPACE_VS_PLATE);
 
         movingHeight = (int) (plateHeight * ((1 + SPACE_VS_PLATE) * TEAMS_ON_PAGE + SPACE_VS_PLATE));
 
         this.updateWait = updateWait;
-        font = Font.decode("Open Sans Italic " + (int) (plateHeight * 0.7));
-        this.setVisible(false);
+
+        font = Font.decode("Open Sans " + (int) (plateHeight * 0.5));
     }
 
     public void setState(StandingsData.StandingsType type) {
@@ -178,29 +178,29 @@ public class BigStandingsWidget extends Widget implements Scalable {
 
     private static final double SPLIT_WIDTH = 0.005;
     private static final double RANK_WIDTH = 0.07;
-    private static final double NAME_WIDTH = 0.4;
+    private static final double NAME_WIDTH = 0.2;
     private static final double TOTAL_WIDTH = 0.08;
     private static final double PENALTY_WIDTH = 0.08;
 
     private void drawHead(Graphics2D g, int x, int y, int problemsNumber) {
-        g.setFont(Font.decode("Open Sans Italic " + (int) (plateHeight * 0.5)));
-        drawTextInRect(g, "Rank", x, y, (int) (plateWidth * RANK_WIDTH), (int) plateHeight,
-                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-        x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
-        drawTextInRect(g, "Name", x, y, (int) (plateWidth * NAME_WIDTH), (int) plateHeight,
-                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-        x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
+        g.setFont(font);
+        drawTextInRect(g, "Current Standings", x, y, (int) (plateWidth * (RANK_WIDTH + NAME_WIDTH + SPLIT_WIDTH)), (int) plateHeight,
+                POSITION_CENTER, ACCENT_COLOR, Color.white, opacityState);
+        x += (int) (plateWidth * (RANK_WIDTH + NAME_WIDTH + 2 * SPLIT_WIDTH));
+//        drawTextInRect(g, "Name", x, y, (int) (plateWidth * NAME_WIDTH), (int) plateHeight,
+//                POSITION_CENTER, MAIN_COLOR, Color.white, opacityState);
+//        x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
         int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / problemsNumber - plateWidth * SPLIT_WIDTH);
         for (int i = 0; i < problemsNumber; i++) {
             drawTextInRect(g, "" + (char) ('A' + i), x, y, PROBLEM_WIDTH, (int) plateHeight,
-                    POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+                    POSITION_CENTER, MAIN_COLOR, Color.white, opacityState);
             x += (int) (plateWidth * SPLIT_WIDTH) + PROBLEM_WIDTH;
         }
-        drawTextInRect(g, "Total", x, y, (int) (plateWidth * TOTAL_WIDTH), (int) plateHeight,
-                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
-        x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
-        drawTextInRect(g, "Penalty", x, y, (int) (plateWidth * PENALTY_WIDTH), (int) plateHeight,
-                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+//        drawTextInRect(g, "Total", x, y, (int) (plateWidth * TOTAL_WIDTH), (int) plateHeight,
+//                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+//        x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
+//        drawTextInRect(g, "Penalty", x, y, (int) (plateWidth * PENALTY_WIDTH), (int) plateHeight,
+//                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
     }
 
     private String getShortName(Graphics2D g, String fullName) {
@@ -233,7 +233,6 @@ public class BigStandingsWidget extends Widget implements Scalable {
 
         x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
 
-        g.setFont(Font.decode("Open Sans Italic " + (int) (plateHeight * 0.5)));
         Collection<RunInfo>[] runs = team.getRuns();
         int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / runs.length - plateWidth * SPLIT_WIDTH);
         for (int i = 0; i < runs.length; i++) {
@@ -255,7 +254,7 @@ public class BigStandingsWidget extends Widget implements Scalable {
                             total == 0 ? "" : "-";
             prefix = "";
             drawTextInRect(g, prefix + (total != 0 ? total : ""), x, y,
-                    PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.black, opacityState);
+                    PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.WHITE, opacityState);
             x += PROBLEM_WIDTH + (int) (plateWidth * SPLIT_WIDTH);
         }
 

@@ -15,22 +15,16 @@ import java.io.IOException;
  */
 public class ClockWidget extends Widget implements Scalable {
 
-    private BufferedImage clock;
+    private static final Color DARK_GRAY = new Color(0x404047);
+    public static final int FONT_SIZE = 24;
     private final int x = 1160;
-    private final int y = 20;
-    private final int WIDTH = 93;
-    private final int HEIGHT = 31;
-    Font clockFont = Font.decode("ALS Schlange sans " + 24);
+    private final int y = 13;
+    private final int WIDTH = 103;
+    private final int HEIGHT = 44;
+    Font clockFont = Font.decode("Open Sans Light " + FONT_SIZE);
     private long start;
 
     private void initialization() {
-        BufferedImage clock;
-        try {
-            clock = ImageIO.read(new File("pics/clock.png"));
-        } catch (IOException e) {
-            clock = null;
-        }
-        this.clock = clock;
 //        start = EventsLoader.getContestData().startTime;//System.currentTimeMillis() - new Random().nextInt(5 * 60 * 60 * 1000);
         setVisible(true);
         setOpacityState(1);
@@ -59,7 +53,7 @@ public class ClockWidget extends Widget implements Scalable {
 //        g.drawImage(clock, x, y, null);
         update();
         changeOpacity();
-        drawRect(g, x, y, WIDTH, HEIGHT, MAIN_COLOR, opacity);
+        drawRect(g, x, y, WIDTH, HEIGHT, DARK_GRAY, opacity);
         g.setColor(Color.WHITE);
         g.setFont(clockFont);
         long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
@@ -70,11 +64,13 @@ public class ClockWidget extends Widget implements Scalable {
         int h = (int) (time / 3600);
         int m = (int) (time % 3600 / 60);
         int s = (int) (time % 60);
-        int w1 = g.getFontMetrics().charWidth('0');
-        int w2 = g.getFontMetrics().charWidth(':');
+        int w1 = g.getFontMetrics(clockFont).charWidth('0');
+        int w2 = g.getFontMetrics(clockFont).charWidth(':');
+        int hh = (int) (FONT_SIZE * 0.75);
+        int ww = w1 * 5 + w2 * 2;
         String timeS = String.format("%d:%02d:%02d", h, m, s);
-        int dx = (int) ((clock.getWidth() - w1 * 5 - w2 * 2) / 2 + 1);
-        int dy = (int) (clock.getHeight() * 0.75);
+        int dx = (int) ((WIDTH - ww) / 2 + 1);
+        int dy = (int) (HEIGHT - (HEIGHT - hh) / 2);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         for (int i = 0; i < timeS.length(); i++) {
             char c = timeS.charAt(i);
