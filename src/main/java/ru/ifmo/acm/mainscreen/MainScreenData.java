@@ -1,9 +1,13 @@
 package ru.ifmo.acm.mainscreen;
 
 
+import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.datapassing.ClockData;
 import ru.ifmo.acm.datapassing.StandingsData;
-import ru.ifmo.acm.mainscreen.statuses.*;
+import ru.ifmo.acm.mainscreen.statuses.AdvertisementStatus;
+import ru.ifmo.acm.mainscreen.statuses.CameraStatus;
+import ru.ifmo.acm.mainscreen.statuses.PersonStatus;
+import ru.ifmo.acm.mainscreen.statuses.TeamStatus;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -16,6 +20,21 @@ public class MainScreenData {
         if (mainScreenData == null) {
             mainScreenData = new MainScreenData();
             //new DataLoader().frontendInitialize();
+            //Start update
+            Utils.StoppedThread updater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+                public void run() {
+                    while (true) {
+                        mainScreenData.update();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            updater.start();
+            ContextListener.addThread(updater);
         }
         return mainScreenData;
     }
@@ -51,9 +70,9 @@ public class MainScreenData {
     }
 
     public void update() {
-      advertisementStatus.update();
-      personStatus.update();
-      standingsData.update();
+        advertisementStatus.update();
+        personStatus.update();
+        standingsData.update();
     }
 
     private static MainScreenData mainScreenData;

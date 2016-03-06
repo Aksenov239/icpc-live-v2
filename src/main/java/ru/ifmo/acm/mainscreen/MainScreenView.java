@@ -358,7 +358,7 @@ public class MainScreenView extends CustomComponent implements View {
         }
         //mainScreenData.personStatus.update();
 
-        mainScreenData.update();
+//        mainScreenData.update();
     }
 
     public void enter(ViewChangeEvent event) {

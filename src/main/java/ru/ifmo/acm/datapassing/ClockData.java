@@ -20,12 +20,8 @@ public class ClockData implements CachedData {
         recache();
     }
 
-    public synchronized boolean isClockVisible() {
+    public boolean isClockVisible() {
         return isVisible;
-    }
-
-    public synchronized String clockStatus() {
-        return timestamp + "\n" + isVisible;
     }
 
     public ClockData initialize() {

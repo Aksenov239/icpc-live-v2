@@ -108,7 +108,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
     public void refresh() {
         teamStatus.setValue(getTeamStatus());
-        mainScreenData.update();
+//        mainScreenData.update();
     }
 
     public void enter(ViewChangeEvent event) {

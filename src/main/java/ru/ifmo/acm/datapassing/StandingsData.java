@@ -2,7 +2,6 @@ package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.backend.player.widgets.StandingsWidget;
 import ru.ifmo.acm.events.EventsLoader;
-import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
 public class StandingsData implements CachedData {
@@ -63,21 +62,15 @@ public class StandingsData implements CachedData {
     }
 
     public long getStandingsTimestamp() {
-        synchronized (standingsLock) {
-            return timestamp;
-        }
+        return timestamp;
     }
 
     public boolean isStandingsVisible() {
-        synchronized (standingsLock) {
-            return isVisible;
-        }
+        return isVisible;
     }
 
     public StandingsType getStandingsType() {
-        synchronized (standingsLock) {
-            return standingsType;
-        }
+        return standingsType;
     }
 
     public boolean isBig() {
