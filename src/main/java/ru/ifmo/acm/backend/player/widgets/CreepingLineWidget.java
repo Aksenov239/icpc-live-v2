@@ -1,12 +1,10 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -16,7 +14,7 @@ import java.util.Set;
 /**
  * @author: pashka
  */
-public class CreepingLineWidget extends Widget implements Scalable {
+public class CreepingLineWidget extends Widget {
 
     private static final double V = 0.1;
     private double SEPARATOR = 50;
@@ -28,6 +26,11 @@ public class CreepingLineWidget extends Widget implements Scalable {
     Set<String> inQueue = new HashSet<String>();
 
     long last;
+
+    public CreepingLineWidget() {
+        super();
+        setVisible(true);
+    }
 
     protected void updateImpl(Data data) {
         for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
@@ -58,7 +61,7 @@ public class CreepingLineWidget extends Widget implements Scalable {
 //            g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
         update();
-        g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
+        g.setComposite(AlphaComposite.SrcOver.derive(1f));
         g.setColor(MAIN_COLOR);
         g.fillRect(0, height - HEIGHT - MARGIN, width, HEIGHT);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (1)));

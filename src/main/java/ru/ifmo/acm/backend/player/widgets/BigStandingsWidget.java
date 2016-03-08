@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * @author: pashka
  */
-public class BigStandingsWidget extends Widget implements Scalable {
+public class BigStandingsWidget extends Widget {
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
@@ -46,7 +46,7 @@ public class BigStandingsWidget extends Widget implements Scalable {
         totalHeight = height;
         this.controlled = controlled;
         if (!controlled) {
-            setOpacityState(1);
+            setVisibilityState(1);
             setVisible(true);
         }
 
@@ -60,7 +60,7 @@ public class BigStandingsWidget extends Widget implements Scalable {
 
         this.updateWait = updateWait;
 
-        font = Font.decode("Open Sans " + (int) (plateHeight * 0.5));
+        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
     }
 
     public void setState(StandingsData.StandingsType type) {
@@ -125,9 +125,9 @@ public class BigStandingsWidget extends Widget implements Scalable {
         if (contestData == null || contestData.getStandings() == null) return;
         length = Math.min(contestData.getTeamsNumber(), contestData.getStandings().length);
 
-        int dt = changeOpacity();
+        int dt = updateVisibilityState();
 
-        if (opacityState > 0) {
+        if (visibilityState > 0) {
             if (isVisible()) {
                 timer = timer + dt;
                 if (timer >= PERIOD) {
@@ -185,22 +185,22 @@ public class BigStandingsWidget extends Widget implements Scalable {
     private void drawHead(Graphics2D g, int x, int y, int problemsNumber) {
         g.setFont(font);
         drawTextInRect(g, "Current Standings", x, y, (int) (plateWidth * (RANK_WIDTH + NAME_WIDTH + SPLIT_WIDTH)), (int) plateHeight,
-                POSITION_CENTER, ACCENT_COLOR, Color.white, opacityState);
+                POSITION_CENTER, ACCENT_COLOR, Color.white, visibilityState);
         x += (int) (plateWidth * (RANK_WIDTH + NAME_WIDTH + 2 * SPLIT_WIDTH));
 //        drawTextInRect(g, "Name", x, y, (int) (plateWidth * NAME_WIDTH), (int) plateHeight,
-//                POSITION_CENTER, MAIN_COLOR, Color.white, opacityState);
+//                POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
 //        x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
         int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / problemsNumber - plateWidth * SPLIT_WIDTH);
         for (int i = 0; i < problemsNumber; i++) {
             drawTextInRect(g, "" + (char) ('A' + i), x, y, PROBLEM_WIDTH, (int) plateHeight,
-                    POSITION_CENTER, MAIN_COLOR, Color.white, opacityState);
+                    POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
             x += (int) (plateWidth * SPLIT_WIDTH) + PROBLEM_WIDTH;
         }
 //        drawTextInRect(g, "Total", x, y, (int) (plateWidth * TOTAL_WIDTH), (int) plateHeight,
-//                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+//                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
 //        x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
 //        drawTextInRect(g, "Penalty", x, y, (int) (plateWidth * PENALTY_WIDTH), (int) plateHeight,
-//                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+//                POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
     }
 
     private String getShortName(Graphics2D g, String fullName) {
@@ -223,13 +223,13 @@ public class BigStandingsWidget extends Widget implements Scalable {
         Font font = this.font;
         g.setFont(font);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                (int) (plateWidth * RANK_WIDTH), (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+                (int) (plateWidth * RANK_WIDTH), (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
 
         x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
 
         String name = getShortName(g, team.getShortName());
         drawTextInRect(g, name, x, y,
-                (int) (plateWidth * NAME_WIDTH), (int) plateHeight, POSITION_LEFT, ADDITIONAL_COLOR, Color.white, opacityState);
+                (int) (plateWidth * NAME_WIDTH), (int) plateHeight, POSITION_LEFT, ADDITIONAL_COLOR, Color.white, visibilityState);
 
         x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
 
@@ -254,15 +254,15 @@ public class BigStandingsWidget extends Widget implements Scalable {
                             total == 0 ? "" : "-";
             prefix = "";
             drawTextInRect(g, prefix + (total != 0 ? total : ""), x, y,
-                    PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.WHITE, opacityState);
+                    PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
             x += PROBLEM_WIDTH + (int) (plateWidth * SPLIT_WIDTH);
         }
 
         g.setFont(font);
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, (int) (plateWidth * TOTAL_WIDTH),
-                (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+                (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
         x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
         drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (plateWidth * PENALTY_WIDTH),
-                (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, opacityState);
+                (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
     }
 }

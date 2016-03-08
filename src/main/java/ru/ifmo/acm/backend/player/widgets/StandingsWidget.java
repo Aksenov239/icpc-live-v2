@@ -1,7 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
@@ -16,7 +15,7 @@ import java.io.IOException;
 /**
  * @author: pashka
  */
-public class StandingsWidget extends Widget implements Scalable {
+public class StandingsWidget extends Widget {
 
     private static final int MOVING_TIME = 500;
     private final int PLATE_WIDTH = 326;
@@ -106,9 +105,9 @@ public class StandingsWidget extends Widget implements Scalable {
         if (contestData == null || contestData.getStandings() == null) return;
         if (LENGTH == 0)
             LENGTH = contestData.getTeamsNumber();
-        int dt = changeOpacity();
+        int dt = updateVisibilityState();
 
-        if (opacityState > 0) {
+        if (visibilityState > 0) {
             if (isVisible()) {
                 timer = timer + dt;
                 if (timer >= PERIOD) {
@@ -149,7 +148,7 @@ public class StandingsWidget extends Widget implements Scalable {
             int dy = (int) (DY * (i % 4));
             g.setFont(FONT);
             if (team != null)
-                drawTeamPane(g, team, x + dx, y + dy, PLATE_WIDTH, opacityState);
+                drawTeamPane(g, team, x + dx, y + dy, PLATE_WIDTH, visibilityState);
         }
     }
 }

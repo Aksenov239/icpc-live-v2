@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * @author: pashka
  */
-public class TeamInfoWidget extends TeamWidget implements Scalable {
+public class TeamInfoWidget extends TeamWidget {
     private int teamId;
 
     public TeamInfoWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {

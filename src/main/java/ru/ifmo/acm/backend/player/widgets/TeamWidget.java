@@ -1,7 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
@@ -12,7 +11,7 @@ import java.util.Properties;
 /**
  * @author: pashka
  */
-public abstract class TeamWidget extends VideoWidget implements Scalable {
+public abstract class TeamWidget extends VideoWidget {
     public static String[] types;
     public static HashMap<String, String> urlTemplates;
 

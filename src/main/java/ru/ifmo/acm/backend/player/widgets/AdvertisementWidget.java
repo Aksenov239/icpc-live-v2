@@ -21,6 +21,7 @@ public class AdvertisementWidget extends Widget {
     private long duration;
     private long lastVisibleChange = Long.MAX_VALUE / 2;
 
+    @Override
     protected void updateImpl(Data data) {
         lastVisibleChange = data.advertisementData.timestamp;
         if (lastVisibleChange + duration < System.currentTimeMillis()) {

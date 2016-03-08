@@ -12,7 +12,7 @@ import ru.ifmo.acm.events.TeamInfo;
 public abstract class Widget {
     public final static double OPACITY = 1;
 
-    public static final double MARGIN = 0.2;
+    public static final double MARGIN = 0.3;
     private static final double MARGIN_BOTTOM = 0.25;
     private boolean visible;
 
@@ -31,9 +31,9 @@ public abstract class Widget {
     private static final double ROUND_RADIUS = 2;
 
     long last = 0;
-    double opacity = 1;
-    double textOpacity = 1;
-    double opacityState = 1;
+    double opacity = 0;
+    double textOpacity = 0;
+    double visibilityState = 0;
 
     protected long updateWait;
     protected long lastUpdate;
@@ -48,7 +48,7 @@ public abstract class Widget {
     protected abstract void paintImpl(Graphics2D g, int width, int height);
 
     public void paint(Graphics2D g, int width, int height, double scale) {
-        if (this instanceof Scalable && scale != 1) {
+        if (scale != 1) {
             g = (Graphics2D) g.create();
             g.scale(scale, scale);
             width = (int) Math.round(width / scale);
@@ -59,25 +59,25 @@ public abstract class Widget {
 
     private static final double V = 0.001;
 
-    protected int changeOpacity() {
+    protected int updateVisibilityState() {
         long time = System.currentTimeMillis();
         if (last == 0) {
-            opacityState = visible ? 1 : 0;
+            visibilityState = visible ? 1 : 0;
         }
         int dt = last == 0 ? 0 : (int) (time - last);
         last = time;
         if (isVisible()) {
-            setOpacityState(Math.min(opacityState + dt * V, 1));
+            setVisibilityState(Math.min(visibilityState + dt * V, 1));
         } else {
-            setOpacityState(Math.max(opacityState - dt * V, 0));
+            setVisibilityState(Math.max(visibilityState - dt * V, 0));
         }
         return dt;
     }
 
-    public void setOpacityState(double opacityState) {
-        this.opacityState = opacityState;
-        opacity = f(opacityState * 2);
-        textOpacity = f(opacityState * 2 - 1);
+    public void setVisibilityState(double visibilityState) {
+        this.visibilityState = visibilityState;
+        opacity = f(visibilityState * 2);
+        textOpacity = f(visibilityState * 2 - 1);
     }
 
     protected double f(double x) {
@@ -129,7 +129,7 @@ public abstract class Widget {
     static final int POSITION_CENTER = 2;
 
     void drawTextInRect(Graphics2D g, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double state) {
-        setOpacityState(state);
+        setVisibilityState(state);
         if (text == null) {
             text = "NULL";
         }
@@ -147,7 +147,8 @@ public abstract class Widget {
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
         FontMetrics wh = g.getFontMetrics();
-        float yy = (float) (y + 1. * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent();
+        float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
+                - 0.03f * height;
         if (position == POSITION_LEFT) {
             float xx = x + (float) (height * MARGIN);
             g.drawString(text, xx, yy);

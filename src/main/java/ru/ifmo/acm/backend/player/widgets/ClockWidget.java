@@ -1,19 +1,14 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.datapassing.Data;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author: pashka
  */
-public class ClockWidget extends Widget implements Scalable {
+public class ClockWidget extends Widget {
 
     private static final Color DARK_GRAY = new Color(0x404047);
     public static final int FONT_SIZE = 24;
@@ -27,7 +22,7 @@ public class ClockWidget extends Widget implements Scalable {
     private void initialization() {
 //        start = EventsLoader.getContestData().startTime;//System.currentTimeMillis() - new Random().nextInt(5 * 60 * 60 * 1000);
         setVisible(true);
-        setOpacityState(1);
+        setVisibilityState(1);
     }
 
     public int getHeight() {
@@ -54,7 +49,8 @@ public class ClockWidget extends Widget implements Scalable {
     public void paintImpl(Graphics2D g, int width, int height) {
 //        g.drawImage(clock, x, y, null);
         update();
-        changeOpacity();
+        updateVisibilityState();
+        if (opacity == 0) return;
         drawRect(g, x, y, WIDTH, HEIGHT, DARK_GRAY, opacity);
         g.setColor(Color.WHITE);
         g.setFont(clockFont);

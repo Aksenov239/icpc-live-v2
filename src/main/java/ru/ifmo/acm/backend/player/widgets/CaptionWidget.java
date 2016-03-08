@@ -1,13 +1,11 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import ru.ifmo.acm.backend.player.TickPlayer;
-
 import java.awt.*;
 
 /**
  * @author: pashka
  */
-public class CaptionWidget extends Widget implements Scalable {
+public class CaptionWidget extends Widget {
 
     private final int MARGIN = 30;
     private final int Y = 580;
@@ -31,8 +29,8 @@ public class CaptionWidget extends Widget implements Scalable {
 
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
-        changeOpacity();
-        if (opacity > 0) {
+        updateVisibilityState();
+        if (visibilityState > 0) {
             int x1;
             int x2;
             int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
@@ -48,11 +46,11 @@ public class CaptionWidget extends Widget implements Scalable {
             }
             int y = Y;
             g.setFont(FONT1);
-            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, opacityState);
+            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, visibilityState);
             y += HEIGHT1 + 2;
             g.setFont(FONT2);
             if (description != null && description.length() != 0) {
-                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, opacityState);
+                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, visibilityState);
             }
         }
     }
