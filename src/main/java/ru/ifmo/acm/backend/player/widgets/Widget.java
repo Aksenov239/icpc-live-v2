@@ -18,7 +18,10 @@ public abstract class Widget {
 
     public final static Color MAIN_COLOR = Color.decode("0x193C5B");
     public final static Color ADDITIONAL_COLOR = Color.decode("0x4C83C3");
-    public final static Color ACCENT_COLOR = Color.decode("0x871E1B");
+    public final static Color ACCENT_COLOR = Color.decode("0x881F1B");
+    public static final Color GREEN_COLOR = new Color(0x1b8041);
+    public static final Color YELLOW_COLOR = new Color(0xe0aa12);
+    public static final Color RED_COLOR = new Color(0x881f1b);
 
     public final static Color GOLD_COLOR = new Color(228, 200, 126);
     public final static Color GOLD_COLOR2 = new Color(238, 220, 151);

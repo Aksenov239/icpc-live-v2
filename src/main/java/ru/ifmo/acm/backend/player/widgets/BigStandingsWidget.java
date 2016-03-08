@@ -149,14 +149,15 @@ public class BigStandingsWidget extends Widget {
                 }
             }
 
+            int initY = 5 * spaceY;
             if (start < length) {
-                drawTeams(g, spaceX, (int) (plateHeight + 2 * spaceY + dy), contestData, start);
+                drawTeams(g, spaceX, (int) (plateHeight + initY + dy), contestData, start);
             }
             if (start + TEAMS_ON_PAGE < length || !controlled) {
                 int nextPage = start + TEAMS_ON_PAGE < length ? start + TEAMS_ON_PAGE : 0;
-                drawTeams(g, spaceX, (int) (plateHeight + 2 * spaceY + dy + movingHeight), contestData, nextPage);
+                drawTeams(g, spaceX, (int) (plateHeight + initY + dy + movingHeight), contestData, nextPage);
             }
-            drawHead(g, spaceX, (int) spaceY, contestData.getProblemsNumber());
+            drawHead(g, spaceX, 0, contestData.getProblemsNumber());
         } else {
             timer = -TOP_PAGE_STANDING_TIME;
             start = 0;
@@ -177,9 +178,9 @@ public class BigStandingsWidget extends Widget {
     }
 
     private static final double SPLIT_WIDTH = 0.005;
-    private static final double RANK_WIDTH = 0.07;
-    private static final double NAME_WIDTH = 0.2;
-    private static final double TOTAL_WIDTH = 0.08;
+    private static final double RANK_WIDTH = 0.04;
+    private static final double NAME_WIDTH = 0.15;
+    private static final double TOTAL_WIDTH = 0.04;
     private static final double PENALTY_WIDTH = 0.08;
 
     private void drawHead(Graphics2D g, int x, int y, int problemsNumber) {
@@ -223,13 +224,13 @@ public class BigStandingsWidget extends Widget {
         Font font = this.font;
         g.setFont(font);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                (int) (plateWidth * RANK_WIDTH), (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
+                (int) (plateWidth * RANK_WIDTH), (int) plateHeight, POSITION_CENTER, ACCENT_COLOR, Color.white, visibilityState);
 
         x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
 
         String name = getShortName(g, team.getShortName());
         drawTextInRect(g, name, x, y,
-                (int) (plateWidth * NAME_WIDTH), (int) plateHeight, POSITION_LEFT, ADDITIONAL_COLOR, Color.white, visibilityState);
+                (int) (plateWidth * NAME_WIDTH), (int) plateHeight, POSITION_LEFT, MAIN_COLOR, Color.white, visibilityState);
 
         x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
 
@@ -246,13 +247,13 @@ public class BigStandingsWidget extends Widget {
                 total++;
                 status = run.getResult();
             }
-            Color statusColor = status.equals("AC") ? Color.green :
-                    status.equals("UD") ? Color.yellow :
-                            total == 0 ? ADDITIONAL_COLOR.darker() : Color.red;
+            Color statusColor = status.equals("AC") ? GREEN_COLOR :
+                    status.equals("UD") ? YELLOW_COLOR :
+                            total == 0 ? MAIN_COLOR : RED_COLOR;
             String prefix = status.equals("AC") ? "+" :
                     status.equals("UD") ? "?" :
                             total == 0 ? "" : "-";
-            prefix = "";
+//            prefix = "";
             drawTextInRect(g, prefix + (total != 0 ? total : ""), x, y,
                     PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
             x += PROBLEM_WIDTH + (int) (plateWidth * SPLIT_WIDTH);
@@ -260,9 +261,9 @@ public class BigStandingsWidget extends Widget {
 
         g.setFont(font);
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, (int) (plateWidth * TOTAL_WIDTH),
-                (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
+                (int) plateHeight, POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
         x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
         drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (plateWidth * PENALTY_WIDTH),
-                (int) plateHeight, POSITION_CENTER, ADDITIONAL_COLOR, Color.white, visibilityState);
+                (int) plateHeight, POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
     }
 }
