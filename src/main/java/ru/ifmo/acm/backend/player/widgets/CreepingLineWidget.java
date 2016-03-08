@@ -20,7 +20,8 @@ public class CreepingLineWidget extends Widget implements Scalable {
 
     private static final double V = 0.1;
     private double SEPARATOR = 50;
-    public int HEIGHT = 32;
+    public int HEIGHT = 24;
+    public int MARGIN = 12;
 
     Queue<String> messagesQueue = new ArrayDeque<String>(100);
     ArrayDeque<Message> messagesOnScreen = new ArrayDeque<Message>();
@@ -28,7 +29,7 @@ public class CreepingLineWidget extends Widget implements Scalable {
 
     long last;
 
-    protected void update(Data data) {
+    protected void updateImpl(Data data) {
         for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
             byte[] bytes = message.getMessage().getBytes();
             String text = null;
@@ -59,7 +60,7 @@ public class CreepingLineWidget extends Widget implements Scalable {
         update();
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(MAIN_COLOR);
-        g.fillRect(0, height - HEIGHT, width, HEIGHT);
+        g.fillRect(0, height - HEIGHT - MARGIN, width, HEIGHT);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (1)));
         g.setFont(messageFont);
         g.setColor(Color.white);
@@ -87,9 +88,9 @@ public class CreepingLineWidget extends Widget implements Scalable {
             }
         }
         for (Message message : messagesOnScreen) {
-            message.position -= 3;//10;//V * dt;
+            message.position -= V * dt;
             if (message.position + message.width >= 0) {
-                g.drawString(message.message, (float) message.position, height - 9);
+                g.drawString(message.message, (float) message.position, height - MARGIN - 5);
             }
         }
         while (messagesOnScreen.size() > 0 && messagesOnScreen.getFirst().position + messagesOnScreen.getFirst().width < 0) {

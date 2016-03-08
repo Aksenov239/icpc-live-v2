@@ -39,7 +39,9 @@ public class ClockWidget extends Widget implements Scalable {
         initialization();
     }
 
-    protected void update(Data data) {
+    @Override
+    protected void updateImpl(Data data) {
+        super.updateImpl(data);
         if (data.clockData.isClockVisible()) {
             setVisible(true);
         } else {

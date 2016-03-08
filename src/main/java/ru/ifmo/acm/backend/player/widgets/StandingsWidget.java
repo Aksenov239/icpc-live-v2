@@ -87,7 +87,7 @@ public class StandingsWidget extends Widget implements Scalable {
         }
     }
 
-    protected void update(Data data) {
+    protected void updateImpl(Data data) {
         if (data.standingsData.isStandingsVisible() && !data.standingsData.isBig()) {
             if (!isVisible() && contestData != null) {
                 //  lastVisibleChange = System.currentTimeMillis();

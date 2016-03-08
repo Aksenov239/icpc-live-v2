@@ -169,7 +169,7 @@ public abstract class Widget {
     public static final double PENALTY_WIDTH = 0.17;
 
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int width, double state) {
-        Color color = team.getRank() <= 3 ? GOLD_COLOR : team.getRank() <= 7 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
+        Color color = team.getRank() <= 4 ? GOLD_COLOR : team.getRank() <= 8 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
         if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
         int height = (int) (width * 0.1);
         g.setFont(Font.decode("Open Sans Italic " + (int) (height * 0.7)));

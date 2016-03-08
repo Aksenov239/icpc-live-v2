@@ -59,7 +59,7 @@ public class Main {
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
         generator.addWidget(new StandingsWidget(updateWait));
-        generator.addWidget(new QueueWidget(100));
+//        generator.addWidget(new QueueWidget(100));
         generator.addWidget(new BigStandingsWidget(64, 64,
                 BASE_WIDTH - 128, BASE_HEIGHT - 128, updateWait, false));
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);

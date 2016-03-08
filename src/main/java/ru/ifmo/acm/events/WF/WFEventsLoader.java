@@ -216,7 +216,7 @@ public class WFEventsLoader extends EventsLoader {
 				HttpURLConnection con = (HttpURLConnection) url.openConnection();
 				con.setRequestProperty("Authorization",
 						"Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
-				con.connect();
+					con.connect();
 				System.err.println(con.getHeaderFields());
 
 				XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(con.getInputStream(),
