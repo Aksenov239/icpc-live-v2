@@ -4,16 +4,15 @@ import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
-import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
-import java.util.Collection;
 
 /**
  * @author: pashka
  */
 public class BigStandingsWidget extends Widget {
+    private static final double V = 0.01;
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
@@ -112,6 +111,9 @@ public class BigStandingsWidget extends Widget {
         lastUpdate = System.currentTimeMillis();
     }
 
+    double[] currentTeamPositions;
+    double[] desiredTeamPositions;
+
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
@@ -125,8 +127,21 @@ public class BigStandingsWidget extends Widget {
         if (contestData == null || contestData.getStandings() == null) return;
         length = Math.min(contestData.getTeamsNumber(), contestData.getStandings().length);
 
-        int dt = updateVisibilityState();
+        if (desiredTeamPositions == null || desiredTeamPositions.length != contestData.getTeamsNumber() + 1) {
+            desiredTeamPositions = new double[contestData.getTeamsNumber() + 1];
+        }
+        {
+            int i = 0;
+            for (TeamInfo teamInfo : contestData.getStandings()) {
+                desiredTeamPositions[teamInfo.getId()] = i;
+                i++;
+            }
+        }
+        if (currentTeamPositions == null || currentTeamPositions.length != contestData.getTeamsNumber() + 1) {
+            currentTeamPositions = desiredTeamPositions.clone();
+        }
 
+        int dt = updateVisibilityState();
         if (visibilityState > 0) {
             if (isVisible()) {
                 timer = timer + dt;
@@ -139,41 +154,58 @@ public class BigStandingsWidget extends Widget {
                     }
                 }
             }
-            int dy = 0;
+            double start = this.start;
             if (timer >= STANDING_TIME) {
-                if (start + TEAMS_ON_PAGE >= length && controlled) {
+                if (start + TEAMS_ON_PAGE > length + 0.1 && controlled) {
                     setVisible(false);
                 } else {
                     double t = (timer - STANDING_TIME) * 1.0 / MOVING_TIME;
-                    dy = (int) ((2 * t * t * t - 3 * t * t) * movingHeight);
+                    start -= ((2 * t * t * t - 3 * t * t) * TEAMS_ON_PAGE);
                 }
             }
 
-            int initY = 5 * spaceY;
-            if (start < length) {
-                drawTeams(g, spaceX, (int) (plateHeight + initY + dy), contestData, start);
+            int lastProblems = 0;
+            boolean bright = true;
+            for (TeamInfo teamInfo : contestData.getStandings()) {
+                if (teamInfo.getSolvedProblemsNumber() != lastProblems) {
+                    lastProblems = teamInfo.getSolvedProblemsNumber();
+                    bright = !bright;
+                }
+                int id = teamInfo.getId();
+                double dp = dt * V;
+                if (Math.abs(currentTeamPositions[id] - desiredTeamPositions[id]) < dp) {
+                    currentTeamPositions[id] = desiredTeamPositions[id];
+                } else {
+                    if (desiredTeamPositions[id] < currentTeamPositions[id]) {
+                        currentTeamPositions[id] -= dp;
+                    } else {
+                        currentTeamPositions[id] += dp;
+                    }
+                    if (currentTeamPositions[id] < start - 1 && desiredTeamPositions[id] > start - 1) {
+                        currentTeamPositions[id] = start - 1;
+                    }
+                    if (currentTeamPositions[id] > start + TEAMS_ON_PAGE && desiredTeamPositions[id] < start + TEAMS_ON_PAGE) {
+                        currentTeamPositions[id] = start + TEAMS_ON_PAGE;
+                    }
+                }
+                double yy = currentTeamPositions[id] - start;
+                int initY = (int) (plateHeight + 6 * spaceY);
+                if (yy > -1 && yy < TEAMS_ON_PAGE) {
+                    drawFullTeamPane(g, teamInfo, spaceX, initY + (int) (yy * (plateHeight + spaceY)), bright);
+                }
             }
-            if (start + TEAMS_ON_PAGE < length || !controlled) {
-                int nextPage = start + TEAMS_ON_PAGE < length ? start + TEAMS_ON_PAGE : 0;
-                drawTeams(g, spaceX, (int) (plateHeight + initY + dy + movingHeight), contestData, nextPage);
-            }
+
+//            if (start < length) {
+//                drawTeams(g, spaceX, (int) (plateHeight + initY + currentStart), contestData, start);
+//            }
+//            if (start + TEAMS_ON_PAGE < length || !controlled) {
+//                int nextPage = start + TEAMS_ON_PAGE < length ? start + TEAMS_ON_PAGE : 0;
+//                drawTeams(g, spaceX, (int) (plateHeight + initY + currentStart + movingHeight), contestData, nextPage);
+//            }
             drawHead(g, spaceX, 0, contestData.getProblemsNumber());
         } else {
             timer = -TOP_PAGE_STANDING_TIME;
             start = 0;
-        }
-    }
-
-    private void drawTeams(Graphics2D g, int x, int y, ContestInfo contestData, int start) {
-        for (int i = 0; i < TEAMS_ON_PAGE; i++) {
-            if (start + i >= length)
-                break;
-            TeamInfo team = contestData.getStandings()[start + i];
-            int dx = 0;
-            int dy = (int) (i * (plateHeight + spaceY));
-            if (team != null && y + dy >= spaceY) {
-                drawFullTeamPane(g, team, x + dx, y + dy);
-            }
         }
     }
 
@@ -214,7 +246,11 @@ public class BigStandingsWidget extends Widget {
         return "";
     }
 
-    private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y) {
+    private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y, boolean bright) {
+
+        Color mainColor = MAIN_COLOR;
+        if (bright) mainColor = mainColor.brighter();
+
         Font font = this.font;
         g.setFont(font);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
@@ -226,7 +262,7 @@ public class BigStandingsWidget extends Widget {
         String name = getShortName(g, team.getShortName());
         drawTextInRect(g, name, x, y,
                 (int) (plateWidth * NAME_WIDTH), (int) plateHeight, POSITION_LEFT,
-                MAIN_COLOR, Color.white, visibilityState);
+                mainColor, Color.white, visibilityState);
 
         x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
 
@@ -237,6 +273,8 @@ public class BigStandingsWidget extends Widget {
                     status.startsWith("?") ? YELLOW_COLOR :
                             status.startsWith("-") ? RED_COLOR :
                                     MAIN_COLOR;
+            if (bright) statusColor = statusColor.brighter();
+
             drawTextInRect(g, status, x, y,
                     PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
             x += PROBLEM_WIDTH + (int) (plateWidth * SPLIT_WIDTH);
@@ -244,9 +282,9 @@ public class BigStandingsWidget extends Widget {
 
         g.setFont(font);
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, (int) (plateWidth * TOTAL_WIDTH),
-                (int) plateHeight, POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
+                (int) plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
         x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
         drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (plateWidth * PENALTY_WIDTH),
-                (int) plateHeight, POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
+                (int) plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
     }
 }
