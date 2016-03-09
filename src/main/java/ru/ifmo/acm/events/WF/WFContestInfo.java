@@ -5,6 +5,7 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
@@ -52,7 +53,7 @@ public class WFContestInfo extends ContestInfo {
 			team.penalty = 0;
 			team.lastAccepted = 0;
 			for (int j = 0; j < problemNumber; j++) {
-				ArrayBlockingQueue<RunInfo> runs = team.getRuns()[j];
+				List<RunInfo> runs = team.getRuns()[j];
 				int wrong = 0;
 				for (RunInfo run : runs) {
 					WFRunInfo wfrun = (WFRunInfo) run;

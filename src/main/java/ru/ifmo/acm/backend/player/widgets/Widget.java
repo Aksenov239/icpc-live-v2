@@ -12,17 +12,23 @@ import ru.ifmo.acm.events.TeamInfo;
 public abstract class Widget {
     public final static double OPACITY = 1;
 
+    public static final int BASE_WIDTH = 1280;
+    public static final int BASE_HEIGHT = 720;
+
     public static final double MARGIN = 0.3;
     private static final double MARGIN_BOTTOM = 0.25;
     private boolean visible;
 
-    public final static Color MAIN_COLOR = Color.decode("0x193C5B");
-    public final static Color ADDITIONAL_COLOR = Color.decode("0x4C83C3");
-    public final static Color ACCENT_COLOR = Color.decode("0x881F1B");
+    // Colors used in graphics
+    public final static Color MAIN_COLOR = new Color(0x193C5B);
+    public final static Color ADDITIONAL_COLOR = new Color(0x4C83C3);
+    public final static Color ACCENT_COLOR = new Color(0x881F1B);
+
     public static final Color GREEN_COLOR = new Color(0x1b8041);
     public static final Color YELLOW_COLOR = new Color(0xe0aa12);
     public static final Color RED_COLOR = new Color(0x881f1b);
 
+    // Medal colors
     public final static Color GOLD_COLOR = new Color(228, 200, 126);
     public final static Color GOLD_COLOR2 = new Color(238, 220, 151);
     public final static Color SILVER_COLOR = new Color(182, 180, 185);
@@ -30,6 +36,7 @@ public abstract class Widget {
     public final static Color BRONZE_COLOR = new Color(180, 122, 124);
     public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
 
+    // Rectangles rounding
     private static final int POINTS_IN_ROUND = 3;
     private static final double ROUND_RADIUS = 2;
 
@@ -42,9 +49,11 @@ public abstract class Widget {
     protected long lastUpdate;
 
     public Widget() {
+        setVisible(false);
     }
 
     public Widget(long updateWait) {
+        this();
         this.updateWait = updateWait;
     }
 
