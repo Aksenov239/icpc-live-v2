@@ -164,9 +164,11 @@ public class BigStandingsWidget extends Widget {
                 }
             }
 
-            int lastProblems = 0;
+            int lastProblems = -1;
             boolean bright = true;
-            for (TeamInfo teamInfo : contestData.getStandings()) {
+            TeamInfo[] standings = contestData.getStandings();
+            for (int i = standings.length - 1; i >= 0; i--) {
+                TeamInfo teamInfo = standings[i];
                 if (teamInfo.getSolvedProblemsNumber() != lastProblems) {
                     lastProblems = teamInfo.getSolvedProblemsNumber();
                     bright = !bright;
@@ -275,6 +277,7 @@ public class BigStandingsWidget extends Widget {
                                     MAIN_COLOR;
             if (bright) statusColor = statusColor.brighter();
 
+            if (status.startsWith("-")) status = "\u2212" + status.substring(1);
             drawTextInRect(g, status, x, y,
                     PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
             x += PROBLEM_WIDTH + (int) (plateWidth * SPLIT_WIDTH);

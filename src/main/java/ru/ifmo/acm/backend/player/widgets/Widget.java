@@ -25,7 +25,7 @@ public abstract class Widget {
     public final static Color ACCENT_COLOR = new Color(0x881F1B);
 
     public static final Color GREEN_COLOR = new Color(0x1b8041);
-    public static final Color YELLOW_COLOR = new Color(0xe0aa12);
+    public static final Color YELLOW_COLOR = new Color(0xe0aa12).darker();
     public static final Color RED_COLOR = new Color(0x881f1b);
 
     // Medal colors

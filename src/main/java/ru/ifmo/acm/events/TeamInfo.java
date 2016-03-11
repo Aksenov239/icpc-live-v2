@@ -38,8 +38,8 @@ public interface TeamInfo {
                 total++;
             }
             String finalStatus = runs.get(runs.size() - 1).getResult();
-            if (finalStatus.equals("UD")) {
-                return "?" + total;
+            if (finalStatus.equals("")) {
+                return "?" + (total > 1 ? "" + total : total);
             } else {
                 return "-" + total;
             }
