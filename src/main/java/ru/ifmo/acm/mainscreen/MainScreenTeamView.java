@@ -22,12 +22,12 @@ public class MainScreenTeamView extends CustomComponent implements View {
     OptionGroup teamSelection;
 
     private String getTeamStatus() {
-        String status = mainScreenData.teamStatus.infoStatus();
+        String status = mainScreenData.teamData.infoStatus();
         String[] z = status.split("\n");
 
         if (z[1].equals("true")) {
-            for (int i = 0; i < types.length; i++) {
-                if (types[i].equals(z[2])) {
+            for (String type1 : types) {
+                if (type1.equals(z[2])) {
                     return "Now showing " + z[2] + " of team " + z[3] + " for " + (System.currentTimeMillis() - Long.parseLong(z[0])) / 1000 + " seconds";
                 }
             }
@@ -53,30 +53,30 @@ public class MainScreenTeamView extends CustomComponent implements View {
         //teamSelection.setRows(mainScreenData.teamStatus.teamNames.length);
 
         teamSelection = new OptionGroup();
-        for (String name : mainScreenData.teamStatus.teamNames) {
+        for (String name : MainScreenData.getProperties().teamNames) {
             teamSelection.addItem(name);
         }
         teamSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         teamSelection.setWidth("100%");
 
         teamSelection.addValueChangeListener(event -> {
-            if (mainScreenData.teamStatus.isVisible() &&
-                    !mainScreenData.teamStatus.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
-                teamSelection.setValue(mainScreenData.teamStatus.getTeamString());
+            if (mainScreenData.teamData.isVisible() &&
+                    !mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
+                teamSelection.setValue(mainScreenData.teamData.getTeamString());
                 Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
             }
         });
 
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
-            if (!mainScreenData.teamStatus.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
+            if (!mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
                 Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
             }
         });
 
         teamHide = new Button("Hide info");
         teamHide.addClickListener(event -> {
-            mainScreenData.teamStatus.setInfoVisible(false, null, null);
+            mainScreenData.teamData.setInfoVisible(false, null, null);
         });
 
 
@@ -97,9 +97,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
     public MainScreenTeamView() {
         mainScreenData = MainScreenData.getMainScreenData();
 
-        Component teamInfoComponent = getControllerTeam();
-
-        Component main = teamInfoComponent;
+        Component main = getControllerTeam();
         main.setSizeFull();
         main.setHeight("100%");
 

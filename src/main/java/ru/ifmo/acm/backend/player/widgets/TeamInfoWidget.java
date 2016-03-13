@@ -32,16 +32,16 @@ public class TeamInfoWidget extends TeamWidget {
 
             //System.err.println(data.teamData.isTeamVisible);
 
-            if (!data.teamData.isTeamVisible) {
+            if (!data.teamData.isVisible) {
                 setVisible(false);
                 teamId = -1;
                 stop();
             } else {
                 setVisible(true);
                 //System.err.println(data.teamData.teamId + " " + teamId + " " + ready.get());
-                if (data.teamData.teamId != teamId && ready.get()) {
+                if (data.teamData.getTeamId() != teamId && ready.get()) {
                     //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
-                    PCMSTeamInfo team = (PCMSTeamInfo) Preparation.eventsLoader.getContestData().getParticipant(data.teamData.teamId);
+                    PCMSTeamInfo team = (PCMSTeamInfo) Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                     if (team == null) {
                         setVisible(false);
                         return;
@@ -51,7 +51,7 @@ public class TeamInfoWidget extends TeamWidget {
                     int place = aliasId % 100;
                     System.err.println("change " + hall + " " + place);
                     change(String.format(urlTemplates.get(data.teamData.infoType), hall, place));
-                    teamId = data.teamData.teamId;
+                    teamId = data.teamData.getTeamId();
                 }
             }
 
