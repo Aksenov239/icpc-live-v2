@@ -35,7 +35,7 @@ public class Data implements CachedData {
             standingsData = (StandingsData) cache.get(StandingsData.class);
             personData = (PersonData) cache.get(PersonData.class);
             teamData = (TeamData) cache.get(TeamData.class);
-            cameraData = (CameraData) cache.get(CameraData.class);
+            //cameraData = (CameraData) cache.get(CameraData.class);
             //System.err.println(teamData);
         } catch (Exception e) {
             e.printStackTrace();
