@@ -5,10 +5,14 @@ import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 
 import javax.net.ssl.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
+import java.io.InputStream;
 
 /**
  * Created by aksenov on 15.04.2015.
@@ -75,5 +79,19 @@ public class Preparation {
 
 //        System.setProperty("javax.net.ssl.keyStore", "C:/work/icpc-live/resources/key.jks");
 //        System.setProperty("javax.net.ssl.trustStore", "C:/work/icpc-live/resources/key.jks");
+    }
+
+    public static InputStream openAuthorizedStream(String url, String login, String password) throws IOException {
+        if (!url.contains("http")){
+            return new FileInputStream(url);
+        }
+
+        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+        HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+        con.setRequestProperty("Authorization",
+                "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
+        con.connect();
+        System.err.println(con.getHeaderFields());
+        return con.getInputStream();
     }
 }

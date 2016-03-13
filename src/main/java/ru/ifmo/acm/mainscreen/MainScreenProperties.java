@@ -6,6 +6,7 @@ import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFTeamInfo;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,15 +27,20 @@ public class MainScreenProperties {
         personTimeToShow = Long.parseLong(properties.getProperty("person.time")) + latency;
 
         sleepTime = Integer.parseInt(properties.getProperty("sleep.time"));
-        EventsLoader loader = PCMSEventsLoader.getInstance();
+        EventsLoader loader = EventsLoader.getInstance();
         contestInfo = loader.getContestData();
 
         TeamInfo[] teamInfos = contestInfo.getStandings();
         teamNames = new String[teamInfos.length];
         int l = 0;
         for (int i = 0; i < teamNames.length; i++) {
-            if (((PCMSTeamInfo) teamInfos[i]).getAlias().startsWith("S")) {
-                teamNames[l++] = teamInfos[i].getShortName() + " :" + ((PCMSTeamInfo) teamInfos[i]).getAlias();
+            if (teamInfos[i] instanceof PCMSTeamInfo) {
+                if (((PCMSTeamInfo) teamInfos[i]).getAlias().startsWith("S")) {
+                    teamNames[l++] = teamInfos[i].getShortName() + " :" + ((PCMSTeamInfo) teamInfos[i]).getAlias();
+                }
+            }
+            if (teamInfos[i] instanceof WFTeamInfo) {
+                teamNames[l++] = String.format("%03d", teamInfos[i].getId() + 1) + ". " + teamInfos[i].getShortName();
             }
         }
         teamNames = Arrays.copyOf(teamNames, l);
