@@ -54,7 +54,7 @@ public class QueueWidget extends Widget {
             Color teamNameColor = Color.BLUE;
 
             String rank = String.valueOf(team.getRank());
-            String teamName = team.getName();
+            String teamName = team.getShortName();
             int problemNumber = wfr.getProblemNumber();
             String problemName = "" + (char) ('A' + problemNumber);
             String status = "";
