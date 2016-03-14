@@ -24,7 +24,8 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
     protected int sleepTime;
     protected AtomicReference<String> URL;
 
-    public VideoWidget(int x, int y, int width, int height, int sleepTime) {
+    public VideoWidget(int x, int y, int width, int height, int sleepTime, long updateWait) {
+        super(updateWait);
         this.URL = new AtomicReference<>(null);
         this.x = x;
         this.y = y;

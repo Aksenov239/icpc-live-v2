@@ -1,7 +1,5 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import ru.ifmo.acm.backend.player.TickPlayer;
-
 import java.awt.*;
 
 /**
@@ -9,12 +7,12 @@ import java.awt.*;
  */
 public class CaptionWidget extends Widget {
 
-    private final int MARGIN = (int) (30 * TickPlayer.scale);
-    private final int Y = (int) (580 * TickPlayer.scale);
-    private final int HEIGHT1 = (int) (60 * TickPlayer.scale);
-    private final int HEIGHT2 = (int) (30 * TickPlayer.scale);
-    private final Font FONT1 = Font.decode("Open Sans " + (int)(40 * TickPlayer.scale));
-    private final Font FONT2 = Font.decode("Open Sans " + (int)(20 * TickPlayer.scale));
+    private final int MARGIN = 30;
+    private final int Y = 580;
+    private final int HEIGHT1 = 60;
+    private final int HEIGHT2 = 30;
+    private final Font FONT1 = Font.decode("Open Sans " + 40);
+    private final Font FONT2 = Font.decode("Open Sans " + 20);
 
     private String caption;
     private String description;
@@ -30,9 +28,9 @@ public class CaptionWidget extends Widget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
-        changeOpacity();
-        if (opacity > 0) {
+    public void paintImpl(Graphics2D g, int width, int height) {
+        updateVisibilityState();
+        if (visibilityState > 0) {
             int x1;
             int x2;
             int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
@@ -48,11 +46,11 @@ public class CaptionWidget extends Widget {
             }
             int y = Y;
             g.setFont(FONT1);
-            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, opacityState);
+            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, visibilityState);
             y += HEIGHT1 + 2;
             g.setFont(FONT2);
             if (description != null && description.length() != 0) {
-                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, opacityState);
+                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, visibilityState);
             }
         }
     }

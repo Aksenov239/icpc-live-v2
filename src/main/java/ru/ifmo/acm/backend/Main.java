@@ -16,6 +16,7 @@ import java.util.Properties;
  * @author: pashka
  */
 public class Main {
+
     public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
         new Main().run();
     }
@@ -37,9 +38,7 @@ public class Main {
         int height = Integer.parseInt(properties.getProperty("height", "720"));
         int frameRate = Integer.parseInt(properties.getProperty("rate", "25"));
 
-        TickPlayer.scale = width / 1280d;
-
-        ScreenGenerator generator = new ScreenGenerator(width, height, properties);
+        ScreenGenerator generator = new ScreenGenerator(width, height, properties, (double) width / Widget.BASE_WIDTH);
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
@@ -47,8 +46,8 @@ public class Main {
         generator.addWidget(new GreenScreenWidget(true));
         generator.addWidget(new TeamInfoWidget(
                 updateWait,
-                width,
-                height - (int) (32 * TickPlayer.scale),
+                Widget.BASE_WIDTH,
+                Widget.BASE_HEIGHT - 32,
                 4. / 3,
                 Integer.parseInt(properties.getProperty("sleep.time"))
         ));
@@ -57,8 +56,9 @@ public class Main {
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
         generator.addWidget(new StandingsWidget(updateWait));
-        generator.addWidget(new BigStandingsWidget(0, 0, width, height - (int) (32 * TickPlayer.scale), updateWait,
-                false));
+        generator.addWidget(new QueueWidget(100));
+        generator.addWidget(new BigStandingsWidget(64, 64,
+                Widget.BASE_WIDTH - 128, Widget.BASE_HEIGHT - 128, updateWait, false));
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 

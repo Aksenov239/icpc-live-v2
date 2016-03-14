@@ -164,8 +164,12 @@ public class DataLoader {
                         Data newData = gson.fromJson(line, Data.class);
                         if (newData != null)
                             data.set(newData);
-
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(5000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

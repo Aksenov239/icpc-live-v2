@@ -2,7 +2,6 @@ package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.backend.player.widgets.StandingsWidget;
 import ru.ifmo.acm.events.EventsLoader;
-import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
 public class StandingsData implements CachedData {
@@ -12,26 +11,24 @@ public class StandingsData implements CachedData {
         this.timestamp = data.timestamp;
         this.isVisible = data.isVisible;
         this.standingsType = data.standingsType;
+        this.optimismLevel = data.optimismLevel;
+        this.isBig = data.isBig;
 
         return this;
     }
 
     public String toString() {
-        if (isVisible) {
-            long time = standingsType == 0
-                    ? (System.currentTimeMillis() - timestamp) / 1000
-                    : (timestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
-            return String.format(labelStatuses[standingsType], time);
+        if (standingsType == StandingsType.HIDE) {
+            return standingsType.label;
         }
-        return labelStatuses[3];
-    }
 
-    private final static String[] labelStatuses = new String[]{
-            "Top 1 page is shown for %d seconds",
-            "Top 2 pages are remaining for %d seconds",
-            "All pages are remaining for %d seconds",
-            "Standings aren't shown"
-    };
+        long time = standingsType == StandingsType.ONE_PAGE
+                ? (System.currentTimeMillis() - timestamp) / 1000
+                : (timestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
+        return String.format(standingsType.label, time) + ". " +
+                optimismLevel.toString() +
+                (isBig() ? " big standings are shown" : " compact standings are shown");
+    }
 
     public long getLatency() {
         return latency;
@@ -41,17 +38,19 @@ public class StandingsData implements CachedData {
         Data.cache.refresh(StandingsData.class);
     }
 
-    public void setStandingsVisible(boolean visible, int type) {
+    public void setStandingsVisible(boolean visible, StandingsType type, boolean isBig, OptimismLevel level) {
         synchronized (standingsLock) {
             timestamp = System.currentTimeMillis();
             isVisible = visible;
             standingsType = type;
+            optimismLevel = level;
+            this.isBig = isBig;
         }
 
         recache();
     }
 
-    public static long getTotalTime(int type) {
+    public static long getTotalTime(StandingsType type) {
         return StandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
     }
 
@@ -62,6 +61,7 @@ public class StandingsData implements CachedData {
             if (System.currentTimeMillis() > timestamp +
                     getTotalTime(standingsType)) {
                 isVisible = false;
+                standingsType = StandingsType.HIDE;
                 change = true;
             }
         }
@@ -70,28 +70,65 @@ public class StandingsData implements CachedData {
     }
 
     public long getStandingsTimestamp() {
-        synchronized (standingsLock) {
-            return timestamp;
-        }
+        return timestamp;
     }
 
     public boolean isStandingsVisible() {
-        synchronized (standingsLock) {
-            return isVisible;
-        }
+        return isVisible;
     }
 
-    public long getStandingsType() {
-        synchronized (standingsLock) {
-            return standingsType;
-        }
+    public StandingsType getStandingsType() {
+        return standingsType;
+    }
+
+    public boolean isBig() {
+        return isBig;
+    }
+
+    public void setBig(boolean big) {
+        isBig = big;
     }
 
     public long timestamp;
     public boolean isVisible;
-    public int standingsType;
+    public StandingsType standingsType = StandingsType.HIDE;
+    public boolean isBig;
+    public OptimismLevel optimismLevel = OptimismLevel.NORMAL;
 
     public static long latency;
 
     final private Object standingsLock = new Object();
+
+    public enum StandingsType {
+        ONE_PAGE("Top 1 page is shown for %d seconds"),
+        TWO_PAGES("Top 2 pages are remaining for %d seconds"),
+        ALL_PAGES("All pages are remaining for %d seconds"),
+        HIDE("Standings aren't shown");
+
+        public final String label;
+
+        StandingsType(String label) {
+            this.label = label;
+        }
+    }
+
+    public enum OptimismLevel {
+        NORMAL,
+        OPTIMISTIC,
+        PESSIMISTIC;
+
+        public String toString() {
+            switch (this) {
+                case NORMAL:
+                    return "Normal";
+                case OPTIMISTIC:
+                    return "Optimistic";
+                case PESSIMISTIC:
+                    return "Pessimistic";
+
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
 }

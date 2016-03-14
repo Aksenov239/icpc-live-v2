@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass="ru.ifmo.acm.backend.Main"
+mvn package exec:java -Dexec.mainClass="ru.ifmo.acm.backend.Main"

@@ -1,7 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
@@ -38,7 +37,7 @@ public abstract class TeamWidget extends VideoWidget {
     private int width;
     private int height;
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
-        super(x, y, (int)(height * aspectRatio), height, sleepTime);
+        super(x, y, (int)(height * aspectRatio), height, sleepTime, 0);
         this.width = width;
         this.height = height;
         this.widthVideo = (int)(height * aspectRatio);
@@ -49,18 +48,18 @@ public abstract class TeamWidget extends VideoWidget {
 
     protected abstract int getTeamId();
 
-    protected Font FONT1 = Font.decode("Open Sans Italic " + (int) (40 * TickPlayer.scale));
+    protected Font FONT1 = Font.decode("Open Sans Italic " + 40);
 
-    protected int X = (int) (20 * TickPlayer.scale);
-    protected int Y = (int) (20 * TickPlayer.scale);
-    protected int GAP_Y = (int) (5 * TickPlayer.scale);
-    protected int GAP_X = (int) (5 * TickPlayer.scale);
-    protected int PR_WIDTH = (int) (50 * TickPlayer.scale);
-    protected int RUN_WIDTH = (int) (80 * TickPlayer.scale);
-    protected int RUN_SMALL_WIDTH = (int) (20 * TickPlayer.scale);
-    protected int HEIGHT = (int) (45 * TickPlayer.scale);
-    protected double STAR_SIZE = 5 * TickPlayer.scale;
-    Font FONT2 = Font.decode("Open Sans Italic " + (int) (30 * TickPlayer.scale));
+    protected int X = 20;
+    protected int Y = 20;
+    protected int GAP_Y = 5;
+    protected int GAP_X = 5;
+    protected int PR_WIDTH = 50;
+    protected int RUN_WIDTH = 80;
+    protected int RUN_SMALL_WIDTH = 20;
+    protected int HEIGHT = 45;
+    protected double STAR_SIZE = 5;
+    Font FONT2 = Font.decode("Open Sans Italic " + 30);
 
     private static final Color GREEN = new Color(27, 155, 82);//Color.decode("0x33ff00");
     private static final Color RED = Color.decode("0xaa0000");
@@ -84,7 +83,7 @@ public abstract class TeamWidget extends VideoWidget {
     }
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         if (!isVisible())
             return;
 

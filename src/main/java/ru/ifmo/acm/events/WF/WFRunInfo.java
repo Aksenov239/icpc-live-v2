@@ -16,12 +16,39 @@ public class WFRunInfo implements RunInfo {
     public double timestamp;
     private int passed;
     private int total;
+    private long lastUpdateTimestamp;
 
-    public void add(WFTestInfo test) {
+    public WFRunInfo() {
+    }
+
+    public WFRunInfo(WFRunInfo another) {
+        this.id = another.id;
+        this.judged = another.judged;
+        this.result = another.result;
+        this.language = another.language;
+        this.problem = another.problem;
+        this.team = another.team;
+        this.time = another.time;
+        this.timestamp = another.timestamp;
+        this.passed = another.getPassedTestsNumber();
+        this.total = another.getTotalTestsNumber();
+        this.lastUpdateTimestamp = another.getLastUpdateTimestamp();
+    }
+
+    public long getLastUpdateTimestamp() {
+		return lastUpdateTimestamp;
+	}
+
+	public void setLastUpdateTimestamp(long lastUpdateTimestamp) {
+		this.lastUpdateTimestamp = lastUpdateTimestamp;
+	}
+
+	public void add(WFTestCaseInfo test) {
         if (total == 0) {
             total = test.total;
         }
         passed = test.id;
+        lastUpdateTimestamp = System.currentTimeMillis();
     }
 
     public int getPassedTestsNumber() {

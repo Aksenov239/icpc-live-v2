@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.PersonData;
 
 import java.awt.*;
@@ -14,55 +15,46 @@ public class DoublePersonWidget extends Widget {
     private final CaptionWidget rightWidget;
 
     public DoublePersonWidget(long updateWait, long duration) {
+        super(updateWait);
         leftWidget = new CaptionWidget(POSITION_LEFT);
         rightWidget = new CaptionWidget(POSITION_RIGHT);
-        this.updateWait = updateWait;
         this.duration = duration;
     }
 
-    private long updateWait;
-    private long lastUpdate;
     private long duration;
     private long lastVisibleChangeLeft = Long.MAX_VALUE / 2;
     private long lastVisibleChangeRight = Long.MAX_VALUE / 2;
 
-    public void update() {
-        if (lastUpdate + updateWait < System.currentTimeMillis()) {
-            if (Preparation.dataLoader.getDataBackend() == null)
-                return;
+    protected void updateImpl(Data data) {
+        PersonData personData = Preparation.dataLoader.getDataBackend().personData;
 
-            PersonData personData = Preparation.dataLoader.getDataBackend().personData;
+        //System.err.println(Arrays.toString(personData.isVisible));
 
-            //System.err.println(Arrays.toString(personData.isVisible));
+        lastVisibleChangeLeft = personData.timestamp[0];
 
-            lastVisibleChangeLeft = personData.timestamp[0];
+        if (lastVisibleChangeLeft + duration < System.currentTimeMillis()) {
+            leftWidget.setVisible(false);
+        } else {
+            leftWidget.setVisible(personData.isVisible[0]);
+            if (leftWidget.isVisible())
+                leftWidget.setCaption(personData.labelValue[0].getName(), personData.labelValue[0].getPosition());
+        }
 
-            if (lastVisibleChangeLeft + duration < System.currentTimeMillis()) {
-                leftWidget.setVisible(false);
-            } else {
-                leftWidget.setVisible(personData.isVisible[0]);
-                if (leftWidget.isVisible())
-                    leftWidget.setCaption(personData.label[0].getName(), personData.label[0].getPosition());
-            }
-
-            lastVisibleChangeRight = personData.timestamp[1];
-            if (lastVisibleChangeRight + duration < System.currentTimeMillis()) {
-                rightWidget.setVisible(false);
-            } else {
-                rightWidget.setVisible(personData.isVisible[1]);
-                if (rightWidget.isVisible())
-                    rightWidget.setCaption(personData.label[1].getName(), personData.label[1].getPosition());
-            }
-
-            lastUpdate = System.currentTimeMillis();
+        lastVisibleChangeRight = personData.timestamp[1];
+        if (lastVisibleChangeRight + duration < System.currentTimeMillis()) {
+            rightWidget.setVisible(false);
+        } else {
+            rightWidget.setVisible(personData.isVisible[1]);
+            if (rightWidget.isVisible())
+                rightWidget.setCaption(personData.labelValue[1].getName(), personData.labelValue[1].getPosition());
         }
     }
 
 
     @Override
-    public void paint(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics2D g, int width, int height) {
         update();
-        leftWidget.paint(g, width, height);
-        rightWidget.paint(g, width, height);
+        leftWidget.paintImpl(g, width, height);
+        rightWidget.paintImpl(g, width, height);
     }
 }

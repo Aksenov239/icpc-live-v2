@@ -56,7 +56,7 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     public String getAdvertisementStatus() {
-        return mainScreenData.advertisementStatus.advertisementStatus().toString();
+        return mainScreenData.advertisementData.toString();
 //        AdvertisementData adv = mainScreenData.advertisementStatus.advertisementStatus();
 //        return adv.isVisible ? "Advertisement \"" + adv.advertisement.getAdvertisement() + "\"" : "No advertisement now";
         //return s[1].equals("true") ? "Advertisement \"" + s[2] + "\"" : "No advertisement now";
@@ -71,7 +71,7 @@ public class MainScreenView extends CustomComponent implements View {
 
     private void createAdvertisementTable() {
         advertisements = new Table();
-        advertisements.setContainerDataSource(mainScreenData.advertisementStatus.getContainer());
+        advertisements.setContainerDataSource(mainScreenData.advertisementData.getContainer());
         advertisements.setSelectable(true);
         advertisements.setEditable(false);
         advertisements.setSizeFull();
@@ -92,9 +92,9 @@ public class MainScreenView extends CustomComponent implements View {
         addAdvertisement = new Button(addAdvertisementButtonStatus[0]);
         addAdvertisement.addClickListener(event -> {
             if (addAdvertisement.getCaption().equals(addAdvertisementButtonStatus[0])) {
-                mainScreenData.advertisementStatus.addAdvertisement(new Advertisement(advertisementText.getValue()));
+                mainScreenData.advertisementData.addAdvertisement(new Advertisement(advertisementText.getValue()));
             } else {
-                mainScreenData.advertisementStatus.setValue(advertisements.getValue(), advertisementText.getValue());
+                mainScreenData.advertisementData.setValue(advertisements.getValue(), advertisementText.getValue());
                 setDefaultValues();
             }
             advertisementText.clear();
@@ -107,7 +107,7 @@ public class MainScreenView extends CustomComponent implements View {
         removeAdvertisement = new Button("Remove selected");
         removeAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
-                mainScreenData.advertisementStatus.removeAdvertisement((Advertisement) advertisements.getValue());
+                mainScreenData.advertisementData.removeAdvertisement((Advertisement) advertisements.getValue());
                 advertisements.refreshRowCache();
             } else {
                 Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
@@ -131,7 +131,7 @@ public class MainScreenView extends CustomComponent implements View {
         showAdvertisement = new Button("Show advertisement");
         showAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
-                mainScreenData.advertisementStatus.setAdvertisementVisible(true, (Advertisement) advertisements.getValue());
+                mainScreenData.advertisementData.setAdvertisementVisible(true, (Advertisement) advertisements.getValue());
                 advertisementStatus.setValue(getAdvertisementStatus());
             } else {
                 Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
@@ -142,7 +142,7 @@ public class MainScreenView extends CustomComponent implements View {
     private void createHideAdvertisementButton() {
         hideAdvertisement = new Button("Hide advertisement");
         hideAdvertisement.addClickListener(event -> {
-            mainScreenData.advertisementStatus.setAdvertisementVisible(false, (Advertisement) advertisements.getValue());
+            mainScreenData.advertisementData.setAdvertisementVisible(false, (Advertisement) advertisements.getValue());
             advertisementStatus.setValue(getAdvertisementStatus());
         });
     }
@@ -228,7 +228,7 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     public String getPersonStatus(int id) {
-        String[] z = mainScreenData.personStatus.labelStatus(id).split("\n");
+        String[] z = mainScreenData.personData.labelStatus(id).split("\n");
         return z[1].equals("true") ? "Show " + z[2] : "Nothing is shown";
     }
 
@@ -246,12 +246,12 @@ public class MainScreenView extends CustomComponent implements View {
         addPersonButton = new Button(addPersonButtonStatus[0]);
         addPersonButton.addClickListener(event -> {
             if (addPersonButton.getCaption().equals(addPersonButtonStatus[0])) {
-                mainScreenData.personStatus.addPerson(new Person(name.getValue(), profession.getValue()));
+                mainScreenData.personData.addPerson(new Person(name.getValue(), profession.getValue()));
                 setPersonFormDefault();
             } else {
                 if (lastPerson != null) {
-                    mainScreenData.personStatus.setValue(lastPerson, "name", name.getValue());
-                    mainScreenData.personStatus.setValue(lastPerson, "position", profession.getValue());
+                    mainScreenData.personData.setValue(lastPerson, "name", name.getValue());
+                    mainScreenData.personData.setValue(lastPerson, "position", profession.getValue());
                 }
                 setPersonFormDefault();
             }
@@ -262,7 +262,7 @@ public class MainScreenView extends CustomComponent implements View {
         removePersonButton = new Button("Delete");
         removePersonButton.addClickListener(event -> {
             if (lastPerson != null) {
-                mainScreenData.personStatus.removePerson(lastPerson);
+                mainScreenData.personData.removePerson(lastPerson);
             }
             setPersonFormDefault();
         });
@@ -278,7 +278,7 @@ public class MainScreenView extends CustomComponent implements View {
     public void createPersonsTable(int id) {
         persons[id] = new Table();
         Table table = persons[id];
-        table.setContainerDataSource(mainScreenData.personStatus.getContainer());
+        table.setContainerDataSource(mainScreenData.personData.getContainer());
         table.setSelectable(true);
         table.setEditable(false);
         table.setSizeFull();
@@ -302,13 +302,13 @@ public class MainScreenView extends CustomComponent implements View {
         //showLeftPerson = new Button("Show " + caption + " person");
         showPerson[id].addClickListener(event -> {
             if (persons[id].getValue() != null) {
-                mainScreenData.personStatus.setLabelVisible(true, (Person) persons[id].getValue(), id);
+                mainScreenData.personData.setLabelVisible(true, (Person) persons[id].getValue(), id);
             } else {
                 Notification.show("You need to choose " + captionPersons[id] + " person", Type.WARNING_MESSAGE);
             }
         });
         hidePerson[id] = new Button("Hide " + captionPersons[id] + " person");
-        hidePerson[id].addClickListener(event -> mainScreenData.personStatus.setLabelVisible(false, null, id));
+        hidePerson[id].addClickListener(event -> mainScreenData.personData.setLabelVisible(false, null, id));
     }
 
     public void createBothPersonButtons() {
@@ -322,14 +322,14 @@ public class MainScreenView extends CustomComponent implements View {
                 }
             }
             for (int i = 0; i < 2; i++) {
-                mainScreenData.personStatus.setLabelVisible(true, (Person) persons[i].getValue(), i);
+                mainScreenData.personData.setLabelVisible(true, (Person) persons[i].getValue(), i);
             }
         });
 
         hideBothPersons.addClickListener(event -> {
             for (int i = 0; i < 2; i++) {
                 //S;
-                mainScreenData.personStatus.setLabelVisible(false, null, i);
+                mainScreenData.personData.setLabelVisible(false, null, i);
             }
         });
     }
@@ -358,7 +358,7 @@ public class MainScreenView extends CustomComponent implements View {
         }
         //mainScreenData.personStatus.update();
 
-        mainScreenData.update();
+//        mainScreenData.update();
     }
 
     public void enter(ViewChangeEvent event) {

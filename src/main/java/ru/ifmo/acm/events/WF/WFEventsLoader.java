@@ -1,5 +1,6 @@
 package ru.ifmo.acm.events.WF;
 
+import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 
@@ -9,28 +10,97 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by aksenov on 16.04.2015.
  */
 public class WFEventsLoader extends EventsLoader {
 
-    private static WFContestInfo contestInfo = new WFContestInfo();
+    private static WFContestInfo contestInfo;
+
+    private String url;
+    private String teamsInfoURL;
+    private String problemsInfoURL;
+    private String login;
+    private String password;
+
+    public WFEventsLoader() {
+        try {
+            Properties properties = new Properties();
+            properties.load(getClass().getClassLoader().getResourceAsStream("events.properties"));
+
+            login = properties.getProperty("login");
+            password = properties.getProperty("password");
+
+            Preparation.prepareNetwork(login, password);
+
+            url = properties.getProperty("url");
+
+            problemsInfoURL = properties.getProperty("problems.url");
+            teamsInfoURL = properties.getProperty("teams.url");
+
+            initialize();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public ContestInfo getContestData() {
-        //(
         return contestInfo;
     }
 
-    public WFTestInfo readTest(XMLEventReader xmlEventReader) throws XMLStreamException {
-        WFTestInfo test = new WFTestInfo();
+    private int problemsInfoRead() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(Preparation.openAuthorizedStream(problemsInfoURL, login, password)));
+        int problems = 0;
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.contains("letter")) {
+                problems++;
+            }
+        }
+        return problems;
+    }
+
+    private WFTeamInfo[] teamsInfoRead(int problemsNumber) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(Preparation.openAuthorizedStream(teamsInfoURL, login, password)));
+        ArrayList<WFTeamInfo> infos = new ArrayList<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] z = line.split("\\t");
+            if (z.length < 6) {
+                continue;
+            }
+            WFTeamInfo team = new WFTeamInfo(problemsNumber);
+            team.id = Integer.parseInt(z[0]) - 1;
+            team.name = z[4];
+            team.shortName = z[5];
+            infos.add(team);
+        }
+        return infos.toArray(new WFTeamInfo[0]);
+    }
+
+    private void initialize() throws IOException {
+        int problemsNumber = problemsInfoRead();
+        WFTeamInfo[] teams = teamsInfoRead(problemsNumber);
+        System.err.println(problemsNumber + " " + teams.length);
+        contestInfo = new WFContestInfo(problemsNumber, teams.length);
+        for (WFTeamInfo team : teams) {
+            contestInfo.addTeam(team);
+        }
+        contestInfo.recalcStandings();
+        //();
+    }
+
+    public WFTestCaseInfo readTest(XMLEventReader xmlEventReader) throws XMLStreamException {
+        WFTestCaseInfo test = new WFTestCaseInfo();
+        System.out.println("Reading testcase");
         while (true) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
@@ -38,17 +108,23 @@ public class WFEventsLoader extends EventsLoader {
                 String name = startElement.getName().getLocalPart();
                 xmlEvent = xmlEventReader.nextEvent();
                 switch (name) {
-                    case "id":
+                    case "i":
                         test.id = Integer.parseInt(xmlEvent.asCharacters().getData());
                         break;
                     case "judged":
                         test.judged = Boolean.parseBoolean(xmlEvent.asCharacters().getData());
                         break;
-                    case "run-id":
-                        test.run = Integer.parseInt(xmlEvent.asCharacters().getData());
+                    case "judgement_id":
+                        test.judgementId = Integer.parseInt(xmlEvent.asCharacters().getData());
+                        break;
+                    case "n":
+                        test.total = Integer.parseInt(xmlEvent.asCharacters().getData());
                         break;
                     case "result":
                         test.result = xmlEvent.asCharacters().getData();
+                        break;
+                    case "run-id":
+                        test.run = Integer.parseInt(xmlEvent.asCharacters().getData());
                         break;
                     case "solved":
                         test.solved = Boolean.parseBoolean(xmlEvent.asCharacters().getData());
@@ -63,7 +139,7 @@ public class WFEventsLoader extends EventsLoader {
             }
             if (xmlEvent.isEndElement()) {
                 EndElement endElement = xmlEvent.asEndElement();
-                if (endElement.getName().getLocalPart().equals("test")) {
+                if (endElement.getName().getLocalPart().equals("testcase")) {
                     break;
                 }
             }
@@ -73,6 +149,7 @@ public class WFEventsLoader extends EventsLoader {
 
     public WFRunInfo readRun(XMLEventReader xmlEventReader) throws XMLStreamException {
         WFRunInfo run = new WFRunInfo();
+        run.setLastUpdateTimestamp(System.currentTimeMillis());
         while (true) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
@@ -138,8 +215,9 @@ public class WFEventsLoader extends EventsLoader {
                         team.id = Integer.parseInt(xmlEventReader.getElementText()) - 1;
                         break;
                     case "university":
-//                        team.name = xmlEvent.asCharacters().getData();
-//                        team.name = xmlEvent.toString();//asCharacters().getData();
+                        // team.name = xmlEvent.asCharacters().getData();
+                        // team.name =
+                        // xmlEvent.toString();//asCharacters().getData();
                         team.name = xmlEventReader.getElementText();
                         team.shortName = shortName(team.name);
                         break;
@@ -155,7 +233,8 @@ public class WFEventsLoader extends EventsLoader {
                 }
             }
         }
-        if (team.id == -1) return null;
+        if (team.id == -1)
+            return null;
         return team;
     }
 
@@ -189,28 +268,22 @@ public class WFEventsLoader extends EventsLoader {
 
     public void run() {
         while (true) {
-            contestInfo.clear();
             try {
-                Properties properties = new Properties();
-                properties.load(getClass().getClassLoader().getResourceAsStream("events.properties"));
-
-//                URL url = new URL(properties.getProperty("url"));
-//
-//                String login = properties.getProperty("login");
-//                String password = properties.getProperty("password");
-//
-//                XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-//                CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-//                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//                con.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
-//                con.connect();
-//                System.err.println(con.getHeaderFields());
-
-//                XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(con.getInputStream(), "windows-1251");
+                initialize();
 
                 XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+
                 XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(
-                        new FileInputStream(new File(properties.getProperty("url"))), "windows-1251");
+                        Preparation.openAuthorizedStream(url, login, password),
+                        "windows-1251"
+                );
+
+                // XMLInputFactory xmlInputFactory =
+                // XMLInputFactory.newInstance();
+                // XMLEventReader xmlEventReader =
+                // xmlInputFactory.createXMLEventReader(
+                // new FileInputStream(new File(properties.getProperty("url"))),
+                // "windows-1251");
 
                 while (xmlEventReader.hasNext()) {
                     XMLEvent xmlEvent = null;
@@ -225,7 +298,8 @@ public class WFEventsLoader extends EventsLoader {
                         switch (startElement.getName().getLocalPart()) {
                             case "run":
                                 WFRunInfo run = readRun(xmlEventReader);
-                                System.err.println("new run: " + (int) (run.getTime() / 60) + " " + run.getTeam() + " " + (char) ('A' + run.getProblemNumber()) + " " + run.getResult());
+                                System.err.println("new run: " + (int) (run.getTime() / 60) + " " + run.getTeam() + " "
+                                        + (char) ('A' + run.getProblemNumber()) + " " + run.getResult());
                                 if (run.getTime() <= 4 * 60 * 60 * 1000 || run.getResult().length() == 0) {
                                     contestInfo.addRun(run);
                                     if (run.getTime() > contestInfo.getCurrentTime() / 1000 - 600) {
@@ -233,14 +307,14 @@ public class WFEventsLoader extends EventsLoader {
                                     }
                                 }
                                 break;
-                            case "test":
-                                WFTestInfo test = readTest(xmlEventReader);
+                            case "testcase":
+                                WFTestCaseInfo test = readTest(xmlEventReader);
                                 contestInfo.addTest(test);
                                 break;
                             case "language":
                                 readLanguage(xmlEventReader);
                                 break;
-                            case "team":
+                            /*case "team":
                                 WFTeamInfo team = readTeam(xmlEventReader);
                                 if (team != null) {
                                     contestInfo.addTeam(team);
@@ -250,9 +324,11 @@ public class WFEventsLoader extends EventsLoader {
                                 break;
                             case "problem":
                                 contestInfo.problemNumber++;
-                                break;
+                                break;*/
                             case "starttime":
-                                contestInfo.setStartTime((long) (Double.parseDouble(xmlEventReader.getElementText().replace(",", ".")) * 1000));
+                                contestInfo.setStartTime(
+                                        (long) (Double.parseDouble(xmlEventReader.getElementText().replace(",", "."))
+                                                * 1000));
                                 break;
                         }
                     }
@@ -265,7 +341,7 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
-//    public static ArrayBlockingQueue<RunInfo> getAllRuns() {
+    // public static ArrayBlockingQueue<RunInfo> getAllRuns() {
 
     static Map<String, String> shortNames = new HashMap<>();
 
@@ -281,7 +357,8 @@ public class WFEventsLoader extends EventsLoader {
 
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
+            con.setRequestProperty("Authorization",
+                    "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
             con.connect();
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));

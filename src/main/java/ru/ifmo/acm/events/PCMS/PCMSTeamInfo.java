@@ -6,6 +6,7 @@ import ru.ifmo.acm.events.TeamInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class PCMSTeamInfo implements TeamInfo {
     String alias;

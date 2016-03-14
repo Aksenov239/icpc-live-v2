@@ -3,6 +3,7 @@ package ru.ifmo.acm.mainscreen;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
+import ru.ifmo.acm.datapassing.StandingsData;
 
 import static ru.ifmo.acm.mainscreen.Utils.createGroupLayout;
 import static ru.ifmo.acm.mainscreen.Utils.setPanelDefaults;
@@ -16,6 +17,8 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     Button clockButtonOn;
     Button clockButtonOff;
 
+    OptionGroup standingsOptimismLevel;
+
     public Component getClockController() {
         clockStatus = new Label(getClockStatus());
         clockStatus.addStyleName("large");
@@ -27,6 +30,15 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         VerticalLayout panel = new VerticalLayout(clockStatus, group);
         setPanelDefaults(panel);
+        return panel;
+    }
+
+    public Component getStandingsTypeController() {
+        standingsOptimismLevel = new OptionGroup("Standings type");
+        standingsOptimismLevel.addItems("Normal", "Optimistic", "Pessimistic");
+        VerticalLayout panel = new VerticalLayout(standingsOptimismLevel);
+        setPanelDefaults(panel);
+
         return panel;
     }
 
@@ -58,16 +70,22 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     Button standingsShowTop2;
     Button standingsShowAll;
     Button standingsHide;
+    Button standingsShowTop1Big;
+    Button standingsShowTop2Big;
+    Button standingsShowAllBig;
 
     public Component getStandingsController() {
         standingsStatus = new Label(getStandingsStatus());
         standingsStatus.addStyleName("large");
-        standingsShowTop1 = createStandingsControllerButton("Show first page", true, 0);
-        standingsShowTop2 = createStandingsControllerButton("Show two pages", true, 1);
-        standingsShowAll = createStandingsControllerButton("Show all pages", true, 2);
-        standingsHide = createStandingsControllerButton("Hide", false, -1);
+        standingsShowTop1 = createStandingsControllerButton("Show first page", true, StandingsData.StandingsType.ONE_PAGE, false);
+        standingsShowTop2 = createStandingsControllerButton("Show two pages", true, StandingsData.StandingsType.TWO_PAGES, false);
+        standingsShowAll = createStandingsControllerButton("Show all pages", true, StandingsData.StandingsType.ALL_PAGES, false);
+        standingsHide = createStandingsControllerButton("Hide", false, StandingsData.StandingsType.HIDE, false);
+        standingsShowTop1Big = createStandingsControllerButton("Show first page. Big standings", true, StandingsData.StandingsType.ONE_PAGE, true);
+        standingsShowTop2Big = createStandingsControllerButton("Show two pages. Big standings", true, StandingsData.StandingsType.TWO_PAGES, true);
+        standingsShowAllBig = createStandingsControllerButton("Show all pages. Big standings", true, StandingsData.StandingsType.ALL_PAGES, true);
 
-        CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsHide);
+        CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig, standingsHide);
 
         VerticalLayout panel = new VerticalLayout(
                 standingsStatus,
@@ -77,14 +95,16 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return panel;
     }
 
-    private Button createStandingsControllerButton(String name, boolean visible, int type) {
+    private Button createStandingsControllerButton(String name, boolean visible, StandingsData.StandingsType type, boolean isBig) {
         Button button = new Button(name);
         button.addClickListener(event -> {
             if (visible && mainScreenData.standingsData.isStandingsVisible()) {
                 Notification.show("You should hide standings first", Notification.Type.WARNING_MESSAGE);
                 return;
             }
-            mainScreenData.standingsData.setStandingsVisible(visible, type);
+            String optimismLevel = (String) standingsOptimismLevel.getValue();
+
+            mainScreenData.standingsData.setStandingsVisible(visible, type, isBig, StandingsData.OptimismLevel.valueOf(optimismLevel.toUpperCase()));
             standingsStatus.setValue(getStandingsStatus());
         });
 
@@ -92,14 +112,6 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     }
 
     public String getStandingsStatus() {
-//        StandingsData status = mainScreenData.standingsStatus.standingsStatus();
-//        if (status.isStandingsVisible) {
-//            long time = status.standingsType == 0
-//                    ? (System.currentTimeMillis() - status.standingsTimestamp) / 1000
-//                    : (status.standingsTimestamp + mainScreenData.standingsStatus.getTotalTime(status.standingsType) - System.currentTimeMillis()) / 1000;
-//            return String.format(labelStatuses[status.standingsType], time);
-//        }
-//        return labelStatuses[3];
         return mainScreenData.standingsData.toString();
     }
 
@@ -117,8 +129,9 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         Component clockController = getClockController();
         Component standingsController = getStandingsController();
+        Component standingsTypeController = getStandingsTypeController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController);
+        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsTypeController, standingsController);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }

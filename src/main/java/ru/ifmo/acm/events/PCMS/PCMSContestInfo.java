@@ -90,4 +90,11 @@ public class PCMSContestInfo extends ContestInfo {
     //private Map<String, Integer> positions;
     public Map<String, Integer> positions;
     public boolean frozen;
+    
+    
+	@Override
+	public RunInfo[] getRuns() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

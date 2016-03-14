@@ -3,14 +3,15 @@ package ru.ifmo.acm.events.WF;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by aksenov on 17.04.2015.
  */
 public class WFTeamInfo implements TeamInfo {
 
-    private ArrayBlockingQueue<RunInfo>[] problem_runs;
+    private ArrayList<RunInfo>[] problem_runs;
 
     public int id = -1;
     public int rank;
@@ -24,10 +25,22 @@ public class WFTeamInfo implements TeamInfo {
     public String shortName;
 
     public WFTeamInfo(int problems) {
-        problem_runs = new ArrayBlockingQueue[problems];
+        problem_runs = new ArrayList[problems];
         for (int i = 0; i < problems; i++) {
-            problem_runs[i] = new ArrayBlockingQueue<>(100);
+            problem_runs[i] = new ArrayList<>();
         }
+    }
+
+    public WFTeamInfo copy() {
+        WFTeamInfo teamInfo = new WFTeamInfo(problem_runs.length);
+        teamInfo.id = id;
+        teamInfo.rank = rank;
+        teamInfo.name = name;
+
+        teamInfo.region = region;
+        teamInfo.shortName = shortName;
+
+        return teamInfo;
     }
 
     @Override
@@ -47,7 +60,7 @@ public class WFTeamInfo implements TeamInfo {
 
     @Override
     public String getShortName() {
-        return name;
+        return shortName;
     }
 
     @Override
@@ -60,7 +73,7 @@ public class WFTeamInfo implements TeamInfo {
         return solved;
     }
 
-    public ArrayBlockingQueue<RunInfo>[] getRuns() {
+    public List<RunInfo>[] getRuns() {
         return problem_runs;
     }
 
@@ -68,12 +81,11 @@ public class WFTeamInfo implements TeamInfo {
         return lastAccepted;
     }
 
-    public ArrayBlockingQueue<RunInfo> getRunsByProblem(int problemId) {
-        return problem_runs[problemId];
-    }
-
     public void addRun(RunInfo run, int problemId){
-        problem_runs[problemId].add(run);
+        ArrayList<RunInfo> runs = problem_runs[problemId];
+        synchronized (runs) {
+            runs.add(run);
+        }
     }
 
 }
