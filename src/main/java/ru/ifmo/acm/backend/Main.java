@@ -46,8 +46,8 @@ public class Main {
         generator.addWidget(new GreenScreenWidget(true));
         generator.addWidget(new TeamInfoWidget(
                 updateWait,
-                Widget.BASE_WIDTH,
-                Widget.BASE_HEIGHT - 32,
+                width,
+                height - 32,
                 4. / 3,
                 Integer.parseInt(properties.getProperty("sleep.time"))
         ));
@@ -58,7 +58,7 @@ public class Main {
         generator.addWidget(new StandingsWidget(updateWait));
         generator.addWidget(new QueueWidget(100));
         generator.addWidget(new BigStandingsWidget(64, 64,
-                Widget.BASE_WIDTH - 128, Widget.BASE_HEIGHT - 128, updateWait, false));
+                width - 128, height - 128, updateWait, false));
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 
