@@ -35,7 +35,7 @@ public class MainScreenData {
         personData = new PersonData();
         standingsData = new StandingsData();
         teamData = new TeamData();
-        cameraData = new CameraData();
+//        cameraData = new CameraData();
         clockData = new ClockData();
     }
 

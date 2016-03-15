@@ -2,6 +2,7 @@ package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFTeamInfo;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
 public class TeamData implements CachedData {
@@ -27,11 +28,13 @@ public class TeamData implements CachedData {
         if (visible) {
             String alias = null;
             if (teamName != null) {
-                alias = teamName.split(":")[1];
+                alias = teamName.split("[:.]")[1].trim();
             }
-            if (teamInfo != null && ((((PCMSTeamInfo) teamInfo).getAlias().equals(alias)
+            if (teamInfo != null && ((
+                    (teamInfo instanceof PCMSTeamInfo && ((PCMSTeamInfo) teamInfo).getAlias().equals(alias)) ||
+                            (teamInfo instanceof WFTeamInfo && (teamInfo.getName().equals(alias) || teamInfo.getShortName().equals(alias)))
 //             && isInfoVisible)) {
-                    || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible)) {
+                            || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible)) {
                 return false;
             }
             timestamp = System.currentTimeMillis();
@@ -53,7 +56,7 @@ public class TeamData implements CachedData {
     }
 
     public synchronized String getTeamString() {
-        return teamInfo.getShortName() + " :" + ((PCMSTeamInfo)teamInfo).getAlias();
+        return teamInfo.getShortName() + " :" + ((PCMSTeamInfo) teamInfo).getAlias();
     }
 
     public synchronized String infoStatus() {

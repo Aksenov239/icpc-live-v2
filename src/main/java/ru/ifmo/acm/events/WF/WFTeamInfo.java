@@ -49,7 +49,7 @@ public class WFTeamInfo implements TeamInfo {
 
     @Override
     public String getShortName() {
-        return name;
+        return shortName;
     }
 
     @Override
