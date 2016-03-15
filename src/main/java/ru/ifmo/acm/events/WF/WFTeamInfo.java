@@ -5,7 +5,6 @@ import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by aksenov on 17.04.2015.
@@ -30,6 +29,18 @@ public class WFTeamInfo implements TeamInfo {
         for (int i = 0; i < problems; i++) {
             problem_runs[i] = new ArrayList<>();
         }
+    }
+
+    public WFTeamInfo copy() {
+        WFTeamInfo teamInfo = new WFTeamInfo(problem_runs.length);
+        teamInfo.id = id;
+        teamInfo.rank = rank;
+        teamInfo.name = name;
+
+        teamInfo.region = region;
+        teamInfo.shortName = shortName;
+
+        return teamInfo;
     }
 
     @Override

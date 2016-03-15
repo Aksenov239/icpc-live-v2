@@ -165,18 +165,20 @@ public class WFContestInfo extends ContestInfo {
         WFTeamInfo[] possibleStandings = new WFTeamInfo[teamNumber];
         int teamIndex = 0;
         for (WFTeamInfo team : standings) {
-            possibleStandings[teamIndex] = new WFTeamInfo(problemNumber);
+            possibleStandings[teamIndex] = team.copy();
             for (int j = 0; j < problemNumber; j++) {
                 List<RunInfo> runs = team.getRuns()[j];
                 int runIndex = 0;
                 for (RunInfo run : runs) {
                     WFRunInfo clonedRun = new WFRunInfo((WFRunInfo) run);
+
                     if (clonedRun.getResult().length() == 0) {
                         clonedRun.judged = true;
                         String expectedResult = isOptimistic ? "AC" : "WA";
                         clonedRun.result = (runIndex == runs.size() - 1) ? expectedResult : "WA";
-                        possibleStandings[teamIndex].addRun(clonedRun, j);
                     }
+					possibleStandings[teamIndex].addRun(clonedRun, j);
+                    runIndex++;
                 }
             }
             teamIndex++;
