@@ -1,6 +1,7 @@
 package ru.ifmo.acm.datapassing;
 
 import com.google.gson.*;
+import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFTeamInfo;
@@ -18,7 +19,7 @@ public class TeamData implements CachedData {
         this.timestamp = data.timestamp;
         this.isVisible = data.isVisible;
         this.infoType = data.infoType;
-        this.teamInfo = data.teamInfo;
+        this.teamId = data.teamId;
 
         return this;
     }
@@ -27,24 +28,29 @@ public class TeamData implements CachedData {
         Data.cache.refresh(TeamData.class);
     }
 
-    public synchronized boolean setInfoVisible(boolean visible, String type, String teamName) {
+    public synchronized boolean setInfoVisible(boolean visible, String type, String teamValue) {
         if (visible) {
             String alias = null;
-            if (teamName != null) {
-                alias = teamName.split("[:.]")[1].trim();
+            if (teamValue != null) {
+                alias = teamValue.split("[:.]")[1].trim();
             }
-            if (teamInfo != null && ((
-                    (teamInfo instanceof PCMSTeamInfo && ((PCMSTeamInfo) teamInfo).getAlias().equals(alias)) ||
-                            (teamInfo instanceof WFTeamInfo && (teamInfo.getName().equals(alias) || teamInfo.getShortName().equals(alias)))
-//             && isInfoVisible)) {
-                            || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible)) {
+            System.err.println("Trying to find " + alias);
+            TeamInfo teamInfo = MainScreenData.getProperties().contestInfo.getParticipant(alias);
+            if (teamInfo == null) {
+                return false;
+            }
+            if ((teamInfo.getId() == teamId
+                    || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible) {
                 return false;
             }
             timestamp = System.currentTimeMillis();
             isVisible = true;
             infoType = type;
-            teamInfo = MainScreenData.getProperties().contestInfo.getParticipant(alias);
-            System.err.println(alias + " " + teamInfo.getId());
+            currentTeamValue = teamValue;
+            teamName = teamInfo.getName();
+            teamId = teamInfo.getId();
+
+            System.err.println(alias + " " + teamId);
         } else {
             isVisible = false;
             timestamp = System.currentTimeMillis();
@@ -59,22 +65,23 @@ public class TeamData implements CachedData {
     }
 
     public synchronized String getTeamString() {
-        return teamInfo.getShortName() + " :" + ((PCMSTeamInfo) teamInfo).getAlias();
+        return currentTeamValue;
     }
 
     public synchronized String infoStatus() {
-        return timestamp + "\n" + isVisible + "\n" + infoType + "\n" + (teamInfo == null ? null : teamInfo.getName());
+        return timestamp + "\n" + isVisible + "\n" + infoType + "\n" + teamName;
     }
 
     public synchronized int getTeamId() {
-        return teamInfo.getId();
+        return teamId;
     }
 
     public long timestamp;
     public boolean isVisible;
-    public String infoType;
-
-    private TeamInfo teamInfo;
+    public String infoType = "";
+    private String currentTeamValue;
+    private String teamName;
+    private int teamId = -1;
 
     public static class TeamDataSerializer implements JsonSerializer<TeamData> {
 
@@ -84,8 +91,8 @@ public class TeamData implements CachedData {
             jsonObject.addProperty("timestamp", teamData.timestamp);
             jsonObject.addProperty("isVisible", teamData.isVisible);
             jsonObject.addProperty("infoType", teamData.infoType);
+            jsonObject.addProperty("teamId", teamData.teamId);
 
-            // System.err.println("Hello from TeamDataSerializer!");
             return jsonObject;
         }
     }
@@ -100,8 +107,8 @@ public class TeamData implements CachedData {
 
             teamData.timestamp = jsonObject.get("timestamp").getAsLong();
             teamData.isVisible = jsonObject.get("isVisible").getAsBoolean();
-            teamData.infoType = (jsonObject.get("infoType") == null) ? null: jsonObject.get("infoType").getAsString();
-            teamData.teamInfo = null;
+            teamData.infoType = jsonObject.get("infoType").getAsString();
+            teamData.teamId = jsonObject.get("teamId").getAsInt();
 
             //System.err.println("Hello from TeamDataDeserializer!");
 

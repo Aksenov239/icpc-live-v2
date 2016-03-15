@@ -136,8 +136,8 @@ public class WFContestInfo extends ContestInfo {
 	@Override
 	public TeamInfo getParticipant(String name) {
 		for (int i = 0; i < teamNumber; i++) {
-			if (teamInfos[i + 1].getName().equals(name) || teamInfos[i + 1].getShortName().equals(name)) {
-				return teamInfos[i + 1];
+			if (teamInfos[i].getName().equals(name) || teamInfos[i].getShortName().equals(name)) {
+				return teamInfos[i];
 			}
 		}
 		return null;
