@@ -6,7 +6,6 @@ import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by aksenov on 05.05.2015.
@@ -84,6 +83,41 @@ public class WFContestInfo extends ContestInfo {
 		this.standings = standings;
 	}
 
+    void recalcStandings(WFTeamInfo[] standings) {
+        for (WFTeamInfo team: standings) {
+            team.solved = 0;
+            team.penalty = 0;
+            team.lastAccepted = 0;
+            for (int j = 0; j < problemNumber; j++) {
+                List<RunInfo> runs = team.getRuns()[j];
+                int wrong = 0;
+                for (RunInfo run : runs) {
+                    WFRunInfo wfrun = (WFRunInfo) run;
+                    if ("AC".equals(run.getResult())) {
+                        team.solved++;
+                        int time = (int) (wfrun.getTime() / 60 / 1000);
+                        team.penalty += wrong * 20 + time;
+                        team.lastAccepted = Math.max(team.lastAccepted, time);
+                        break;
+                    } else if (wfrun.getResult().length() > 0) {
+                        wrong++;
+                    }
+                }
+            }
+        }
+
+        Arrays.sort(standings, 0, standings.length, TeamInfo.comparator);
+
+        for (int i = 0; i < standings.length; i++) {
+            if (i > 0 && TeamInfo.comparator.compare(standings[i], standings[i - 1]) == 0) {
+                standings[i].rank = standings[i - 1].rank;
+            } else {
+                standings[i].rank = i + 1;
+            }
+        }
+    }
+
+
 	public void addTeam(WFTeamInfo team) {
 		teamInfos[team.getId()] = team;
 	}
@@ -139,4 +173,31 @@ public class WFContestInfo extends ContestInfo {
 	public RunInfo[] getRuns() {
 		return runs;
 	}
+
+	public TeamInfo[] getPossibleStandings(boolean isOptimistic) {
+        WFTeamInfo[] possibleStandings = new WFTeamInfo[teamNumber];
+        int teamIndex = 0;
+        for (WFTeamInfo team : standings) {
+            possibleStandings[teamIndex] = new WFTeamInfo(problemNumber);
+            for (int j = 0; j < problemNumber; j++) {
+                List<RunInfo> runs = team.getRuns()[j];
+                int runIndex = 0;
+                for (RunInfo run : runs) {
+                    WFRunInfo clonedRun = new WFRunInfo((WFRunInfo) run);
+                    if (clonedRun.getResult().length() == 0) {
+                        clonedRun.judged = true;
+                        String expectedResult = isOptimistic ? "AC" : "WA";
+                        clonedRun.result = (runIndex == runs.size() - 1) ? expectedResult : "WA";
+                        possibleStandings[teamIndex].addRun(clonedRun, j);
+                    }
+                }
+            }
+            teamIndex++;
+        }
+
+        recalcStandings(possibleStandings);
+
+        return possibleStandings;
+    }
+
 }
