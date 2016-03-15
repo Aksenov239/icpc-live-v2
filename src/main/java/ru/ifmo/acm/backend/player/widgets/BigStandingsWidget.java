@@ -5,6 +5,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFContestInfo;
 
 import java.awt.*;
 
@@ -35,6 +36,8 @@ public class BigStandingsWidget extends Widget {
     final boolean controlled;
 
     private ContestInfo contestData;
+
+    private StandingsData.OptimismLevel optimismLevel;
 
     public BigStandingsWidget(int x, int y, int width, int height, long updateWait, boolean controlled) {
         super(updateWait);
@@ -108,6 +111,7 @@ public class BigStandingsWidget extends Widget {
         } else {
             setVisible(false);
         }
+        optimismLevel = data.standingsData.optimismLevel;
         lastUpdate = System.currentTimeMillis();
     }
 
@@ -124,15 +128,22 @@ public class BigStandingsWidget extends Widget {
             update();
         }
         contestData = Preparation.eventsLoader.getContestData();
-        if (contestData == null || contestData.getStandings() == null) return;
-        length = Math.min(contestData.getTeamsNumber(), contestData.getStandings().length);
+        TeamInfo[] standings;
+        if (contestData instanceof WFContestInfo) {
+            standings = ((WFContestInfo)contestData).getStandings(optimismLevel);
+        } else {
+            standings = contestData.getStandings();
+        }
+
+        if (contestData == null || standings == null) return;
+        length = Math.min(contestData.getTeamsNumber(), standings.length);
 
         if (desiredTeamPositions == null || desiredTeamPositions.length != contestData.getTeamsNumber() + 1) {
             desiredTeamPositions = new double[contestData.getTeamsNumber() + 1];
         }
         {
             int i = 0;
-            for (TeamInfo teamInfo : contestData.getStandings()) {
+            for (TeamInfo teamInfo : standings) {
                 desiredTeamPositions[teamInfo.getId()] = i;
                 i++;
             }
@@ -166,7 +177,7 @@ public class BigStandingsWidget extends Widget {
 
             int lastProblems = -1;
             boolean bright = true;
-            TeamInfo[] standings = contestData.getStandings();
+            //TeamInfo[] standings = contestData.getStandings();
             for (int i = standings.length - 1; i >= 0; i--) {
                 TeamInfo teamInfo = standings[i];
                 if (teamInfo.getSolvedProblemsNumber() != lastProblems) {

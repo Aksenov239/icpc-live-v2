@@ -1,5 +1,6 @@
 package ru.ifmo.acm.events.WF;
 
+import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -189,4 +190,16 @@ public class WFContestInfo extends ContestInfo {
         return possibleStandings;
     }
 
+    public TeamInfo[] getStandings(StandingsData.OptimismLevel level) {
+        switch (level) {
+            case NORMAL:
+                return getStandings();
+            case OPTIMISTIC:
+                return getPossibleStandings(true);
+            case PESSIMISTIC:
+                return getPossibleStandings(false);
+        }
+
+        return null;
+    }
 }

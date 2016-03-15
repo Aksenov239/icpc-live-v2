@@ -17,6 +17,8 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     Button clockButtonOn;
     Button clockButtonOff;
 
+    OptionGroup standingsOptimismLevel;
+
     public Component getClockController() {
         clockStatus = new Label(getClockStatus());
         clockStatus.addStyleName("large");
@@ -28,6 +30,15 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         VerticalLayout panel = new VerticalLayout(clockStatus, group);
         setPanelDefaults(panel);
+        return panel;
+    }
+
+    public Component getStandingsTypeController() {
+        standingsOptimismLevel = new OptionGroup("Standings type");
+        standingsOptimismLevel.addItems("Normal", "Optimistic", "Pessimistic");
+        VerticalLayout panel = new VerticalLayout(standingsOptimismLevel);
+        setPanelDefaults(panel);
+
         return panel;
     }
 
@@ -91,7 +102,9 @@ public class MainScreenStandingsView extends CustomComponent implements View {
                 Notification.show("You should hide standings first", Notification.Type.WARNING_MESSAGE);
                 return;
             }
-            mainScreenData.standingsData.setStandingsVisible(visible, type, isBig);
+            String optimismLevel = (String) standingsOptimismLevel.getValue();
+
+            mainScreenData.standingsData.setStandingsVisible(visible, type, isBig, StandingsData.OptimismLevel.valueOf(optimismLevel.toUpperCase()));
             standingsStatus.setValue(getStandingsStatus());
         });
 
@@ -116,8 +129,9 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         Component clockController = getClockController();
         Component standingsController = getStandingsController();
+        Component standingsTypeController = getStandingsTypeController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController);
+        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsTypeController, standingsController);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }

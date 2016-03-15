@@ -11,16 +11,23 @@ public class StandingsData implements CachedData {
         this.timestamp = data.timestamp;
         this.isVisible = data.isVisible;
         this.standingsType = data.standingsType;
+        this.optimismLevel = data.optimismLevel;
         this.isBig = data.isBig;
 
         return this;
     }
 
     public String toString() {
+        if (standingsType == StandingsType.HIDE) {
+            return standingsType.label;
+        }
+
         long time = standingsType == StandingsType.ONE_PAGE
                 ? (System.currentTimeMillis() - timestamp) / 1000
                 : (timestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
-        return String.format(standingsType.label, time) + (isBig() ? ". Big standings are shown" : ". Compact standings are shown");
+        return String.format(standingsType.label, time) + ". " +
+                optimismLevel.toString() +
+                (isBig() ? " big standings are shown" : " compact standings are shown");
     }
 
     public long getLatency() {
@@ -31,11 +38,12 @@ public class StandingsData implements CachedData {
         Data.cache.refresh(StandingsData.class);
     }
 
-    public void setStandingsVisible(boolean visible, StandingsType type, boolean isBig) {
+    public void setStandingsVisible(boolean visible, StandingsType type, boolean isBig, OptimismLevel level) {
         synchronized (standingsLock) {
             timestamp = System.currentTimeMillis();
             isVisible = visible;
             standingsType = type;
+            optimismLevel = level;
             this.isBig = isBig;
         }
 
@@ -85,6 +93,7 @@ public class StandingsData implements CachedData {
     public boolean isVisible;
     public StandingsType standingsType = StandingsType.HIDE;
     public boolean isBig;
+    public OptimismLevel optimismLevel = OptimismLevel.NORMAL;
 
     public static long latency;
 
@@ -100,6 +109,26 @@ public class StandingsData implements CachedData {
 
         StandingsType(String label) {
             this.label = label;
+        }
+    }
+
+    public enum OptimismLevel {
+        NORMAL,
+        OPTIMISTIC,
+        PESSIMISTIC;
+
+        public String toString() {
+            switch (this) {
+                case NORMAL:
+                    return "Normal";
+                case OPTIMISTIC:
+                    return "Optimistic";
+                case PESSIMISTIC:
+                    return "Pessimistic";
+
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
     }
 }
