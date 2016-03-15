@@ -11,7 +11,7 @@ import java.util.Properties;
 /**
  * @author: pashka
  */
-public abstract class TeamWidget extends VideoWidget {
+public class TeamWidget extends VideoWidget {
     public static String[] types;
     public static HashMap<String, String> urlTemplates;
 
@@ -30,6 +30,8 @@ public abstract class TeamWidget extends VideoWidget {
         }
     }
 
+    protected int teamId;
+
     private int xVideo;
     private int yVideo;
     private int widthVideo;
@@ -44,9 +46,12 @@ public abstract class TeamWidget extends VideoWidget {
         this.heightVideo = height;
         this.xVideo = x + width - widthVideo;
         this.yVideo = y;
+        teamId = -1;
     }
 
-    protected abstract int getTeamId();
+    protected int getTeamId() {
+        return teamId;
+    }
 
     protected Font FONT1 = Font.decode("Open Sans Italic " + 40);
 
