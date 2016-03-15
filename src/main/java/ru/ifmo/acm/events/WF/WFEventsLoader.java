@@ -61,7 +61,7 @@ public class WFEventsLoader extends EventsLoader {
         int problems = 0;
         String line;
         while ((line = br.readLine()) != null) {
-            if (!line.contains("letter")) {
+            if (line.contains("letter")) {
                 problems++;
             }
         }
