@@ -10,13 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.io.*;
 
 /**
  * Created by aksenov on 16.04.2015.
@@ -348,33 +343,17 @@ public class WFEventsLoader extends EventsLoader {
     static {
         try {
             Properties properties = new Properties();
-            properties.load(new FileReader("resources/generator.properties"));
+            properties.load(WFEventsLoader.class.getClassLoader().getResourceAsStream("events.properties"));
 
-            URL url = new URL(properties.getProperty("teams"));
-
-            String login = properties.getProperty("login");
-            String password = properties.getProperty("password");
-
-            CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("Authorization",
-                    "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
-            con.connect();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
-            in.readLine();
-            String line;
-            while ((line = in.readLine()) != null) {
-                String[] ss = line.split("\t");
-                shortNames.put(ss[4], ss[5]);
+            File override = new File(properties.getProperty("teams.shortnames.override", "override.txt"));
+            if (override.exists()) {
+                BufferedReader in = new BufferedReader(new FileReader("override.txt"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    String[] ss = line.split("\t");
+                    shortNames.put(ss[0], ss[1]);
+                }
             }
-
-            in = new BufferedReader(new FileReader("override.txt"));
-            while ((line = in.readLine()) != null) {
-                String[] ss = line.split("\t");
-                shortNames.put(ss[0], ss[1]);
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
