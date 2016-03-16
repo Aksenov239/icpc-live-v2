@@ -18,6 +18,7 @@ public class BigStandingsWidget extends Widget {
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
     private static final double SPACE_VS_PLATE = 0.1;
+    private static final int BIG_SPACE_COUNT = 6;
     public static int PERIOD = STANDING_TIME + MOVING_TIME;
     public final static int TEAMS_ON_PAGE = 16;
 
@@ -37,7 +38,7 @@ public class BigStandingsWidget extends Widget {
 
     private ContestInfo contestData;
 
-    private StandingsData.OptimismLevel optimismLevel;
+    private StandingsData.OptimismLevel optimismLevel = StandingsData.OptimismLevel.NORMAL;
 
     public BigStandingsWidget(int x, int y, int width, int height, long updateWait, boolean controlled) {
         super(updateWait);
@@ -54,9 +55,11 @@ public class BigStandingsWidget extends Widget {
 
         plateWidth = width;
         spaceX = 0;
-        double total = (TEAMS_ON_PAGE + 1) * (1 + SPACE_VS_PLATE) + SPACE_VS_PLATE;
+        double total = (TEAMS_ON_PAGE + 1) * (1 + SPACE_VS_PLATE) + (BIG_SPACE_COUNT - 1) * SPACE_VS_PLATE;
         plateHeight = height / total;
         spaceY = (int) (plateHeight * SPACE_VS_PLATE);
+
+        //totalHeight = (int) plateHeight * (TEAMS_ON_PAGE + 1) + TEAMS_ON_PAGE * paceY;
 
         movingHeight = (int) (plateHeight * ((1 + SPACE_VS_PLATE) * TEAMS_ON_PAGE + SPACE_VS_PLATE));
 
@@ -120,20 +123,23 @@ public class BigStandingsWidget extends Widget {
 
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
-        update();
-        g = (Graphics2D) g.create();
-        g.translate(baseX, baseY);
-        g.clip(new Rectangle(-10, 0, totalWidth + 10, totalHeight));
         if (controlled) {
             update();
         }
+        if (!isVisible()) {
+            return;
+        }
+
+        g = (Graphics2D) g.create();
+        g.translate(baseX, baseY);
+        g.clip(new Rectangle(-10, 0, totalWidth + 10, totalHeight));
         contestData = Preparation.eventsLoader.getContestData();
         if (contestData == null) {
             return;
         }
         TeamInfo[] standings;
         if (contestData instanceof WFContestInfo) {
-            standings = ((WFContestInfo)contestData).getStandings(optimismLevel);
+            standings = ((WFContestInfo) contestData).getStandings(optimismLevel);
         } else {
             standings = contestData.getStandings();
         }
@@ -178,6 +184,11 @@ public class BigStandingsWidget extends Widget {
                 }
             }
 
+            drawHead(g, spaceX, 0, contestData.getProblemsNumber());
+            g = (Graphics2D) g.create();
+            int initY = (int) (plateHeight + BIG_SPACE_COUNT * spaceY);
+            g.clip(new Rectangle(0, initY, totalWidth, totalHeight - initY));
+
             int lastProblems = -1;
             boolean bright = true;
             //TeamInfo[] standings = contestData.getStandings();
@@ -205,7 +216,6 @@ public class BigStandingsWidget extends Widget {
                     }
                 }
                 double yy = currentTeamPositions[id] - start;
-                int initY = (int) (plateHeight + 6 * spaceY);
                 if (yy > -1 && yy < TEAMS_ON_PAGE) {
                     drawFullTeamPane(g, teamInfo, spaceX, initY + (int) (yy * (plateHeight + spaceY)), bright);
                 }
@@ -218,7 +228,6 @@ public class BigStandingsWidget extends Widget {
 //                int nextPage = start + TEAMS_ON_PAGE < length ? start + TEAMS_ON_PAGE : 0;
 //                drawTeams(g, spaceX, (int) (plateHeight + initY + currentStart + movingHeight), contestData, nextPage);
 //            }
-            drawHead(g, spaceX, 0, contestData.getProblemsNumber());
         } else {
             timer = -TOP_PAGE_STANDING_TIME;
             start = 0;
