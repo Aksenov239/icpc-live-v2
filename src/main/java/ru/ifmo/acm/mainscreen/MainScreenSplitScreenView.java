@@ -28,12 +28,26 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
             controllers[i] = getOneControllerTeam(i);
         }
 
-        Component main = new VerticalLayout(
-                new HorizontalLayout(controllers[0], controllers[1]),
-                new HorizontalLayout(controllers[2], controllers[3])
+        HorizontalLayout row1 = new HorizontalLayout(controllers[0], controllers[1]);
+        row1.setSizeFull();
+        row1.setComponentAlignment(controllers[0], Alignment.MIDDLE_CENTER);
+        row1.setComponentAlignment(controllers[1], Alignment.MIDDLE_CENTER);
+        HorizontalLayout row2 = new HorizontalLayout(controllers[2], controllers[3]);
+        row2.setSizeFull();
+        row2.setComponentAlignment(controllers[2], Alignment.MIDDLE_CENTER);
+        row2.setComponentAlignment(controllers[3], Alignment.MIDDLE_CENTER);
+        VerticalLayout main = new VerticalLayout(
+                row1,
+                row2
         );
+        row1.setMargin(true);
+        row2.setMargin(true);
 
         main.setSizeFull();
+        main.setMargin(true);
+        main.setSpacing(true);
+        main.setComponentAlignment(row1, Alignment.MIDDLE_CENTER);
+        main.setComponentAlignment(row2, Alignment.MIDDLE_CENTER);
 
         setCompositionRoot(main);
     }
@@ -45,7 +59,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
     }
 
     public Component getOneControllerTeam(int id) {
-        labels[id] = new Label("Controller " + (id + 1) + "(" + getTeamStatus(id) + ")");
+        labels[id] = new Label("Controller " + (id + 1) + " (" + getTeamStatus(id) + ")");
         automated[id] = new CheckBox("Automated");
 
         types[id] = new OptionGroup();
@@ -56,33 +70,40 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
         types[id].setWidth("50%");
 
         teams[id] = new TextField("Team: ");
+        teams[id].setSizeFull();
 
         shows[id] = new Button("Show");
         shows[id].addClickListener(event -> {
-            mainScreenData.splitScreenData.isAutomatic[id] = !automated[id].isEmpty();
-            if (!automated[id].isEmpty()) {
-                Notification.show("You can not use this button in automatic mode");
-            } else {
-                int teamId = Integer.parseInt(teams[id].getValue());
-                String teamName = mainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();
-                if (!mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), teamName)) {
-                    Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
+                    mainScreenData.splitScreenData.isAutomatic[id] = !automated[id].isEmpty();
+                    if (!automated[id].isEmpty()) {
+                        Notification.show("You can not use this button in automatic mode");
+                    } else {
+                        try {
+                            int teamId = Integer.parseInt(teams[id].getValue());
+                            String teamName = MainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();
+                            if (!mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), teamName)) {
+                                Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
+                            }
+                        } catch (NumberFormatException e) {
+
+                        }
+                    }
                 }
-            }}
         );
 
         hides[id] = new Button("Hide");
         hides[id].addClickListener(event -> {
-            if (!automated[id].isEmpty()) {
-                Notification.show("You can not use this button in automatic mode");
-            } else {
-                mainScreenData.splitScreenData.setInfoVisible(id, false, null, null);
-            }}
+                    if (!automated[id].isEmpty()) {
+                        Notification.show("You can not use this button in automatic mode");
+                    } else {
+                        mainScreenData.splitScreenData.setInfoVisible(id, false, null, null);
+                    }
+                }
         );
 
-        Component team = createGroupLayout(teams[id], shows[id], hides[id]);
+        CssLayout team = createGroupLayout(teams[id], shows[id], hides[id]);
         VerticalLayout result = new VerticalLayout(labels[id], automated[id], types[id], team);
-        result.setSpacing(false);
+        result.setSpacing(true);
 
         return result;
     }
