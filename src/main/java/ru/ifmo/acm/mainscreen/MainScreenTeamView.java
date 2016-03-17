@@ -21,20 +21,21 @@ public class MainScreenTeamView extends CustomComponent implements View {
     //    ListSelect teamSelection;
     OptionGroup teamSelection;
 
-    private String getTeamStatus() {
-        String status = mainScreenData.teamData.infoStatus();
-        String[] z = status.split("\n");
-
-        if (z[1].equals("true")) {
-            for (String type1 : types) {
-                if (type1.equals(z[2])) {
-                    return "Now showing " + z[2] + " of team " + z[3] + " for " + (System.currentTimeMillis() - Long.parseLong(z[0])) / 1000 + " seconds";
-                }
-            }
-            return "Some error happened";
-        } else {
-            return "No team view is shown";
-        }
+    public static String getTeamStatus() {
+        String status = MainScreenData.getMainScreenData().teamData.infoStatus();
+        return Utils.getTeamStatus(status);
+//        String[] z = status.split("\n");
+//
+//        if (z[1].equals("true")) {
+//            for (String type1 : TeamWidget.types) {
+//                if (type1.equals(z[2])) {
+//                    return "Now showing " + z[2] + " of team " + z[3] + " for " + (System.currentTimeMillis() - Long.parseLong(z[0])) / 1000 + " seconds";
+//                }
+//            }
+//            return "Some error happened";
+//        } else {
+//            return "No team view is shown";
+//        }
     }
 
     public Component getControllerTeam() {

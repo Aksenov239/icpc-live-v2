@@ -4,6 +4,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.VerticalLayout;
+import ru.ifmo.acm.backend.player.widgets.TeamWidget;
 
 public class Utils {
     /* Utils */
@@ -35,6 +36,21 @@ public class Utils {
         public void interrupt() {
             runnable.stop = true;
             super.interrupt();
+        }
+    }
+
+    public static String getTeamStatus(String status) {
+        String[] z = status.split("\n");
+
+        if (z[1].equals("true")) {
+            for (String type1 : TeamWidget.types) {
+                if (type1.equals(z[2])) {
+                    return "Now showing " + z[2] + " of team " + z[3] + " for " + (System.currentTimeMillis() - Long.parseLong(z[0])) / 1000 + " seconds";
+                }
+            }
+            return "Some error happened";
+        } else {
+            return "No team view is shown";
         }
     }
 }
