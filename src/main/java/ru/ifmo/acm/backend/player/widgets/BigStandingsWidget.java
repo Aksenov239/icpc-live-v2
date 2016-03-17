@@ -128,6 +128,9 @@ public class BigStandingsWidget extends Widget {
             update();
         }
         contestData = Preparation.eventsLoader.getContestData();
+        if (contestData == null) {
+            return;
+        }
         TeamInfo[] standings;
         if (contestData instanceof WFContestInfo) {
             standings = ((WFContestInfo)contestData).getStandings(optimismLevel);

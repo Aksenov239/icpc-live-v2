@@ -139,7 +139,7 @@ public class TeamWidget extends VideoWidget {
                 RunInfo run = runs[j];
                 Color color = run.getResult().equals("AC") ? GREEN : run.getResult().equals("") ? YELLOW : RED;
                 if (j == runs.length - 1) {
-                    drawTextInRect(g, format(run.getTime()), this.x + x, this.y + y,
+                    drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
                             RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1);
                     //System.err.println(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
