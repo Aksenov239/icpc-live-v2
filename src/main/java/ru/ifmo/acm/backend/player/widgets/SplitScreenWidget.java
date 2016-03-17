@@ -52,7 +52,11 @@ public class SplitScreenWidget extends Widget {
     @Override
     protected void updateImpl(Data data) {
         super.updateImpl(data);
-        // TODO: Update using SplitScreenData.
+        for (int i = 0; i < 4; i++) {
+            showOrStandings[i] = data.splitScreenData.isAutomatic[i];
+            teamInfoWidgets[i].setTeamId(data.splitScreenData.getTeamId(i));
+
+        }
         lastUpdate = System.currentTimeMillis();
     }
 

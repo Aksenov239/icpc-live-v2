@@ -52,6 +52,9 @@ public class TeamWidget extends VideoWidget {
     protected int getTeamId() {
         return teamId;
     }
+    public void setTeamId(int id) {
+        teamId = id;
+    }
 
     protected Font FONT1 = Font.decode("Open Sans Italic " + 40);
 
