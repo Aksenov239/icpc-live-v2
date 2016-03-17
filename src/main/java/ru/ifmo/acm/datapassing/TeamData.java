@@ -1,9 +1,12 @@
 package ru.ifmo.acm.datapassing;
 
+import com.google.gson.*;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFTeamInfo;
 import ru.ifmo.acm.mainscreen.MainScreenData;
+
+import java.lang.reflect.Type;
 
 public class TeamData implements CachedData {
     public TeamData() {
@@ -72,4 +75,37 @@ public class TeamData implements CachedData {
     public String infoType;
 
     private TeamInfo teamInfo;
+
+    public static class TeamDataSerializer implements JsonSerializer<TeamData> {
+
+        @Override
+        public JsonElement serialize(TeamData teamData, Type type, JsonSerializationContext jsonSerializationContext) {
+            final JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("timestamp", teamData.timestamp);
+            jsonObject.addProperty("isVisible", teamData.isVisible);
+            jsonObject.addProperty("infoType", teamData.infoType);
+
+            // System.err.println("Hello from TeamDataSerializer!");
+            return jsonObject;
+        }
+    }
+
+    public static class TeamDataDeserializer implements JsonDeserializer<TeamData> {
+
+        @Override
+        public TeamData deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            TeamData teamData = new TeamData();
+
+            final JsonObject jsonObject = jsonElement.getAsJsonObject();
+
+            teamData.timestamp = jsonObject.get("timestamp").getAsLong();
+            teamData.isVisible = jsonObject.get("isVisible").getAsBoolean();
+            teamData.infoType = (jsonObject.get("infoType") == null) ? null: jsonObject.get("infoType").getAsString();
+            teamData.teamInfo = null;
+
+            //System.err.println("Hello from TeamDataDeserializer!");
+
+            return teamData;
+        }
+    }
 }

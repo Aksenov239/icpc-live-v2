@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.ContextListener;
+import ru.ifmo.acm.datapassing.TeamData;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 
@@ -112,6 +113,10 @@ public class BackUp<T> {
 
     BeanItemContainer<T> data;
     Path backupFile;
-    static final Gson gson = new GsonBuilder().create();
+    //static final Gson gson = new GsonBuilder().create();
+    static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(TeamData.class, new TeamData.TeamDataDeserializer())
+            .registerTypeAdapter(TeamData.class, new TeamData.TeamDataSerializer())
+            .create();
     final Class<T> type;
 }

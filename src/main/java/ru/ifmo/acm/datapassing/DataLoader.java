@@ -1,6 +1,7 @@
 package ru.ifmo.acm.datapassing;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -15,7 +16,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by Aksenov239 on 21.11.2015.
  */
 public class DataLoader {
-    public static Gson gson = new Gson();
+    public static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(TeamData.class, new TeamData.TeamDataDeserializer())
+            .registerTypeAdapter(TeamData.class, new TeamData.TeamDataSerializer())
+            .create();
 
     private AtomicReference<Data> data;
 
