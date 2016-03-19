@@ -1,6 +1,7 @@
 package ru.ifmo.acm.events.WF;
 
 import ru.ifmo.acm.events.RunInfo;
+import ru.ifmo.acm.events.SmallTeamInfo;
 
 /**
  * Created by aksenov on 16.04.2015.
@@ -17,6 +18,7 @@ public class WFRunInfo implements RunInfo {
     private int passed;
     private int total;
     private long lastUpdateTimestamp;
+    private SmallTeamInfo teamInfoBefore;
 
     public WFRunInfo() {
     }
@@ -36,14 +38,18 @@ public class WFRunInfo implements RunInfo {
     }
 
     public long getLastUpdateTimestamp() {
-		return lastUpdateTimestamp;
-	}
+        return lastUpdateTimestamp;
+    }
 
-	public void setLastUpdateTimestamp(long lastUpdateTimestamp) {
-		this.lastUpdateTimestamp = lastUpdateTimestamp;
-	}
+    public void setLastUpdateTimestamp(long lastUpdateTimestamp) {
+        this.lastUpdateTimestamp = lastUpdateTimestamp;
+    }
 
-	public void add(WFTestCaseInfo test) {
+    public void setTeamInfoBefore(SmallTeamInfo teamInfoBefore) {
+        this.teamInfoBefore = teamInfoBefore;
+    }
+
+    public void add(WFTestCaseInfo test) {
         if (total == 0) {
             total = test.total;
         }
@@ -91,5 +97,10 @@ public class WFRunInfo implements RunInfo {
     @Override
     public int getTeam() {
         return team;
+    }
+
+    @Override
+    public SmallTeamInfo getTeamInfoBefore() {
+        return teamInfoBefore;
     }
 }

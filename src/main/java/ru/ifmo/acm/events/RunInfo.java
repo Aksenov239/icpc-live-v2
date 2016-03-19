@@ -7,4 +7,5 @@ public interface RunInfo {
     int getProblemNumber();
     long getTime();
     int getTeam();
+    SmallTeamInfo getTeamInfoBefore();
 }

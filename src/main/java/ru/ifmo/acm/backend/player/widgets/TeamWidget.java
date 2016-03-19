@@ -1,8 +1,10 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFTeamInfo;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -178,5 +180,19 @@ public class TeamWidget extends VideoWidget {
         int h = m / 60;
         m %= 60;
         return String.format("%d:%02d", h, m);
+    }
+
+    public static String getUrl(TeamInfo team, String infoType) {
+        if (team instanceof PCMSTeamInfo) {
+            int aliasId = Integer.parseInt(((PCMSTeamInfo) team).getAlias().substring(1));
+            int hall = aliasId / 100;
+            int place = aliasId % 100;
+            System.err.println("change " + hall + " " + place);
+            return String.format(urlTemplates.get(infoType), hall, place);
+        } else if (team instanceof WFTeamInfo) {
+            System.err.println("change " + (team.getId() + 1));
+            return String.format(urlTemplates.get(infoType), team.getId() + 1);
+        }
+        return null;
     }
 }

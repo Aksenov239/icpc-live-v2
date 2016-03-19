@@ -38,6 +38,7 @@ public class MainScreenData {
 //        cameraData = new CameraData();
         clockData = new ClockData();
         splitScreenData = new SplitScreenData();
+        breakingNewsData = new BreakingNewsData();
     }
 
     public void update() {
@@ -59,6 +60,7 @@ public class MainScreenData {
     public TeamData teamData;
     public CameraData cameraData;
     public SplitScreenData splitScreenData;
+    public BreakingNewsData breakingNewsData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

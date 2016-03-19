@@ -1,6 +1,7 @@
 package ru.ifmo.acm.events.PCMS;
 
 import ru.ifmo.acm.events.RunInfo;
+import ru.ifmo.acm.events.SmallTeamInfo;
 
 public class PCMSRunInfo implements RunInfo {
     PCMSRunInfo() {
@@ -51,6 +52,10 @@ public class PCMSRunInfo implements RunInfo {
     public int getTeam() {
         throw new AssertionError("getTeam function on PCMSRunInfo is not implemented");
         //return 0;
+    }
+
+    public SmallTeamInfo getTeamInfoBefore() {
+        return null;
     }
 
     protected boolean judged;

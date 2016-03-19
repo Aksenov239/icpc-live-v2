@@ -320,6 +320,9 @@ public class WFEventsLoader extends EventsLoader {
                                 System.err.println("new run: " + (int) (run.getTime() / 60) + " " + run.getTeam() + " "
                                         + (char) ('A' + run.getProblemNumber()) + " " + run.getResult());
                                 if (run.getTime() <= 4 * 60 * 60 * 1000 || run.getResult().length() == 0) {
+                                    if (contestInfo.runExists(run.getId())) {
+                                        run.setTeamInfoBefore(contestInfo.getParticipant(run.getTeam()).getSmallTeamInfo());
+                                    }
                                     contestInfo.addRun(run);
                                     if (run.getTime() > contestInfo.getCurrentTime() / 1000 - 600) {
                                         contestInfo.recalcStandings();

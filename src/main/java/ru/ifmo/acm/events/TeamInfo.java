@@ -23,6 +23,10 @@ public interface TeamInfo {
 
     List<RunInfo>[] getRuns();
 
+    default SmallTeamInfo getSmallTeamInfo() {
+        return new SmallTeamInfo(getRank(), getSolvedProblemsNumber(), getPenalty());
+    }
+
     default String getShortProblemState(int problem) {
         List<RunInfo> runs = getRuns()[problem];
         synchronized (runs) {
