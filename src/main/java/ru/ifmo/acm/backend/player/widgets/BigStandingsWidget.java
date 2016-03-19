@@ -262,8 +262,10 @@ public class BigStandingsWidget extends Widget {
         int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / problemsNumber - plateWidth * SPLIT_WIDTH);
         for (int i = 0; i < problemsNumber; i++) {
             ProblemInfo problem = contestData.problems.get(i);
+//            drawTextInRect(g, problem.letter, x, y, PROBLEM_WIDTH, (int) plateHeight,
+//                    POSITION_CENTER, problem.color, textColor(problem.color), visibilityState);
             drawTextInRect(g, problem.letter, x, y, PROBLEM_WIDTH, (int) plateHeight,
-                    POSITION_CENTER, problem.color, textColor(problem.color), visibilityState);
+                    POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
             x += (int) (plateWidth * SPLIT_WIDTH) + PROBLEM_WIDTH;
         }
     }

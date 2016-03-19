@@ -71,6 +71,7 @@ public abstract class Widget {
             paintImpl(g, width, height);
         } catch (Exception e) {
             System.err.println("Failed to paint " + this.getClass().toString());
+            e.printStackTrace();
         }
     }
 

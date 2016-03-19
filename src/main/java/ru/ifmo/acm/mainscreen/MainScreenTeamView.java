@@ -46,6 +46,16 @@ public class MainScreenTeamView extends CustomComponent implements View {
         type.setNullSelectionAllowed(false);
         type.setValue(types[0]);
 
+        /*type.addValueChangeListener(event -> {
+            if (teamSelection.getValue() == null)
+                return;
+            if (mainScreenData.teamData.isVisible() &&
+                    !mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
+                type.setValue(mainScreenData.teamData.infoType);
+                Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
+            }
+        });*/
+
         //teamSelection = new ListSelect();
         //teamSelection.addItems(mainScreenData.teamStatus.teamNames);
         //teamSelection.setNullSelectionAllowed(false);

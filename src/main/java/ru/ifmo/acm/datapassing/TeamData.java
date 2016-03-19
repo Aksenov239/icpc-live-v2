@@ -39,7 +39,7 @@ public class TeamData implements CachedData {
             if (teamInfo == null) {
                 return false;
             }
-            if ((teamInfo.getId() == teamId
+            if (((teamInfo.getId() == teamId && infoType.equals(type))
                     || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible) {
                 return false;
             }

@@ -51,14 +51,16 @@ public class TickPlayer {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-                    if (screenNumber >= 0)
-                        screenDevices[screenNumber].setFullScreenWindow(null);
+//                    if (screenNumber >= 0)
+//                        screenDevices[screenNumber].setFullScreenWindow(null);
                     screenNumber++;
                     if (screenNumber == screenDevices.length) {
-                        screenNumber = -1;
+                        screenNumber = 0;
                     }
+                    Rectangle bounds = screenDevices[screenNumber].getDefaultConfiguration().getBounds();
                     if (screenNumber >= 0)
-                        screenDevices[screenNumber].setFullScreenWindow(frame);
+//                        screenDevices[screenNumber].setFullScreenWindow(frame);
+                        frame.setLocation(bounds.x, bounds.y);
                 }
             }
         });

@@ -23,6 +23,7 @@ public class TeamInfoWidget extends TeamWidget {
 
     private long updateWait;
     private long lastUpdate;
+    private String currentInfoType;
 
     public void update() {
         if (lastUpdate + updateWait < System.currentTimeMillis()) {
@@ -40,7 +41,7 @@ public class TeamInfoWidget extends TeamWidget {
             } else {
                 setVisible(true);
                 //System.err.println(data.teamData.teamId + " " + teamId + " " + ready.get());
-                if (data.teamData.getTeamId() != teamId && ready.get()) {
+                if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready.get()) {
                     //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                     TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                     if (team == null) {
@@ -58,6 +59,7 @@ public class TeamInfoWidget extends TeamWidget {
                         change(String.format(urlTemplates.get(data.teamData.infoType), team.getId() + 1));
                     }
                     teamId = data.teamData.getTeamId();
+                    currentInfoType = data.teamData.infoType;
                 }
             }
 
