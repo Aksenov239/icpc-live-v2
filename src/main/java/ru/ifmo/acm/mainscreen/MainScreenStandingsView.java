@@ -35,7 +35,10 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
     public Component getStandingsTypeController() {
         standingsOptimismLevel = new OptionGroup("Standings type");
-        standingsOptimismLevel.addItems("Normal", "Optimistic", "Pessimistic");
+        for (StandingsData.OptimismLevel type: StandingsData.OptimismLevel.values()) {
+            standingsOptimismLevel.addItem(type);
+        }
+        standingsOptimismLevel.setValue(StandingsData.OptimismLevel.NORMAL);
         VerticalLayout panel = new VerticalLayout(standingsOptimismLevel);
         setPanelDefaults(panel);
 
@@ -102,7 +105,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
                 Notification.show("You should hide standings first", Notification.Type.WARNING_MESSAGE);
                 return;
             }
-            String optimismLevel = (String) standingsOptimismLevel.getValue();
+            String optimismLevel = standingsOptimismLevel.getValue().toString();
 
             mainScreenData.standingsData.setStandingsVisible(visible, type, isBig, StandingsData.OptimismLevel.valueOf(optimismLevel.toUpperCase()));
             standingsStatus.setValue(getStandingsStatus());

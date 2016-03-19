@@ -58,7 +58,7 @@ public class Main {
         generator.addWidget(new StandingsWidget(updateWait));
         generator.addWidget(new QueueWidget(100));
         generator.addWidget(new BigStandingsWidget(64, 64,
-                Widget.BASE_WIDTH - 128, Widget.BASE_HEIGHT - 128, updateWait, false));
+                Widget.BASE_WIDTH - 128, Widget.BASE_HEIGHT - 128, updateWait, true));
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 

@@ -1,5 +1,6 @@
 package ru.ifmo.acm.datapassing;
 
+import ru.ifmo.acm.backend.player.widgets.BigStandingsWidget;
 import ru.ifmo.acm.backend.player.widgets.StandingsWidget;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
@@ -24,7 +25,7 @@ public class StandingsData implements CachedData {
 
         long time = standingsType == StandingsType.ONE_PAGE
                 ? (System.currentTimeMillis() - timestamp) / 1000
-                : (timestamp + getTotalTime(standingsType) - System.currentTimeMillis()) / 1000;
+                : (timestamp + getTotalTime(isBig, standingsType) - System.currentTimeMillis()) / 1000;
         return String.format(standingsType.label, time) + ". " +
                 optimismLevel.toString() +
                 (isBig() ? " big standings are shown" : " compact standings are shown");
@@ -50,8 +51,10 @@ public class StandingsData implements CachedData {
         recache();
     }
 
-    public static long getTotalTime(StandingsType type) {
-        return StandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
+    public static long getTotalTime(boolean isBig, StandingsType type) {
+        return isBig ?
+                BigStandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency :
+                StandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
     }
 
     public void update() {
@@ -59,7 +62,7 @@ public class StandingsData implements CachedData {
         synchronized (standingsLock) {
             //System.err.println(PCMSEventsLoader.getInstance().getContestData().getTeamsNumber());
             if (System.currentTimeMillis() > timestamp +
-                    getTotalTime(standingsType)) {
+                    getTotalTime(isBig, standingsType)) {
                 isVisible = false;
                 standingsType = StandingsType.HIDE;
                 change = true;

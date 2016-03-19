@@ -71,7 +71,7 @@ public class BigStandingsWidget extends Widget {
     public void setState(StandingsData.StandingsType type) {
         switch (type) {
             case ONE_PAGE:
-                length = Math.min(12, contestData.getTeamsNumber());
+                length = Math.min(16, contestData.getTeamsNumber());
                 start = 0;
                 timer = -Integer.MAX_VALUE;
                 break;
@@ -79,7 +79,7 @@ public class BigStandingsWidget extends Widget {
                 TOP_PAGE_STANDING_TIME = 10000;
                 STANDING_TIME = 10000;
                 PERIOD = STANDING_TIME + MOVING_TIME;
-                length = Math.min(24, contestData.getTeamsNumber());
+                length = Math.min(32, contestData.getTeamsNumber());
                 start = 0;
                 timer = 0;
                 break;
@@ -94,28 +94,34 @@ public class BigStandingsWidget extends Widget {
         setVisible(true);
     }
 
-    public static long totalTime(long type, int teamNumber) {
+    public static long totalTime(StandingsData.StandingsType type, int teamNumber) {
         int pages = teamNumber / TEAMS_ON_PAGE;
-        if (type == 0) {
-            return Integer.MAX_VALUE;
-        } else if (type == 1) {
-            return 2 * STANDING_TIME + MOVING_TIME;
-        } else {
-            return (pages - 1) * (STANDING_TIME + MOVING_TIME) + TOP_PAGE_STANDING_TIME;
+        switch (type) {
+            case ONE_PAGE:
+                return Integer.MAX_VALUE;
+            case TWO_PAGES:
+                return TOP_PAGE_STANDING_TIME + STANDING_TIME + MOVING_TIME;
+            default:
+                return (pages - 1) * (STANDING_TIME + MOVING_TIME) + TOP_PAGE_STANDING_TIME;
         }
     }
 
+    private long lastChange;
+
     protected void updateImpl(Data data) {
+//        System.err.println("UPDATE " + data.standingsData.isStandingsVisible() + " " + data.standingsData.isBig());
         if (data.standingsData.isStandingsVisible() && data.standingsData.isBig()) {
-            if (!isVisible() && contestData != null) {
-                //  lastVisibleChange = System.currentTimeMillis();
-                setState(data.standingsData.getStandingsType());
+            if (lastChange != data.standingsData.getStandingsTimestamp()) {
+                if (!isVisible()) {
+                    //  lastVisibleChange = System.currentTimeMillis();
+                    setState(data.standingsData.getStandingsType());
+                }
             }
         } else {
             setVisible(false);
         }
+        lastChange = data.standingsData.getStandingsTimestamp();
         optimismLevel = data.standingsData.optimismLevel;
-        lastUpdate = System.currentTimeMillis();
     }
 
     double[] currentTeamPositions;
@@ -123,20 +129,23 @@ public class BigStandingsWidget extends Widget {
 
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
-        if (controlled) {
-            update();
-        }
-        if (!isVisible()) {
-            return;
-        }
-
-        g = (Graphics2D) g.create();
-        g.translate(baseX, baseY);
-        g.clip(new Rectangle(-10, 0, totalWidth + 10, totalHeight));
         contestData = Preparation.eventsLoader.getContestData();
         if (contestData == null) {
             return;
         }
+
+        if (controlled) {
+            update();
+        }
+
+        int dt = updateVisibilityState();
+
+        if (!isVisible() && visibilityState == 0)
+            return;
+
+        g = (Graphics2D) g.create();
+        g.translate(baseX, baseY);
+        g.clip(new Rectangle(-10, 0, totalWidth + 10, totalHeight));
         TeamInfo[] standings;
         if (contestData instanceof WFContestInfo) {
             standings = ((WFContestInfo) contestData).getStandings(optimismLevel);
@@ -161,13 +170,14 @@ public class BigStandingsWidget extends Widget {
             currentTeamPositions = desiredTeamPositions.clone();
         }
 
-        int dt = updateVisibilityState();
         if (visibilityState > 0) {
             if (isVisible()) {
                 timer = timer + dt;
                 if (timer >= PERIOD) {
                     timer -= PERIOD;
+//                    System.err.println("Old: " + start);
                     start += TEAMS_ON_PAGE;
+//                    System.err.println("New: " + start);
                     if (start >= length && !controlled) {
                         start = 0;
                         timer = -TOP_PAGE_STANDING_TIME + STANDING_TIME;
@@ -176,7 +186,8 @@ public class BigStandingsWidget extends Widget {
             }
             double start = this.start;
             if (timer >= STANDING_TIME) {
-                if (start + TEAMS_ON_PAGE > length + 0.1 && controlled) {
+//                System.err.println(start + " " + length);
+                if (start + TEAMS_ON_PAGE >= length && controlled) {
                     setVisible(false);
                 } else {
                     double t = (timer - STANDING_TIME) * 1.0 / MOVING_TIME;
