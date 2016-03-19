@@ -59,6 +59,7 @@ public class ClockWidget extends Widget {
         if (time > 5 * 60 * 60) {
             time = 5 * 60 * 60;
         }
+        time = Math.abs(time);
         int h = (int) (time / 3600);
         int m = (int) (time % 3600 / 60);
         int s = (int) (time % 60);

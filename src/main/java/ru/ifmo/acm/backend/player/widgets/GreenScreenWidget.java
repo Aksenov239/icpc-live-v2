@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
  * @author: pashka
  */
 public class GreenScreenWidget extends Widget {
-    private final Color color = new Color(70, 100, 70);
+    private final Color color = new Color(255, 0, 255);
 
     public GreenScreenWidget(boolean isVisible) {
         setVisible(isVisible);

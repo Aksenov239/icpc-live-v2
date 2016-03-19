@@ -1,10 +1,13 @@
 package ru.ifmo.acm.events;
 
+import java.util.List;
+
 public abstract class ContestInfo {
     public int teamNumber;
     public int problemNumber = 0;
     protected long startTime = 0;
     protected final long totalTime = 0;
+    public List<ProblemInfo> problems;
 
     protected ContestInfo() {}
 
@@ -41,4 +44,6 @@ public abstract class ContestInfo {
     public abstract long[] firstTimeSolved();
     
     public abstract RunInfo[] getRuns();
+
+
 }

@@ -4,6 +4,7 @@ import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
+import ru.ifmo.acm.events.ProblemInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
 
@@ -249,26 +250,20 @@ public class BigStandingsWidget extends Widget {
         x += (int) (plateWidth * (RANK_WIDTH + NAME_WIDTH + 2 * SPLIT_WIDTH));
         int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / problemsNumber - plateWidth * SPLIT_WIDTH);
         for (int i = 0; i < problemsNumber; i++) {
-            drawTextInRect(g, "" + (char) ('A' + i), x, y, PROBLEM_WIDTH, (int) plateHeight,
-                    POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
+            ProblemInfo problem = contestData.problems.get(i);
+            drawTextInRect(g, problem.letter, x, y, PROBLEM_WIDTH, (int) plateHeight,
+                    POSITION_CENTER, problem.color, textColor(problem.color), visibilityState);
             x += (int) (plateWidth * SPLIT_WIDTH) + PROBLEM_WIDTH;
         }
     }
 
-    private String getShortName(Graphics2D g, String fullName) {
-        int fullWidth = g.getFontMetrics(font).stringWidth(fullName);
-        double limit = NAME_WIDTH * plateWidth / 1.05;
-        if (fullWidth <= limit) {
-            return fullName;
+    private Color textColor(Color color) {
+        double c = (0.299*color.getRed() + 0.587*color.getGreen() + 0.114*color.getBlue());
+        if (c > 200) {
+            return Color.black;
+        } else {
+            return Color.white;
         }
-        for (int i = fullName.length() - 1; i >= 0; i--) {
-            String currentName = fullName.substring(0, i) + "...";
-            int currentWidth = g.getFontMetrics(font).stringWidth(currentName);
-            if (currentWidth <= limit) {
-                return currentName;
-            }
-        }
-        return "";
     }
 
     private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y, boolean bright) {
@@ -284,7 +279,7 @@ public class BigStandingsWidget extends Widget {
 
         x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
 
-        String name = getShortName(g, team.getShortName());
+        String name = team.getShortName();//getShortName(g, team.getShortName());
         drawTextInRect(g, name, x, y,
                 (int) (plateWidth * NAME_WIDTH), (int) plateHeight, POSITION_LEFT,
                 mainColor, Color.white, visibilityState);

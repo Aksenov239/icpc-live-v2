@@ -31,7 +31,7 @@ public class MainScreenProperties {
         contestInfo = loader.getContestData();
 
         TeamInfo[] teamInfos = contestInfo.getStandings();
-        teamNames = new String[teamInfos.length];
+        teamNames = new String[contestInfo.getTeamsNumber()];
         int l = 0;
         for (int i = 0; i < teamNames.length; i++) {
             if (teamInfos[i] instanceof PCMSTeamInfo) {
