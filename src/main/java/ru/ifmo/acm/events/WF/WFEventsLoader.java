@@ -3,6 +3,7 @@ package ru.ifmo.acm.events.WF;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
+import ru.ifmo.acm.events.ProblemInfo;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -10,8 +11,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import java.awt.*;
 import java.util.*;
 import java.io.*;
+import java.util.List;
 
 /**
  * Created by aksenov on 16.04.2015.
@@ -51,13 +54,32 @@ public class WFEventsLoader extends EventsLoader {
         return contestInfo;
     }
 
-    private int problemsInfoRead() throws IOException {
+    private List<ProblemInfo> problemsInfoRead() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(Preparation.openAuthorizedStream(problemsInfoURL, login, password)));
-        int problems = 0;
         String line;
+        List<ProblemInfo> problems = new ArrayList<>();
+        ProblemInfo problem = null;
         while ((line = br.readLine()) != null) {
-            if (line.contains("letter")) {
-                problems++;
+            line = line.trim();
+            if (line.startsWith("-")) {
+                problem = new ProblemInfo();
+                problems.add(problem);
+                line = line.substring(1).trim();
+            }
+            if (line.contains(":")) {
+                String parameter = line.substring(0, line.indexOf(":"));
+                String val = line.substring(line.indexOf(":") + 1).trim();
+                switch (parameter) {
+                    case "letter":
+                        problem.letter = val;
+                        break;
+                    case "short-name":
+                        problem.name = val;
+                        break;
+                    case "rgb":
+                        problem.color = Color.decode(val.substring(1, 8));
+                        break;
+                }
             }
         }
         return problems;
@@ -82,10 +104,12 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     private void initialize() throws IOException {
-        int problemsNumber = problemsInfoRead();
+        List<ProblemInfo> problems = problemsInfoRead();
+        int problemsNumber = problems.size();
         WFTeamInfo[] teams = teamsInfoRead(problemsNumber);
         System.err.println(problemsNumber + " " + teams.length);
         contestInfo = new WFContestInfo(problemsNumber, teams.length);
+        contestInfo.problems = problems;
         for (WFTeamInfo team : teams) {
             contestInfo.addTeam(team);
         }

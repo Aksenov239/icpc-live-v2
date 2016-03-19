@@ -27,7 +27,7 @@ public class TeamInfoWidget extends TeamWidget {
     public void update() {
         if (lastUpdate + updateWait < System.currentTimeMillis()) {
             Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null) {
+            if (data == null || data.teamData == null) {
                 return;
             }
 

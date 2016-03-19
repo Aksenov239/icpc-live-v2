@@ -60,13 +60,18 @@ public abstract class Widget {
     protected abstract void paintImpl(Graphics2D g, int width, int height);
 
     public void paint(Graphics2D g, int width, int height, double scale) {
+        if (Preparation.eventsLoader.getContestData() == null) return;
         if (scale != 1) {
             g = (Graphics2D) g.create();
             g.scale(scale, scale);
             width = (int) Math.round(width / scale);
             height = (int) Math.round(height / scale);
         }
-        paintImpl(g, width, height);
+        try {
+            paintImpl(g, width, height);
+        } catch (Exception e) {
+            System.err.println("Failed to paint " + this.getClass().toString());
+        }
     }
 
     private static final double V = 0.001;
