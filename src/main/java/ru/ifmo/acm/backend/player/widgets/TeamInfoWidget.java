@@ -54,8 +54,8 @@ public class TeamInfoWidget extends TeamWidget {
                         System.err.println("change " + hall + " " + place);
                         change(String.format(urlTemplates.get(data.teamData.infoType), hall, place));
                     } else if (team instanceof WFTeamInfo) {
-                        System.err.println("change " + team.getId());
-                        change(String.format(urlTemplates.get(data.teamData.infoType), team.getId()));
+                        System.err.println("change " + (team.getId() + 1));
+                        change(String.format(urlTemplates.get(data.teamData.infoType), team.getId() + 1));
                     }
                     teamId = data.teamData.getTeamId();
                 }
