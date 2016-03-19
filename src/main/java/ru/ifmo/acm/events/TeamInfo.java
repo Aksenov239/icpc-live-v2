@@ -24,7 +24,7 @@ public interface TeamInfo {
     List<RunInfo>[] getRuns();
 
     default SmallTeamInfo getSmallTeamInfo() {
-        return new SmallTeamInfo(getRank(), getSolvedProblemsNumber(), getPenalty());
+        return new SmallTeamInfo(this);
     }
 
     default String getShortProblemState(int problem) {
