@@ -92,7 +92,7 @@ public class PCMSTeamInfo implements TeamInfo {
         return problemRuns;
     }
 
-    public int getLastAccepted() {
+    public long getLastAccepted() {
         return 0;
     }
 

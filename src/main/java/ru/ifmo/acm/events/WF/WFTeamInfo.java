@@ -19,7 +19,7 @@ public class WFTeamInfo implements TeamInfo {
 
     public int solved;
     public int penalty;
-    public int lastAccepted;
+    public long lastAccepted;
     public String region;
 
     public String shortName;
@@ -77,7 +77,7 @@ public class WFTeamInfo implements TeamInfo {
         return problem_runs;
     }
 
-    public int getLastAccepted() {
+    public long getLastAccepted() {
         return lastAccepted;
     }
 

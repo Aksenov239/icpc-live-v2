@@ -86,7 +86,8 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     private WFTeamInfo[] teamsInfoRead(int problemsNumber) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(Preparation.openAuthorizedStream(teamsInfoURL, login, password)));
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(Preparation.openAuthorizedStream(teamsInfoURL, login, password), "utf8"));
         ArrayList<WFTeamInfo> infos = new ArrayList<>();
         String line;
         while ((line = br.readLine()) != null) {
