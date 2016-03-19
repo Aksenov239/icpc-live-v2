@@ -48,7 +48,7 @@ public class WFContestInfo extends ContestInfo {
 						team.solved++;
 						int time = (int) (wfrun.getTime() / 60 / 1000);
 						team.penalty += wrong * 20 + time;
-						team.lastAccepted = Math.max(team.lastAccepted, time);
+						team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
 						timeFirstSolved[j] = Math.min(timeFirstSolved[j], wfrun.getTime());
 						break;
 					} else if (wfrun.getResult().length() > 0) {

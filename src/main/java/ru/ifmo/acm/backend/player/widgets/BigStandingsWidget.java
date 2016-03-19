@@ -286,9 +286,10 @@ public class BigStandingsWidget extends Widget {
 
         Font font = this.font;
         g.setFont(font);
+        Color color = team.getRank() <= 4 ? GOLD_COLOR : team.getRank() <= 8 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
                 (int) (plateWidth * RANK_WIDTH), (int) plateHeight, POSITION_CENTER,
-                ACCENT_COLOR, Color.white, visibilityState);
+                color, Color.white, visibilityState);
 
         x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
 

@@ -19,7 +19,7 @@ public interface TeamInfo {
 
     int getSolvedProblemsNumber();
 
-    int getLastAccepted();
+    long getLastAccepted();
 
     List<RunInfo>[] getRuns();
 
@@ -55,7 +55,7 @@ public interface TeamInfo {
             if (o1.getPenalty() != o2.getPenalty()) {
                 return Integer.compare(o1.getPenalty(), o2.getPenalty());
             }
-            return Integer.compare(o1.getLastAccepted(), o2.getLastAccepted());
+            return Long.compare(o1.getLastAccepted(), o2.getLastAccepted());
         }
     };
 
