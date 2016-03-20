@@ -64,17 +64,20 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         isLive = new CheckBox("Is live");
         isLive.addValueChangeListener(event -> {
-            types.setValue(isLive.getValue() ? null: TeamWidget.types[0]);
-            for (String type : TeamWidget.types) {
-                types.setItemEnabled(type, isLive.isEmpty());
-            }
+            //types.setValue(isLive.getValue() ? null: TeamWidget.types[0]);
+//            for (String type : TeamWidget.types) {
+//                types.setItemEnabled(type, !isLive.getValue());
+//            }
+            types.setEnabled(isLive.getValue());
             breakingNewsStatus.setValue(getBreakingNewsStatus());
         });
+        isLive.setValue(false);
 
         types = new OptionGroup();
         types.addItems(TeamWidget.types);
         types.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         types.setValue(TeamWidget.types[0]);
+        types.setEnabled(false);
 
         team = new TextField("Team: ");
         team.setSizeFull();
@@ -85,7 +88,12 @@ public class MainScreenStandingsView extends CustomComponent implements View {
                 Notification.show("Team field requires team id and problem id");
             } else {
                 if (!mainScreenData.breakingNewsData.setNewsVisible(true, (String) types.getValue(), isLive.getValue(), team.getValue())) {
-                    Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
+                    Notification.show(
+                            String.format("You need to wait while current breaking news is shown"),
+                            Notification.Type.WARNING_MESSAGE
+                    );
+                } else {
+                    team.clear();
                 }
                 breakingNewsStatus.setValue(getBreakingNewsStatus());
             }

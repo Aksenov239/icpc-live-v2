@@ -4,6 +4,7 @@ import ru.ifmo.acm.backend.player.widgets.BigStandingsWidget;
 import ru.ifmo.acm.backend.player.widgets.StandingsWidget;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
+import ru.ifmo.acm.mainscreen.MainScreenProperties;
 
 public class StandingsData implements CachedData {
     @Override
@@ -31,10 +32,6 @@ public class StandingsData implements CachedData {
                 (isBig() ? " big standings are shown" : " compact standings are shown");
     }
 
-    public long getLatency() {
-        return latency;
-    }
-
     public void recache() {
         Data.cache.refresh(StandingsData.class);
     }
@@ -53,8 +50,8 @@ public class StandingsData implements CachedData {
 
     public static long getTotalTime(boolean isBig, StandingsType type) {
         return isBig ?
-                BigStandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency :
-                StandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + latency;
+                BigStandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + MainScreenData.getProperties().latency :
+                StandingsWidget.totalTime(type, EventsLoader.getInstance().getContestData().getTeamsNumber()) + MainScreenData.getProperties().latency;
     }
 
     public void update() {
@@ -97,8 +94,6 @@ public class StandingsData implements CachedData {
     public StandingsType standingsType = StandingsType.HIDE;
     public boolean isBig;
     public OptimismLevel optimismLevel = OptimismLevel.NORMAL;
-
-    public static long latency;
 
     final private Object standingsLock = new Object();
 

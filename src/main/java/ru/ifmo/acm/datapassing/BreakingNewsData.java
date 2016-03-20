@@ -11,6 +11,10 @@ public class BreakingNewsData implements CachedData {
         BreakingNewsData data = MainScreenData.getMainScreenData().breakingNewsData;
         this.timestamp = data.timestamp;
         this.isVisible = data.isVisible;
+        this.isLive = data.isLive;
+        this.teamId = data.teamId;
+        this.problemId = data.problemId;
+        this.infoType = data.infoType;
         return this;
     }
 
@@ -19,16 +23,17 @@ public class BreakingNewsData implements CachedData {
     }
 
     public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String info) {
+        if (visible && isVisible) {
+            return false;
+        }
+
         this.isVisible = visible;
 
         if (visible) {
             String[] zz = info.split(" ");
-            int teamId = Integer.parseInt(zz[0]);
+            int teamId = Integer.parseInt(zz[0]) - 1;
             int problemId = zz[1].charAt(0) - 'A';
 
-            if (timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis() && isVisible) {
-                return false;
-            }
             TeamInfo teamInfo = MainScreenData.getProperties().contestInfo.getParticipant(teamId);
             this.teamId = teamId;
             this.problemId = problemId;
@@ -47,7 +52,8 @@ public class BreakingNewsData implements CachedData {
         synchronized (breakingNewsLock) {
             //System.err.println(PCMSEventsLoader.getInstance().getContestData().getTeamsNumber());
             if (System.currentTimeMillis() > timestamp +
-                    MainScreenData.getProperties().breakingNewsTimeToShow) {
+                    MainScreenData.getProperties().breakingNewsTimeToShow +
+                    MainScreenData.getProperties().sleepTime) {
                 isVisible = false;
                 change = true;
             }
@@ -62,12 +68,14 @@ public class BreakingNewsData implements CachedData {
 
     public String getStatus() {
         if (isVisible) {
-            String status = "Breaking news (%s) are shown for team %d and problem %c for %d seconds";
+            String status = "Breaking news (%s) are shown for team %s and problem %c for %d seconds";
 
-            long time = (timestamp + MainScreenData.getProperties().breakingNewsTimeToShow - System.currentTimeMillis()) / 1000;
-            String type = isLive ? "Live" : infoType;
+            long time = (timestamp + MainScreenData.getProperties().breakingNewsTimeToShow
+                    + MainScreenData.getProperties().sleepTime
+                    - System.currentTimeMillis()) / 1000;
+            String type = isLive ? infoType : "record";
 
-            return String.format(status, type, teamId, (char)('A' + problemId), time);
+            return String.format(status, type, teamName, (char) ('A' + problemId), time);
         } else {
             return "Breaking news aren't shown";
         }

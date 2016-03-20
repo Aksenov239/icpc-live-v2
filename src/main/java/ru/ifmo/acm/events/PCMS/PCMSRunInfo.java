@@ -24,6 +24,10 @@ public class PCMSRunInfo implements RunInfo {
         this.firstToSolve = firstToSolve;
     }
 
+    public int getId() {
+        throw new AssertionError("PCMSRunInfo doesn't have id");
+    }
+
     public boolean isAccepted() {
         return "AC".equals(result);
     }

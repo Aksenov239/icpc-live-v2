@@ -75,7 +75,7 @@ public abstract class Widget {
         }
     }
 
-    private static final double V = 0.001;
+    protected static final double V = 0.001;
 
     protected int updateVisibilityState() {
         long time = System.currentTimeMillis();
@@ -96,6 +96,14 @@ public abstract class Widget {
         this.visibilityState = visibilityState;
         opacity = f(visibilityState * 2);
         textOpacity = f(visibilityState * 2 - 1);
+    }
+
+    public double getOpacity(double visibilityState) {
+        return f(visibilityState * 2);
+    }
+
+    public double getTextOpacity(double visibilityState) {
+        return f(visibilityState * 2 - 1);
     }
 
     protected double f(double x) {
@@ -146,8 +154,10 @@ public abstract class Widget {
     static final int POSITION_RIGHT = 1;
     static final int POSITION_CENTER = 2;
 
-    void drawTextInRect(Graphics2D g, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double state) {
-        setVisibilityState(state);
+    void drawTextInRect(Graphics2D g, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
+        //setVisibilityState(state);
+        double opacity = getOpacity(visibilityState);
+        double textOpacity = getTextOpacity(visibilityState);
         if (text == null) {
             text = "NULL";
         }

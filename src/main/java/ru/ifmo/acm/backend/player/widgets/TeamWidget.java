@@ -27,6 +27,9 @@ public class TeamWidget extends VideoWidget {
                 String url = properties.getProperty("info." + types[i], "");
                 urlTemplates.put(types[i], url);
             }
+            if (properties.get("info.record") != null) {
+                urlTemplates.put("record", properties.getProperty("info.record"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -194,5 +197,9 @@ public class TeamWidget extends VideoWidget {
             return String.format(urlTemplates.get(infoType), team.getId() + 1);
         }
         return null;
+    }
+
+    public static String getUrl(RunInfo run) {
+        return String.format(urlTemplates.get("record"), run.getId());
     }
 }

@@ -19,12 +19,13 @@ public class BreakingNewsWidget extends VideoWidget {
     private final int PLATE_WIDTH;
     private final int GAP;
 
-    public BreakingNewsWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime, int duration) {
+    public BreakingNewsWidget(long updateWait, int x, int y, int width, int height, double aspectRatio, int sleepTime, int duration) {
         super(x, y, width, (int) (height / aspectRatio), sleepTime, 0);
+        this.updateWait = updateWait;
         wVideo = width;
-        hVideo = (int) (height / aspectRatio);
+        hVideo = (int) (width / aspectRatio);
 
-        PLATE_WIDTH = (int) (1.5 * width);
+        PLATE_WIDTH = (int) (1.2 * width);
         GAP = (int) (0.05 * hVideo);
 
         this.x = x;
@@ -52,13 +53,19 @@ public class BreakingNewsWidget extends VideoWidget {
             }
             if (isVisible())
                 return;
-            setVisible(true);
 
             int teamId = data.breakingNewsData.teamId;
             int problemId = data.breakingNewsData.problemId;
 
-            team = Preparation.eventsLoader.getContestData().getParticipant(teamId).getSmallTeamInfo();
+            System.err.println("Get request for " + teamId + " " + problemId);
+
+            team = Preparation.eventsLoader.getContestData().getParticipant(teamId);
             java.util.List<RunInfo> runs = team.getRuns()[problemId];
+
+            if (runs.size() == 0) {
+                System.err.println("Team " + teamId + " has no submit for problem " + problemId);
+                return;
+            }
             run = runs.get(runs.size() - 1);
             for (RunInfo run1 : runs) {
                 if (run1.isAccepted()) {
@@ -70,8 +77,10 @@ public class BreakingNewsWidget extends VideoWidget {
             if (data.breakingNewsData.isLive) {
                 url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
             } else {
-                url = run.toString();
+                url = TeamWidget.getUrl(run);
             }
+
+            System.err.println("Change to " + url);
 
             change(url);
             isLive = data.breakingNewsData.isLive;
@@ -89,37 +98,69 @@ public class BreakingNewsWidget extends VideoWidget {
             }
             caption += " problem " + (char) ('A' + problemId);
 
+            System.err.println("Caption: " + caption);
+
             currentShow = run.getTeamInfoBefore();
             timer = 0;
+            rankState = 0;
+            visibilityState = 0;
+            setVisible(true);
         }
 
         lastUpdate = System.currentTimeMillis();
     }
 
+    private double localVisibility;
+    private int rankState;
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
 
-        if (visibilityState == 0) {
+        int dt = updateVisibilityState();
+
+        if (visibilityState == 0 && !isVisible()) {
             stop();
             return;
         }
-        int dt = updateVisibilityState();
 
-        timer += dt;
-
-        if (timer > duration / 2) {
-            currentShow = team;
+        if (!ready.get()) {
+            return;
         }
 
-        if (run == null || URL.get() == null) {
+        timer += dt;
+        System.err.println(localVisibility + " " + visibilityState + " " + isVisible());
+        if (rankState == 0) {
+            setVisibilityState(0);
+            rankState = 1;
+        }
+        if (timer > duration / 2 - 1000 && rankState == 1) {
+            rankState = 2;
+            localVisibility = 1;
+        }
+        if (rankState == 2) {
+            localVisibility -= dt * V;
+            localVisibility = Math.max(localVisibility, 0);
+            if (localVisibility == 0) {
+                rankState = 3;
+            }
+        }
+        if (rankState == 3) {
+            localVisibility += dt * V;
+            localVisibility = Math.min(localVisibility, 1);
+            currentShow = team;
+            if (localVisibility == 1) {
+                rankState = 4;
+            }
+        }
+
+        if (run == null || URL.get() != null) {
             int hh = (int) (hVideo * opacity);
             g.drawImage(image.get(), x, y + (hVideo - hh) / 2, wVideo, hh, null);
         }
 
         int y = this.y + hVideo + GAP;
         int x = this.x + (wVideo - PLATE_WIDTH) / 2;
-        drawTeamPane(g, currentShow, x, y + hVideo, PLATE_WIDTH, visibilityState);
+        drawTeamPane(g, currentShow, x, y, PLATE_WIDTH, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
         drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_WIDTH / 10,
                 POSITION_RIGHT, ACCENT_COLOR, Color.white, visibilityState);
     }

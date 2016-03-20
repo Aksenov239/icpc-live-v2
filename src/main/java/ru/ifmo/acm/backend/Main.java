@@ -59,6 +59,16 @@ public class Main {
         generator.addWidget(new QueueWidget(100));
         generator.addWidget(new BigStandingsWidget(64, 64,
                 Widget.BASE_WIDTH - 128, Widget.BASE_HEIGHT - 128, updateWait, true));
+        generator.addWidget(new BreakingNewsWidget(
+                updateWait,
+                (int)(Widget.BASE_WIDTH * 0.65),
+                (int)(Widget.BASE_HEIGHT * 0.6),
+                (int)(Widget.BASE_WIDTH * 0.3),
+                (int)(Widget.BASE_HEIGHT * 0.2),
+                16. / 9,
+                Integer.parseInt(properties.getProperty("sleep.time")),
+                Integer.parseInt(properties.getProperty("breakingnews.time"))
+        ));
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 

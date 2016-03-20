@@ -27,6 +27,9 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:sources:1.0.0.GA" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:vaadin-themes:7.5.9" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-core:4.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-stream:4.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-async:4.0.4" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />
     <orderEntry type="library" name="Maven: org.imgscalr:imgscalr-lib:4.2" level="project" />
     <orderEntry type="library" name="Maven: uk.co.caprica:vlcj:3.9.0" level="project" />
