@@ -3,7 +3,6 @@ package ru.ifmo.acm.mainscreen;
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
-import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFTeamInfo;
@@ -59,6 +58,8 @@ public class MainScreenProperties {
         backupAdvertisementsFilename = properties.getProperty("backup.advertisements");
         timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time")) + latency;
         backupAdvertisements = new BackUp<>(Advertisement.class, backupAdvertisementsFilename);
+
+        breakingNewsTimeToShow = Long.parseLong(properties.getProperty("breakingnews.time")) + latency;
     }
 
     // Person
@@ -81,4 +82,7 @@ public class MainScreenProperties {
     public final String backupAdvertisementsFilename;
     public final long timeAdvertisement;
     public final BackUp<Advertisement> backupAdvertisements;
+
+    // Breaking News
+    public final long breakingNewsTimeToShow;
 }

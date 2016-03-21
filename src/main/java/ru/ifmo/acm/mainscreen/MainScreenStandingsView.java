@@ -3,6 +3,8 @@ package ru.ifmo.acm.mainscreen;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
+import ru.ifmo.acm.backend.player.widgets.TeamWidget;
 import ru.ifmo.acm.datapassing.StandingsData;
 
 import static ru.ifmo.acm.mainscreen.Utils.createGroupLayout;
@@ -34,7 +36,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     }
 
     public Component getStandingsTypeController() {
-        standingsOptimismLevel = new OptionGroup("Standings type");
+        standingsOptimismLevel = new OptionGroup();
         for (StandingsData.OptimismLevel type: StandingsData.OptimismLevel.values()) {
             standingsOptimismLevel.addItem(type);
         }
@@ -60,15 +62,64 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return button;
     }
 
+    /* Breaking news */
+    CheckBox isLive;
+    OptionGroup types;
+    TextField team;
+    Button show;
+    Button hide;
+    Label breakingNewsStatus;
+
+    public Component getBreakingNewsController() {
+        breakingNewsStatus = new Label(getBreakingNewsStatus());
+        breakingNewsStatus.addStyleName("large");
+
+        isLive = new CheckBox("Is live");
+        isLive.addValueChangeListener(event -> {
+            types.setValue(isLive.getValue() ? null: TeamWidget.types[0]);
+            for (String type : TeamWidget.types) {
+                types.setItemEnabled(type, isLive.isEmpty());
+            }
+            breakingNewsStatus.setValue(getBreakingNewsStatus());
+        });
+
+        types = new OptionGroup();
+        types.addItems(TeamWidget.types);
+        types.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+        types.setValue(TeamWidget.types[0]);
+
+        team = new TextField("Team: ");
+        team.setSizeFull();
+
+        show = new Button("Show");
+        show.addClickListener(event -> {
+            if (team.getValue().equals("")) {
+                Notification.show("Team field requires team id and problem id");
+            } else {
+                if (!mainScreenData.breakingNewsData.setNewsVisible(true, (String) types.getValue(), isLive.getValue(), team.getValue())) {
+                    Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
+                }
+                breakingNewsStatus.setValue(getBreakingNewsStatus());
+            }
+        });
+
+        hide = new Button("Hide");
+        hide.addClickListener(event -> {
+            mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), null);
+            breakingNewsStatus.setValue(getBreakingNewsStatus());
+        });
+
+        CssLayout teamLayout = createGroupLayout(team, show, hide);
+        VerticalLayout result = new VerticalLayout(breakingNewsStatus, isLive, types, teamLayout);
+        result.setSpacing(true);
+
+        setPanelDefaults(result);
+        return result;
+    }
 
     /* Standings */
     Label standingsStatus;
-    final String[] labelStatuses = new String[]{
-            "Top 1 page is shown for %d seconds",
-            "Top 2 pages are remaining for %d seconds",
-            "All pages are remaining for %d seconds",
-            "Standings aren't shown"
-    };
+
     Button standingsShowTop1;
     Button standingsShowTop2;
     Button standingsShowAll;
@@ -118,12 +169,17 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return mainScreenData.standingsData.toString();
     }
 
+    public String getBreakingNewsStatus() {
+        return mainScreenData.breakingNewsData.getStatus();
+    }
+
     /* mainscreen */
     MainScreenData mainScreenData;
 
     public void refresh() {
         clockStatus.setValue(getClockStatus());
         standingsStatus.setValue(getStandingsStatus());
+        breakingNewsStatus.setValue(getBreakingNewsStatus());
         mainScreenData.update();
     }
 
@@ -133,8 +189,9 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         Component clockController = getClockController();
         Component standingsController = getStandingsController();
         Component standingsTypeController = getStandingsTypeController();
+        Component breakingNewsController = getBreakingNewsController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsTypeController, standingsController);
+        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsTypeController, standingsController, breakingNewsController);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }
