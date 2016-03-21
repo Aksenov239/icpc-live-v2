@@ -35,18 +35,6 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return panel;
     }
 
-    public Component getStandingsTypeController() {
-        standingsOptimismLevel = new OptionGroup();
-        for (StandingsData.OptimismLevel type: StandingsData.OptimismLevel.values()) {
-            standingsOptimismLevel.addItem(type);
-        }
-        standingsOptimismLevel.setValue(StandingsData.OptimismLevel.NORMAL);
-        VerticalLayout panel = new VerticalLayout(standingsOptimismLevel);
-        setPanelDefaults(panel);
-
-        return panel;
-    }
-
     public String getClockStatus() {
         boolean status = mainScreenData.clockData.isClockVisible();
         return status ? clockStatuses[0] : clockStatuses[1];
@@ -140,9 +128,15 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         standingsShowAllBig = createStandingsControllerButton("Show all pages. Big standings", true, StandingsData.StandingsType.ALL_PAGES, true);
 
         CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig, standingsHide);
+        standingsOptimismLevel = new OptionGroup();
+        for (StandingsData.OptimismLevel type: StandingsData.OptimismLevel.values()) {
+            standingsOptimismLevel.addItem(type);
+        }
+        standingsOptimismLevel.setValue(StandingsData.OptimismLevel.NORMAL);
 
         VerticalLayout panel = new VerticalLayout(
                 standingsStatus,
+                standingsOptimismLevel,
                 group
         );
         setPanelDefaults(panel);
@@ -188,10 +182,9 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         Component clockController = getClockController();
         Component standingsController = getStandingsController();
-        Component standingsTypeController = getStandingsTypeController();
         Component breakingNewsController = getBreakingNewsController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsTypeController, standingsController, breakingNewsController);
+        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController, breakingNewsController);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }
