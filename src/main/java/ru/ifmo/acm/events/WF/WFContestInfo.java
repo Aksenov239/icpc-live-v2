@@ -16,6 +16,7 @@ public class WFContestInfo extends ContestInfo {
 	String[] languages;
 	private WFTeamInfo[] teamInfos;
 	public long[] timeFirstSolved;
+    private int maxRunId;
 
 	private WFTeamInfo[] standings = null;
 
@@ -120,10 +121,15 @@ public class WFContestInfo extends ContestInfo {
 
 	public void addRun(WFRunInfo run) {
 		if (!runExists(run.getId())) {
+            maxRunId = Math.max(maxRunId, run.getId());
 			runs[run.getId()] = run;
 			teamInfos[run.getTeam()].addRun(run, run.getProblemNumber());
 		}
 	}
+
+    public int getMaxRunId() {
+        return maxRunId;
+    }
 
 	public void addTest(WFTestCaseInfo test) {
 		System.out.println("Adding test " + test.id + " to run " + test.run);

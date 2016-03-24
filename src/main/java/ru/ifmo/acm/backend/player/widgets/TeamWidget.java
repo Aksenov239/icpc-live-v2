@@ -78,6 +78,8 @@ public class TeamWidget extends VideoWidget {
     private static final Color RED = Color.decode("0xaa0000");
     private static final Color YELLOW = new Color(250, 200, 82);//Color.decode("0x33ff00");
     protected TeamInfo team;
+    protected int currentProblemId = -1;
+    protected int nextProblemId = -1;
 
     public static final int PERIOD = 500;
 
@@ -105,11 +107,17 @@ public class TeamWidget extends VideoWidget {
         }
         if (inChange.get() || team == null) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+            currentProblemId = nextProblemId;
             inChange.set(false);
         }
+
         if (URL.get() == null || URL.get().contains("info")) {
             return;
         }
+        if (currentProblemId >= 0) {
+            drawReplay(g, x, y, this.width, this.height);
+        }
+
         g.setColor(Color.WHITE);
         g.setColor(new Color(0, 0, 30));
         g.fillRect(x, y, this.width - widthVideo, height);
@@ -148,7 +156,9 @@ public class TeamWidget extends VideoWidget {
                 Color color = run.getResult().equals("AC") ? GREEN : run.getResult().equals("") ? YELLOW : RED;
                 if (j == runs.length - 1) {
                     drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
-                            RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1);
+                            RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
+                            i == currentProblemId ? getTimeOpacity() : 1
+                    );
                     //System.err.println(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2));
@@ -183,6 +193,18 @@ public class TeamWidget extends VideoWidget {
         int h = m / 60;
         m %= 60;
         return String.format("%d:%02d", h, m);
+    }
+
+    public void change(TeamInfo team, String infoType) {
+        change(getUrl(team, infoType));
+        nextProblemId = -1;
+        teamId = team.getId();
+    }
+
+    public void change(RunInfo run) {
+        change(getUrl(run));
+        nextProblemId = run.getProblemNumber();
+        teamId = run.getTeam();
     }
 
     public static String getUrl(TeamInfo team, String infoType) {
