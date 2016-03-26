@@ -12,8 +12,8 @@ import ru.ifmo.acm.events.TeamInfo;
 public abstract class Widget {
     public final static double OPACITY = 1;
 
-    public static final int BASE_WIDTH = 1280;
-    public static final int BASE_HEIGHT = 720;
+    public static final int BASE_WIDTH = 1920;
+    public static final int BASE_HEIGHT = 1080;
 
     public static final double MARGIN = 0.3;
     private static final double MARGIN_BOTTOM = 0.25;
@@ -38,7 +38,7 @@ public abstract class Widget {
 
     // Rectangles rounding
     private static final int POINTS_IN_ROUND = 3;
-    private static final double ROUND_RADIUS = 2;
+    private static final double ROUND_RADIUS = 4;
 
     long last = 0;
     double opacity = 0;

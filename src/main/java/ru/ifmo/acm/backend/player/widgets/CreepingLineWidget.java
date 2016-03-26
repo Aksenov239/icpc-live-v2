@@ -16,10 +16,10 @@ import java.util.Set;
  */
 public class CreepingLineWidget extends Widget {
 
-    private static final double V = 0.1;
-    private double SEPARATOR = 50;
-    public int HEIGHT = 24;
-    public int MARGIN = 12;
+    private static final double V = 0.15;
+    private double SEPARATOR = 75;
+    public int HEIGHT = 36;
+    public int MARGIN = 18;
 
     Queue<String> messagesQueue = new ArrayDeque<String>(100);
     ArrayDeque<Message> messagesOnScreen = new ArrayDeque<Message>();
@@ -53,7 +53,7 @@ public class CreepingLineWidget extends Widget {
         super(updateWait);
     }
 
-    Font messageFont = Font.decode("Open Sans " + 20);
+    Font messageFont = Font.decode("Open Sans " + 30);
 
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {

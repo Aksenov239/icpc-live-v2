@@ -44,31 +44,31 @@ public class Main {
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
         generator.addWidget(new GreenScreenWidget(true));
-        generator.addWidget(new TeamInfoWidget(
-                updateWait,
-                Widget.BASE_WIDTH,
-                Widget.BASE_HEIGHT,
-                16. / 9,
-                Integer.parseInt(properties.getProperty("sleep.time"))
-        ));
+//        generator.addWidget(new TeamInfoWidget(
+//                updateWait,
+//                Widget.BASE_WIDTH,
+//                Widget.BASE_HEIGHT,
+//                16. / 9,
+//                Integer.parseInt(properties.getProperty("sleep.time"))
+//        ));
         generator.addWidget(new ClockWidget(updateWait));
         generator.addWidget(new CreepingLineWidget(updateWait));
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
         generator.addWidget(new StandingsWidget(updateWait));
         generator.addWidget(new QueueWidget(100));
-        generator.addWidget(new BigStandingsWidget(64, 64,
-                Widget.BASE_WIDTH - 128, Widget.BASE_HEIGHT - 128, updateWait, true));
-        generator.addWidget(new BreakingNewsWidget(
-                updateWait,
-                (int)(Widget.BASE_WIDTH * 0.65),
-                (int)(Widget.BASE_HEIGHT * 0.6),
-                (int)(Widget.BASE_WIDTH * 0.3),
-                (int)(Widget.BASE_HEIGHT * 0.2),
-                16. / 9,
-                Integer.parseInt(properties.getProperty("sleep.time")),
-                Integer.parseInt(properties.getProperty("breakingnews.time"))
-        ));
+        generator.addWidget(new BigStandingsWidget(529, 69,
+                1350, 39, updateWait, 20, true));
+//        generator.addWidget(new BreakingNewsWidget(
+//                updateWait,
+//                (int)(Widget.BASE_WIDTH * 0.65),
+//                (int)(Widget.BASE_HEIGHT * 0.6),
+//                (int)(Widget.BASE_WIDTH * 0.3),
+//                (int)(Widget.BASE_HEIGHT * 0.2),
+//                16. / 9,
+//                Integer.parseInt(properties.getProperty("sleep.time")),
+//                Integer.parseInt(properties.getProperty("breakingnews.time"))
+//        ));
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 

@@ -18,51 +18,66 @@ public class BigStandingsWidget extends Widget {
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
-    private static final double SPACE_VS_PLATE = 0.1;
     private static final int BIG_SPACE_COUNT = 6;
     public static int PERIOD = STANDING_TIME + MOVING_TIME;
-    public final static int TEAMS_ON_PAGE = 16;
+
+    private static final double SPACE_Y = 0.1;
+    private static final double SPACE_X = 0.1;
+    private static final double NAME_WIDTH = 6;
+    private static final double RANK_WIDTH = 1.6;
+    private static final double TOTAL_WIDTH = 1.6;
+    private static final double PENALTY_WIDTH = 2.3;
 
     private final int plateWidth;
-    private final double plateHeight;
+    private final int plateHeight;
     private final int spaceY;
     private final int spaceX;
-    private final int movingHeight;
+
+    private final int nameWidth;
+    private final int rankWidth;
+    private final int totalWidth;
+    private final int penaltyWidth;
+
     public int length;
 
     private final Font font;
 
     int timer;
     int start;
-    final int baseX, baseY, totalHeight, totalWidth;
+    final int baseX, baseY;
+    final int width;
     final boolean controlled;
+    final int teamsOnPage;
+
+
 
     private ContestInfo contestData;
 
     private StandingsData.OptimismLevel optimismLevel = StandingsData.OptimismLevel.NORMAL;
 
-    public BigStandingsWidget(int x, int y, int width, int height, long updateWait, boolean controlled) {
+    public BigStandingsWidget(int baseX, int baseY, int width, int plateHeight, long updateWait, int teamsOnPage, boolean controlled) {
         super(updateWait);
         last = System.currentTimeMillis();
-        baseX = x;
-        baseY = y;
-        totalWidth = width;
-        totalHeight = height;
+        this.baseX = baseX;
+        this.baseY = baseY;
+        this.width = width;
+        this.plateHeight = plateHeight;
+        this.teamsOnPage = teamsOnPage;
         this.controlled = controlled;
+
         if (!controlled) {
             setVisibilityState(1);
             setVisible(true);
         }
 
         plateWidth = width;
-        spaceX = 0;
-        double total = (TEAMS_ON_PAGE + 1) * (1 + SPACE_VS_PLATE) + (BIG_SPACE_COUNT - 1) * SPACE_VS_PLATE;
-        plateHeight = height / total;
-        spaceY = (int) (plateHeight * SPACE_VS_PLATE);
+        spaceX = (int) Math.round(plateHeight * SPACE_X);
+        spaceY = (int) Math.round(plateHeight * SPACE_Y);
 
-        //totalHeight = (int) plateHeight * (TEAMS_ON_PAGE + 1) + TEAMS_ON_PAGE * paceY;
-
-        movingHeight = (int) (plateHeight * ((1 + SPACE_VS_PLATE) * TEAMS_ON_PAGE + SPACE_VS_PLATE));
+        nameWidth = (int) Math.round(NAME_WIDTH * plateHeight);
+        rankWidth = (int) Math.round(RANK_WIDTH * plateHeight);
+        totalWidth = (int) Math.round(TOTAL_WIDTH * plateHeight);
+        penaltyWidth = (int) Math.round(PENALTY_WIDTH * plateHeight);
 
         this.updateWait = updateWait;
 
@@ -96,7 +111,7 @@ public class BigStandingsWidget extends Widget {
     }
 
     public static long totalTime(StandingsData.StandingsType type, int teamNumber) {
-        int pages = teamNumber / TEAMS_ON_PAGE;
+        int pages = teamNumber / 20;
         switch (type) {
             case ONE_PAGE:
                 return Integer.MAX_VALUE;
@@ -146,7 +161,7 @@ public class BigStandingsWidget extends Widget {
 
         g = (Graphics2D) g.create();
         g.translate(baseX, baseY);
-        g.clip(new Rectangle(-10, 0, totalWidth + 10, totalHeight));
+
         TeamInfo[] standings;
         if (contestData instanceof WFContestInfo) {
             standings = ((WFContestInfo) contestData).getStandings(optimismLevel);
@@ -176,9 +191,7 @@ public class BigStandingsWidget extends Widget {
                 timer = timer + dt;
                 if (timer >= PERIOD) {
                     timer -= PERIOD;
-//                    System.err.println("Old: " + start);
-                    start += TEAMS_ON_PAGE;
-//                    System.err.println("New: " + start);
+                    start += teamsOnPage;
                     if (start >= length && !controlled) {
                         start = 0;
                         timer = -TOP_PAGE_STANDING_TIME + STANDING_TIME;
@@ -187,23 +200,22 @@ public class BigStandingsWidget extends Widget {
             }
             double start = this.start;
             if (timer >= STANDING_TIME) {
-//                System.err.println(start + " " + length);
-                if (start + TEAMS_ON_PAGE >= length && controlled) {
+                if (start + teamsOnPage >= length && controlled) {
                     setVisible(false);
                 } else {
                     double t = (timer - STANDING_TIME) * 1.0 / MOVING_TIME;
-                    start -= ((2 * t * t * t - 3 * t * t) * TEAMS_ON_PAGE);
+                    start -= ((2 * t * t * t - 3 * t * t) * teamsOnPage);
                 }
             }
 
             drawHead(g, spaceX, 0, contestData.getProblemsNumber());
             g = (Graphics2D) g.create();
-            int initY = (int) (plateHeight + BIG_SPACE_COUNT * spaceY);
-            g.clip(new Rectangle(0, initY, totalWidth, totalHeight - initY));
+            int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
+            g.clip(new Rectangle(-50, initY, this.width + 50, (spaceY + plateHeight) * teamsOnPage + initY));
 
             int lastProblems = -1;
             boolean bright = true;
-            //TeamInfo[] standings = contestData.getStandings();
+
             for (int i = standings.length - 1; i >= 0; i--) {
                 TeamInfo teamInfo = standings[i];
                 if (teamInfo.getSolvedProblemsNumber() != lastProblems) {
@@ -223,50 +235,34 @@ public class BigStandingsWidget extends Widget {
                     if (currentTeamPositions[id] < start - 1 && desiredTeamPositions[id] > start - 1) {
                         currentTeamPositions[id] = start - 1;
                     }
-                    if (currentTeamPositions[id] > start + TEAMS_ON_PAGE && desiredTeamPositions[id] < start + TEAMS_ON_PAGE) {
-                        currentTeamPositions[id] = start + TEAMS_ON_PAGE;
+                    if (currentTeamPositions[id] > start + teamsOnPage && desiredTeamPositions[id] < start + teamsOnPage) {
+                        currentTeamPositions[id] = start + teamsOnPage;
                     }
                 }
                 double yy = currentTeamPositions[id] - start;
-                if (yy > -1 && yy < TEAMS_ON_PAGE) {
+                if (yy > -1 && yy < teamsOnPage) {
                     drawFullTeamPane(g, teamInfo, spaceX, initY + (int) (yy * (plateHeight + spaceY)), bright);
                 }
             }
 
-//            if (start < length) {
-//                drawTeams(g, spaceX, (int) (plateHeight + initY + currentStart), contestData, start);
-//            }
-//            if (start + TEAMS_ON_PAGE < length || !controlled) {
-//                int nextPage = start + TEAMS_ON_PAGE < length ? start + TEAMS_ON_PAGE : 0;
-//                drawTeams(g, spaceX, (int) (plateHeight + initY + currentStart + movingHeight), contestData, nextPage);
-//            }
         } else {
             timer = -TOP_PAGE_STANDING_TIME;
             start = 0;
         }
     }
 
-    private static final double SPLIT_WIDTH = 0.005;
-    private static final double RANK_WIDTH = 0.04;
-    private static final double NAME_WIDTH = 0.15;
-    private static final double TOTAL_WIDTH = 0.04;
-    private static final double PENALTY_WIDTH = 0.08;
-
     private void drawHead(Graphics2D g, int x, int y, int problemsNumber) {
         g.setFont(font);
+        int problemWidth = problemWidth(problemsNumber);
         drawTextInRect(g, "Current Standings", x, y,
-                (int) (plateWidth * (RANK_WIDTH + NAME_WIDTH + SPLIT_WIDTH)),
-                (int) plateHeight,
+                rankWidth + nameWidth + spaceX, plateHeight,
                 POSITION_CENTER, ACCENT_COLOR, Color.white, visibilityState);
-        x += (int) (plateWidth * (RANK_WIDTH + NAME_WIDTH + 2 * SPLIT_WIDTH));
-        int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / problemsNumber - plateWidth * SPLIT_WIDTH);
+        x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < problemsNumber; i++) {
             ProblemInfo problem = contestData.problems.get(i);
-//            drawTextInRect(g, problem.letter, x, y, PROBLEM_WIDTH, (int) plateHeight,
-//                    POSITION_CENTER, problem.color, textColor(problem.color), visibilityState);
-            drawTextInRect(g, problem.letter, x, y, PROBLEM_WIDTH, (int) plateHeight,
+            drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
                     POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
-            x += (int) (plateWidth * SPLIT_WIDTH) + PROBLEM_WIDTH;
+            x += problemWidth + spaceX;
         }
     }
 
@@ -288,19 +284,19 @@ public class BigStandingsWidget extends Widget {
         g.setFont(font);
         Color color = team.getRank() <= 4 ? GOLD_COLOR : team.getRank() <= 8 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                (int) (plateWidth * RANK_WIDTH), (int) plateHeight, POSITION_CENTER,
+                rankWidth, plateHeight, POSITION_CENTER,
                 color, Color.white, visibilityState);
 
-        x += (int) (plateWidth * (RANK_WIDTH + SPLIT_WIDTH));
+        x += rankWidth + spaceX;
 
         String name = team.getShortName();//getShortName(g, team.getShortName());
         drawTextInRect(g, name, x, y,
-                (int) (plateWidth * NAME_WIDTH), (int) plateHeight, POSITION_LEFT,
+                nameWidth, plateHeight, POSITION_LEFT,
                 mainColor, Color.white, visibilityState);
 
-        x += (int) (plateWidth * (NAME_WIDTH + SPLIT_WIDTH));
+        x += nameWidth + spaceX;
 
-        int PROBLEM_WIDTH = (int) ((plateWidth - x - plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH + PENALTY_WIDTH)) / contestData.getProblemsNumber() - plateWidth * SPLIT_WIDTH);
+        int problemWidth = problemWidth(contestData.getProblemsNumber());
         for (int i = 0; i < contestData.getProblemsNumber(); i++) {
             String status = team.getShortProblemState(i);
             Color statusColor = status.startsWith("+") ? GREEN_COLOR :
@@ -311,15 +307,19 @@ public class BigStandingsWidget extends Widget {
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
             drawTextInRect(g, status, x, y,
-                    PROBLEM_WIDTH, (int) plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
-            x += PROBLEM_WIDTH + (int) (plateWidth * SPLIT_WIDTH);
+                    problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
+            x += problemWidth + spaceX;
         }
 
         g.setFont(font);
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, (int) (plateWidth * TOTAL_WIDTH),
-                (int) plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
-        x += (int) (plateWidth * (TOTAL_WIDTH + SPLIT_WIDTH));
-        drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (plateWidth * PENALTY_WIDTH),
-                (int) plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth,
+                plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
+        x += totalWidth + spaceX;
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
+                plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
+    }
+
+    private int problemWidth(int problemsNumber) {
+        return (int) Math.round((width - rankWidth - nameWidth - totalWidth - penaltyWidth - 3 * spaceX) * 1.0 / problemsNumber - spaceX);
     }
 }

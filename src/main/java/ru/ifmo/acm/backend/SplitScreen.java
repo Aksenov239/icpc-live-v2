@@ -42,13 +42,13 @@ public class SplitScreen {
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
 
         generator.addWidget(new GreenScreenWidget(true));
-        generator.addWidget(new SplitScreenWidget(
-                updateWait,
-                Widget.BASE_WIDTH,
-                Widget.BASE_HEIGHT - 32,
-                4. / 3,
-                Integer.parseInt(properties.getProperty("sleep.time"))
-        ));
+//        generator.addWidget(new SplitScreenWidget(
+//                updateWait,
+//                Widget.BASE_WIDTH,
+//                Widget.BASE_HEIGHT - 32,
+//                4. / 3,
+//                Integer.parseInt(properties.getProperty("sleep.time"))
+//        ));
         generator.addWidget(new ClockWidget(updateWait));
         generator.addWidget(new CreepingLineWidget(updateWait));
 //        generator.addWidget(new QueueWidget(100));

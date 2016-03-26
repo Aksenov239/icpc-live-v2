@@ -11,11 +11,11 @@ import java.awt.*;
 public class ClockWidget extends Widget {
 
     private static final Color DARK_GRAY = new Color(0x404047);
-    public static final int FONT_SIZE = 24;
-    private final int x = 1160;
-    private final int y = 13;
-    private final int WIDTH = 103;
-    private final int HEIGHT = 44;
+    public static final int FONT_SIZE = 30;
+    private final int x = 1740;
+    private final int y = 19;
+    private final int WIDTH = 154;
+    private final int HEIGHT = 66;
     Font clockFont = Font.decode("Open Sans Light " + FONT_SIZE);
     private long start;
 
