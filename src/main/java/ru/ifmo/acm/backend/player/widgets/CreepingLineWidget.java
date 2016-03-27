@@ -18,7 +18,7 @@ public class CreepingLineWidget extends Widget {
 
     private static final double V = 0.15;
     private double SEPARATOR = 75;
-    public int HEIGHT = 36;
+    public int HEIGHT = 45;
     public int MARGIN = 18;
 
     Queue<String> messagesQueue = new ArrayDeque<String>(100);
@@ -53,7 +53,7 @@ public class CreepingLineWidget extends Widget {
         super(updateWait);
     }
 
-    Font messageFont = Font.decode("Open Sans " + 30);
+    Font messageFont = Font.decode("Open Sans " + 34);
 
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {

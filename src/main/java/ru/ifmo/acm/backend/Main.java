@@ -56,9 +56,11 @@ public class Main {
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
         generator.addWidget(new StandingsWidget(updateWait));
-        generator.addWidget(new QueueWidget(100));
-        generator.addWidget(new BigStandingsWidget(529, 69,
-                1350, 39, updateWait, 20, true));
+        generator.addWidget(new QueueWidget(30, 980, 39, 100));
+        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(529, 69,
+                1350, 39, updateWait, 20, true);
+        bigStandingsWidget.alignBottom(980);
+        generator.addWidget(bigStandingsWidget);
 //        generator.addWidget(new BreakingNewsWidget(
 //                updateWait,
 //                (int)(Widget.BASE_WIDTH * 0.65),

@@ -29,6 +29,9 @@ public class WFEventsLoader extends EventsLoader {
     private String login;
     private String password;
 
+    private boolean emulation;
+    private final double EMULATION_SPEED = 10;
+
     public WFEventsLoader() {
         try {
             Properties properties = new Properties();
@@ -40,6 +43,10 @@ public class WFEventsLoader extends EventsLoader {
             Preparation.prepareNetwork(login, password);
 
             url = properties.getProperty("url");
+
+            if (!(url.startsWith("http") || url.startsWith("https"))) {
+                emulation = true;
+            }
 
             problemsInfoURL = properties.getProperty("problems.url");
             teamsInfoURL = properties.getProperty("teams.url");
@@ -306,6 +313,8 @@ public class WFEventsLoader extends EventsLoader {
                 // new FileInputStream(new File(properties.getProperty("url"))),
                 // "windows-1251");
 
+                long lastTime = 0;
+
                 while (xmlEventReader.hasNext()) {
                     XMLEvent xmlEvent = null;
                     try {
@@ -319,6 +328,17 @@ public class WFEventsLoader extends EventsLoader {
                         switch (startElement.getName().getLocalPart()) {
                             case "run":
                                 WFRunInfo run = readRun(xmlEventReader);
+                                if (emulation) {
+                                    if (lastTime > 0) {
+                                        try {
+                                            long tt = (long) ((run.getTime() - lastTime) / EMULATION_SPEED);
+                                            if (tt > 0) Thread.sleep(tt);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    lastTime = run.getTime();
+                                }
                                 System.err.println("new run: " + (int) (run.getTime() / 60) + " " + run.getTeam() + " "
                                         + (char) ('A' + run.getProblemNumber()) + " " + run.getResult());
                                 if (run.getTime() <= 4 * 60 * 60 * 1000 || run.getResult().length() == 0) {
@@ -326,13 +346,24 @@ public class WFEventsLoader extends EventsLoader {
                                         run.setTeamInfoBefore(contestInfo.getParticipant(run.getTeam()).getSmallTeamInfo());
                                     }
                                     contestInfo.addRun(run);
-                                    if (run.getTime() > contestInfo.getCurrentTime() / 1000 - 600) {
-                                        contestInfo.recalcStandings();
-                                    }
+//                                    if (run.getTime() > contestInfo.getCurrentTime() / 1000 - 600) {
+                                    contestInfo.recalcStandings();
+//                                    }
                                 }
                                 break;
                             case "testcase":
                                 WFTestCaseInfo test = readTest(xmlEventReader);
+                                if (emulation) {
+                                    if (lastTime > 0) {
+                                        try {
+                                            long tt = (long) ((test.time - lastTime) / EMULATION_SPEED);
+                                            if (tt > 0) Thread.sleep(tt);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    lastTime = test.time;
+                                }
                                 contestInfo.addTest(test);
                                 break;
                             case "language":
@@ -353,6 +384,9 @@ public class WFEventsLoader extends EventsLoader {
                                 contestInfo.setStartTime(
                                         (long) (Double.parseDouble(xmlEventReader.getElementText().replace(",", "."))
                                                 * 1000));
+                                if (emulation) {
+                                    contestInfo.setStartTime(System.currentTimeMillis());
+                                }
                                 break;
                         }
                     }
