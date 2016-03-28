@@ -5,6 +5,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.backend.player.widgets.TeamWidget;
+import ru.ifmo.acm.events.TeamInfo;
 
 /**
  * Created by forgotenn on 3/16/16.
@@ -80,8 +81,11 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
                     } else {
                         try {
                             int teamId = Integer.parseInt(teams[id].getValue());
-                            String teamName = MainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();
-                            if (!mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), teamName)) {
+                            TeamInfo team = MainScreenData.getProperties().contestInfo.getParticipant(teamId);
+                            if (team == null) {
+                                Notification.show("There is no team with id " + teamId);
+                            }
+                            if (!mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), team)) {
                                 Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
                             }
                         } catch (NumberFormatException e) {

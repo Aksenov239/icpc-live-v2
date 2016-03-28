@@ -29,22 +29,19 @@ public class MainScreenProperties {
         EventsLoader loader = EventsLoader.getInstance();
         contestInfo = loader.getContestData();
 
-        TeamInfo[] teamInfos = contestInfo.getStandings();
-        teamNames = new String[contestInfo.getTeamsNumber()];
+        teamInfos = contestInfo.getStandings();
         int l = 0;
-        for (int i = 0; i < teamNames.length; i++) {
+        for (int i = 0; i < teamInfos.length; i++) {
             if (teamInfos[i] instanceof PCMSTeamInfo) {
                 if (((PCMSTeamInfo) teamInfos[i]).getAlias().startsWith("S")) {
-                    teamNames[l++] = teamInfos[i].getShortName() + " :" + ((PCMSTeamInfo) teamInfos[i]).getAlias();
+                    teamInfos[l++] = teamInfos[i];
                 }
-            }
-            if (teamInfos[i] instanceof WFTeamInfo) {
-                teamNames[l++] = String.format("%03d", teamInfos[i].getId() + 1) + ". " + teamInfos[i].getShortName();
+            } if (teamInfos[i] instanceof WFTeamInfo) {
+                l++;
             }
         }
-        teamNames = Arrays.copyOf(teamNames, l);
-        Arrays.sort(teamNames);
-
+        teamInfos = Arrays.copyOf(teamInfos, l);
+        Arrays.sort(teamInfos);
 
         cameraNumber = Integer.parseInt(properties.getProperty("camera.number", "0"));
 
@@ -71,7 +68,7 @@ public class MainScreenProperties {
     // Team
     public final int sleepTime;
     public final ContestInfo contestInfo;
-    public String[] teamNames;
+    public TeamInfo[] teamInfos;
 
     // Camera
     public final int cameraNumber;

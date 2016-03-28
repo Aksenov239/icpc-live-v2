@@ -38,21 +38,21 @@ public class SplitScreen {
         int height = Integer.parseInt(properties.getProperty("height", "720"));
         int frameRate = Integer.parseInt(properties.getProperty("rate", "25"));
 
-        ScreenGenerator generator = new ScreenGenerator(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        ScreenGenerator generator = new ScreenGenerator(width, height, readMainProperties(), (double) width / Widget.BASE_WIDTH);
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
 
         generator.addWidget(new GreenScreenWidget(true));
-//        generator.addWidget(new SplitScreenWidget(
-//                updateWait,
-//                Widget.BASE_WIDTH,
-//                Widget.BASE_HEIGHT - 32,
-//                4. / 3,
-//                Integer.parseInt(properties.getProperty("sleep.time"))
-//        ));
+        generator.addWidget(new SplitScreenWidget(
+                updateWait,
+                Widget.BASE_WIDTH,
+                Widget.BASE_HEIGHT - 32,
+                4. / 3,
+                Integer.parseInt(properties.getProperty("sleep.time"))
+        ));
         generator.addWidget(new ClockWidget(updateWait));
         generator.addWidget(new CreepingLineWidget(updateWait));
 //        generator.addWidget(new QueueWidget(100));
-        new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
+        new TickPlayer("Split screen", generator, frameRate).frame.setLocation(0, 0);
     }
 
     private Properties readProperties() {
@@ -64,4 +64,15 @@ public class SplitScreen {
         }
         return properties;
     }
+
+    private Properties readMainProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.load(ScreenGenerator.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return properties;
+    }
 }
+

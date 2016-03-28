@@ -96,6 +96,10 @@ public class PCMSTeamInfo implements TeamInfo {
         return 0;
     }
 
+    public String toString() {
+        return shortName;
+    }
+
     public int id;
 
     public String name;

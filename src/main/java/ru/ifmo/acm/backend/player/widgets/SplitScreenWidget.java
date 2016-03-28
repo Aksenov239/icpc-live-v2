@@ -3,8 +3,8 @@ package ru.ifmo.acm.backend.player.widgets;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
-import ru.ifmo.acm.events.WF.WFContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFContestInfo;
 
 import java.awt.*;
 import java.io.IOException;
@@ -46,21 +46,27 @@ public class SplitScreenWidget extends Widget {
             interestingTeams[i] = Integer.parseInt(showSetup[i]);
         }
         defaultType = properties.getProperty("default.type", "screen");
+        TeamInfo[] standings = Preparation.eventsLoader.getContestData().getStandings();
         for (int i = 0; i < 4; i++) {
-            int teamId = Integer.parseInt(showSetup[i]);
+            int teamId;
+            if (standings[i].getSolvedProblemsNumber() == 0) {
+                teamId = Integer.parseInt(showSetup[predefinedTeam++]);
+            } else {
+                teamId = standings[i].getId();
+            }
+            teamInfoWidgets[i].setVisible(true);
             teamInfoWidgets[i].change(
                     Preparation.eventsLoader.getContestData().getParticipant(teamId), defaultType);
         }
-        predefinedTeam = 4;
         Arrays.fill(lastSwitch, System.currentTimeMillis() + switchTime);
     }
 
-    public SplitScreenWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime, long switchTime) {
+    public SplitScreenWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
         super(updateWait);
         for (int i = 0; i < 4; i++) {
             teamInfoWidgets[i] = new TeamWidget(
                     (width / 2) * (i & 1),
-                    (height / 2) * i,
+                    (height / 2) * (i / 2),
                     width / 2,
                     height / 2,
                     aspectRatio,
@@ -69,7 +75,6 @@ public class SplitScreenWidget extends Widget {
             automatic[i] = true;
         }
         initialization();
-        this.switchTime = switchTime;
         this.sleepTime = sleepTime;
     }
 
@@ -114,7 +119,7 @@ public class SplitScreenWidget extends Widget {
                     predefinedTeam = (predefinedTeam + 1) % interestingTeams.length;
                     break;
                 }
-                predefinedTeam = (predefinedTeam + 1) %  interestingTeams.length;
+                predefinedTeam = (predefinedTeam + 1) % interestingTeams.length;
             } else {
                 if (!teamInUse(standings[currentPlace].getId())) {
                     teamId = standings[currentPlace].getId();
@@ -133,7 +138,7 @@ public class SplitScreenWidget extends Widget {
     @Override
     protected void updateImpl(Data data) {
         for (int i = 0; i < 4; i++) {
-            automatic[i] = data.splitScreenData.isAutomatic[i];
+            System.err.println(automatic[i] + " " + data.splitScreenData.getTeamId(i));
             if (data.splitScreenData.isAutomatic[i]) {
                 if (!automatic[i]) {
                     automatic[i] = true;
@@ -167,11 +172,7 @@ public class SplitScreenWidget extends Widget {
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
         for (int i = 0; i < teamInfoWidgets.length; i++) {
-            if (automatic[i]) {
-                teamInfoWidgets[i].paintImpl(g, width, height);
-            } else {
-                // TODO: paint Standings
-            }
+            teamInfoWidgets[i].paintImpl(g, width, height);
         }
     }
 

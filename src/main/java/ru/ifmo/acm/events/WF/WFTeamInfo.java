@@ -88,4 +88,8 @@ public class WFTeamInfo implements TeamInfo {
         }
     }
 
+    public String toString() {
+        return String.format("%03d", id + 1) + ". " + shortName;
+    }
+
 }
