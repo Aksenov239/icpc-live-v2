@@ -5,16 +5,20 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.ProblemInfo;
+import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
 
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author: pashka
  */
 public class BigStandingsWidget extends Widget {
     private static final double V = 0.01;
+    private static final int STAR_SIZE = 5;
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
@@ -22,7 +26,7 @@ public class BigStandingsWidget extends Widget {
     public static int PERIOD = STANDING_TIME + MOVING_TIME;
 
     private static final double SPACE_Y = 0.1;
-    private static final double SPACE_X = 0.1;
+    private static final double SPACE_X = 0.05;
     private static final double NAME_WIDTH = 6;
     private static final double RANK_WIDTH = 1.6;
     private static final double TOTAL_WIDTH = 1.6;
@@ -138,6 +142,8 @@ public class BigStandingsWidget extends Widget {
         optimismLevel = data.standingsData.optimismLevel;
     }
 
+    List<Point> stars = new ArrayList<>();
+
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         contestData = Preparation.eventsLoader.getContestData();
@@ -208,10 +214,12 @@ public class BigStandingsWidget extends Widget {
             drawHead(g, spaceX, 0, contestData.getProblemsNumber());
             g = (Graphics2D) g.create();
             int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
-            g.clip(new Rectangle(-plateHeight, initY, this.width + 2 * plateHeight, (spaceY + plateHeight) * teamsOnPage + initY));
+            g.clip(new Rectangle(-plateHeight, initY - STAR_SIZE * 2, this.width + 2 * plateHeight, (spaceY + plateHeight) * teamsOnPage + initY + STAR_SIZE * 2));
 
             int lastProblems = -1;
             boolean bright = true;
+
+            stars.clear();
 
             for (int i = standings.length - 1; i >= 0; i--) {
                 TeamInfo teamInfo = standings[i];
@@ -242,6 +250,10 @@ public class BigStandingsWidget extends Widget {
                 }
             }
 
+            for (Point star : stars) {
+                drawStar(g, star.x, star.y, STAR_SIZE);
+            }
+
         } else {
             timer = -TOP_PAGE_STANDING_TIME;
             start = 0;
@@ -257,8 +269,9 @@ public class BigStandingsWidget extends Widget {
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < problemsNumber; i++) {
             ProblemInfo problem = contestData.problems.get(i);
+            Color color = contestData.firstSolvedRun()[i] == null ? MAIN_COLOR : GREEN_COLOR;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
-                    POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
+                    POSITION_CENTER, color, Color.white, visibilityState);
             x += problemWidth + spaceX;
         }
     }
@@ -276,7 +289,7 @@ public class BigStandingsWidget extends Widget {
 
         x += rankWidth + spaceX;
 
-        String name = team.getShortName();//getShortName(g, team.getShortName());
+        String name = team.getShortName();//getShortName(g, teamId.getShortName());
         drawTextInRect(g, name, x, y,
                 nameWidth, plateHeight, POSITION_LEFT,
                 mainColor, Color.white, visibilityState);
@@ -284,6 +297,7 @@ public class BigStandingsWidget extends Widget {
         x += nameWidth + spaceX;
 
         int problemWidth = problemWidth(contestData.getProblemsNumber());
+
         for (int i = 0; i < contestData.getProblemsNumber(); i++) {
             String status = team.getShortProblemState(i);
             Color statusColor = status.startsWith("+") ? GREEN_COLOR :
@@ -295,6 +309,10 @@ public class BigStandingsWidget extends Widget {
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
             drawTextInRect(g, status, x, y,
                     problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
+            RunInfo firstSolved = contestData.firstSolvedRun()[i];
+            if (firstSolved != null && firstSolved.getTeamId() == team.getId()) {
+                stars.add(new Point(x + problemWidth, y));
+            }
             x += problemWidth + spaceX;
         }
 

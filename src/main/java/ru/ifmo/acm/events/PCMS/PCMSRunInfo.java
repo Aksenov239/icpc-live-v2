@@ -52,9 +52,8 @@ public class PCMSRunInfo implements RunInfo {
         return time;
     }
 
-    @Override
-    public int getTeam() {
-        throw new AssertionError("getTeam function on PCMSRunInfo is not implemented");
+    public int getTeamId() {
+        throw new AssertionError("getTeamId function on PCMSRunInfo is not implemented");
         //return 0;
     }
 
