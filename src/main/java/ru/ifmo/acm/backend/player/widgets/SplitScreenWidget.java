@@ -57,8 +57,8 @@ public class SplitScreenWidget extends Widget {
             teamInfoWidgets[i].setVisible(true);
             teamInfoWidgets[i].change(
                     Preparation.eventsLoader.getContestData().getParticipant(teamId), defaultType);
+            lastSwitch[i] = System.currentTimeMillis() + switchTime * i;
         }
-        Arrays.fill(lastSwitch, System.currentTimeMillis() + switchTime);
     }
 
     public SplitScreenWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
@@ -70,7 +70,8 @@ public class SplitScreenWidget extends Widget {
                     width / 2,
                     height / 2,
                     aspectRatio,
-                    sleepTime
+                    sleepTime,
+                    true
             );
             automatic[i] = true;
         }
@@ -82,10 +83,10 @@ public class SplitScreenWidget extends Widget {
         for (int i = 0; i < teamInfoWidgets.length; i++) {
             if (teamInfoWidgets[i].teamId == teamId ||
                     teamInfoWidgets[i].team.getId() == teamId) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private int currentPlace = 0;
@@ -95,12 +96,11 @@ public class SplitScreenWidget extends Widget {
         WFContestInfo contestInfo = (WFContestInfo) Preparation.eventsLoader.getContestData();
         RunInfo replayRun = null;
         // TODO: when frozen always switch onto teamId screen
-        while (currentRunId <= contestInfo.getMaxRunId()) {
+        while (currentRunId <= contestInfo.getMaxRunId() && replayRun == null) {
             if (contestInfo.getRun(currentRunId) != null &&
                     contestInfo.getRun(currentRunId).getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&
                     contestInfo.getRun(currentRunId).isAccepted()) {
                 replayRun = contestInfo.getRun(currentRunId);
-                break;
             }
             currentRunId++;
         }
@@ -129,16 +129,18 @@ public class SplitScreenWidget extends Widget {
                 currentPlace = (currentPlace + 1) % topPlaces;
             }
         }
+        //System.err.println("Choose " + teamId + " for " + widget);
         teamInfoWidgets[widget].change(
                 contestInfo.getParticipant(teamId),
                 defaultType
         );
+        //System.err.println("There " + teamInfoWidgets[widget].teamId + " " + teamInfoWidgets[widget].team.getId());
+        lastSwitch[widget] = System.currentTimeMillis();
     }
 
     @Override
     protected void updateImpl(Data data) {
         for (int i = 0; i < 4; i++) {
-            System.err.println(automatic[i] + " " + data.splitScreenData.getTeamId(i));
             if (data.splitScreenData.isAutomatic[i]) {
                 if (!automatic[i]) {
                     automatic[i] = true;

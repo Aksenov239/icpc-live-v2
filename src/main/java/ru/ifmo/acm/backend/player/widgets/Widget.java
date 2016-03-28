@@ -1,10 +1,10 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import java.awt.*;
-
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
+
+import java.awt.*;
 
 /**
  * @author: pashka
@@ -121,7 +121,7 @@ public abstract class Widget {
     }
 
     void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
-        g.setComposite(AlphaComposite.SrcOver.derive(1f))   ;
+        g.setComposite(AlphaComposite.SrcOver.derive(1f));
         g.setColor(color);
 
         int hh = (int) (height * opacity);
@@ -154,7 +154,8 @@ public abstract class Widget {
     static final int POSITION_RIGHT = 1;
     static final int POSITION_CENTER = 2;
 
-    void drawTextInRect(Graphics2D g, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
+        Graphics2D g = (Graphics2D) gg.create();
         //setVisibilityState(state);
         double opacity = getOpacity(visibilityState);
         double textOpacity = getTextOpacity(visibilityState);
@@ -189,6 +190,7 @@ public abstract class Widget {
             float xx = x + width - w - (float) (1.5 * height * MARGIN);
             g.drawString(text, xx, yy);
         }
+        g.dispose();
     }
 
     private static final double SPLIT = 0.005;

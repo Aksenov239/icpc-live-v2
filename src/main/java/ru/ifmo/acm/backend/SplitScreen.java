@@ -45,8 +45,8 @@ public class SplitScreen {
         generator.addWidget(new SplitScreenWidget(
                 updateWait,
                 Widget.BASE_WIDTH,
-                Widget.BASE_HEIGHT - 32,
-                4. / 3,
+                Widget.BASE_HEIGHT,
+                16. / 9,
                 Integer.parseInt(properties.getProperty("sleep.time"))
         ));
         generator.addWidget(new ClockWidget(updateWait));
