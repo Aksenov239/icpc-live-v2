@@ -17,6 +17,7 @@ public class WFContestInfo extends ContestInfo {
 	private WFTeamInfo[] teamInfos;
 	public long[] timeFirstSolved;
     private int maxRunId;
+	WFRunInfo[] firstSolvedRun;
 
 	private WFTeamInfo[] standings = null;
 
@@ -27,12 +28,14 @@ public class WFContestInfo extends ContestInfo {
 		timeFirstSolved = new long[problemsNumber];
 		languages = new String[4];
 		runs = new WFRunInfo[1000000];
+		firstSolvedRun = new WFRunInfo[problemsNumber];
 	}
 
 	void recalcStandings() {
 		WFTeamInfo[] standings = new WFTeamInfo[teamNumber];
 		int n = 0;
 		Arrays.fill(timeFirstSolved, Integer.MAX_VALUE);
+		Arrays.fill(firstSolvedRun, null);
 		for (WFTeamInfo team : teamInfos) {
 			if (team == null)
 				continue;
@@ -50,7 +53,10 @@ public class WFContestInfo extends ContestInfo {
 						int time = (int) (wfrun.getTime() / 60 / 1000);
 						team.penalty += wrong * 20 + time;
 						team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
-						timeFirstSolved[j] = Math.min(timeFirstSolved[j], wfrun.getTime());
+						if (wfrun.getTime() < timeFirstSolved[j]) {
+							timeFirstSolved[j] = wfrun.getTime();
+							firstSolvedRun[j] = wfrun;
+						}
 						break;
 					} else if (wfrun.getResult().length() > 0) {
 						wrong++;
@@ -120,10 +126,11 @@ public class WFContestInfo extends ContestInfo {
 	}
 
 	public void addRun(WFRunInfo run) {
+//		System.err.println("add run: " + run);
 		if (!runExists(run.getId())) {
             maxRunId = Math.max(maxRunId, run.getId());
 			runs[run.getId()] = run;
-			teamInfos[run.getTeam()].addRun(run, run.getProblemNumber());
+			teamInfos[run.getTeamId()].addRun(run, run.getProblemNumber());
 		}
 	}
 
@@ -132,10 +139,10 @@ public class WFContestInfo extends ContestInfo {
     }
 
 	public void addTest(WFTestCaseInfo test) {
-		System.out.println("Adding test " + test.id + " to run " + test.run);
+//		System.out.println("Adding test " + test.id + " to run " + test.run);
 		if (runExists(test.run)) {
 			runs[test.run].add(test);
-			System.out.println("Run " + runs[test.run] + " passed " + runs[test.run].getPassedTestsNumber() + " tests");
+//			System.out.println("Run " + runs[test.run] + " passed " + runs[test.run].getPassedTestsNumber() + " tests");
 		}
 	}
 
@@ -161,6 +168,11 @@ public class WFContestInfo extends ContestInfo {
 	@Override
 	public long[] firstTimeSolved() {
 		return timeFirstSolved;
+	}
+
+	@Override
+	public RunInfo[] firstSolvedRun() {
+		return firstSolvedRun;
 	}
 
 	@Override

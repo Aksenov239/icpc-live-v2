@@ -71,7 +71,7 @@ public class TeamWidget extends VideoWidget {
     protected int RUN_WIDTH = 80;
     protected int RUN_SMALL_WIDTH = 20;
     protected int HEIGHT = 45;
-    protected double STAR_SIZE = 5;
+    protected int STAR_SIZE = 5;
     Font FONT2 = Font.decode("Open Sans Italic " + 30);
 
     private static final Color GREEN = new Color(27, 155, 82);//Color.decode("0x33ff00");
@@ -121,8 +121,8 @@ public class TeamWidget extends VideoWidget {
         g.setColor(Color.WHITE);
         g.setColor(new Color(0, 0, 30));
         g.fillRect(x, y, this.width - widthVideo, height);
-//        team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
-//        if (team == null) return;
+//        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+//        if (teamId == null) return;
         g.setFont(FONT1);
         int dx = (int) (this.width * 0.52);
         int dy = (int) (this.height * 0.9);
@@ -161,7 +161,7 @@ public class TeamWidget extends VideoWidget {
                     );
                     //System.err.println(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
-                        drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2));
+                        drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                     }
                     x += RUN_WIDTH + GAP_X;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
@@ -172,18 +172,6 @@ public class TeamWidget extends VideoWidget {
 
             }
         }
-    }
-
-    private void drawStar(Graphics2D g, int x, int y) {
-        g.setColor(Color.YELLOW);
-        int[] xx = new int[10];
-        int[] yy = new int[10];
-        double[] d = {STAR_SIZE, STAR_SIZE * 2};
-        for (int i = 0; i < 10; i++) {
-            xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
-            yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
-        }
-        g.fillPolygon(new Polygon(xx, yy, 10));
     }
 
     private String format(double time) {
@@ -204,7 +192,7 @@ public class TeamWidget extends VideoWidget {
     public void change(RunInfo run) {
         change(getUrl(run));
         nextProblemId = run.getProblemNumber();
-        teamId = run.getTeam();
+        teamId = run.getTeamId();
     }
 
     public static String getUrl(TeamInfo team, String infoType) {

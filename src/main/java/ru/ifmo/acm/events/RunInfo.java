@@ -7,6 +7,6 @@ public interface RunInfo {
     String getResult();
     int getProblemNumber();
     long getTime();
-    int getTeam();
+    int getTeamId();
     SmallTeamInfo getTeamInfoBefore();
 }

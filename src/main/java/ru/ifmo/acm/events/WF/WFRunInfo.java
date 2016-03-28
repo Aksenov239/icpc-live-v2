@@ -2,6 +2,7 @@ package ru.ifmo.acm.events.WF;
 
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.SmallTeamInfo;
+import ru.ifmo.acm.events.TeamInfo;
 
 /**
  * Created by aksenov on 16.04.2015.
@@ -12,13 +13,14 @@ public class WFRunInfo implements RunInfo {
     public String result = "";
     public String language;
     public int problem;
-    public int team;
+    public int teamId;
     public double time;
     public double timestamp;
     private int passed;
     private int total;
     private long lastUpdateTimestamp;
     private SmallTeamInfo teamInfoBefore;
+    public TeamInfo team;
 
     public WFRunInfo() {
     }
@@ -29,7 +31,7 @@ public class WFRunInfo implements RunInfo {
         this.result = another.result;
         this.language = another.language;
         this.problem = another.problem;
-        this.team = another.team;
+        this.teamId = another.teamId;
         this.time = another.time;
         this.timestamp = another.timestamp;
         this.passed = another.getPassedTestsNumber();
@@ -94,13 +96,19 @@ public class WFRunInfo implements RunInfo {
         return (long) (time * 1000);
     }
 
-    @Override
-    public int getTeam() {
-        return team;
+    public int getTeamId() {
+        return teamId;
     }
 
     @Override
     public SmallTeamInfo getTeamInfoBefore() {
         return teamInfoBefore;
+    }
+
+    @Override
+    public String toString() {
+        String teamName = "" + teamId;
+        if (team != null) teamName = team.getShortName();
+        return teamName + " " + (char)('A' + problem) + " " + result;
     }
 }

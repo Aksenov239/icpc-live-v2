@@ -233,4 +233,16 @@ public abstract class Widget {
         }
         return color;
     }
+
+    protected void drawStar(Graphics2D g, int x, int y, int size) {
+        g.setColor(GOLD_COLOR);
+        int[] xx = new int[10];
+        int[] yy = new int[10];
+        double[] d = {size, size * 2};
+        for (int i = 0; i < 10; i++) {
+            xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
+            yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
+        }
+        g.fillPolygon(new Polygon(xx, yy, 10));
+    }
 }

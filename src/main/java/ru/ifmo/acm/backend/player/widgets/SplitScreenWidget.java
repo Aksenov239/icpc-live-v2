@@ -94,7 +94,7 @@ public class SplitScreenWidget extends Widget {
     protected void chooseNewStream(int widget) {
         WFContestInfo contestInfo = (WFContestInfo) Preparation.eventsLoader.getContestData();
         RunInfo replayRun = null;
-        // TODO: when frozen always switch onto team screen
+        // TODO: when frozen always switch onto teamId screen
         while (currentRunId <= contestInfo.getMaxRunId()) {
             if (contestInfo.getRun(currentRunId) != null &&
                     contestInfo.getRun(currentRunId).getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&

@@ -9,20 +9,24 @@ import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFEventsLoader;
 import ru.ifmo.acm.events.WF.WFRunInfo;
 
 public class QueueWidget extends Widget {
 
     private static final double V = 0.01;
-    public static final int WAIT_TIME = 10000;
+
+    public static final int WAIT_TIME = 6000;
+    public static final int FIRST_TO_SOLVE_WAIT_TIME = 12000;
 
     private static final double SPACE_Y = 0.1;
-    private static final double SPACE_X = 0.1;
+    private static final double SPACE_X = 0.05;
     private static final double NAME_WIDTH = 6;
     private static final double RANK_WIDTH = 1.6;
     private static final double PROBLEM_WIDTH = 1.6;
     private static final double STATUS_WIDTH = 2.3;
 
+    private static final int STAR_SIZE = 5;
 
     private final int baseX;
     private final int baseY;
@@ -112,11 +116,11 @@ public class QueueWidget extends Widget {
 //        for (int i = 0; i < queue.size(); i++) {
 //            WFRunInfo wfr = (WFRunInfo) queue.get(i);
 //
-//            TeamInfo team = info.getParticipant(wfr.getTeam());
+//            TeamInfo teamId = info.getParticipant(wfr.getTeamId());
 //            Color teamNameColor = Color.BLUE;
 //
-//            String rank = String.valueOf(team.getRank());
-//            String teamName = team.getShortName();
+//            String rank = String.valueOf(teamId.getRank());
+//            String teamName = teamId.getShortName();
 //            int problemNumber = wfr.getProblemNumber();
 //            String problemName = "" + (char) ('A' + problemNumber);
 //            String status = "";
@@ -153,7 +157,7 @@ public class QueueWidget extends Widget {
 
     private void drawRun(Graphics2D g, int x, int y, WFRunInfo run) {
         g.setFont(font);
-        TeamInfo team = info.getParticipant(run.getTeam());
+        TeamInfo team = info.getParticipant(run.getTeamId());
         String name = team.getShortName();
         String problem = info.problems.get(run.getProblemNumber()).letter;
         String result = run.getResult();
@@ -202,6 +206,10 @@ public class QueueWidget extends Widget {
 
         x += problemWidth + spaceX;
 
+        if (run.getTime() > WFEventsLoader.FREEZE_TIME) {
+            return;
+        }
+
         drawTextInRect(g, result, x, y, statusWidth,
                 plateHeight, POSITION_CENTER, resultColor, Color.white, visibilityState);
 
@@ -209,26 +217,44 @@ public class QueueWidget extends Widget {
             drawRect(g, x, y, progressWidth, plateHeight, YELLOW_COLOR.brighter(), visibilityState);
         }
 
+        if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
+            drawStar(g, x + statusWidth, y, STAR_SIZE);
+        }
+
     }
 
     public void calculateQueue() {
         info = Preparation.eventsLoader.getContestData();
 
+        List<WFRunInfo> firstToSolves = new ArrayList<>();
         List<WFRunInfo> queue = new ArrayList<>();
 
         for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
             if (r == null)
                 continue;
-            if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME) {
-                queue.add(r);
+            if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME) {
+                    firstToSolves.add(r);
+                }
+            } else {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME) {
+                    queue.add(r);
+                }
             }
         }
 
         Arrays.fill(desiredPositions, 1);
-        int pos = -queue.size();
+        double pos = -queue.size();
         for (WFRunInfo r : queue) {
             desiredPositions[r.getId()] = pos;
-            pos++;
+            pos += 1;
+        }
+
+        pos = -queue.size() - firstToSolves.size();
+        if (queue.size() > 0) pos -= 0.5;
+        for (WFRunInfo r : firstToSolves) {
+            desiredPositions[r.getId()] = pos;
+            pos += 1;
         }
 
     }

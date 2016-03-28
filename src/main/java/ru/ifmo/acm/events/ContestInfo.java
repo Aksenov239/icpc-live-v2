@@ -48,6 +48,8 @@ public abstract class ContestInfo {
 
     public abstract long[] firstTimeSolved();
 
+    public abstract RunInfo[] firstSolvedRun();
+
     public abstract RunInfo[] getRuns();
 
 

@@ -78,6 +78,11 @@ public class PCMSContestInfo extends ContestInfo {
         return timeFirstSolved;
     }
 
+    @Override
+    public RunInfo[] firstSolvedRun() {
+        return new RunInfo[problemNumber];
+    }
+
     public long getTotalTime() {
         return totalTime;
     }

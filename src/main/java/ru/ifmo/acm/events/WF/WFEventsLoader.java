@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class WFEventsLoader extends EventsLoader {
 
+    public static final int FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static WFContestInfo contestInfo;
 
     private String url;
@@ -30,7 +31,7 @@ public class WFEventsLoader extends EventsLoader {
     private String password;
 
     private boolean emulation;
-    private final double EMULATION_SPEED = 10;
+    private final double EMULATION_SPEED = 30;
 
     public WFEventsLoader() {
         try {
@@ -128,7 +129,7 @@ public class WFEventsLoader extends EventsLoader {
 
     public WFTestCaseInfo readTest(XMLEventReader xmlEventReader) throws XMLStreamException {
         WFTestCaseInfo test = new WFTestCaseInfo();
-        System.out.println("Reading testcase");
+//        System.out.println("Reading testcase");
         while (true) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
@@ -208,7 +209,8 @@ public class WFEventsLoader extends EventsLoader {
                         run.result = xmlEvent.asCharacters().getData();
                         break;
                     case "team":
-                        run.team = Integer.parseInt(xmlEvent.asCharacters().getData()) - 1;
+                        run.teamId = Integer.parseInt(xmlEvent.asCharacters().getData()) - 1;
+                        run.team = contestInfo.getParticipant(run.teamId);
                         break;
                     case "time":
                         double time = Double.parseDouble(xmlEvent.asCharacters().getData());
@@ -243,8 +245,8 @@ public class WFEventsLoader extends EventsLoader {
                         team.id = Integer.parseInt(xmlEventReader.getElementText()) - 1;
                         break;
                     case "university":
-                        // team.name = xmlEvent.asCharacters().getData();
-                        // team.name =
+                        // teamId.name = xmlEvent.asCharacters().getData();
+                        // teamId.name =
                         // xmlEvent.toString();//asCharacters().getData();
                         team.name = xmlEventReader.getElementText();
                         team.shortName = shortName(team.name);
@@ -256,7 +258,7 @@ public class WFEventsLoader extends EventsLoader {
             }
             if (xmlEvent.isEndElement()) {
                 EndElement endElement = xmlEvent.asEndElement();
-                if (endElement.getName().getLocalPart().equals("team")) {
+                if (endElement.getName().getLocalPart().equals("teamId")) {
                     break;
                 }
             }
@@ -339,16 +341,20 @@ public class WFEventsLoader extends EventsLoader {
                                     }
                                     lastTime = run.getTime();
                                 }
-                                System.err.println("new run: " + (int) (run.getTime() / 60) + " " + run.getTeam() + " "
-                                        + (char) ('A' + run.getProblemNumber()) + " " + run.getResult());
-                                if (run.getTime() <= 4 * 60 * 60 * 1000 || run.getResult().length() == 0) {
+                                System.err.println("new run: " + run);
+                                if (run.getTime() <= FREEZE_TIME || run.getResult().length() == 0) {
                                     if (contestInfo.runExists(run.getId())) {
-                                        run.setTeamInfoBefore(contestInfo.getParticipant(run.getTeam()).getSmallTeamInfo());
+                                        run.setTeamInfoBefore(contestInfo.getParticipant(run.getTeamId()).getSmallTeamInfo());
                                     }
                                     contestInfo.addRun(run);
 //                                    if (run.getTime() > contestInfo.getCurrentTime() / 1000 - 600) {
+                                    long start = System.currentTimeMillis();
                                     contestInfo.recalcStandings();
+                                    System.err.println("Standings calculated in " + (System.currentTimeMillis() - start) + " ms");
 //                                    }
+                                } else {
+                                    run.result = "";
+                                    run.judged = false;
                                 }
                                 break;
                             case "testcase":
@@ -369,10 +375,10 @@ public class WFEventsLoader extends EventsLoader {
                             case "language":
                                 readLanguage(xmlEventReader);
                                 break;
-                            /*case "team":
-                                WFTeamInfo team = readTeam(xmlEventReader);
-                                if (team != null) {
-                                    contestInfo.addTeam(team);
+                            /*case "teamId":
+                                WFTeamInfo teamId = readTeam(xmlEventReader);
+                                if (teamId != null) {
+                                    contestInfo.addTeam(teamId);
                                     contestInfo.teamNumber++;
                                 }
                                 contestInfo.recalcStandings();

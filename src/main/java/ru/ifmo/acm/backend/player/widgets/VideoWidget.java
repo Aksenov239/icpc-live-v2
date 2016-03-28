@@ -4,6 +4,7 @@ import ru.ifmo.acm.backend.player.PlayerInImage;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -88,4 +89,5 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
     public MediaPlayer getPlayer() {
         return player.getPlayer();
     }
+
 }
