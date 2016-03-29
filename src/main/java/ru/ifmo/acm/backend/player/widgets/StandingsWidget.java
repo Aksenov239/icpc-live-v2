@@ -6,11 +6,7 @@ import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author: pashka
@@ -21,12 +17,6 @@ public class StandingsWidget extends Widget {
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
 
-    private static final double SPACE_Y = 0.1;
-    private static final double SPACE_X = 0.05;
-    private static final double NAME_WIDTH = 6;
-    private static final double RANK_WIDTH = 1.6;
-    private static final double TOTAL_WIDTH = 1;
-    private static final double PENALTY_WIDTH = 1.8;
     private static final double DX = 1;
 
     private final Font font;

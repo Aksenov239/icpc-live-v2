@@ -19,15 +19,6 @@ public class QueueWidget extends Widget {
     public static final int WAIT_TIME = 6000;
     public static final int FIRST_TO_SOLVE_WAIT_TIME = 12000;
 
-    private static final double SPACE_Y = 0.1;
-    private static final double SPACE_X = 0.05;
-    private static final double NAME_WIDTH = 6;
-    private static final double RANK_WIDTH = 1.6;
-    private static final double PROBLEM_WIDTH = 1;
-    private static final double STATUS_WIDTH = 2;
-
-    private static final int STAR_SIZE = 5;
-
     private final int baseX;
     private final int baseY;
     private final int plateHeight;

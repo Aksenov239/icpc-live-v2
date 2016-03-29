@@ -25,12 +25,8 @@ public class BigStandingsWidget extends Widget {
     private static final int BIG_SPACE_COUNT = 6;
     public static int PERIOD = STANDING_TIME + MOVING_TIME;
 
-    private static final double SPACE_Y = 0.1;
-    private static final double SPACE_X = 0.05;
-    private static final double NAME_WIDTH = 6;
-    private static final double RANK_WIDTH = 1.6;
-    private static final double TOTAL_WIDTH = 1.6;
-    private static final double PENALTY_WIDTH = 2.3;
+    protected static final double TOTAL_WIDTH = 1.6;
+    protected static final double PENALTY_WIDTH = 2.2;
 
     private final int plateHeight;
     private final int spaceY;

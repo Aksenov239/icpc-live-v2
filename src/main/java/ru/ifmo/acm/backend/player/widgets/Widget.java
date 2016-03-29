@@ -16,7 +16,16 @@ public abstract class Widget {
     public static final int BASE_HEIGHT = 1080;
 
     public static final double MARGIN = 0.3;
-    private static final double MARGIN_BOTTOM = 0.25;
+    protected static final double SPACE_Y = 0.1;
+    protected static final double SPACE_X = 0.05;
+    protected static final double NAME_WIDTH = 6;
+    protected static final double RANK_WIDTH = 1.6;
+    protected static final double TOTAL_WIDTH = 1.3;
+    protected static final double PENALTY_WIDTH = 2.0;
+    protected static final double PROBLEM_WIDTH = 1;
+    protected static final double STATUS_WIDTH = 2;
+    protected static final int STAR_SIZE = 5;
+
     private boolean visible;
 
     // Colors used in graphics
@@ -192,12 +201,6 @@ public abstract class Widget {
         }
         g.dispose();
     }
-
-    private static final double SPACE_X = 0.05;
-    private static final double NAME_WIDTH = 6;
-    private static final double RANK_WIDTH = 1.6;
-    private static final double TOTAL_WIDTH = 1;
-    private static final double PENALTY_WIDTH = 1.8;
 
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
         Color color = team.getRank() <= 4 ? GOLD_COLOR : team.getRank() <= 8 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
