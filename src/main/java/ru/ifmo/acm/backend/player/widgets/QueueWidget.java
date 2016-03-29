@@ -23,8 +23,8 @@ public class QueueWidget extends Widget {
     private static final double SPACE_X = 0.05;
     private static final double NAME_WIDTH = 6;
     private static final double RANK_WIDTH = 1.6;
-    private static final double PROBLEM_WIDTH = 1.6;
-    private static final double STATUS_WIDTH = 2.3;
+    private static final double PROBLEM_WIDTH = 1;
+    private static final double STATUS_WIDTH = 2;
 
     private static final int STAR_SIZE = 5;
 
@@ -202,7 +202,7 @@ public class QueueWidget extends Widget {
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
+                plateHeight, POSITION_CENTER, teamColor, Color.white, visibilityState);
 
         x += problemWidth + spaceX;
 

@@ -18,34 +18,64 @@ import java.io.IOException;
 public class StandingsWidget extends Widget {
 
     private static final int MOVING_TIME = 500;
-    private final int PLATE_WIDTH = 326;
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
+
+    private static final double SPACE_Y = 0.1;
+    private static final double SPACE_X = 0.05;
+    private static final double NAME_WIDTH = 6;
+    private static final double RANK_WIDTH = 1.6;
+    private static final double TOTAL_WIDTH = 1;
+    private static final double PENALTY_WIDTH = 1.8;
+    private static final double DX = 1;
+
+    private final Font font;
+
+    int baseX;
+    int baseY;
+
+    private final int plateHeight;
+    private final int spaceY;
+    private final int spaceX;
+
+    private final int nameWidth;
+    private final int rankWidth;
+    private final int totalWidth;
+    private final int penaltyWidth;
+
+    private final int dx;
+    private final int dy;
+
     public int PERIOD = STANDING_TIME + MOVING_TIME;
     public int LENGTH;
-    private final double DX = 349;
-    private final double DY = 35;
-    public final static int TEAMS_ON_PAGE = 12;
-    public final Font FONT = Font.decode("Open Sans Italic " + 22);
 
-    private final BufferedImage image;
-    //double opacity;
-    //long last;
+    public final static int TEAMS_ON_PAGE = 12;
+
     int timer;
     int start;
 
     private ContestInfo contestData;
 
-    public StandingsWidget(long updateWait) {
+    public StandingsWidget(int baseX, int baseY, int plateHeight, long updateWait) {
         super(updateWait);
-        BufferedImage image;
-        try {
-            image = ImageIO.read(new File("pics/standings.png"));
-        } catch (IOException e) {
-            image = null;
-        }
-        this.image = image;
         last = System.currentTimeMillis();
+
+        this.baseX = baseX;
+        this.baseY = baseY;
+        this.plateHeight = plateHeight;
+
+        spaceX = (int) Math.round(plateHeight * SPACE_X);
+        spaceY = (int) Math.round(plateHeight * SPACE_Y);
+
+        nameWidth = (int) Math.round(NAME_WIDTH * plateHeight);
+        rankWidth = (int) Math.round(RANK_WIDTH * plateHeight);
+        totalWidth = (int) Math.round(TOTAL_WIDTH * plateHeight);
+        penaltyWidth = (int) Math.round(PENALTY_WIDTH * plateHeight);
+
+        dx = (int) Math.round(DX * plateHeight) + nameWidth + rankWidth + totalWidth + penaltyWidth + 3 * spaceX;
+        dy = plateHeight + spaceY;
+
+        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
     }
 
     public void setState(StandingsData.StandingsType type) {
@@ -124,9 +154,10 @@ public class StandingsWidget extends Widget {
                     dx = (int) ((2 * t * t * t - 3 * t * t) * width);
                 }
             }
-            int x = (int) ((width - (DX + DX + PLATE_WIDTH)) / 2);
-            int y = (int) (height - 32 - 4.5 * DY);
-//            g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
+
+            int x = baseX;
+            int y = baseY;
+
             if (start < LENGTH) {
                 drawStandings(g, x + dx, y, contestData, start);
             }
@@ -144,11 +175,13 @@ public class StandingsWidget extends Widget {
             if (start + i >= LENGTH)
                 break;
             TeamInfo team = contestData.getStandings()[start + i];
-            int dx = (int) (DX * (i / 4));
-            int dy = (int) (DY * (i % 4));
-            g.setFont(FONT);
+            g.setFont(font);
             if (team != null)
-                drawTeamPane(g, team, x + dx, y + dy, PLATE_WIDTH, visibilityState);
+                drawTeamPane(g, team, x + dx * (i / 4), y + dy * (i % 4), plateHeight, visibilityState);
         }
+    }
+
+    public void alignBottom(int y) {
+        baseY = y - 4 * dy;
     }
 }

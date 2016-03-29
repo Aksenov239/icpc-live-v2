@@ -191,24 +191,28 @@ public abstract class Widget {
         }
     }
 
-    private static final double SPLIT = 0.005;
-    public static final double RANK_WIDTH = 0.11;
-    public static final double NAME_WIDTH = 0.60;
-    public static final double SOLVED_WIDTH = 0.10;
-    public static final double PENALTY_WIDTH = 0.17;
+    private static final double SPACE_X = 0.05;
+    private static final double NAME_WIDTH = 6;
+    private static final double RANK_WIDTH = 1.6;
+    private static final double TOTAL_WIDTH = 1;
+    private static final double PENALTY_WIDTH = 1.8;
 
-    void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int width, double state) {
+    void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
         Color color = team.getRank() <= 4 ? GOLD_COLOR : team.getRank() <= 8 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
         if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
-        int height = (int) (width * 0.1);
-        g.setFont(Font.decode("Open Sans Italic " + (int) (height * 0.7)));
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, (int) (width * RANK_WIDTH), height, POSITION_CENTER, color, Color.WHITE, state);
-        x += (int) (width * (RANK_WIDTH + SPLIT));
-        drawTextInRect(g, team.getShortName(), x, y, (int) (width * NAME_WIDTH), height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state);
-        x += (int) (width * (NAME_WIDTH + SPLIT));
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, (int) (width * SOLVED_WIDTH), height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
-        x += (int) (width * (SOLVED_WIDTH + SPLIT));
-        drawTextInRect(g, "" + team.getPenalty(), x, y, (int) (width * PENALTY_WIDTH), height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
+        g.setFont(Font.decode("Open Sans " + (int) Math.round(height * 0.7)));
+        int rankWidth = (int) Math.round(height * RANK_WIDTH);
+        int nameWidth = (int) Math.round(height * NAME_WIDTH);
+        int totalWidth = (int) Math.round(height * TOTAL_WIDTH);
+        int penaltyWidth = (int) Math.round(height * PENALTY_WIDTH);
+        int spaceX = (int) Math.round(height * SPACE_X);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state);
+        x += rankWidth + spaceX;
+        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state);
+        x += nameWidth + spaceX;
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
+        x += totalWidth + spaceX;
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
     }
 
     protected void update() {

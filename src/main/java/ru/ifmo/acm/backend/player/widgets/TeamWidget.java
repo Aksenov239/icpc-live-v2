@@ -126,7 +126,7 @@ public class TeamWidget extends VideoWidget {
         g.setFont(FONT1);
         int dx = (int) (this.width * 0.52);
         int dy = (int) (this.height * 0.9);
-        drawTeamPane(g, team, x + dx, y + dy, (int) (this.width * 0.45), 1);
+        drawTeamPane(g, team, x + dx, y + dy, (int) (this.height * 0.1), 1);
 
         g.setFont(FONT2);
         for (int i = 0; i < team.getRuns().length; i++) {

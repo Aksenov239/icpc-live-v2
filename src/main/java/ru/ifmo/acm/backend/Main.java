@@ -55,7 +55,9 @@ public class Main {
         generator.addWidget(new CreepingLineWidget(updateWait));
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
-        generator.addWidget(new StandingsWidget(updateWait));
+        StandingsWidget standingsWidget = new StandingsWidget(502, 825, 39, updateWait);
+        standingsWidget.alignBottom(980);
+        generator.addWidget(standingsWidget);
         generator.addWidget(new QueueWidget(30, 980, 39, 100));
         BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(529, 69,
                 1350, 39, updateWait, 20, true);
