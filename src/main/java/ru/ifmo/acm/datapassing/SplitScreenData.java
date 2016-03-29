@@ -1,6 +1,7 @@
 package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.mainscreen.MainScreenData;
+import ru.ifmo.acm.events.TeamInfo;
 
 public class SplitScreenData implements CachedData {
     public SplitScreenData() {
@@ -23,8 +24,8 @@ public class SplitScreenData implements CachedData {
         Data.cache.refresh(SplitScreenData.class);
     }
 
-    public synchronized boolean setInfoVisible(int controllerId, boolean visible, String type, String teamName) {
-        return controllerDatas[controllerId].setInfoVisible(visible, type, teamName);
+    public synchronized boolean setInfoVisible(int controllerId, boolean visible, String type, TeamInfo teamInfo) {
+        return controllerDatas[controllerId].setInfoVisible(visible, type, teamInfo);
     }
 
     public synchronized boolean isVisible(int controllerId) {

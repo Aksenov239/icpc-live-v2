@@ -44,13 +44,13 @@ public class Main {
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
         generator.addWidget(new GreenScreenWidget(true));
-//        generator.addWidget(new TeamInfoWidget(
-//                updateWait,
-//                Widget.BASE_WIDTH,
-//                Widget.BASE_HEIGHT,
-//                16. / 9,
-//                Integer.parseInt(properties.getProperty("sleep.time"))
-//        ));
+        generator.addWidget(new TeamInfoWidget(
+                updateWait,
+                Widget.BASE_WIDTH,
+                Widget.BASE_HEIGHT,
+                16. / 9,
+                Integer.parseInt(properties.getProperty("sleep.time"))
+        ));
         generator.addWidget(new ClockWidget(updateWait));
         generator.addWidget(new CreepingLineWidget(updateWait));
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));

@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public interface TeamInfo {
+public interface TeamInfo extends Comparable<TeamInfo> {
     int getId();
 
     int getRank();
@@ -22,6 +22,10 @@ public interface TeamInfo {
     long getLastAccepted();
 
     List<RunInfo>[] getRuns();
+
+    default public int compareTo(TeamInfo team) {
+        return this.toString().compareTo(team.toString());
+    }
 
     default SmallTeamInfo getSmallTeamInfo() {
         return new SmallTeamInfo(this);

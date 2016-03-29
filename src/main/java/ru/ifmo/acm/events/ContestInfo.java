@@ -9,7 +9,8 @@ public abstract class ContestInfo {
     protected final long totalTime = 0;
     public List<ProblemInfo> problems;
 
-    protected ContestInfo() {}
+    protected ContestInfo() {
+    }
 
     protected ContestInfo(int problemNumber) {
         this.problemNumber = problemNumber;
@@ -23,7 +24,7 @@ public abstract class ContestInfo {
         return problemNumber;
     }
 
-    public long getStartTime(){
+    public long getStartTime() {
         return startTime;
     }
 
@@ -33,6 +34,10 @@ public abstract class ContestInfo {
 
     public long getCurrentTime() {
         return startTime == 0 ? 0 : System.currentTimeMillis() - startTime;
+    }
+
+    public boolean isFrozen() {
+        return getCurrentTime() >= 4 * 60 * 60;
     }
 
     public abstract TeamInfo getParticipant(String name);

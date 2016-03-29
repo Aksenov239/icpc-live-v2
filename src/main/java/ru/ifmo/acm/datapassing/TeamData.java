@@ -28,17 +28,8 @@ public class TeamData implements CachedData {
         Data.cache.refresh(TeamData.class);
     }
 
-    public synchronized boolean setInfoVisible(boolean visible, String type, String teamValue) {
+    public synchronized boolean setInfoVisible(boolean visible, String type, TeamInfo teamInfo) {
         if (visible) {
-            String alias = null;
-            if (teamValue != null) {
-                alias = teamValue.split("[:.]")[1].trim();
-            }
-            System.err.println("Trying to find " + alias);
-            TeamInfo teamInfo = MainScreenData.getProperties().contestInfo.getParticipant(alias);
-            if (teamInfo == null) {
-                return false;
-            }
             if (((teamInfo.getId() == teamId && infoType.equals(type))
                     || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible) {
                 return false;
@@ -46,11 +37,11 @@ public class TeamData implements CachedData {
             timestamp = System.currentTimeMillis();
             isVisible = true;
             infoType = type;
-            currentTeamValue = teamValue;
+            currentTeamValue = teamInfo.getName();
             teamName = teamInfo.getName();
             teamId = teamInfo.getId();
 
-            System.err.println(alias + " " + teamId);
+            System.err.println(teamInfo.getName() + " " + teamId);
         } else {
             isVisible = false;
             timestamp = System.currentTimeMillis();

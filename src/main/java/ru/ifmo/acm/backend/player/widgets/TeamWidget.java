@@ -43,20 +43,35 @@ public class TeamWidget extends VideoWidget {
     private int heightVideo;
     private int width;
     private int height;
+
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
-        super(x, y, (int)(height * aspectRatio), height, sleepTime, 0);
+        super(x, y, (int) (height * aspectRatio), height, sleepTime, 0);
         this.width = width;
         this.height = height;
-        this.widthVideo = (int)(height * aspectRatio);
+        this.widthVideo = (int) (height * aspectRatio);
         this.heightVideo = height;
         this.xVideo = x + width - widthVideo;
         this.yVideo = y;
         teamId = -1;
     }
 
+    public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime, boolean full) {
+        this(x, y, width, height, aspectRatio, sleepTime);
+
+        if (full) {
+            int problems = Preparation.eventsLoader.getContestData().getProblemsNumber();
+
+            Y = 17;
+            GAP_Y = 4;
+            GAP_X = 4;
+            HEIGHT = (int) (1. * (height - Y - (problems - 1) * GAP_Y) / problems);
+        }
+    }
+
     protected int getTeamId() {
         return teamId;
     }
+
     public void setTeamId(int id) {
         teamId = id;
     }

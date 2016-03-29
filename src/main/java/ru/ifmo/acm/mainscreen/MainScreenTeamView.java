@@ -6,6 +6,10 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.backend.player.widgets.TeamWidget;
+import ru.ifmo.acm.events.EventsLoader;
+import ru.ifmo.acm.events.PCMS.PCMSContestInfo;
+import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFContestInfo;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -64,15 +68,17 @@ public class MainScreenTeamView extends CustomComponent implements View {
         //teamSelection.setRows(mainScreenData.teamStatus.teamNames.length);
 
         teamSelection = new OptionGroup();
-        for (String name : MainScreenData.getProperties().teamNames) {
-            teamSelection.addItem(name);
+        for (TeamInfo team : MainScreenData.getProperties().teamInfos) {
+            teamSelection.addItem(team);
+            teamSelection.setItemCaption(team, team.toString());
+//            System.err.println(team.toString());
         }
         teamSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         teamSelection.setWidth("100%");
 
         teamSelection.addValueChangeListener(event -> {
             if (mainScreenData.teamData.isVisible() &&
-                    !mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
+                    !mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                 teamSelection.setValue(mainScreenData.teamData.getTeamString());
                 Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
             }
@@ -80,7 +86,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
-            if (!mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
+            if (!mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                 Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
             }
         });
