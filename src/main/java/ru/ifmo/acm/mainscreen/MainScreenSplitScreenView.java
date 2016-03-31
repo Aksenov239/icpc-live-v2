@@ -63,6 +63,14 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
         labels[id] = new Label("Controller " + (id + 1) + " (" + getTeamStatus(id) + ")");
         automated[id] = new CheckBox("Automated");
 
+        automated[id].addValueChangeListener(event -> {
+            types[id].setValue(automated[id].getValue() ? null : TeamWidget.types[0]);
+            types[id].setEnabled(automated[id].isEmpty());
+
+            shows[id].setEnabled(automated[id].isEmpty());
+            hides[id].setEnabled(automated[id].isEmpty());
+        });
+
         types[id] = new OptionGroup();
         types[id].addItems(TeamWidget.types);
         types[id].setNullSelectionAllowed(false);
@@ -76,22 +84,22 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
         shows[id] = new Button("Show");
         shows[id].addClickListener(event -> {
                     mainScreenData.splitScreenData.isAutomatic[id] = !automated[id].isEmpty();
-                    if (!automated[id].isEmpty()) {
-                        Notification.show("You can not use this button in automatic mode");
-                    } else {
-                        try {
-                            int teamId = Integer.parseInt(teams[id].getValue());
-                            TeamInfo team = MainScreenData.getProperties().contestInfo.getParticipant(teamId);
-                            if (team == null) {
-                                Notification.show("There is no team with id " + teamId);
-                            }
-                            if (!mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), team)) {
-                                Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
-                            }
-                        } catch (NumberFormatException e) {
-
+//                    if (!automated[id].isEmpty()) {
+//                        Notification.show("You can not use this button in automatic mode");
+//                    } else {
+                    try {
+                        int teamId = Integer.parseInt(teams[id].getValue());
+                        TeamInfo team = MainScreenData.getProperties().contestInfo.getParticipant(teamId);
+                        if (team == null) {
+                            Notification.show("There is no team with id " + teamId);
                         }
+                        if (!mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), team)) {
+                            Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
+                        }
+                    } catch (NumberFormatException e) {
+
                     }
+                    //    }
                 }
         );
 
