@@ -1,16 +1,16 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFEventsLoader;
 import ru.ifmo.acm.events.WF.WFRunInfo;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class QueueWidget extends Widget {
 
@@ -62,6 +62,7 @@ public class QueueWidget extends Widget {
     @Override
     protected void updateImpl(Data data) {
         calculateQueue();
+        setVisible(data.queueData.isQueueVisible());
         lastUpdate = System.currentTimeMillis();
     }
 
