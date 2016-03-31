@@ -175,6 +175,42 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return mainScreenData.breakingNewsData.getStatus();
     }
 
+    /* Queue */
+    final String[] queueStatuses = new String[]{"Queue is shown", "Queue isn't shown"};
+    Label queueStatus;
+    Button queueShow;
+    Button queueHide;
+
+
+    public Component getQueueController() {
+        queueStatus = new Label(getQueueStatus());
+        queueStatus.addStyleName("large");
+
+        queueShow = createQueueButton("Show queue", true, 0);
+        queueHide = createQueueButton("Hide queue", false, 1);
+
+        CssLayout group = createGroupLayout(queueShow, queueHide);
+
+        VerticalLayout panel = new VerticalLayout(queueStatus, group);
+        setPanelDefaults(panel);
+        return panel;
+    }
+
+    public String getQueueStatus() {
+        boolean status = mainScreenData.queueData.isQueueVisible();
+        return status ? queueStatuses[0] : queueStatuses[1];
+    }
+
+    private Button createQueueButton(String name, boolean visibility, int status) {
+        Button button = new Button(name);
+        button.addClickListener(event -> {
+            mainScreenData.queueData.setVisible(visibility);
+            queueStatus.setValue(queueStatuses[status]);
+        });
+
+        return button;
+    }
+
     /* mainscreen */
     MainScreenData mainScreenData;
 
@@ -182,6 +218,8 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         clockStatus.setValue(getClockStatus());
         standingsStatus.setValue(getStandingsStatus());
         breakingNewsStatus.setValue(getBreakingNewsStatus());
+        queueStatus.setValue(getQueueStatus());
+
         mainScreenData.update();
     }
 
@@ -191,8 +229,9 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         Component clockController = getClockController();
         Component standingsController = getStandingsController();
         Component breakingNewsController = getBreakingNewsController();
+        Component queueStatus = getQueueController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController, breakingNewsController);
+        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController, breakingNewsController, queueStatus);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }
