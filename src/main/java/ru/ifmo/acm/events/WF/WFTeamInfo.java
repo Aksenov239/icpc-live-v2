@@ -24,6 +24,8 @@ public class WFTeamInfo implements TeamInfo {
 
     public String shortName;
 
+    public String hashTag;
+
     public WFTeamInfo(int problems) {
         problem_runs = new ArrayList[problems];
         for (int i = 0; i < problems; i++) {
@@ -79,6 +81,10 @@ public class WFTeamInfo implements TeamInfo {
 
     public long getLastAccepted() {
         return lastAccepted;
+    }
+
+    public String getHashTag() {
+        return hashTag;
     }
 
     public void addRun(RunInfo run, int problemId){

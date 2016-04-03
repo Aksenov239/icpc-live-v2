@@ -12,8 +12,8 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.awt.*;
-import java.util.*;
 import java.io.*;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -27,11 +27,12 @@ public class WFEventsLoader extends EventsLoader {
     private String url;
     private String teamsInfoURL;
     private String problemsInfoURL;
+    private String hashTagsURL;
     private String login;
     private String password;
 
     private boolean emulation;
-    private final double EMULATION_SPEED = 30;
+    private final double EMULATION_SPEED = 1;
 
     public WFEventsLoader() {
         try {
@@ -51,6 +52,7 @@ public class WFEventsLoader extends EventsLoader {
 
             problemsInfoURL = properties.getProperty("problems.url");
             teamsInfoURL = properties.getProperty("teams.url");
+            hashTagsURL = properties.getProperty("hashtags.url");
 
             initialize();
         } catch (IOException e) {
@@ -97,7 +99,7 @@ public class WFEventsLoader extends EventsLoader {
     private WFTeamInfo[] teamsInfoRead(int problemsNumber) throws IOException {
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(Preparation.openAuthorizedStream(teamsInfoURL, login, password), "utf8"));
-        ArrayList<WFTeamInfo> infos = new ArrayList<>();
+        ArrayList<WFTeamInfo> infos = new ArrayList<WFTeamInfo>();
         String line;
         while ((line = br.readLine()) != null) {
             String[] z = line.split("\\t");
@@ -110,6 +112,21 @@ public class WFEventsLoader extends EventsLoader {
             team.shortName = z[5];
             infos.add(team);
         }
+
+        br = new BufferedReader(
+                new InputStreamReader(Preparation.openAuthorizedStream(hashTagsURL, login, password), "utf8"));
+        while ((line = br.readLine()) != null) {
+            String[] z = line.split("\\t");
+            String shortName = z[3];
+            String hashTag = z[6];
+            for (WFTeamInfo info : infos) {
+                if (info.shortName.equals(shortName)) {
+//                    System.err.println(shortName + " " + hashTag);
+                    info.hashTag = hashTag.substring(1);
+                }
+            }
+        }
+
         return infos.toArray(new WFTeamInfo[0]);
     }
 

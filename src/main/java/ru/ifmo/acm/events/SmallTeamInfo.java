@@ -47,4 +47,6 @@ public class SmallTeamInfo implements TeamInfo {
     public List<RunInfo>[] getRuns() {
         return null;
     }
+
+    public String getHashTag() { return null; }
 }

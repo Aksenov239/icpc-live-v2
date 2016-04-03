@@ -44,6 +44,8 @@ public abstract class ContestInfo {
 
     public abstract TeamInfo getParticipant(int id);
 
+    public abstract TeamInfo getParticipantByHashTag(String hashTag);
+
     public abstract TeamInfo[] getStandings();
 
     public abstract long[] firstTimeSolved();

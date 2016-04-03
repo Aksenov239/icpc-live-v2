@@ -23,6 +23,8 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     List<RunInfo>[] getRuns();
 
+    String getHashTag();
+
     default public int compareTo(TeamInfo team) {
         return this.toString().compareTo(team.toString());
     }

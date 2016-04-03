@@ -139,9 +139,9 @@ public class TeamWidget extends VideoWidget {
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
         g.setFont(FONT1);
-        int dx = (int) (this.width * 0.52);
-        int dy = (int) (this.height * 0.9);
-        drawTeamPane(g, team, x + dx, y + dy, (int) (this.height * 0.1), 1);
+        int dx = (int) (this.width * 0.45);
+        int dy = (int) (this.height * 0.85);
+        drawTeamPane(g, team, x + dx, y + dy, (int) (this.height * 0.08), 1);
 
         g.setFont(FONT2);
         for (int i = 0; i < team.getRuns().length; i++) {

@@ -12,74 +12,74 @@ import java.util.List;
  * Created by aksenov on 05.05.2015.
  */
 public class WFContestInfo extends ContestInfo {
-	private WFRunInfo[] runs;
-	String[] languages;
-	private WFTeamInfo[] teamInfos;
-	public long[] timeFirstSolved;
+    private WFRunInfo[] runs;
+    String[] languages;
+    private WFTeamInfo[] teamInfos;
+    public long[] timeFirstSolved;
     private int maxRunId;
-	WFRunInfo[] firstSolvedRun;
+    WFRunInfo[] firstSolvedRun;
 
-	private WFTeamInfo[] standings = null;
+    private WFTeamInfo[] standings = null;
 
-	public WFContestInfo(int problemsNumber, int teamsNumber) {
+    public WFContestInfo(int problemsNumber, int teamsNumber) {
         problemNumber = problemsNumber;
         teamNumber = teamsNumber;
-		teamInfos = new WFTeamInfo[teamsNumber];
-		timeFirstSolved = new long[problemsNumber];
-		languages = new String[4];
-		runs = new WFRunInfo[1000000];
-		firstSolvedRun = new WFRunInfo[problemsNumber];
-	}
+        teamInfos = new WFTeamInfo[teamsNumber];
+        timeFirstSolved = new long[problemsNumber];
+        languages = new String[4];
+        runs = new WFRunInfo[1000000];
+        firstSolvedRun = new WFRunInfo[problemsNumber];
+    }
 
-	void recalcStandings() {
-		WFTeamInfo[] standings = new WFTeamInfo[teamNumber];
-		int n = 0;
-		Arrays.fill(timeFirstSolved, Integer.MAX_VALUE);
-		Arrays.fill(firstSolvedRun, null);
-		for (WFTeamInfo team : teamInfos) {
-			if (team == null)
-				continue;
+    void recalcStandings() {
+        WFTeamInfo[] standings = new WFTeamInfo[teamNumber];
+        int n = 0;
+        Arrays.fill(timeFirstSolved, Integer.MAX_VALUE);
+        Arrays.fill(firstSolvedRun, null);
+        for (WFTeamInfo team : teamInfos) {
+            if (team == null)
+                continue;
 
-			team.solved = 0;
-			team.penalty = 0;
-			team.lastAccepted = 0;
-			for (int j = 0; j < problemNumber; j++) {
-				List<RunInfo> runs = team.getRuns()[j];
-				int wrong = 0;
-				for (RunInfo run : runs) {
-					WFRunInfo wfrun = (WFRunInfo) run;
-					if ("AC".equals(run.getResult())) {
-						team.solved++;
-						int time = (int) (wfrun.getTime() / 60 / 1000);
-						team.penalty += wrong * 20 + time;
-						team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
-						if (wfrun.getTime() < timeFirstSolved[j]) {
-							timeFirstSolved[j] = wfrun.getTime();
-							firstSolvedRun[j] = wfrun;
-						}
-						break;
-					} else if (wfrun.getResult().length() > 0) {
-						wrong++;
-					}
-				}
-			}
-			standings[n++] = team;
-		}
+            team.solved = 0;
+            team.penalty = 0;
+            team.lastAccepted = 0;
+            for (int j = 0; j < problemNumber; j++) {
+                List<RunInfo> runs = team.getRuns()[j];
+                int wrong = 0;
+                for (RunInfo run : runs) {
+                    WFRunInfo wfrun = (WFRunInfo) run;
+                    if ("AC".equals(run.getResult())) {
+                        team.solved++;
+                        int time = (int) (wfrun.getTime() / 60 / 1000);
+                        team.penalty += wrong * 20 + time;
+                        team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
+                        if (wfrun.getTime() < timeFirstSolved[j]) {
+                            timeFirstSolved[j] = wfrun.getTime();
+                            firstSolvedRun[j] = wfrun;
+                        }
+                        break;
+                    } else if (wfrun.getResult().length() > 0) {
+                        wrong++;
+                    }
+                }
+            }
+            standings[n++] = team;
+        }
 
-		Arrays.sort(standings, 0, n, TeamInfo.comparator);
+        Arrays.sort(standings, 0, n, TeamInfo.comparator);
 
-		for (int i = 0; i < n; i++) {
-			if (i > 0 && TeamInfo.comparator.compare(standings[i], standings[i - 1]) == 0) {
-				standings[i].rank = standings[i - 1].rank;
-			} else {
-				standings[i].rank = i + 1;
-			}
-		}
-		this.standings = standings;
-	}
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && TeamInfo.comparator.compare(standings[i], standings[i - 1]) == 0) {
+                standings[i].rank = standings[i - 1].rank;
+            } else {
+                standings[i].rank = i + 1;
+            }
+        }
+        this.standings = standings;
+    }
 
     void recalcStandings(WFTeamInfo[] standings) {
-        for (WFTeamInfo team: standings) {
+        for (WFTeamInfo team : standings) {
             team.solved = 0;
             team.penalty = 0;
             team.lastAccepted = 0;
@@ -113,74 +113,83 @@ public class WFContestInfo extends ContestInfo {
     }
 
 
-	public void addTeam(WFTeamInfo team) {
-		teamInfos[team.getId()] = team;
-	}
+    public void addTeam(WFTeamInfo team) {
+        teamInfos[team.getId()] = team;
+    }
 
-	public boolean runExists(int id) {
-		return runs[id] != null;
-	}
+    public boolean runExists(int id) {
+        return runs[id] != null;
+    }
 
-	public WFRunInfo getRun(int id) {
-		return runs[id];
-	}
+    public WFRunInfo getRun(int id) {
+        return runs[id];
+    }
 
-	public void addRun(WFRunInfo run) {
+    public void addRun(WFRunInfo run) {
 //		System.err.println("add run: " + run);
-		if (!runExists(run.getId())) {
+        if (!runExists(run.getId())) {
             maxRunId = Math.max(maxRunId, run.getId());
-			runs[run.getId()] = run;
-			teamInfos[run.getTeamId()].addRun(run, run.getProblemNumber());
-		}
-	}
+            runs[run.getId()] = run;
+            teamInfos[run.getTeamId()].addRun(run, run.getProblemNumber());
+        }
+    }
 
     public int getMaxRunId() {
         return maxRunId;
     }
 
-	public void addTest(WFTestCaseInfo test) {
+    public void addTest(WFTestCaseInfo test) {
 //		System.out.println("Adding test " + test.id + " to run " + test.run);
-		if (runExists(test.run)) {
-			runs[test.run].add(test);
+        if (runExists(test.run)) {
+            runs[test.run].add(test);
 //			System.out.println("Run " + runs[test.run] + " passed " + runs[test.run].getPassedTestsNumber() + " tests");
-		}
-	}
+        }
+    }
 
-	@Override
-	public TeamInfo getParticipant(String name) {
-		for (int i = 0; i < teamNumber; i++) {
-			if (teamInfos[i].getName().equals(name) || teamInfos[i].getShortName().equals(name)) {
-				return teamInfos[i];
-			}
-		}
-		return null;
-	}
+    @Override
+    public TeamInfo getParticipant(String name) {
+        for (int i = 0; i < teamNumber; i++) {
+            if (teamInfos[i].getName().equals(name) || teamInfos[i].getShortName().equals(name)) {
+                return teamInfos[i];
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public TeamInfo getParticipant(int id) {
-		return teamInfos[id];
-	}
+    @Override
+    public TeamInfo getParticipant(int id) {
+        return teamInfos[id];
+    }
 
-	public TeamInfo[] getStandings() {
-		return standings;
-	}
+    public TeamInfo[] getStandings() {
+        return standings;
+    }
 
-	@Override
-	public long[] firstTimeSolved() {
-		return timeFirstSolved;
-	}
+    @Override
+    public long[] firstTimeSolved() {
+        return timeFirstSolved;
+    }
 
-	@Override
-	public RunInfo[] firstSolvedRun() {
-		return firstSolvedRun;
-	}
+    @Override
+    public RunInfo[] firstSolvedRun() {
+        return firstSolvedRun;
+    }
 
-	@Override
-	public RunInfo[] getRuns() {
-		return runs;
-	}
+    @Override
+    public RunInfo[] getRuns() {
+        return runs;
+    }
 
-	public TeamInfo[] getPossibleStandings(boolean isOptimistic) {
+    public WFTeamInfo getParticipantByHashTag(String hashTag) {
+        for (int i = 0; i < teamNumber; i++) {
+            if (hashTag != null && hashTag.equals(teamInfos[i].getHashTag())) {
+                return teamInfos[i];
+            }
+        }
+        return null;
+    }
+
+    public TeamInfo[] getPossibleStandings(boolean isOptimistic) {
         WFTeamInfo[] possibleStandings = new WFTeamInfo[teamNumber];
         int teamIndex = 0;
         for (WFTeamInfo team : standings) {
@@ -196,7 +205,7 @@ public class WFContestInfo extends ContestInfo {
                         String expectedResult = isOptimistic ? "AC" : "WA";
                         clonedRun.result = (runIndex == runs.size() - 1) ? expectedResult : "WA";
                     }
-					possibleStandings[teamIndex].addRun(clonedRun, j);
+                    possibleStandings[teamIndex].addRun(clonedRun, j);
                     runIndex++;
                 }
             }

@@ -5,6 +5,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author: pashka
@@ -129,6 +130,24 @@ public abstract class Widget {
         return visible;
     }
 
+    Font adjustFont(Graphics2D gT, String text, int width, int height, double percent) {
+        Graphics2D g = (Graphics2D) gT.create();
+        int l = 7;
+        int r = 100;
+        while (l < r - 1) {
+            int m = (l + r) >> 1;
+            g.setFont(Font.decode("Open Sans " + m));
+            Rectangle2D sb = g.getFontMetrics().getStringBounds(text, g);
+            if (sb.getWidth() < percent * width && sb.getHeight() < percent * height) {
+                l = m;
+            } else {
+                r = m;
+            }
+        }
+        g.dispose();
+        return Font.decode("Open Sans " + l);
+    }
+
     void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
         g.setComposite(AlphaComposite.SrcOver.derive(1f));
         g.setColor(color);
@@ -184,7 +203,15 @@ public abstract class Widget {
         drawRect(g, x, y, width, height, color, opacity);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
+
         FontMetrics wh = g.getFontMetrics();
+
+//        if (wh.getStringBounds(text, g).getWidth() > width * 0.95) {
+        Font adjustedFont = adjustFont(g, text, width, height, 0.95);
+        g.setFont(adjustedFont);
+        wh = g.getFontMetrics();
+//        }
+
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
                 - 0.03f * height;
         if (position == POSITION_LEFT) {
