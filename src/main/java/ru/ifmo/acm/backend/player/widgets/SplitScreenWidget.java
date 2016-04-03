@@ -167,9 +167,13 @@ public class SplitScreenWidget extends Widget {
                     chooseNewStream(i);
                 }
             } else {
-                automatic[i] = false;
-                if (data.splitScreenData.getTeamId(i) == -1)
+                if (data.splitScreenData.getTeamId(i) == -1) {
+                    if (System.currentTimeMillis() > lastSwitch[i] + switchTime) {
+                        chooseNewStream(i);
+                    }
                     continue;
+                }
+                automatic[i] = false;
                 if ((data.splitScreenData.getTeamId(i) != teamInfoWidgets[i].getTeamId()
                         && !data.splitScreenData.infoStatus(i).equals(currentInfoType[i])) &&
                         teamInfoWidgets[i].readyToShow()) {
@@ -177,7 +181,7 @@ public class SplitScreenWidget extends Widget {
                     teamInfoWidgets[i].change(
                             TeamWidget.getUrl(
                                     Preparation.eventsLoader.getContestData().getParticipant(data.splitScreenData.getTeamId(i)),
-                                    data.splitScreenData.infoStatus(i)
+                                    data.splitScreenData.controllerDatas[i].infoType
                             )
                     );
                 }

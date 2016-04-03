@@ -71,6 +71,9 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
 
             shows[id].setEnabled(!auto);
             hides[id].setEnabled(!auto);
+            if (auto) {
+                mainScreenData.splitScreenData.isAutomatic[id] = true;
+            }
         });
 
         types[id] = new OptionGroup();
@@ -80,6 +83,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
         types[id].addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         types[id].setWidth("50%");
         types[id].setEnabled(false);
+        mainScreenData.splitScreenData.controllerDatas[id].infoType = TeamWidget.types[0];
 
         teams[id] = new TextField("Team: ");
         teams[id].setSizeFull();

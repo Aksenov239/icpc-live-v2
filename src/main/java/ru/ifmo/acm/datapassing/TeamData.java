@@ -41,7 +41,7 @@ public class TeamData implements CachedData {
             teamName = teamInfo.getName();
             teamId = teamInfo.getId();
 
-            System.err.println(teamInfo.getName() + " " + teamId);
+            System.err.println(teamInfo.getName() + " " + teamId + " " + type);
         } else {
             isVisible = false;
             timestamp = System.currentTimeMillis();

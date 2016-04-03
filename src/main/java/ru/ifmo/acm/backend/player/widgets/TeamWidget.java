@@ -218,7 +218,7 @@ public class TeamWidget extends VideoWidget {
             System.err.println("change " + hall + " " + place);
             return String.format(urlTemplates.get(infoType), hall, place);
         } else if (team instanceof WFTeamInfo) {
-            System.err.println("change " + (team.getId() + 1));
+            System.err.println("change " + (team.getId() + 1) + " " + infoType);
             return String.format(urlTemplates.get(infoType), team.getId() + 1);
         }
         return null;
