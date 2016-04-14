@@ -5,6 +5,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -190,15 +191,16 @@ public abstract class Widget {
         if (text == null) {
             text = "NULL";
         }
+        int textWidth = g.getFontMetrics().stringWidth(text);
         if (width == -1) {
-            int w = g.getFontMetrics().stringWidth(text);
-            width = (int) (w + 2.5 * height * MARGIN);
+            width = (int) (textWidth + 2 * height * MARGIN);
             if (position == POSITION_CENTER) {
                 x -= width / 2;
             } else if (position == POSITION_RIGHT) {
                 x -= width;
             }
         }
+
         if (opacity == 0) return;
         drawRect(g, x, y, width, height, color, opacity);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
@@ -207,25 +209,36 @@ public abstract class Widget {
         FontMetrics wh = g.getFontMetrics();
 
 //        if (wh.getStringBounds(text, g).getWidth() > width * 0.95) {
-        Font adjustedFont = adjustFont(g, text, width, height, 0.95);
-        g.setFont(adjustedFont);
-        wh = g.getFontMetrics();
+//        Font adjustedFont = adjustFont(g, text, width, height, 0.95);
+//        g.setFont(adjustedFont);
+//        wh = g.getFontMetrics();
 //        }
+
+        int maxTextWidth = (int) (width - 2 * height * MARGIN);
+        double textScale = 1;
+        if (textWidth > maxTextWidth) {
+            textScale = 1.0 * maxTextWidth / textWidth;
+        }
 
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
                 - 0.03f * height;
+        float xx;
         if (position == POSITION_LEFT) {
-            float xx = x + (float) (height * MARGIN);
-            g.drawString(text, xx, yy);
+            xx = x + (float) (height * MARGIN);
         } else if (position == POSITION_CENTER) {
             int w = g.getFontMetrics().stringWidth(text);
-            float xx = x + (width - w) / 2;
-            g.drawString(text, xx, yy);
+            xx = x + (width - w) / 2;
         } else {
             int w = g.getFontMetrics().stringWidth(text);
-            float xx = x + width - w - (float) (1.5 * height * MARGIN);
-            g.drawString(text, xx, yy);
+            xx = x + width - w - (float) (1.5 * height * MARGIN);
         }
+        AffineTransform transform = g.getTransform();
+        transform.concatenate(AffineTransform.getTranslateInstance(xx, yy));
+        transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
+        g.setTransform(transform);
+//        g.translate(xx, yy);
+//        g.getTransform().concatenate();
+        g.drawString(text, 0, 0);
         g.dispose();
     }
 
