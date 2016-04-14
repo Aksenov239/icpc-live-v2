@@ -44,6 +44,8 @@ public class TeamWidget extends VideoWidget {
     private int width;
     private int height;
 
+    VideoWidget smallVideo = null;
+
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
         super(x, y, (int) (height * aspectRatio), height, sleepTime, 0);
         this.width = width;
@@ -53,6 +55,12 @@ public class TeamWidget extends VideoWidget {
         this.xVideo = x + width - widthVideo;
         this.yVideo = y;
         teamId = -1;
+
+        int xSmallVideo = x + (int) (width * 0.1);
+        int ySmallVideo = y + (int) (height * 0.1);
+        int hSmallVideo = (int) (height * 0.2);
+        int wSmallVideo = (int) (hSmallVideo * aspectRatio);
+        smallVideo = new VideoWidget(xSmallVideo, ySmallVideo, hSmallVideo, wSmallVideo, sleepTime, 0);
     }
 
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime, boolean full) {
@@ -124,11 +132,17 @@ public class TeamWidget extends VideoWidget {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
             inChange.set(false);
+            smallVideo.switchManually();
         }
 
         if (URL.get() == null || URL.get().contains("info")) {
             return;
         }
+
+        if (smallVideo != null && smallVideo.URL.get() != null) {
+            smallVideo.paintImpl(g, width, height);
+        }
+
         if (currentProblemId >= 0) {
             drawReplay(g, x, y, this.width, this.height);
         }
@@ -200,12 +214,18 @@ public class TeamWidget extends VideoWidget {
 
     public void change(TeamInfo team, String infoType) {
         change(getUrl(team, infoType));
+        if (!infoType.equals("camera")) {
+            smallVideo.changeManually(getUrl(team, "camera"));
+        } else {
+            smallVideo.changeManually(getUrl(team, "screen"));
+        }
         nextProblemId = -1;
         teamId = team.getId();
     }
 
     public void change(RunInfo run) {
         change(getUrl(run));
+        smallVideo.stop();
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
     }
