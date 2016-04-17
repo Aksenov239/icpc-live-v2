@@ -1,5 +1,6 @@
 package ru.ifmo.acm.mainscreen;
 
+import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
@@ -26,7 +27,18 @@ public class MainScreenProperties {
         personTimeToShow = Long.parseLong(properties.getProperty("person.time")) + latency;
 
         sleepTime = Integer.parseInt(properties.getProperty("sleep.time"));
+        automatedShowTime = Integer.parseInt(properties.getProperty("automated.show.time"));
+        automatedInfo = properties.getProperty("automated.info");
         EventsLoader loader = EventsLoader.getInstance();
+
+        Utils.StoppedThread loaderThread = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+            public void run() {
+                loader.run();
+            }
+        });
+
+        ContextListener.addThread(loaderThread);
+
         contestInfo = loader.getContestData();
 
         teamInfos = contestInfo.getStandings();
@@ -36,12 +48,14 @@ public class MainScreenProperties {
                 if (((PCMSTeamInfo) teamInfos[i]).getAlias().startsWith("S")) {
                     teamInfos[l++] = teamInfos[i];
                 }
-            } if (teamInfos[i] instanceof WFTeamInfo) {
+            } else if (teamInfos[i] instanceof WFTeamInfo) {
                 l++;
             }
         }
         teamInfos = Arrays.copyOf(teamInfos, l);
         Arrays.sort(teamInfos);
+
+        loaderThread.start();
 
         cameraNumber = Integer.parseInt(properties.getProperty("camera.number", "0"));
 
@@ -67,6 +81,8 @@ public class MainScreenProperties {
 
     // Team
     public final int sleepTime;
+    public final int automatedShowTime;
+    public final String automatedInfo;
     public final ContestInfo contestInfo;
     public TeamInfo[] teamInfos;
 

@@ -56,11 +56,11 @@ public class TeamWidget extends VideoWidget {
         this.yVideo = y;
         teamId = -1;
 
-        int xSmallVideo = x + (int) (width * 0.1);
-        int ySmallVideo = y + (int) (height * 0.1);
-        int hSmallVideo = (int) (height * 0.2);
+        int xSmallVideo = x + (int) (width * 0.7);
+        int ySmallVideo = y + (int) (height * 0.6);
+        int hSmallVideo = (int) (height * 0.25);
         int wSmallVideo = (int) (hSmallVideo * aspectRatio);
-        smallVideo = new VideoWidget(xSmallVideo, ySmallVideo, hSmallVideo, wSmallVideo, sleepTime, 0);
+        smallVideo = new VideoWidget(xSmallVideo, ySmallVideo, wSmallVideo, hSmallVideo, sleepTime, 0);
     }
 
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime, boolean full) {
@@ -128,9 +128,10 @@ public class TeamWidget extends VideoWidget {
         if (team != null && URL.get() != null) {
             g.drawImage(image.get(), xVideo, yVideo, null);
         }
-        if (inChange.get() || team == null) {
+        if (inChange.get()) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
+//            System.err.println(this + " " + inChange);
             inChange.set(false);
             smallVideo.switchManually();
         }
@@ -154,7 +155,7 @@ public class TeamWidget extends VideoWidget {
 //        if (teamId == null) return;
         g.setFont(FONT1);
         int dx = (int) (this.width * 0.45);
-        int dy = (int) (this.height * 0.85);
+        int dy = (int) (this.height * 0.9);
         drawTeamPane(g, team, x + dx, y + dy, (int) (this.height * 0.08), 1);
 
         g.setFont(FONT2);
@@ -225,7 +226,7 @@ public class TeamWidget extends VideoWidget {
 
     public void change(RunInfo run) {
         change(getUrl(run));
-        smallVideo.stop();
+        smallVideo.changeManually(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
     }

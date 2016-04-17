@@ -43,7 +43,7 @@ public class TeamInfoWidget extends TeamWidget {
                     return;
                 }
 
-                change(TeamWidget.getUrl(team, data.teamData.infoType));
+                change(team, data.teamData.infoType);
                 teamId = data.teamData.getTeamId();
                 currentInfoType = data.teamData.infoType;
             }

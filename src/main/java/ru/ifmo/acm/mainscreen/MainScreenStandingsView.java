@@ -137,10 +137,20 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig, standingsHide);
         standingsOptimismLevel = new OptionGroup();
-        for (StandingsData.OptimismLevel type: StandingsData.OptimismLevel.values()) {
+        for (StandingsData.OptimismLevel type : StandingsData.OptimismLevel.values()) {
             standingsOptimismLevel.addItem(type);
         }
         standingsOptimismLevel.setValue(StandingsData.OptimismLevel.NORMAL);
+
+        standingsOptimismLevel.addValueChangeListener(e -> {
+            mainScreenData.standingsData.setStandingsVisible(
+                    mainScreenData.standingsData.isVisible,
+                    mainScreenData.standingsData.standingsType,
+                    mainScreenData.standingsData.isBig,
+                    StandingsData.OptimismLevel.valueOf(standingsOptimismLevel.getValue().toString().toUpperCase())
+            );
+            standingsStatus.setValue(getStandingsStatus());
+        });
 
         VerticalLayout panel = new VerticalLayout(
                 standingsStatus,

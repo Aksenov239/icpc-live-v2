@@ -10,7 +10,7 @@ import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -168,7 +168,22 @@ public class BigStandingsWidget extends Widget {
             standings = contestData.getStandings();
         }
 
+
         if (contestData == null || standings == null) return;
+
+        RunInfo[] firstSolved = new RunInfo[contestData.problemNumber];
+        for (TeamInfo team : standings) {
+            for (int p = 0; p < firstSolved.length; p++) {
+                for (RunInfo run : team.getRuns()[p]) {
+                    if ("AC".equals(run.getResult()) &&
+                            (firstSolved[p] == null || run.getTime() < firstSolved[p].getTime())) {
+                        firstSolved[p] = run;
+                        break;
+                    }
+                }
+            }
+        }
+
         length = Math.min(contestData.getTeamsNumber(), standings.length);
 
         if (desiredTeamPositions == null || desiredTeamPositions.length != contestData.getTeamsNumber() + 1) {
@@ -207,7 +222,7 @@ public class BigStandingsWidget extends Widget {
                 }
             }
 
-            drawHead(g, spaceX, 0, contestData.getProblemsNumber());
+            drawHead(g, spaceX, 0, firstSolved);
             g = (Graphics2D) g.create();
             int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
             g.clip(new Rectangle(-plateHeight, initY - STAR_SIZE * 2, this.width + 2 * plateHeight, (spaceY + plateHeight) * teamsOnPage + initY + STAR_SIZE * 2));
@@ -242,7 +257,7 @@ public class BigStandingsWidget extends Widget {
                 }
                 double yy = currentTeamPositions[id] - start;
                 if (yy > -1 && yy < teamsOnPage) {
-                    drawFullTeamPane(g, teamInfo, spaceX, initY + (int) (yy * (plateHeight + spaceY)), bright);
+                    drawFullTeamPane(g, teamInfo, spaceX, initY + (int) (yy * (plateHeight + spaceY)), bright, firstSolved);
                 }
             }
 
@@ -256,23 +271,25 @@ public class BigStandingsWidget extends Widget {
         }
     }
 
-    private void drawHead(Graphics2D g, int x, int y, int problemsNumber) {
+    private void drawHead(Graphics2D g, int x, int y, RunInfo[] firstSolved) {
         g.setFont(font);
-        int problemWidth = problemWidth(problemsNumber);
+        int problemWidth = problemWidth(firstSolved.length);
         drawTextInRect(g, "Current Standings", x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
                 POSITION_CENTER, ACCENT_COLOR, Color.white, visibilityState);
         x += rankWidth + nameWidth + 2 * spaceX;
-        for (int i = 0; i < problemsNumber; i++) {
+        for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
-            Color color = contestData.firstSolvedRun()[i] == null ? MAIN_COLOR : GREEN_COLOR;
+            Color color = contestData.firstSolvedRun()[i] == null ?
+                    firstSolved[i] != null ? ORCHID_COLOR : MAIN_COLOR :
+                    GREEN_COLOR;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
                     POSITION_CENTER, color, Color.white, visibilityState);
             x += problemWidth + spaceX;
         }
     }
 
-    private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y, boolean bright) {
+    private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
         Color mainColor = MAIN_COLOR;
         if (bright) mainColor = mainColor.brighter();
 
@@ -296,18 +313,20 @@ public class BigStandingsWidget extends Widget {
 
         for (int i = 0; i < contestData.getProblemsNumber(); i++) {
             String status = team.getShortProblemState(i);
-            Color statusColor = status.startsWith("+") ? GREEN_COLOR :
-                    status.startsWith("?") ? YELLOW_COLOR :
-                            status.startsWith("-") ? RED_COLOR :
-                                    MAIN_COLOR;
+            boolean reallyUnknown = team.isReallyUnknown(i);
+            Color statusColor = reallyUnknown ? ORCHID_COLOR :
+                    status.startsWith("+") ? GREEN_COLOR :
+                            status.startsWith("?") ? YELLOW_COLOR :
+                                    status.startsWith("-") ? RED_COLOR :
+                                            MAIN_COLOR;
             if (bright) statusColor = statusColor.brighter();
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
             drawTextInRect(g, status, x, y,
                     problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
-            RunInfo firstSolved = contestData.firstSolvedRun()[i];
-            if (firstSolved != null && firstSolved.getTeamId() == team.getId()) {
-                stars.add(new Point(x + problemWidth, y));
+            RunInfo firstSolvedRun = firstSolved[i];
+            if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId()) {
+                stars.add(new Point(x + problemWidth, y + (int) (plateHeight * 0.1)));
             }
             x += problemWidth + spaceX;
         }

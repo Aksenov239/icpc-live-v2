@@ -9,4 +9,5 @@ public interface RunInfo {
     long getTime();
     int getTeamId();
     SmallTeamInfo getTeamInfoBefore();
+    boolean isReallyUnknown();
 }

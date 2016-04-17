@@ -40,34 +40,37 @@ public class VideoWidget extends Widget implements PlayerWidget {
         stopped = new AtomicBoolean();
     }
 
-    PlayerInImage manualTempPlayer;
-    String manualTempURL;
+    private PlayerInImage manualTempPlayer;
+    private String manualTempURL;
 
     public void changeManually(String url) {
         if (url == null) {
+            manualTempURL = null;
+            return;
+        }
+        manualTempPlayer = new PlayerInImage(width, height, null, url);
+        manualTempURL = url;
+        stopped.set(false);
+    }
+
+    public void switchManually() {
+        if (manualTempURL == null) {
             if (!stopped.get()) {
                 URL.set(null);
                 stop();
             }
             return;
         }
-
-        manualTempPlayer = new PlayerInImage(width, height, null, url);
-        manualTempURL = url;
-    }
-
-    public void switchManually() {
         JComponent component = player.getComponent();
         player.setComponent(null);
         manualTempPlayer.setComponent(component);
-        PlayerInImage old = player;
+        if (!stopped.get()) {
+            player.stop();
+        }
         player = manualTempPlayer;
         image.set(player.getImage());
-        if (!stopped.get()) {
-            old.stop();
-        }
-        stopped.set(false);
         URL.set(manualTempURL);
+        stopped.set(false);
     }
 
     public void change(final String url) {

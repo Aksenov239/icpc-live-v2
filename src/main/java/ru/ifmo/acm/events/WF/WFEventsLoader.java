@@ -332,6 +332,8 @@ public class WFEventsLoader extends EventsLoader {
                 // new FileInputStream(new File(properties.getProperty("url"))),
                 // "windows-1251");
 
+                emulation = false;
+
                 long lastTime = 0;
 
                 while (xmlEventReader.hasNext()) {

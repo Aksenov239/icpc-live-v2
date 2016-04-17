@@ -204,6 +204,7 @@ public class WFContestInfo extends ContestInfo {
                         clonedRun.judged = true;
                         String expectedResult = isOptimistic ? "AC" : "WA";
                         clonedRun.result = (runIndex == runs.size() - 1) ? expectedResult : "WA";
+                        clonedRun.reallyUnknown = true;
                     }
                     possibleStandings[teamIndex].addRun(clonedRun, j);
                     runIndex++;

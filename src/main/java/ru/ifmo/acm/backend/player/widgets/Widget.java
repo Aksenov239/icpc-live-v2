@@ -38,6 +38,7 @@ public abstract class Widget {
     public static final Color GREEN_COLOR = new Color(0x1b8041);
     public static final Color YELLOW_COLOR = new Color(0xe0aa12).darker();
     public static final Color RED_COLOR = new Color(0x881f1b);
+    public static final Color ORCHID_COLOR = new Color(0x810954);
 
     // Medal colors
     public final static Color GOLD_COLOR = new Color(228, 200, 126);
