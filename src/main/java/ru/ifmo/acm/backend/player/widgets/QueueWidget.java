@@ -210,7 +210,7 @@ public class QueueWidget extends Widget {
         }
 
         if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
-            drawStar(g, x + statusWidth, y, STAR_SIZE);
+            drawStar(g, x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
         }
 
     }

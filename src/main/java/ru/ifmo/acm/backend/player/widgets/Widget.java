@@ -1,5 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import com.google.gwt.dom.builder.shared.HRBuilder;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
@@ -24,7 +25,7 @@ public abstract class Widget {
     protected static final double RANK_WIDTH = 1.6;
     protected static final double TOTAL_WIDTH = 1.3;
     protected static final double PENALTY_WIDTH = 2.0;
-    protected static final double PROBLEM_WIDTH = 1;
+    protected static final double PROBLEM_WIDTH = 1.2;
     protected static final double STATUS_WIDTH = 2;
     protected static final int STAR_SIZE = 5;
 
@@ -32,21 +33,40 @@ public abstract class Widget {
 
     // Colors used in graphics
     public final static Color MAIN_COLOR = new Color(0x193C5B);
-    public final static Color ADDITIONAL_COLOR = new Color(0x4C83C3);
+    //    public final static Color ADDITIONAL_COLOR = new Color(0x4C83C3);
+    public final static Color ADDITIONAL_COLOR = new Color(0x3C6373);
     public final static Color ACCENT_COLOR = new Color(0x881F1B);
 
     public static final Color GREEN_COLOR = new Color(0x1b8041);
-    public static final Color YELLOW_COLOR = new Color(0xe0aa12).darker();
+    public static final Color YELLOW_COLOR = new Color(0xD4AF37);
     public static final Color RED_COLOR = new Color(0x881f1b);
-    public static final Color ORCHID_COLOR = new Color(0x810954);
+
+
+    private static Color mergeColors(Color first, Color second) {
+        int rgb = 0;
+        for (int i = 0; i < 3; i++) {
+            rgb |= ((((first.getRGB() >> (8 * i)) & 255) * 2 +
+                    ((second.getRGB() >> (8 * i)) & 255)) / 3) << (8 * i);
+        }
+        return new Color(rgb);
+    }
+
+    public static final Color YELLOW_GREEN_COLOR = mergeColors(YELLOW_COLOR, GREEN_COLOR);
+    public static final Color YELLOW_RED_COLOR = mergeColors(YELLOW_COLOR, RED_COLOR);
 
     // Medal colors
-    public final static Color GOLD_COLOR = new Color(228, 200, 126);
-    public final static Color GOLD_COLOR2 = new Color(238, 220, 151);
-    public final static Color SILVER_COLOR = new Color(182, 180, 185);
-    public final static Color SILVER_COLOR2 = new Color(205, 203, 206);
-    public final static Color BRONZE_COLOR = new Color(180, 122, 124);
-    public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
+
+    //        public final static Color GOLD_COLOR = new Color(228, 200, 126);
+    public final static Color GOLD_COLOR = new Color(0xD4AF37);
+    public final static Color SILVER_COLOR = new Color(0x9090a0);
+    public final static Color BRONZE_COLOR = new Color(0xCD7F32);
+
+    public final static Color STAR_COLOR = new Color(0xFFFFA0);
+//    public final static Color GOLD_COLOR2 = new Color(238, 220, 151);
+//    public final static Color SILVER_COLOR = new Color(182, 180, 185);
+//    public final static Color SILVER_COLOR2 = new Color(205, 203, 206);
+//    public final static Color BRONZE_COLOR = new Color(180, 122, 124);
+//    public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
 
     // Rectangles rounding
     private static final int POINTS_IN_ROUND = 3;
@@ -194,7 +214,7 @@ public abstract class Widget {
         }
         int textWidth = g.getFontMetrics().stringWidth(text);
         if (width == -1) {
-            width = (int) (textWidth + 2 * height * MARGIN);
+            width = (int) (textWidth + 2.5 * height * MARGIN);
             if (position == POSITION_CENTER) {
                 x -= width / 2;
             } else if (position == POSITION_RIGHT) {
@@ -244,7 +264,7 @@ public abstract class Widget {
     }
 
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
-        Color color = team.getRank() <= 4 ? GOLD_COLOR : team.getRank() <= 8 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
+        Color color = getTeamRankColor(team);
         if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
         g.setFont(Font.decode("Open Sans " + (int) Math.round(height * 0.7)));
         int rankWidth = (int) Math.round(height * RANK_WIDTH);
@@ -285,7 +305,7 @@ public abstract class Widget {
     }
 
     protected void drawStar(Graphics2D g, int x, int y, int size) {
-        g.setColor(GOLD_COLOR);
+        g.setColor(STAR_COLOR);
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};

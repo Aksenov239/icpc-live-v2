@@ -19,14 +19,15 @@ import java.util.List;
 public class BigStandingsWidget extends Widget {
     private static final double V = 0.01;
     private static final int STAR_SIZE = 5;
+    private static final long FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
     private static final int BIG_SPACE_COUNT = 6;
     public static int PERIOD = STANDING_TIME + MOVING_TIME;
 
-    protected static final double TOTAL_WIDTH = 1.6;
-    protected static final double PENALTY_WIDTH = 2.2;
+    protected static final double TOTAL_WIDTH = 1.8;
+    protected static final double PENALTY_WIDTH = 2.4;
 
     private final int plateHeight;
     private final int spaceY;
@@ -225,7 +226,11 @@ public class BigStandingsWidget extends Widget {
             drawHead(g, spaceX, 0, firstSolved);
             g = (Graphics2D) g.create();
             int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
-            g.clip(new Rectangle(-plateHeight, initY - STAR_SIZE * 2, this.width + 2 * plateHeight, (spaceY + plateHeight) * teamsOnPage + initY + STAR_SIZE * 2));
+            g.clip(new Rectangle(
+                    -plateHeight,
+                    initY - STAR_SIZE * 2,
+                    this.width + 2 * plateHeight,
+                    (spaceY + plateHeight) * teamsOnPage + STAR_SIZE * 2));
 
             int lastProblems = -1;
             boolean bright = true;
@@ -274,14 +279,28 @@ public class BigStandingsWidget extends Widget {
     private void drawHead(Graphics2D g, int x, int y, RunInfo[] firstSolved) {
         g.setFont(font);
         int problemWidth = problemWidth(firstSolved.length);
-        drawTextInRect(g, "Current Standings", x, y,
+
+        Color headingColor = ACCENT_COLOR;
+        String headingText = "Current Standings";
+
+        if (contestData.getCurrentTime() > FREEZE_TIME) {
+            if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
+                headingColor = GREEN_COLOR;
+                headingText = "Optimistic Standings";
+            } else {
+                headingColor = YELLOW_COLOR;
+                headingText = "Frozen Standings";
+            }
+        }
+
+        drawTextInRect(g, headingText, x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
-                POSITION_CENTER, ACCENT_COLOR, Color.white, visibilityState);
+                POSITION_CENTER, headingColor, Color.white, visibilityState);
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
-            Color color = contestData.firstSolvedRun()[i] == null ?
-                    firstSolved[i] != null ? ORCHID_COLOR : MAIN_COLOR :
+            Color color = (contestData.firstSolvedRun()[i] == null) ?
+                    ((firstSolved[i] != null) ? YELLOW_GREEN_COLOR : MAIN_COLOR) :
                     GREEN_COLOR;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
                     POSITION_CENTER, color, Color.white, visibilityState);
@@ -291,7 +310,11 @@ public class BigStandingsWidget extends Widget {
 
     private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
         Color mainColor = MAIN_COLOR;
-        if (bright) mainColor = mainColor.brighter();
+        Color additionalColor = ADDITIONAL_COLOR;
+        if (bright) {
+            mainColor = mainColor.brighter();
+            additionalColor = additionalColor.brighter();
+        }
 
         Font font = this.font;
         g.setFont(font);
@@ -313,12 +336,18 @@ public class BigStandingsWidget extends Widget {
 
         for (int i = 0; i < contestData.getProblemsNumber(); i++) {
             String status = team.getShortProblemState(i);
-            boolean reallyUnknown = team.isReallyUnknown(i);
-            Color statusColor = reallyUnknown ? ORCHID_COLOR :
+            Color statusColor =
                     status.startsWith("+") ? GREEN_COLOR :
                             status.startsWith("?") ? YELLOW_COLOR :
                                     status.startsWith("-") ? RED_COLOR :
                                             MAIN_COLOR;
+            if (team.isReallyUnknown(i)) {
+                if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
+                    statusColor = YELLOW_GREEN_COLOR;
+                } else {
+                    statusColor = YELLOW_RED_COLOR;
+                }
+            }
             if (bright) statusColor = statusColor.brighter();
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
@@ -326,17 +355,17 @@ public class BigStandingsWidget extends Widget {
                     problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
             RunInfo firstSolvedRun = firstSolved[i];
             if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId()) {
-                stars.add(new Point(x + problemWidth, y + (int) (plateHeight * 0.1)));
+                stars.add(new Point(x + problemWidth - STAR_SIZE, y + STAR_SIZE));
             }
             x += problemWidth + spaceX;
         }
 
         g.setFont(font);
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth,
-                plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
+                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState);
         x += totalWidth + spaceX;
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
-                plateHeight, POSITION_CENTER, mainColor, Color.white, visibilityState);
+                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState);
     }
 
     private int problemWidth(int problemsNumber) {
