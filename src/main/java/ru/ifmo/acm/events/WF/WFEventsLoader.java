@@ -32,7 +32,7 @@ public class WFEventsLoader extends EventsLoader {
     private String password;
 
     private boolean emulation;
-    private final double EMULATION_SPEED = 1;
+    private final double EMULATION_SPEED = 10;
 
     public WFEventsLoader() {
         try {
@@ -332,7 +332,7 @@ public class WFEventsLoader extends EventsLoader {
                 // new FileInputStream(new File(properties.getProperty("url"))),
                 // "windows-1251");
 
-                emulation = false;
+                //emulation = false;
 
                 long lastTime = 0;
 

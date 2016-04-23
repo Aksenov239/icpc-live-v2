@@ -348,7 +348,7 @@ public class BigStandingsWidget extends Widget {
                     statusColor = YELLOW_RED_COLOR;
                 }
             }
-            if (bright) statusColor = statusColor.brighter();
+            if (bright && statusColor == MAIN_COLOR) statusColor = statusColor.brighter();
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
             drawTextInRect(g, status, x, y,

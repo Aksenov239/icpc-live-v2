@@ -170,7 +170,7 @@ public abstract class Widget {
         return Font.decode("Open Sans " + l);
     }
 
-    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
+    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
         g.setComposite(AlphaComposite.SrcOver.derive(1f));
         g.setColor(color);
 
@@ -192,7 +192,7 @@ public abstract class Widget {
 
                 double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
                 double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
-                tx -= (ty - (y + height / 2)) * 0.2;
+                if (italic) tx -= (ty - (y + height / 2)) * 0.2;
                 xx[t] = (int) Math.round(tx);
                 yy[t] = (int) Math.round(ty);
             }
@@ -200,11 +200,19 @@ public abstract class Widget {
         g.fill(new Polygon(xx, yy, xx.length));
     }
 
+    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
+        drawRect(g, x, y, width, height, color, opacity, true);
+    }
+
     static final int POSITION_LEFT = 0;
     static final int POSITION_RIGHT = 1;
     static final int POSITION_CENTER = 2;
 
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, true);
+    }
+
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic) {
         Graphics2D g = (Graphics2D) gg.create();
         //setVisibilityState(state);
         double opacity = getOpacity(visibilityState);
@@ -223,7 +231,7 @@ public abstract class Widget {
         }
 
         if (opacity == 0) return;
-        drawRect(g, x, y, width, height, color, opacity);
+        drawRect(g, x, y, width, height, color, opacity, italic);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
 
