@@ -56,7 +56,7 @@ public class Main {
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
         StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
-        standingsWidget.alignBottom(980);
+        standingsWidget.alignBottom(994);
         generator.addWidget(standingsWidget);
 
         generator.addWidget(new QueueWidget(30, 994, 39, 100));

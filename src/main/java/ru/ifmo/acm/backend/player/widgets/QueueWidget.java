@@ -18,6 +18,7 @@ public class QueueWidget extends Widget {
 
     public static final int WAIT_TIME = 60000;
     public static final int FIRST_TO_SOLVE_WAIT_TIME = 120000;
+    private static final int MAX_QUEUE_SIZE = 22;
 
     private final int baseX;
     private final int baseY;
@@ -70,6 +71,8 @@ public class QueueWidget extends Widget {
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
+
+        if (info == null) return;
 
         int dt = updateVisibilityState();
         g = (Graphics2D) g.create();
@@ -231,6 +234,28 @@ public class QueueWidget extends Widget {
             } else {
                 if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
                     queue.add(r);
+                }
+            }
+        }
+
+        int extra = firstToSolves.size() + queue.size() - MAX_QUEUE_SIZE;
+        if (extra > 0) {
+            queue.clear();
+
+            for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
+                if (r == null)
+                    continue;
+                if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
+                    continue;
+                } else {
+                    if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
+                        if ((r.isJudged() || r.getTime() > WFEventsLoader.FREEZE_TIME) && extra > 0) {
+                            extra--;
+                            continue;
+
+                        }
+                        queue.add(r);
+                    }
                 }
             }
         }

@@ -107,6 +107,10 @@ public class VideoWidget extends Widget implements PlayerWidget {
         }.start();
     }
 
+    public void setVolume(int volume) {
+        player.setVolume(volume);
+    }
+
     public void stop() {
         if (player != null && !stopped.get()) {
             player.stop();

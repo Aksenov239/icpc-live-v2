@@ -91,6 +91,7 @@ public class WFEventsLoader extends EventsLoader {
                         break;
                     case "rgb":
                         //System.err.println(val + " " + val.length());
+                        val = val.substring(1, val.length() - 1);
                         problem.color = Color.decode(val);
                         break;
                 }

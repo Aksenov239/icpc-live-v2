@@ -129,6 +129,8 @@ public class NewTeamWidget extends VideoWidget {
 
     public static final int PERIOD = 500;
 
+    int volume = 0;
+
     private double getTimeOpacity() {
         long time = System.currentTimeMillis();
         long second = time / PERIOD;
@@ -156,6 +158,7 @@ public class NewTeamWidget extends VideoWidget {
             if (teamId != -1) {
                 teamId = -1;
                 stop();
+//                smallVideo.stop();
             }
             return;
         }
@@ -176,6 +179,14 @@ public class NewTeamWidget extends VideoWidget {
 //        if (URL.get() == null || URL.get().contains("info")) {
 //            return;
 //        }
+
+        int newVolume = (int) (10 * visibilityState) * 5;
+        if (newVolume != volume) {
+            System.out.println("Set volume " + newVolume);
+            volume = newVolume;
+            setVolume(volume);
+            smallVideo.setVolume(volume);
+        }
 
         {
             double x = visibilityState;
