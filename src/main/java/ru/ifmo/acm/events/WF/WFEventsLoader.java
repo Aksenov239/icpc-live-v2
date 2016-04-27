@@ -24,6 +24,8 @@ public class WFEventsLoader extends EventsLoader {
     public static final int FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static WFContestInfo contestInfo;
 
+    public static double SPEED = 5;
+
     private String url;
     private String teamsInfoURL;
     private String problemsInfoURL;
@@ -32,7 +34,6 @@ public class WFEventsLoader extends EventsLoader {
     private String password;
 
     private boolean emulation;
-    private final double EMULATION_SPEED = 10;
 
     public WFEventsLoader() {
         try {
@@ -48,6 +49,8 @@ public class WFEventsLoader extends EventsLoader {
 
             if (!(url.startsWith("http") || url.startsWith("https"))) {
                 emulation = true;
+            } else {
+                SPEED = 1;
             }
 
             problemsInfoURL = properties.getProperty("problems.url");
@@ -334,8 +337,6 @@ public class WFEventsLoader extends EventsLoader {
 
                 //emulation = false;
 
-                long lastTime = 0;
-
                 while (xmlEventReader.hasNext()) {
                     XMLEvent xmlEvent = null;
                     try {
@@ -350,15 +351,12 @@ public class WFEventsLoader extends EventsLoader {
                             case "run":
                                 WFRunInfo run = readRun(xmlEventReader);
                                 if (emulation) {
-                                    if (lastTime > 0) {
-                                        try {
-                                            long tt = (long) ((run.getTime() - lastTime) / EMULATION_SPEED);
-                                            if (tt > 0) Thread.sleep(tt);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                    try {
+                                        long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / SPEED);
+                                        if (dt > 0) Thread.sleep(dt);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                    lastTime = run.getTime();
                                 }
                                 System.err.println("new run: " + run);
                                 if (run.getTime() <= FREEZE_TIME || run.getResult().length() == 0) {
@@ -379,15 +377,12 @@ public class WFEventsLoader extends EventsLoader {
                             case "testcase":
                                 WFTestCaseInfo test = readTest(xmlEventReader);
                                 if (emulation) {
-                                    if (lastTime > 0) {
-                                        try {
-                                            long tt = (long) ((test.time - lastTime) / EMULATION_SPEED);
-                                            if (tt > 0) Thread.sleep(tt);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                    try {
+                                        long dt = (long) ((test.time - contestInfo.getCurrentTime()) / SPEED);
+                                        if (dt > 0) Thread.sleep(dt);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                    lastTime = test.time;
                                 }
                                 contestInfo.addTest(test);
                                 break;

@@ -83,8 +83,6 @@ public class NewTeamWidget extends VideoWidget {
 
         if (!data.teamData.isVisible) {
             setVisible(false);
-            teamId = -1;
-            stop();
         } else {
             setVisible(true);
             //System.err.println(data.teamData.teamId + " " + teamId + " " + ready.get());
@@ -102,7 +100,6 @@ public class NewTeamWidget extends VideoWidget {
             }
         }
     }
-
 
 
     protected int getTeamId() {
@@ -150,12 +147,19 @@ public class NewTeamWidget extends VideoWidget {
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
-        if (!isVisible())
-            return;
 
-        if (team != null && URL.get() != null) {
-            g.drawImage(image.get(), xVideo, yVideo, null);
+//        if (teamId == -1) return;
+
+        updateVisibilityState();
+
+        if (visibilityState == 0) {
+            if (teamId != -1) {
+                teamId = -1;
+                stop();
+            }
+            return;
         }
+
         if (inChange.get()) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
@@ -164,26 +168,39 @@ public class NewTeamWidget extends VideoWidget {
             smallVideo.switchManually();
         }
 
-        if (URL.get() == null || URL.get().contains("info")) {
+        if (team == null || URL.get() == null) {
+            setVisibilityState(0);
             return;
         }
 
+//        if (URL.get() == null || URL.get().contains("info")) {
+//            return;
+//        }
+
+        {
+            double x = visibilityState;
+            xVideo = this.x = (int) (BIG_X + width * (1 - 3 * x * x + 2 * x * x * x));
+        }
         if (smallVideo != null && smallVideo.URL.get() != null) {
+            double x = visibilityState;
+            smallVideo.x = (int) (SMALL_X - width * (1 - 3 * x * x + 2 * x * x * x));
             smallVideo.paintImpl(g, width, height);
         }
+
+        g.drawImage(image.get(), xVideo, yVideo, null);
 
         if (currentProblemId >= 0) {
             drawReplay(g, x, y, this.width, this.height);
         }
 
-        g.setColor(Color.WHITE);
-        g.setColor(new Color(0, 0, 30));
-        g.fillRect(x, y, this.width - widthVideo, height);
+//        g.setColor(Color.WHITE);
+//        g.setColor(new Color(0, 0, 30));
+//        g.fillRect(x, y, this.width - widthVideo, height);
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
 
         g.setFont(FONT1);
-        drawTeamPane(g, team, TEAM_PANE_X, TEAM_PANE_Y, TEAM_PANE_HEIGHT, 1);
+        drawTeamPane(g, team, TEAM_PANE_X, TEAM_PANE_Y, TEAM_PANE_HEIGHT, visibilityState);
 
         g.setFont(FONT2);
         for (int i = 0; i < team.getRuns().length; i++) {

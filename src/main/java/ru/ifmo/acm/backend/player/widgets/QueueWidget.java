@@ -16,8 +16,8 @@ public class QueueWidget extends Widget {
 
     private static final double V = 0.01;
 
-    public static final int WAIT_TIME = 6000;
-    public static final int FIRST_TO_SOLVE_WAIT_TIME = 12000;
+    public static final int WAIT_TIME = 60000;
+    public static final int FIRST_TO_SOLVE_WAIT_TIME = 120000;
 
     private final int baseX;
     private final int baseY;
@@ -225,11 +225,11 @@ public class QueueWidget extends Widget {
             if (r == null)
                 continue;
             if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME) {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / WFEventsLoader.SPEED) {
                     firstToSolves.add(r);
                 }
             } else {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME) {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
                     queue.add(r);
                 }
             }

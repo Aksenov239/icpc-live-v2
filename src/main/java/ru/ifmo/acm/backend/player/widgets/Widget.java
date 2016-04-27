@@ -192,7 +192,7 @@ public abstract class Widget {
 
                 double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
                 double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
-                if (italic) tx -= (ty - (y + height / 2)) * 0.2;
+                if (italic) tx -= (ty - (y + height / 2)) * 0.1;
                 xx[t] = (int) Math.round(tx);
                 yy[t] = (int) Math.round(ty);
             }
