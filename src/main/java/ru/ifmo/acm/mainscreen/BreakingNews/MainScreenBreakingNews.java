@@ -20,7 +20,6 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
 
     public MainScreenBreakingNews() {
         mainScreenData = MainScreenData.getMainScreenData();
-        lastShowedRun = 0;
 
         breakingNewsList = createBreakingNewsTable(container);
 
@@ -95,7 +94,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
 
     final BreakingNewsForm breakingNewsForm;
 
-    private static int lastShowedRun;
+    private static int lastShowedRun = 0;
 
     public static Utils.StoppedThread getUpdaterThread() {
         Utils.StoppedThread tableUpdater = new Utils.StoppedThread(new Utils.StoppedRunnable() {

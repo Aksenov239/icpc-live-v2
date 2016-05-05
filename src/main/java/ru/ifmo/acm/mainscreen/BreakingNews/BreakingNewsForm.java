@@ -176,7 +176,11 @@ public class BreakingNewsForm extends FormLayout {
         pattern.setSizeFull();
         predefinedMessages.setSizeFull();
         predefinedMessages.addValueChangeListener(event -> {
-            newPattern.setValue((String) predefinedMessages.getValue());
+            if (predefinedMessages.getValue() == null) {
+                newPattern.clear();
+            } else {
+                newPattern.setValue((String) predefinedMessages.getValue());
+            }
 
             updateMessageField();
         });
@@ -200,7 +204,7 @@ public class BreakingNewsForm extends FormLayout {
             outcomes.clear();
             currentRunId = -1;
         } else {
-            teamProblem.setValue(news.getTeam() + " " + news.getProblem());
+            teamProblem.setValue(news.team + " " + news.getProblem());
 //            team.setValue(String.valueOf(news.getTeam()));
 //            problem.setValue(news.getProblem());
             time.setValue(String.valueOf(news.getTimestamp()));
@@ -224,13 +228,17 @@ public class BreakingNewsForm extends FormLayout {
 //            result = result.replace("%problem", problem.getValue());
 //        }
         if (!teamProblem.isEmpty()) {
-            String[] zz = teamProblem.getValue().split(" ");
+            try {
+                String[] zz = teamProblem.getValue().split(" ");
 
-            int teamId = Integer.parseInt(zz[0]) - 1;
-            String teamName = (teamId == -1) ? "" : MainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();
-            result = result.replace("%team", teamName);
+                int teamId = Integer.parseInt(zz[0]) - 1;
+                String teamName = (teamId == -1) ? "" : MainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();
+                result = result.replace("%team", teamName);
 
-            result = result.replace("%problem", zz[1]);
+                result = result.replace("%problem", zz[1]);
+            } catch (Exception e) {
+                Notification.show("Incorrect team-problem pair", Notification.Type.WARNING_MESSAGE);
+            }
         }
 
         if (!time.isEmpty()) {
