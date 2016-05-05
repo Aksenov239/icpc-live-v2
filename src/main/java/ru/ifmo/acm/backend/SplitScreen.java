@@ -41,7 +41,7 @@ public class SplitScreen {
         ScreenGenerator generator = new ScreenGenerator(width, height, readMainProperties(), (double) width / Widget.BASE_WIDTH);
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
 
-        generator.addWidget(new GreenScreenWidget(true));
+        // generator.addWidget(new GreenScreenWidget(true));
         generator.addWidget(new SplitScreenWidget(
                 updateWait,
                 Widget.BASE_WIDTH,
@@ -50,7 +50,6 @@ public class SplitScreen {
                 Integer.parseInt(properties.getProperty("sleep.time"))
         ));
         generator.addWidget(new ClockWidget(updateWait));
-        generator.addWidget(new CreepingLineWidget(updateWait));
 //        generator.addWidget(new QueueWidget(100));
         new TickPlayer("Split screen", generator, frameRate).frame.setLocation(0, 0);
     }

@@ -187,6 +187,7 @@ public class BreakingNewsForm extends FormLayout {
             problem.clear();
             time.clear();
             outcomes.clear();
+            currentRunId = -1;
         } else {
             team.setValue(String.valueOf(news.getTeam()));
             problem.setValue(news.getProblem());

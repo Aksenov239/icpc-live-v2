@@ -66,16 +66,16 @@ public class Main {
         bigStandingsWidget.alignBottom(994);
         generator.addWidget(bigStandingsWidget);
 
-//        generator.addWidget(new BreakingNewsWidget(
-//                updateWait,
-//                (int)(Widget.BASE_WIDTH * 0.65),
-//                (int)(Widget.BASE_HEIGHT * 0.6),
-//                (int)(Widget.BASE_WIDTH * 0.3),
-//                (int)(Widget.BASE_HEIGHT * 0.2),
-//                16. / 9,
-//                Integer.parseInt(properties.getProperty("sleep.time")),
-//                Integer.parseInt(properties.getProperty("breakingnews.time"))
-//        ));
+        generator.addWidget(new BreakingNewsWidget(
+                updateWait,
+                (int)(Widget.BASE_WIDTH * 0.65),
+                (int)(Widget.BASE_HEIGHT * 0.6),
+                (int)(Widget.BASE_WIDTH * 0.3),
+                (int)(Widget.BASE_HEIGHT * 0.2),
+                16. / 9,
+                Integer.parseInt(properties.getProperty("sleep.time")),
+                Integer.parseInt(properties.getProperty("breakingnews.time"))
+        ));
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 

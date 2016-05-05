@@ -50,15 +50,11 @@ public class VideoWidget extends Widget implements PlayerWidget {
         }
         manualTempPlayer = new PlayerInImage(width, height, null, url);
         manualTempURL = url;
-        stopped.set(false);
     }
 
     public void switchManually() {
         if (manualTempURL == null) {
-            if (!stopped.get()) {
-                URL.set(null);
-                stop();
-            }
+            stop();
             return;
         }
         JComponent component = player.getComponent();

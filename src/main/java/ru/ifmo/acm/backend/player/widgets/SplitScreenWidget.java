@@ -51,7 +51,7 @@ public class SplitScreenWidget extends Widget {
         for (int i = 0; i < 4; i++) {
             int teamId;
             if (standings[i].getSolvedProblemsNumber() == 0) {
-                teamId = Integer.parseInt(showSetup[predefinedTeam++]);
+                teamId = Integer.parseInt(showSetup[predefinedTeam++]) - 1;
             } else {
                 teamId = standings[i].getId();
             }
@@ -132,6 +132,7 @@ public class SplitScreenWidget extends Widget {
                 if (!teamInUse(interestingTeams[predefinedTeam])) {
                     teamId = interestingTeams[predefinedTeam];
                     predefinedTeam = (predefinedTeam + 1) % interestingTeams.length;
+                    currentPlace = (currentPlace + 1) % topPlaces;
                     break;
                 }
                 predefinedTeam = (predefinedTeam + 1) % interestingTeams.length;
@@ -141,7 +142,6 @@ public class SplitScreenWidget extends Widget {
                     currentPlace = (currentPlace + 1) % topPlaces;
                     break;
                 }
-                currentPlace = (currentPlace + 1) % topPlaces;
             }
         }
         //System.err.println("Choose " + teamId + " for " + widget + " with mode " + mode);

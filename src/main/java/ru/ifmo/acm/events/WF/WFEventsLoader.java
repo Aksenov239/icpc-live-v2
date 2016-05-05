@@ -338,6 +338,7 @@ public class WFEventsLoader extends EventsLoader {
 
                 //emulation = false;
 
+                int total = 0;
                 while (xmlEventReader.hasNext()) {
                     XMLEvent xmlEvent = null;
                     try {
@@ -354,9 +355,14 @@ public class WFEventsLoader extends EventsLoader {
                                 if (emulation) {
                                     try {
                                         long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / SPEED);
-                                        if (dt > 0) Thread.sleep(dt);
+                                        if (dt > 0)
+                                            Thread.sleep(1000);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
+                                    }
+                                    total++;
+                                    if (total > 20) {
+                                        return;
                                     }
                                 }
                                 System.err.println("new run: " + run);

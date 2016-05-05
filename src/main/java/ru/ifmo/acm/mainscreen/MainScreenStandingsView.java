@@ -87,7 +87,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
             if (team.getValue().equals("")) {
                 Notification.show("Team field requires team id and problem id");
             } else {
-                String[] zz = team.getValue().split(",");
+                String[] zz = team.getValue().split(" ");
                 int teamId = Integer.parseInt(zz[0]) - 1;
                 int problemId = zz[1].charAt(0) - 'A';
                 if (!mainScreenData.breakingNewsData.setNewsVisible(true,

@@ -17,6 +17,7 @@ public class BreakingNewsWidget extends VideoWidget {
     private int wVideo;
     private int hVideo;
     private final int PLATE_WIDTH;
+    private final int PLATE_HEIGHT;
     private final int GAP;
 
     public BreakingNewsWidget(long updateWait, int x, int y, int width, int height, double aspectRatio, int sleepTime, int duration) {
@@ -25,8 +26,10 @@ public class BreakingNewsWidget extends VideoWidget {
         wVideo = width;
         hVideo = (int) (width / aspectRatio);
 
-        PLATE_WIDTH = (int) (1.2 * width);
-        GAP = (int) (0.05 * hVideo);
+        PLATE_HEIGHT = (int) (0.1 * hVideo);
+        double total_factor = Widget.RANK_WIDTH + Widget.NAME_WIDTH + Widget.TOTAL_WIDTH + Widget.PENALTY_WIDTH + 3 * Widget.SPACE_X;
+        PLATE_WIDTH = (int) (PLATE_HEIGHT * total_factor);
+        GAP = (int) (0.02 * hVideo);
 
         this.x = x;
         this.y = y;
@@ -61,7 +64,10 @@ public class BreakingNewsWidget extends VideoWidget {
 
             team = Preparation.eventsLoader.getContestData().getParticipant(teamId);
 
-            if (data.breakingNewsData.runId == -1) {
+            run = data.breakingNewsData.runId == -1 ? null :
+                    Preparation.eventsLoader.getContestData().getRun(data.breakingNewsData.runId);
+
+            if (run == null || (run.getTeamId() != teamId || run.getProblemNumber() != problemId)) {
                 java.util.List<RunInfo> runs = team.getRuns()[problemId];
 
                 if (runs.size() == 0) {
@@ -74,21 +80,19 @@ public class BreakingNewsWidget extends VideoWidget {
                         run = run1;
                     }
                 }
-            } else {
-                run = Preparation.eventsLoader.getContestData().getRun(data.breakingNewsData.runId);
             }
 
-                String url;
-                if (data.breakingNewsData.isLive) {
-                    url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
-                } else {
-                    url = TeamWidget.getUrl(run);
-                }
+            String url;
+            if (data.breakingNewsData.isLive) {
+                url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
+            } else {
+                url = TeamWidget.getUrl(run);
+            }
 
-                System.err.println("Change to " + url);
+            System.err.println("Change to " + url);
 
-                change(url);
-                isLive = data.breakingNewsData.isLive;
+            change(url);
+            isLive = data.breakingNewsData.isLive;
 
             if (data.breakingNewsData.newsMessage.length() == 0) {
                 if (run.getResult().equals("AC")) {
@@ -103,12 +107,12 @@ public class BreakingNewsWidget extends VideoWidget {
                     caption = "Submitted";
                 }
                 caption += " problem " + (char) ('A' + problemId);
-
-                System.err.println("Caption: " + caption);
-                currentShow = run.getTeamInfoBefore();
             } else {
                 caption = data.breakingNewsData.newsMessage;
             }
+            System.err.println("Caption: " + caption);
+            currentShow = run.getTeamInfoBefore();
+            caption = data.breakingNewsData.newsMessage;
             timer = 0;
             rankState = 0;
             visibilityState = 0;
@@ -169,9 +173,9 @@ public class BreakingNewsWidget extends VideoWidget {
         }
 
         int y = this.y + hVideo + GAP;
-        int x = this.x + (wVideo - PLATE_WIDTH) / 2;
-        drawTeamPane(g, currentShow, x, y, PLATE_WIDTH, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
-        drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_WIDTH / 10,
+        int x = this.x + (int) (1.1 * wVideo - PLATE_WIDTH);
+        drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
+        drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
                 POSITION_RIGHT, ACCENT_COLOR, Color.white, visibilityState);
     }
 }

@@ -25,6 +25,7 @@ public class BreakingNewsData implements CachedData {
         this.problemId = data.problemId;
         this.runId = data.runId;
         this.infoType = data.infoType;
+        this.newsMessage = data.newsMessage;
         return this;
     }
 
@@ -100,7 +101,7 @@ public class BreakingNewsData implements CachedData {
                         WFRunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
                             backUp.addItemAt(0,
-                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime(), run.getId()));
+                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId() + 1, run.getTime(), run.getId()));
                         }
                         lastShowedRun++;
                     }
