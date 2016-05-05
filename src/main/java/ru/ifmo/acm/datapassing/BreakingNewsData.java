@@ -23,6 +23,7 @@ public class BreakingNewsData implements CachedData {
         this.isLive = data.isLive;
         this.teamId = data.teamId;
         this.problemId = data.problemId;
+        this.runId = data.runId;
         this.infoType = data.infoType;
         return this;
     }
@@ -31,7 +32,7 @@ public class BreakingNewsData implements CachedData {
         Data.cache.refresh(BreakingNewsData.class);
     }
 
-    public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String newsMessage, int teamId, int problemId) {
+    public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String newsMessage, int teamId, int problemId, int runId) {
         if (visible && isVisible) {
             return false;
         }
@@ -43,6 +44,7 @@ public class BreakingNewsData implements CachedData {
             this.teamId = teamId;
             this.problemId = problemId;
             this.newsMessage = newsMessage;
+            this.runId = runId;
 
             teamName = teamInfo.getName();
             infoType = type;
@@ -97,9 +99,8 @@ public class BreakingNewsData implements CachedData {
                     while (lastShowedRun <= contestInfo.getMaxRunId()) {
                         WFRunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
-                            // TODO: time or timestamp??
-
-                            backUp.addItemAt(0, new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime()));
+                            backUp.addItemAt(0,
+                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime(), run.getId()));
                         }
                         lastShowedRun++;
                     }
@@ -141,6 +142,7 @@ public class BreakingNewsData implements CachedData {
     public int teamId;
     public String teamName;
     public int problemId;
+    public int runId;
     public String infoType;
     public boolean isLive;
     public String newsMessage;

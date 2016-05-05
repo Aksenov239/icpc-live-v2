@@ -60,51 +60,60 @@ public class BreakingNewsWidget extends VideoWidget {
             System.err.println("Get request for " + teamId + " " + problemId);
 
             team = Preparation.eventsLoader.getContestData().getParticipant(teamId);
-            java.util.List<RunInfo> runs = team.getRuns()[problemId];
 
-            if (runs.size() == 0) {
-                System.err.println("Team " + teamId + " has no submit for problem " + problemId);
-                return;
-            }
-            run = runs.get(runs.size() - 1);
-            for (RunInfo run1 : runs) {
-                if (run1.isAccepted()) {
-                    run = run1;
+            if (data.breakingNewsData.runId == -1) {
+                java.util.List<RunInfo> runs = team.getRuns()[problemId];
+
+                if (runs.size() == 0) {
+                    System.err.println("Team " + teamId + " has no submit for problem " + problemId);
+                    return;
                 }
-            }
-
-            String url;
-            if (data.breakingNewsData.isLive) {
-                url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
+                run = runs.get(runs.size() - 1);
+                for (RunInfo run1 : runs) {
+                    if (run1.isAccepted()) {
+                        run = run1;
+                    }
+                }
             } else {
-                url = TeamWidget.getUrl(run);
+                run = Preparation.eventsLoader.getContestData().getRun(data.breakingNewsData.runId);
             }
 
-            System.err.println("Change to " + url);
-
-            change(url);
-            isLive = data.breakingNewsData.isLive;
-
-            if (run.getResult().equals("AC")) {
-                if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[problemId]) {
-                    caption = "First to solve";
-                } else if (team.getRank() <= 12) {
-                    caption = "Get to " + team.getRank() + " by solving";
+                String url;
+                if (data.breakingNewsData.isLive) {
+                    url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
                 } else {
-                    caption = "Solved";
+                    url = TeamWidget.getUrl(run);
                 }
-            } else if (run.getResult().length() == 0) {
-                caption = "Submitted";
+
+                System.err.println("Change to " + url);
+
+                change(url);
+                isLive = data.breakingNewsData.isLive;
+
+            if (data.breakingNewsData.newsMessage.length() == 0) {
+                if (run.getResult().equals("AC")) {
+                    if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[problemId]) {
+                        caption = "First to solve";
+                    } else if (team.getRank() <= 12) {
+                        caption = "Get to " + team.getRank() + " by solving";
+                    } else {
+                        caption = "Solved";
+                    }
+                } else if (run.getResult().length() == 0) {
+                    caption = "Submitted";
+                }
+                caption += " problem " + (char) ('A' + problemId);
+
+                System.err.println("Caption: " + caption);
+                currentShow = run.getTeamInfoBefore();
+            } else {
+                caption = data.breakingNewsData.newsMessage;
             }
-            caption += " problem " + (char) ('A' + problemId);
-
-            System.err.println("Caption: " + caption);
-
-            currentShow = run.getTeamInfoBefore();
             timer = 0;
             rankState = 0;
             visibilityState = 0;
             setVisible(true);
+
         }
 
         lastUpdate = System.currentTimeMillis();
@@ -112,6 +121,7 @@ public class BreakingNewsWidget extends VideoWidget {
 
     private double localVisibility;
     private int rankState;
+
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();

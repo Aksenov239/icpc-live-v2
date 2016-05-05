@@ -4,6 +4,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
+import ru.ifmo.acm.backend.player.widgets.ClockWidget;
+import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Utils;
 
@@ -41,7 +43,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
         table.addGeneratedColumn("time", (Table source, Object itemId, Object columnId) -> {
             BreakingNews news = (BreakingNews) itemId;
             Label label = new Label();
-            label.setValue("" + (System.currentTimeMillis() - news.timestamp) / 1000);
+            label.setValue(ClockWidget.getTimeString(news.getTimestamp() / 1000));
 
             return label;
         });

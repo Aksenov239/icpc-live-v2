@@ -56,5 +56,5 @@ public abstract class ContestInfo {
 
     public abstract RunInfo[] getRuns();
 
-
+    public abstract RunInfo getRun(int id);
 }

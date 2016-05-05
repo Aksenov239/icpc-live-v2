@@ -35,6 +35,8 @@ public class BreakingNewsForm extends FormLayout {
     Button show;
     Button hide;
 
+    int currentRunId;
+
     public BreakingNewsForm(MainScreenBreakingNews parent) {
         this.parent = parent;
 
@@ -122,7 +124,8 @@ public class BreakingNewsForm extends FormLayout {
                 updateMessageField();
 
                 boolean isSet = parent.mainScreenData.breakingNewsData.setNewsVisible(
-                        true, (String) types.getValue(), isLive.getValue(), messageToShow.getValue(), teamId, problemId
+                        true, (String) types.getValue(), isLive.getValue(), messageToShow.getValue(),
+                        teamId, problemId, currentRunId
                 );
 
                 if (!isSet) {
@@ -145,7 +148,7 @@ public class BreakingNewsForm extends FormLayout {
 
         hide = new Button("Hide");
         hide.addClickListener(event -> {
-            parent.mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), null, -1, -1);
+            parent.mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), "", -1, -1, -1);
             breakingNewsStatus.setValue(getBreakingNewsStatus());
         });
 
@@ -188,6 +191,7 @@ public class BreakingNewsForm extends FormLayout {
             problem.setValue(news.getProblem());
             time.setValue(String.valueOf(news.getTimestamp()));
             outcomes.setValue(news.getOutcome());
+            currentRunId = news.getRunId();
 
             updateMessageField();
         }

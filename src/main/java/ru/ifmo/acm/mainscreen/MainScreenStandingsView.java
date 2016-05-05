@@ -90,7 +90,10 @@ public class MainScreenStandingsView extends CustomComponent implements View {
                 String[] zz = team.getValue().split(",");
                 int teamId = Integer.parseInt(zz[0]) - 1;
                 int problemId = zz[1].charAt(0) - 'A';
-                if (!mainScreenData.breakingNewsData.setNewsVisible(true, (String) types.getValue(), isLive.getValue(), null, teamId, problemId)) {
+                if (!mainScreenData.breakingNewsData.setNewsVisible(true,
+                        (String) types.getValue(),
+                        isLive.getValue(), "",
+                        teamId, problemId, -1)) {
                     Notification.show(
                             String.format("You need to wait while current breaking news is shown"),
                             Notification.Type.WARNING_MESSAGE
@@ -104,7 +107,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         hide = new Button("Hide");
         hide.addClickListener(event -> {
-            mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), null, -1, -1);
+            mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), "", -1, -1, -1);
             breakingNewsStatus.setValue(getBreakingNewsStatus());
         });
 

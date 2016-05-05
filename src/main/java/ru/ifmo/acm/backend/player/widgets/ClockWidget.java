@@ -59,15 +59,12 @@ public class ClockWidget extends Widget {
         if (time > 5 * 60 * 60) {
             time = 5 * 60 * 60;
         }
-        time = Math.abs(time);
-        int h = (int) (time / 3600);
-        int m = (int) (time % 3600 / 60);
-        int s = (int) (time % 60);
+
         int w1 = g.getFontMetrics(clockFont).charWidth('0');
         int w2 = g.getFontMetrics(clockFont).charWidth(':');
         int hh = (int) (FONT_SIZE * 0.75);
         int ww = w1 * 5 + w2 * 2;
-        String timeS = String.format("%d:%02d:%02d", h, m, s);
+        String timeS = getTimeString(Math.abs(time));
         int dx = (int) ((WIDTH - ww) / 2 + 1);
         int dy = (int) (HEIGHT - (HEIGHT - hh) / 2);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
@@ -82,6 +79,13 @@ public class ClockWidget extends Widget {
                 dx += w1;
             }
         }
+    }
+
+    public static String getTimeString(long time) {
+        int h = (int) (time / 3600);
+        int m = (int) (time % 3600 / 60);
+        int s = (int) (time % 60);
+        return String.format("%d:%02d:%02d", h, m, s);
     }
 
 }
