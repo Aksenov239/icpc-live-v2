@@ -1,5 +1,7 @@
 package ru.ifmo.acm.mainscreen.BreakingNews;
 
+import ru.ifmo.acm.events.WF.WFRunInfo;
+
 public class BreakingNews {
     public String outcome;
     public String problem;
@@ -13,6 +15,11 @@ public class BreakingNews {
         this.team = team;
         this.timestamp = timestamp;
         this.runId = runId;
+    }
+
+    public void update(WFRunInfo run) {
+        setOutcome(run.getResult());
+        setTimestamp(run.getTime());
     }
 
     public void setOutcome(String outcome) {

@@ -72,7 +72,7 @@ public class MainScreenProperties {
         backupAdvertisements = new BackUp<>(Advertisement.class, backupAdvertisementsFilename);
 
         breakingNewsTimeToShow = Long.parseLong(properties.getProperty("breakingnews.time")) + latency;
-        breakingNewsTimeToKeepInTable = Long.parseLong(properties.getProperty("breakingnews.active.time")) + latency;
+        breakingNewsRunsNumber = Integer.parseInt(properties.getProperty("breakingnews.runs.number"));
         backupBreakingNewsFilename = properties.getProperty("backup.breakingnews");
         backupBreakingNews = new BackUp<>(BreakingNews.class, backupBreakingNewsFilename);
 
@@ -104,7 +104,7 @@ public class MainScreenProperties {
 
     // Breaking News
     public final long breakingNewsTimeToShow;
-    public final long breakingNewsTimeToKeepInTable;
+    public final int breakingNewsRunsNumber;
     public final String backupBreakingNewsFilename;
     public final BackUp<BreakingNews> backupBreakingNews;
 
