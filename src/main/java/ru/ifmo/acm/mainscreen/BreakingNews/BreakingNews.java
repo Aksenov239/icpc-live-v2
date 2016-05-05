@@ -1,6 +1,7 @@
 package ru.ifmo.acm.mainscreen.BreakingNews;
 
 import ru.ifmo.acm.events.WF.WFRunInfo;
+import ru.ifmo.acm.mainscreen.MainScreenData;
 
 public class BreakingNews {
     public String outcome;
@@ -52,8 +53,8 @@ public class BreakingNews {
         return problem;
     }
 
-    public int getTeam() {
-        return team;
+    public String getTeam() {
+        return MainScreenData.getProperties().contestInfo.getParticipant(team).getShortName();
     }
 
     public long getTimestamp() {

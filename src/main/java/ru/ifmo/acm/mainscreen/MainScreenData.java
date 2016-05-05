@@ -3,6 +3,8 @@ package ru.ifmo.acm.mainscreen;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.datapassing.*;
 
+import static ru.ifmo.acm.mainscreen.BreakingNews.MainScreenBreakingNews.getUpdaterThread;
+
 /**
  * Created by Aksenov239 on 15.11.2015.
  */
@@ -27,7 +29,7 @@ public class MainScreenData {
             updater.start();
             ContextListener.addThread(updater);
 
-            Utils.StoppedThread breakingNewsTableUpdater = BreakingNewsData.getUpdaterThread();
+            Utils.StoppedThread breakingNewsTableUpdater = getUpdaterThread();
             breakingNewsTableUpdater.start();
             ContextListener.addThread(breakingNewsTableUpdater);
         }

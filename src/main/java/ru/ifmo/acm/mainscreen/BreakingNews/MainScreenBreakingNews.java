@@ -5,8 +5,15 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import ru.ifmo.acm.backend.player.widgets.ClockWidget;
+import ru.ifmo.acm.events.EventsLoader;
+import ru.ifmo.acm.events.WF.WFContestInfo;
+import ru.ifmo.acm.events.WF.WFRunInfo;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Utils;
+import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainScreenBreakingNews extends CustomComponent implements View {
     public final static String NAME = "mainscreen-breaking-news";
@@ -15,7 +22,6 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
         mainScreenData = MainScreenData.getMainScreenData();
         lastShowedRun = 0;
 
-        container = MainScreenData.getProperties().backupBreakingNews.getContainer();
         breakingNewsList = createBreakingNewsTable(container);
 
         breakingNewsForm = new BreakingNewsForm(this);
@@ -84,12 +90,61 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
 
     MainScreenData mainScreenData;
 
-    final BeanItemContainer<BreakingNews> container;
+    final static BeanItemContainer<BreakingNews> container = new SynchronizedBeanItemContainer<>(BreakingNews.class);;
     Table breakingNewsList;
 
     final BreakingNewsForm breakingNewsForm;
 
     private static int lastShowedRun;
 
-    private static Utils.StoppedThread tableUpdater = null;
+    public static Utils.StoppedThread getUpdaterThread() {
+        Utils.StoppedThread tableUpdater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+            @Override
+            public void run() {
+                while (!stop) {
+                    // final BackUp<BreakingNews> backUp = MainScreenData.getProperties().backupBreakingNews;
+                    WFContestInfo contestInfo = null;
+                    while (contestInfo == null) {
+                        contestInfo = (WFContestInfo) EventsLoader.getInstance().getContestData();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    while (lastShowedRun <= contestInfo.getMaxRunId()) {
+                        WFRunInfo run = contestInfo.getRun(lastShowedRun);
+                        if (run != null) {
+                            container.addItemAt(0,
+                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime(), run.getId()));
+                        }
+                        lastShowedRun++;
+                    }
+
+                    List<BreakingNews> toDelete = new ArrayList<>();
+                    int runsNumber = MainScreenData.getProperties().breakingNewsRunsNumber;
+                    for (int i = runsNumber; i < container.getItemIds().size(); i++) {
+                        toDelete.add(container.getItemIds().get(i));
+                    }
+
+                    toDelete.forEach(msg -> container.removeItem(msg));
+
+                    for (int i = 0; i < container.getItemIds().size(); i++) {
+                        int runId = container.getItemIds().get(i).getRunId();
+                        WFRunInfo run = contestInfo.getRun(runId);
+                        container.getItemIds().get(i).update(run);
+                    }
+
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        return tableUpdater;
+    }
 }

@@ -147,6 +147,7 @@ public class BreakingNewsForm extends FormLayout {
                 } else {
                     teamProblem.clear();
                     outcomes.clear();
+                    time.clear();
                     predefinedMessages.clear();
                     time.clear();
 
@@ -211,7 +212,7 @@ public class BreakingNewsForm extends FormLayout {
     }
 
     public void updateMessageField() {
-        String result = newPattern.isEmpty() ? (predefinedMessages.isEmpty() ? "" : (String)predefinedMessages.getValue()) : newPattern.getValue();
+        String result = newPattern.isEmpty() ? (predefinedMessages.isEmpty() ? "" : (String) predefinedMessages.getValue()) : newPattern.getValue();
 //        if (!team.isEmpty()) {
 //            int teamId = Integer.parseInt(team.getValue()) - 1;
 //
@@ -237,7 +238,7 @@ public class BreakingNewsForm extends FormLayout {
         }
 
         if (!outcomes.isEmpty()) {
-            result = result.replace("%outcome", (String)outcomes.getValue());
+            result = result.replace("%outcome", (String) outcomes.getValue());
         }
 
         messageToShow.setValue(result);
