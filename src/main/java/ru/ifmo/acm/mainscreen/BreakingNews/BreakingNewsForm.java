@@ -97,20 +97,26 @@ public class BreakingNewsForm extends FormLayout {
 
         newPattern.setSizeUndefined();
 
-        teamProblem = new TextField("Team,Problem");
+        teamProblem = new TextField("Team Problem");
         // problem = new TextField("Problem");
         time = new TextField("Time");
 
         outcomes = new ComboBox("Outcome");
-        outcomes.addItems("AC", "WA", "TL", "RE", "PE", "CE", "Frozen");
+        outcomes.addItems("AC", "WA", "TLE", "RTE", "PE", "CE", "Frozen");
         outcomes.setFilteringMode(FilteringMode.CONTAINS);
         outcomes.setNullSelectionAllowed(true);
 
-        teamProblem.addValueChangeListener(event -> updateMessageField());
+        teamProblem.addValueChangeListener(event -> {
+            predefinedMessages.clear();
+        });
         // problem.addValueChangeListener(event -> updateMessageField());
-        time.addValueChangeListener(event -> updateMessageField());
+        time.addValueChangeListener(event -> {
+            predefinedMessages.clear();
+        });
 
-        outcomes.addValueChangeListener(event -> updateMessageField());
+        outcomes.addValueChangeListener(event -> {
+            predefinedMessages.clear();
+        });
 
         HorizontalLayout parameters = new HorizontalLayout(teamProblem, time, outcomes);
         parameters.setSpacing(true);
@@ -120,7 +126,7 @@ public class BreakingNewsForm extends FormLayout {
             if (teamProblem.getValue().equals("")) {
                 Notification.show("It requires team id and problem id");
             } else {
-                String[] zz = teamProblem.getValue().split(",");
+                String[] zz = teamProblem.getValue().split(" ");
                 int teamId = Integer.parseInt(zz[0]) - 1;
                 int problemId = zz[1].charAt(0) - 'A';
 
@@ -142,8 +148,10 @@ public class BreakingNewsForm extends FormLayout {
                     teamProblem.clear();
                     outcomes.clear();
                     predefinedMessages.clear();
+                    time.clear();
 
                     newPattern.setValue("");
+                    currentRunId = -1;
                 }
 
                 breakingNewsStatus.setValue(getBreakingNewsStatus());
@@ -191,7 +199,7 @@ public class BreakingNewsForm extends FormLayout {
             outcomes.clear();
             currentRunId = -1;
         } else {
-            teamProblem.setValue(news.getTeam() + "," + news.getProblem());
+            teamProblem.setValue(news.getTeam() + " " + news.getProblem());
 //            team.setValue(String.valueOf(news.getTeam()));
 //            problem.setValue(news.getProblem());
             time.setValue(String.valueOf(news.getTimestamp()));
@@ -215,7 +223,7 @@ public class BreakingNewsForm extends FormLayout {
 //            result = result.replace("%problem", problem.getValue());
 //        }
         if (!teamProblem.isEmpty()) {
-            String[] zz = teamProblem.getValue().split(",");
+            String[] zz = teamProblem.getValue().split(" ");
 
             int teamId = Integer.parseInt(zz[0]) - 1;
             String teamName = (teamId == -1) ? "" : MainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();

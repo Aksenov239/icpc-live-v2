@@ -63,7 +63,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
         table.addStyleName("breakingnews-table");
 
         table.setCellStyleGenerator((Table.CellStyleGenerator) (source, itemId, propertyId) -> {
-            if (propertyId != null ) {
+            if (propertyId == null) {
                 BreakingNews item = (BreakingNews) itemId;
                 return item.getOutcome().toLowerCase();
             }
