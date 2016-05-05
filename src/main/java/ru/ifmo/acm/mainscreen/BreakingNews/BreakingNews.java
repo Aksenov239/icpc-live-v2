@@ -18,8 +18,10 @@ public class BreakingNews {
     }
 
     public void update(WFRunInfo run) {
-        setOutcome(run.getResult());
-        setTimestamp(run.getTime());
+        if (run != null) {
+            setOutcome(run.getResult());
+            setTimestamp(run.getTime());
+        }
     }
 
     public void setOutcome(String outcome) {
