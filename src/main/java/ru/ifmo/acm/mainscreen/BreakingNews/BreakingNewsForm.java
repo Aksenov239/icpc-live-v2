@@ -126,9 +126,15 @@ public class BreakingNewsForm extends FormLayout {
             if (teamProblem.getValue().equals("")) {
                 Notification.show("It requires team id and problem id");
             } else {
-                String[] zz = teamProblem.getValue().split(" ");
-                int teamId = Integer.parseInt(zz[0]) - 1;
-                int problemId = zz[1].charAt(0) - 'A';
+                int teamId, problemId;
+                try {
+                    String[] zz = teamProblem.getValue().split(" ");
+                    teamId = Integer.parseInt(zz[0]) - 1;
+                    problemId = zz[1].charAt(0) - 'A';
+                } catch (Exception e) {
+                    Notification.show("Field Team Problem should contain id of the team and problem alias");
+                    return;
+                }
 
 //                int teamId = Integer.parseInt(team.getValue()) - 1;
 //                int problemId = problem.getValue().charAt(0) - 'A';

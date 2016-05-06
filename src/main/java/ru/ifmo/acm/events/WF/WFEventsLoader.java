@@ -361,9 +361,9 @@ public class WFEventsLoader extends EventsLoader {
                                         e.printStackTrace();
                                     }
                                     total++;
-//                                    if (total > 20) {
-//                                        return;
-//                                    }
+                                    if (total > 20) {
+                                        return;
+                                    }
                                 }
                                 System.err.println("new run: " + run);
                                 if (run.getTime() <= FREEZE_TIME || run.getResult().length() == 0) {

@@ -36,6 +36,7 @@ public class BreakingNewsWidget extends VideoWidget {
         this.width = width;
         this.height = height;
         this.duration = duration;
+        last = System.currentTimeMillis();
     }
 
     private String caption;
@@ -70,14 +71,13 @@ public class BreakingNewsWidget extends VideoWidget {
             if (run == null || (run.getTeamId() != teamId || run.getProblemNumber() != problemId)) {
                 java.util.List<RunInfo> runs = team.getRuns()[problemId];
 
-                if (runs.size() == 0) {
-                    System.err.println("Team " + teamId + " has no submit for problem " + problemId);
-                    return;
-                }
-                run = runs.get(runs.size() - 1);
-                for (RunInfo run1 : runs) {
-                    if (run1.isAccepted()) {
-                        run = run1;
+                run = null;
+                if (runs.size() != 0) {
+                    run = runs.get(runs.size() - 1);
+                    for (RunInfo run1 : runs) {
+                        if (run1.isAccepted()) {
+                            run = run1;
+                        }
                     }
                 }
             }
@@ -86,6 +86,10 @@ public class BreakingNewsWidget extends VideoWidget {
             if (data.breakingNewsData.isLive) {
                 url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
             } else {
+                if (run == null) {
+                    System.err.println("Couldn't find run for team " + teamId + " and problem " + problemId);
+                    return;
+                }
                 url = TeamWidget.getUrl(run);
             }
 
@@ -94,12 +98,24 @@ public class BreakingNewsWidget extends VideoWidget {
             change(url);
             isLive = data.breakingNewsData.isLive;
 
+            if (run != null) {
+                currentShow = run.getTeamInfoBefore();
+                currentShow = currentShow == null ? team : currentShow;
+            } else {
+                currentShow = team;
+            }
+
             if (data.breakingNewsData.newsMessage.length() == 0) {
+                if (isLive && run == null) {
+                    System.err.println("Can't generate caption for team" + teamId + " problem " + problemId + ", " +
+                            "because video is live and don't know run id");
+                    return;
+                }
                 if (run.getResult().equals("AC")) {
                     if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[problemId]) {
                         caption = "First to solve";
                     } else if (team.getRank() <= 12) {
-                        caption = "Get to " + team.getRank() + " by solving";
+                        caption = "Becomes " + team.getRank() + " by solving";
                     } else {
                         caption = "Solved";
                     }
@@ -111,13 +127,13 @@ public class BreakingNewsWidget extends VideoWidget {
                 caption = data.breakingNewsData.newsMessage;
             }
             System.err.println("Caption: " + caption);
-            currentShow = run.getTeamInfoBefore();
-            caption = data.breakingNewsData.newsMessage;
             timer = 0;
             rankState = 0;
             visibilityState = 0;
             setVisible(true);
-
+            if (team == currentShow) {
+                rankState = 4;
+            }
         }
 
         lastUpdate = System.currentTimeMillis();
@@ -138,11 +154,11 @@ public class BreakingNewsWidget extends VideoWidget {
         }
 
         if (!ready.get()) {
+            visibilityState = 0;
             return;
         }
 
         timer += dt;
-        System.err.println(localVisibility + " " + visibilityState + " " + isVisible());
         if (rankState == 0) {
             setVisibilityState(0);
             rankState = 1;
@@ -167,6 +183,7 @@ public class BreakingNewsWidget extends VideoWidget {
             }
         }
 
+        System.err.println(visibilityState + " " + opacity);
         if (run == null || URL.get() != null) {
             int hh = (int) (hVideo * opacity);
             g.drawImage(image.get(), x, y + (hVideo - hh) / 2, wVideo, hh, null);

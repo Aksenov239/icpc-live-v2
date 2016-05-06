@@ -54,8 +54,10 @@ public class BreakingNews {
     }
 
     public String getTeam() {
-        return MainScreenData.getProperties().contestInfo.getParticipant(team).getShortName();
+        return MainScreenData.getProperties().contestInfo.getParticipant(team - 1).getShortName();
     }
+
+    public int getTeamId() { return team; }
 
     public long getTimestamp() {
         return timestamp;

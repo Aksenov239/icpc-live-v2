@@ -52,7 +52,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
             return label;
         });
 
-        String[] columns = {"team", "problem", "outcome", "time"};
+        String[] columns = {"teamId", "team", "problem", "outcome", "time"};
 
         table.setVisibleColumns(columns);
         table.setSelectable(true);
@@ -116,7 +116,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
                         WFRunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
                             container.addItemAt(0,
-                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime(), run.getId()));
+                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId() + 1, run.getTime(), run.getId()));
                         }
                         lastShowedRun++;
                     }
