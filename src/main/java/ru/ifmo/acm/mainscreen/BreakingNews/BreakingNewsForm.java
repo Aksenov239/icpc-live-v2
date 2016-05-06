@@ -83,7 +83,7 @@ public class BreakingNewsForm extends FormLayout {
             } else {
                 try {
                     StandardOpenOption appendOrCreate = Files.exists(patternsFile) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE;
-                    Files.write(patternsFile, newPattern.getValue().getBytes(), appendOrCreate);
+                    Files.write(patternsFile, (newPattern.getValue() + "\n").getBytes(), appendOrCreate);
 
                     predefinedMessages.addItems(newPattern.getValue());
                     newPattern.clear();
