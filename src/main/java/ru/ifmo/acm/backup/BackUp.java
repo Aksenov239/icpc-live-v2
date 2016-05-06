@@ -85,6 +85,12 @@ public class BackUp<T> {
         }
     }
 
+    public void addItemAt(int index, T item) {
+        synchronized (data) {
+            data.addItemAt(index, item);
+        }
+    }
+
     public void removeItem(T item) {
         synchronized (data) {
             data.removeItem(item);

@@ -1,7 +1,7 @@
 package ru.ifmo.acm.datapassing;
 
-import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backup.BackUp;
+import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
 import ru.ifmo.acm.events.WF.WFRunInfo;
@@ -84,12 +84,22 @@ public class BreakingNewsData implements CachedData {
                     });
                     toDelete.forEach(msg -> backUp.removeItem(msg));
 
-                    WFContestInfo contestInfo = (WFContestInfo) Preparation.eventsLoader.getContestData();
+                    WFContestInfo contestInfo = null;
+                    while (contestInfo == null) {
+                        contestInfo = (WFContestInfo) EventsLoader.getInstance().getContestData();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     while (lastShowedRun <= contestInfo.getMaxRunId()) {
                         WFRunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
                             // TODO: time or timestamp??
-                            backUp.addItem(new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime()));
+
+                            backUp.addItemAt(0, new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime()));
                         }
                         lastShowedRun++;
                     }

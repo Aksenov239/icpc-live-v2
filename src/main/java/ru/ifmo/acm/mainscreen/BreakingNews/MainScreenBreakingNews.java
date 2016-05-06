@@ -30,46 +30,6 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
         mainLayout.setExpandRatio(breakingNewsForm, 1.6f);
 
         setCompositionRoot(mainLayout);
-
-//        if (tableUpdater == null) {
-//            tableUpdater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
-//                @Override
-//                public void run() {
-//                    while (!stop) {
-//                        final BackUp<BreakingNews> backUp = MainScreenData.getProperties().backupBreakingNews;
-//                        List<BreakingNews> toDelete = new ArrayList<>();
-//                        backUp.getData().forEach(news -> {
-//                            if (news.getTimestamp() + MainScreenData.getProperties().breakingNewsTimeToKeepInTable > System.currentTimeMillis()) {
-//                                toDelete.add(news);
-//                            }
-//                        });
-//                        toDelete.forEach(msg -> backUp.removeItem(msg));
-//
-//                        WFContestInfo contestInfo = (WFContestInfo) Preparation.eventsLoader.getContestData();
-//                        while (lastShowedRun <= contestInfo.getMaxRunId()) {
-//                            WFRunInfo run = contestInfo.getRun(lastShowedRun);
-//                            if (run != null) {
-//                                // TODO: time or timestamp??
-//                                backUp.addItem(new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime()));
-//                            }
-//                            lastShowedRun++;
-//                        }
-//
-//                        try {
-//                            Thread.sleep(2000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            });
-//            tableUpdater.start();
-//            ContextListener.addThread(tableUpdater);
-//        }
-
-//        /* TODO: Remove test data */
-        container.addItem(new BreakingNews("OK", "A", 1, System.currentTimeMillis()));
-//        /* End of the test data*/
     }
 
 
