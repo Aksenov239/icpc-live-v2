@@ -78,13 +78,6 @@ public class BreakingNewsData implements CachedData {
             public void run() {
                 while (!stop) {
                     final BackUp<BreakingNews> backUp = MainScreenData.getProperties().backupBreakingNews;
-                    List<BreakingNews> toDelete = new ArrayList<>();
-                    backUp.getData().forEach(news -> {
-                        if (news.getTimestamp() + MainScreenData.getProperties().breakingNewsTimeToKeepInTable > System.currentTimeMillis()) {
-                            toDelete.add(news);
-                        }
-                    });
-                    toDelete.forEach(msg -> backUp.removeItem(msg));
 
                     WFContestInfo contestInfo = null;
                     while (contestInfo == null) {
@@ -98,12 +91,21 @@ public class BreakingNewsData implements CachedData {
 
                     while (lastShowedRun <= contestInfo.getMaxRunId()) {
                         WFRunInfo run = contestInfo.getRun(lastShowedRun);
-                        if (run != null) {
+                        if (run != null && !"".equals(run.getResult())) {
                             backUp.addItemAt(0,
                                     new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime(), run.getId()));
                         }
                         lastShowedRun++;
                     }
+
+                    // List<BreakingNews> data = backUp.getData();
+                    List<BreakingNews> toDelete = new ArrayList<>();
+                    int runsNumber = MainScreenData.getProperties().breakingNewsRunsNumber;
+                    for (int i = runsNumber; i < backUp.getData().size(); i++) {
+                        toDelete.add(backUp.getData().get(i));
+                    }
+
+                    toDelete.forEach(msg -> backUp.removeItem(msg));
 
                     try {
                         Thread.sleep(2000);
