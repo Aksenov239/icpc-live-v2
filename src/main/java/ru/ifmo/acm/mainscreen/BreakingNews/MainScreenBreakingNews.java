@@ -5,7 +5,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import ru.ifmo.acm.backend.player.widgets.ClockWidget;
-import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Utils;
 
@@ -59,6 +58,17 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
         table.addValueChangeListener(event -> {
             BreakingNews value = (BreakingNews) breakingNewsList.getValue();
             breakingNewsForm.update(value);
+        });
+
+        table.addStyleName("breakingnews-table");
+
+        table.setCellStyleGenerator((Table.CellStyleGenerator) (source, itemId, propertyId) -> {
+            if (propertyId != null ) {
+                BreakingNews item = (BreakingNews) itemId;
+                return item.getOutcome().toLowerCase();
+            }
+
+            return null;
         });
 
         return table;

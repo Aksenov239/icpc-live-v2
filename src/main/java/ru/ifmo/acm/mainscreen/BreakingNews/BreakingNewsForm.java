@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import static ru.ifmo.acm.mainscreen.Utils.createGroupLayout;
+
 public class BreakingNewsForm extends FormLayout {
     VerticalLayout form;
 
@@ -91,8 +93,7 @@ public class BreakingNewsForm extends FormLayout {
             }
         });
 
-        HorizontalLayout pattern = new HorizontalLayout(newPattern, save);
-        pattern.setSpacing(true);
+        CssLayout pattern = createGroupLayout(newPattern, save);
 
         newPattern.setSizeUndefined();
 
@@ -101,7 +102,7 @@ public class BreakingNewsForm extends FormLayout {
         time = new TextField("Time");
 
         outcomes = new ComboBox("Outcome");
-        outcomes.addItems("OK", "WA", "TL", "RE", "PE", "CE", "Frozen");
+        outcomes.addItems("AC", "WA", "TL", "RE", "PE", "CE", "Frozen");
         outcomes.setFilteringMode(FilteringMode.CONTAINS);
         outcomes.setNullSelectionAllowed(true);
 
