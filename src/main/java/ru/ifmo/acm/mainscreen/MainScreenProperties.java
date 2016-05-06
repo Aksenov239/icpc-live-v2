@@ -7,7 +7,6 @@ import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFTeamInfo;
-import ru.ifmo.acm.mainscreen.BreakingNews.BreakingNews;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -74,7 +73,6 @@ public class MainScreenProperties {
         breakingNewsTimeToShow = Long.parseLong(properties.getProperty("breakingnews.time")) + latency;
         breakingNewsRunsNumber = Integer.parseInt(properties.getProperty("breakingnews.runs.number"));
         backupBreakingNewsFilename = properties.getProperty("backup.breakingnews");
-        backupBreakingNews = new BackUp<>(BreakingNews.class, backupBreakingNewsFilename);
 
         breakingNewsPatternsFilename = properties.getProperty("breakingnews.patterns.filename");
     }
@@ -106,7 +104,6 @@ public class MainScreenProperties {
     public final long breakingNewsTimeToShow;
     public final int breakingNewsRunsNumber;
     public final String backupBreakingNewsFilename;
-    public final BackUp<BreakingNews> backupBreakingNews;
 
     public final String breakingNewsPatternsFilename;
 }

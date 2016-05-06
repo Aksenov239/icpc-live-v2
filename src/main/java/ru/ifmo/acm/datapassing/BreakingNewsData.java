@@ -1,16 +1,7 @@
 package ru.ifmo.acm.datapassing;
 
-import ru.ifmo.acm.backup.BackUp;
-import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.events.WF.WFContestInfo;
-import ru.ifmo.acm.events.WF.WFRunInfo;
-import ru.ifmo.acm.mainscreen.BreakingNews.BreakingNews;
 import ru.ifmo.acm.mainscreen.MainScreenData;
-import ru.ifmo.acm.mainscreen.Utils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -70,58 +61,6 @@ public class BreakingNewsData implements CachedData {
         if (change) {
             recache();
         }
-    }
-
-    public static Utils.StoppedThread getUpdaterThread() {
-        Utils.StoppedThread tableUpdater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
-            @Override
-            public void run() {
-                while (!stop) {
-                    final BackUp<BreakingNews> backUp = MainScreenData.getProperties().backupBreakingNews;
-
-                    WFContestInfo contestInfo = null;
-                    while (contestInfo == null) {
-                        contestInfo = (WFContestInfo) EventsLoader.getInstance().getContestData();
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    while (lastShowedRun <= contestInfo.getMaxRunId()) {
-                        WFRunInfo run = contestInfo.getRun(lastShowedRun);
-                        if (run != null) {
-                            backUp.addItemAt(0,
-                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime(), run.getId()));
-                        }
-                        lastShowedRun++;
-                    }
-
-                    List<BreakingNews> toDelete = new ArrayList<>();
-                    int runsNumber = MainScreenData.getProperties().breakingNewsRunsNumber;
-                    for (int i = runsNumber; i < backUp.getData().size(); i++) {
-                        toDelete.add(backUp.getData().get(i));
-                    }
-
-                    toDelete.forEach(msg -> backUp.removeItem(msg));
-
-                    for (int i = 0; i < backUp.getData().size(); i++) {
-                        int runId = backUp.getData().get(i).getRunId();
-                        WFRunInfo run = contestInfo.getRun(runId);
-                        backUp.getData().get(i).update(run);
-                    }
-
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        return tableUpdater;
     }
 
     public String toString() {
