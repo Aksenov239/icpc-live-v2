@@ -91,14 +91,13 @@ public class BreakingNewsData implements CachedData {
 
                     while (lastShowedRun <= contestInfo.getMaxRunId()) {
                         WFRunInfo run = contestInfo.getRun(lastShowedRun);
-                        if (run != null && !"".equals(run.getResult())) {
+                        if (run != null) {
                             backUp.addItemAt(0,
                                     new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime(), run.getId()));
                         }
                         lastShowedRun++;
                     }
 
-                    // List<BreakingNews> data = backUp.getData();
                     List<BreakingNews> toDelete = new ArrayList<>();
                     int runsNumber = MainScreenData.getProperties().breakingNewsRunsNumber;
                     for (int i = runsNumber; i < backUp.getData().size(); i++) {
@@ -106,6 +105,12 @@ public class BreakingNewsData implements CachedData {
                     }
 
                     toDelete.forEach(msg -> backUp.removeItem(msg));
+
+                    for (int i = 0; i < backUp.getData().size(); i++) {
+                        int runId = backUp.getData().get(i).getRunId();
+                        WFRunInfo run = contestInfo.getRun(runId);
+                        backUp.getData().get(i).update(run);
+                    }
 
                     try {
                         Thread.sleep(2000);
