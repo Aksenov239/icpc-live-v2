@@ -141,6 +141,7 @@ public class BreakingNewsForm extends FormLayout {
                 } else {
                     teamProblem.clear();
                     outcomes.clear();
+                    time.clear();
                     predefinedMessages.clear();
 
                     newPattern.setValue("");
@@ -190,7 +191,7 @@ public class BreakingNewsForm extends FormLayout {
             time.clear();
             outcomes.clear();
         } else {
-            teamProblem.setValue(news.getTeam() + "," + news.getProblem());
+            teamProblem.setValue(news.team + "," + news.getProblem());
 //            team.setValue(String.valueOf(news.getTeam()));
 //            problem.setValue(news.getProblem());
             time.setValue(String.valueOf(news.getTimestamp()));
