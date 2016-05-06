@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author: pashka
  */
-public abstract class VideoWidget extends Widget implements PlayerWidget {
+public class VideoWidget extends Widget implements PlayerWidget {
     private PlayerInImage player;
     protected AtomicReference<BufferedImage> image;
     protected AtomicBoolean inChange;
@@ -38,6 +38,39 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
         inChange = new AtomicBoolean();
         ready = new AtomicBoolean(true);
         stopped = new AtomicBoolean();
+    }
+
+    private PlayerInImage manualTempPlayer;
+    private String manualTempURL;
+
+    public void changeManually(String url) {
+        if (url == null) {
+            manualTempURL = null;
+            return;
+        }
+        manualTempPlayer = new PlayerInImage(width, height, null, url);
+        manualTempURL = url;
+        stopped.set(false);
+    }
+
+    public void switchManually() {
+        if (manualTempURL == null) {
+            if (!stopped.get()) {
+                URL.set(null);
+                stop();
+            }
+            return;
+        }
+        JComponent component = player.getComponent();
+        player.setComponent(null);
+        manualTempPlayer.setComponent(component);
+        if (!stopped.get()) {
+            player.stop();
+        }
+        player = manualTempPlayer;
+        image.set(player.getImage());
+        URL.set(manualTempURL);
+        stopped.set(false);
     }
 
     public void change(final String url) {
@@ -74,6 +107,10 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
         }.start();
     }
 
+    public void setVolume(int volume) {
+        player.setVolume(volume);
+    }
+
     public void stop() {
         if (player != null && !stopped.get()) {
             player.stop();
@@ -88,6 +125,10 @@ public abstract class VideoWidget extends Widget implements PlayerWidget {
 
     public MediaPlayer getPlayer() {
         return player.getPlayer();
+    }
+
+    public void paintImpl(Graphics2D g, int width, int height) {
+        g.drawImage(player.getImage(), x, y, null);
     }
 
 }

@@ -83,6 +83,10 @@ public class PCMSContestInfo extends ContestInfo {
         return new RunInfo[problemNumber];
     }
 
+    public PCMSTeamInfo getParticipantByHashTag(String hashTag) {
+        throw new AssertionError("There are no hashtags in PCMS");
+    }
+
     public long getTotalTime() {
         return totalTime;
     }

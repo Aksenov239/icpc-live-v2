@@ -96,6 +96,10 @@ public class PCMSTeamInfo implements TeamInfo {
         return 0;
     }
 
+    public String getHashTag() {
+        throw new AssertionError("there is no hashtags in PCMS");
+    }
+
     public String toString() {
         return shortName;
     }

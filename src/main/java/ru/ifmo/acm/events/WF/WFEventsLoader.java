@@ -12,8 +12,8 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.awt.*;
-import java.util.*;
 import java.io.*;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -24,14 +24,16 @@ public class WFEventsLoader extends EventsLoader {
     public static final int FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static WFContestInfo contestInfo;
 
+    public static double SPEED = 5;
+
     private String url;
     private String teamsInfoURL;
     private String problemsInfoURL;
+    private String hashTagsURL;
     private String login;
     private String password;
 
     private boolean emulation;
-    private final double EMULATION_SPEED = 30;
 
     public WFEventsLoader() {
         try {
@@ -47,10 +49,13 @@ public class WFEventsLoader extends EventsLoader {
 
             if (!(url.startsWith("http") || url.startsWith("https"))) {
                 emulation = true;
+            } else {
+                SPEED = 1;
             }
 
             problemsInfoURL = properties.getProperty("problems.url");
             teamsInfoURL = properties.getProperty("teams.url");
+            hashTagsURL = properties.getProperty("hashtags.url");
 
             initialize();
         } catch (IOException e) {
@@ -86,6 +91,7 @@ public class WFEventsLoader extends EventsLoader {
                         break;
                     case "rgb":
                         //System.err.println(val + " " + val.length());
+                        val = val.substring(1, val.length() - 1);
                         problem.color = Color.decode(val);
                         break;
                 }
@@ -97,7 +103,7 @@ public class WFEventsLoader extends EventsLoader {
     private WFTeamInfo[] teamsInfoRead(int problemsNumber) throws IOException {
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(Preparation.openAuthorizedStream(teamsInfoURL, login, password), "utf8"));
-        ArrayList<WFTeamInfo> infos = new ArrayList<>();
+        ArrayList<WFTeamInfo> infos = new ArrayList<WFTeamInfo>();
         String line;
         while ((line = br.readLine()) != null) {
             String[] z = line.split("\\t");
@@ -110,6 +116,21 @@ public class WFEventsLoader extends EventsLoader {
             team.shortName = z[5];
             infos.add(team);
         }
+
+        br = new BufferedReader(
+                new InputStreamReader(Preparation.openAuthorizedStream(hashTagsURL, login, password), "utf8"));
+        while ((line = br.readLine()) != null) {
+            String[] z = line.split("\\t");
+            String shortName = z[3];
+            String hashTag = z[6];
+            for (WFTeamInfo info : infos) {
+                if (info.shortName.equals(shortName)) {
+//                    System.err.println(shortName + " " + hashTag);
+                    info.hashTag = hashTag.substring(1);
+                }
+            }
+        }
+
         return infos.toArray(new WFTeamInfo[0]);
     }
 
@@ -315,7 +336,7 @@ public class WFEventsLoader extends EventsLoader {
                 // new FileInputStream(new File(properties.getProperty("url"))),
                 // "windows-1251");
 
-                long lastTime = 0;
+                //emulation = false;
 
                 while (xmlEventReader.hasNext()) {
                     XMLEvent xmlEvent = null;
@@ -331,15 +352,12 @@ public class WFEventsLoader extends EventsLoader {
                             case "run":
                                 WFRunInfo run = readRun(xmlEventReader);
                                 if (emulation) {
-                                    if (lastTime > 0) {
-                                        try {
-                                            long tt = (long) ((run.getTime() - lastTime) / EMULATION_SPEED);
-                                            if (tt > 0) Thread.sleep(tt);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                    try {
+                                        long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / SPEED);
+                                        if (dt > 0) Thread.sleep(dt);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                    lastTime = run.getTime();
                                 }
                                 System.err.println("new run: " + run);
                                 if (run.getTime() <= FREEZE_TIME || run.getResult().length() == 0) {
@@ -360,15 +378,12 @@ public class WFEventsLoader extends EventsLoader {
                             case "testcase":
                                 WFTestCaseInfo test = readTest(xmlEventReader);
                                 if (emulation) {
-                                    if (lastTime > 0) {
-                                        try {
-                                            long tt = (long) ((test.time - lastTime) / EMULATION_SPEED);
-                                            if (tt > 0) Thread.sleep(tt);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                    try {
+                                        long dt = (long) ((test.time - contestInfo.getCurrentTime()) / SPEED);
+                                        if (dt > 0) Thread.sleep(dt);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                    lastTime = test.time;
                                 }
                                 contestInfo.addTest(test);
                                 break;

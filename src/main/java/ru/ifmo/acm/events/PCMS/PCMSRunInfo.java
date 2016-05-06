@@ -57,6 +57,10 @@ public class PCMSRunInfo implements RunInfo {
         //return 0;
     }
 
+    public boolean isReallyUnknown() {
+        return reallyUnknown;
+    }
+
     public SmallTeamInfo getTeamInfoBefore() {
         return null;
     }
@@ -65,6 +69,7 @@ public class PCMSRunInfo implements RunInfo {
     protected String result = "";
     protected int problem;
     protected long time;
+    public boolean reallyUnknown;
 
     protected boolean firstToSolve;
 }

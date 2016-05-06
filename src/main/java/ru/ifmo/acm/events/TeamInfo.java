@@ -23,6 +23,8 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     List<RunInfo>[] getRuns();
 
+    String getHashTag();
+
     default public int compareTo(TeamInfo team) {
         return this.toString().compareTo(team.toString());
     }
@@ -52,6 +54,21 @@ public interface TeamInfo extends Comparable<TeamInfo> {
                 return "-" + total;
             }
         }
+    }
+
+    default boolean isReallyUnknown(int problem) {
+        List<RunInfo> runs = getRuns()[problem];
+        synchronized (runs) {
+            for (RunInfo run : runs) {
+                if ("AC".equals(run.getResult()) && !run.isReallyUnknown()) {
+                    return false;
+                }
+                if (run.isReallyUnknown()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     static Comparator<TeamInfo> comparator = new Comparator<TeamInfo>() {

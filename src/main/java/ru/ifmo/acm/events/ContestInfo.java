@@ -1,5 +1,7 @@
 package ru.ifmo.acm.events;
 
+import ru.ifmo.acm.events.WF.WFEventsLoader;
+
 import java.util.List;
 
 public abstract class ContestInfo {
@@ -33,7 +35,7 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
-        return startTime == 0 ? 0 : System.currentTimeMillis() - startTime;
+        return startTime == 0 ? 0 : (long) ((System.currentTimeMillis() - startTime) * WFEventsLoader.SPEED);
     }
 
     public boolean isFrozen() {
@@ -43,6 +45,8 @@ public abstract class ContestInfo {
     public abstract TeamInfo getParticipant(String name);
 
     public abstract TeamInfo getParticipant(int id);
+
+    public abstract TeamInfo getParticipantByHashTag(String hashTag);
 
     public abstract TeamInfo[] getStandings();
 

@@ -51,6 +51,7 @@ public class MainScreenData {
         personData.update();
         standingsData.update();
         breakingNewsData.update();
+        teamData.update();
     }
 
     private static MainScreenData mainScreenData;

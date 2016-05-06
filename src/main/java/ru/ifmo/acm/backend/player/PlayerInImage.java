@@ -59,6 +59,10 @@ public class PlayerInImage {
         return image;
     }
 
+    public void setVolume(int volume) {
+        mediaPlayer.setVolume(volume);
+    }
+
     private final class TestRenderCallback extends RenderCallbackAdapter {
 
         public TestRenderCallback() {

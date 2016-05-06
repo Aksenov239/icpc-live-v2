@@ -25,7 +25,7 @@ public class SplitScreenData implements CachedData {
     }
 
     public synchronized boolean setInfoVisible(int controllerId, boolean visible, String type, TeamInfo teamInfo) {
-        return controllerDatas[controllerId].setInfoVisible(visible, type, teamInfo);
+        return controllerDatas[controllerId].setInfoManual(visible, type, teamInfo);
     }
 
     public synchronized boolean isVisible(int controllerId) {

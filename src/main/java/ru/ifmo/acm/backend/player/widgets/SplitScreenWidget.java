@@ -8,7 +8,6 @@ import ru.ifmo.acm.events.WF.WFContestInfo;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -27,6 +26,8 @@ public class SplitScreenWidget extends Widget {
     private int currentRunId;
     private int[] interestingTeams;
     private int topPlaces;
+    private TwitterBasedQueue usersQueue;
+    private int mode = 0;
 
     public void initialization() {
         Properties properties = new Properties();
@@ -43,7 +44,7 @@ public class SplitScreenWidget extends Widget {
         String[] showSetup = properties.getProperty("setup").split(",");
         interestingTeams = new int[showSetup.length];
         for (int i = 0; i < interestingTeams.length; i++) {
-            interestingTeams[i] = Integer.parseInt(showSetup[i]);
+            interestingTeams[i] = Integer.parseInt(showSetup[i]) - 1;
         }
         defaultType = properties.getProperty("default.type", "screen");
         TeamInfo[] standings = Preparation.eventsLoader.getContestData().getStandings();
@@ -59,6 +60,9 @@ public class SplitScreenWidget extends Widget {
                     Preparation.eventsLoader.getContestData().getParticipant(teamId), defaultType);
             lastSwitch[i] = System.currentTimeMillis() + switchTime * i;
         }
+
+        usersQueue = new TwitterBasedQueue();
+        usersQueue.start();
     }
 
     public SplitScreenWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
@@ -111,8 +115,19 @@ public class SplitScreenWidget extends Widget {
         }
         TeamInfo[] standings = contestInfo.getStandings();
         int teamId;
-        //String infoType;
+        String infoType = defaultType;
         while (true) {
+            if (mode == 0) {
+                TwitterBasedQueue.Request request = usersQueue.nextRequest();
+                if (request != null) {
+                    //System.err.println("MODE 0 " + request.teamId);
+                    teamId = request.teamId;
+                    if (teamInUse(teamId)) {
+                        continue;
+                    }
+                    break;
+                }
+            }
             if (standings[currentPlace].getSolvedProblemsNumber() == 0) {
                 if (!teamInUse(interestingTeams[predefinedTeam])) {
                     teamId = interestingTeams[predefinedTeam];
@@ -129,13 +144,14 @@ public class SplitScreenWidget extends Widget {
                 currentPlace = (currentPlace + 1) % topPlaces;
             }
         }
-        //System.err.println("Choose " + teamId + " for " + widget);
+        //System.err.println("Choose " + teamId + " for " + widget + " with mode " + mode);
         teamInfoWidgets[widget].change(
                 contestInfo.getParticipant(teamId),
-                defaultType
+                infoType
         );
         //System.err.println("There " + teamInfoWidgets[widget].teamId + " " + teamInfoWidgets[widget].team.getId());
         lastSwitch[widget] = System.currentTimeMillis();
+        mode ^= 1;
     }
 
     @Override
@@ -151,9 +167,13 @@ public class SplitScreenWidget extends Widget {
                     chooseNewStream(i);
                 }
             } else {
-                automatic[i] = false;
-                if (data.splitScreenData.getTeamId(i) == -1)
+                if (data.splitScreenData.getTeamId(i) == -1) {
+                    if (System.currentTimeMillis() > lastSwitch[i] + switchTime) {
+                        chooseNewStream(i);
+                    }
                     continue;
+                }
+                automatic[i] = false;
                 if ((data.splitScreenData.getTeamId(i) != teamInfoWidgets[i].getTeamId()
                         && !data.splitScreenData.infoStatus(i).equals(currentInfoType[i])) &&
                         teamInfoWidgets[i].readyToShow()) {
@@ -161,7 +181,7 @@ public class SplitScreenWidget extends Widget {
                     teamInfoWidgets[i].change(
                             TeamWidget.getUrl(
                                     Preparation.eventsLoader.getContestData().getParticipant(data.splitScreenData.getTeamId(i)),
-                                    data.splitScreenData.infoStatus(i)
+                                    data.splitScreenData.controllerDatas[i].infoType
                             )
                     );
                 }

@@ -16,8 +16,9 @@ public class QueueWidget extends Widget {
 
     private static final double V = 0.01;
 
-    public static final int WAIT_TIME = 6000;
-    public static final int FIRST_TO_SOLVE_WAIT_TIME = 12000;
+    public static final int WAIT_TIME = 60000;
+    public static final int FIRST_TO_SOLVE_WAIT_TIME = 120000;
+    private static final int MAX_QUEUE_SIZE = 22;
 
     private final int baseX;
     private final int baseY;
@@ -70,6 +71,8 @@ public class QueueWidget extends Widget {
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
+
+        if (info == null) return;
 
         int dt = updateVisibilityState();
         g = (Graphics2D) g.create();
@@ -210,7 +213,7 @@ public class QueueWidget extends Widget {
         }
 
         if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
-            drawStar(g, x + statusWidth, y, STAR_SIZE);
+            drawStar(g, x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
         }
 
     }
@@ -225,12 +228,34 @@ public class QueueWidget extends Widget {
             if (r == null)
                 continue;
             if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME) {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / WFEventsLoader.SPEED) {
                     firstToSolves.add(r);
                 }
             } else {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME) {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
                     queue.add(r);
+                }
+            }
+        }
+
+        int extra = firstToSolves.size() + queue.size() - MAX_QUEUE_SIZE;
+        if (extra > 0) {
+            queue.clear();
+
+            for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
+                if (r == null)
+                    continue;
+                if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
+                    continue;
+                } else {
+                    if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
+                        if ((r.isJudged() || r.getTime() > WFEventsLoader.FREEZE_TIME) && extra > 0) {
+                            extra--;
+                            continue;
+
+                        }
+                        queue.add(r);
+                    }
                 }
             }
         }

@@ -78,7 +78,9 @@ public class BreakingNewsForm extends FormLayout {
                 Notification.show("Message should not be empty");
             } else {
                 try {
-                    Files.write(patternsFile, newPattern.getValue().getBytes(), StandardOpenOption.APPEND);
+                    StandardOpenOption appendOrCreate = Files.exists(patternsFile) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE;
+                    Files.write(patternsFile, newPattern.getValue().getBytes(), appendOrCreate);
+
                     predefinedMessages.addItems(newPattern.getValue());
                     newPattern.clear();
                 } catch (IOException e) {

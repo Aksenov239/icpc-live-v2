@@ -48,12 +48,7 @@ public class Main {
 
         generator.addWidget(new GreenScreenWidget(true));
 
-        generator.addWidget(new TeamInfoWidget(
-                updateWait,
-                Widget.BASE_WIDTH,
-                Widget.BASE_HEIGHT,
-                16. / 9,
-                Integer.parseInt(properties.getProperty("sleep.time"))));
+        generator.addWidget(new NewTeamWidget(Integer.parseInt(properties.getProperty("sleep.time"))));
 
         generator.addWidget(new ClockWidget(updateWait));
         generator.addWidget(new CreepingLineWidget(updateWait));
@@ -61,14 +56,14 @@ public class Main {
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
         StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
-        standingsWidget.alignBottom(980);
+        standingsWidget.alignBottom(994);
         generator.addWidget(standingsWidget);
 
-        generator.addWidget(new QueueWidget(30, 980, 39, 100));
+        generator.addWidget(new QueueWidget(30, 994, 39, 100));
 
         BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
                 1350, 39, updateWait, 20, true);
-        bigStandingsWidget.alignBottom(980);
+        bigStandingsWidget.alignBottom(994);
         generator.addWidget(bigStandingsWidget);
 
 //        generator.addWidget(new BreakingNewsWidget(

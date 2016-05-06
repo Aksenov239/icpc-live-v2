@@ -62,13 +62,18 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
     public Component getOneControllerTeam(int id) {
         labels[id] = new Label("Controller " + (id + 1) + " (" + getTeamStatus(id) + ")");
         automated[id] = new CheckBox("Automated");
+        automated[id].setValue(true);
 
         automated[id].addValueChangeListener(event -> {
-            types[id].setValue(automated[id].getValue() ? null : TeamWidget.types[0]);
-            types[id].setEnabled(automated[id].isEmpty());
+            boolean auto = automated[id].getValue();
+            types[id].setValue(auto ? null : TeamWidget.types[0]);
+            types[id].setEnabled(!auto);
 
-            shows[id].setEnabled(automated[id].isEmpty());
-            hides[id].setEnabled(automated[id].isEmpty());
+            shows[id].setEnabled(!auto);
+            hides[id].setEnabled(!auto);
+            if (auto) {
+                mainScreenData.splitScreenData.isAutomatic[id] = true;
+            }
         });
 
         types[id] = new OptionGroup();
@@ -77,6 +82,8 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
         types[id].setValue(TeamWidget.types[0]);
         types[id].addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         types[id].setWidth("50%");
+        types[id].setEnabled(false);
+        mainScreenData.splitScreenData.controllerDatas[id].infoType = TeamWidget.types[0];
 
         teams[id] = new TextField("Team: ");
         teams[id].setSizeFull();
@@ -102,6 +109,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
                     //    }
                 }
         );
+        shows[id].setEnabled(false);
 
         hides[id] = new Button("Hide");
         hides[id].addClickListener(event -> {
@@ -111,7 +119,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
                         mainScreenData.splitScreenData.setInfoVisible(id, false, null, null);
                     }
                 }
-        );
+        );                          hides[id].setEnabled(false);
 
         CssLayout team = createGroupLayout(teams[id], shows[id], hides[id]);
         VerticalLayout result = new VerticalLayout(labels[id], automated[id], types[id], team);
