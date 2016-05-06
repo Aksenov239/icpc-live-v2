@@ -29,8 +29,8 @@ public class BreakingNewsForm extends FormLayout {
 
     Label messageToShow;
 
-    TextField team;
-    TextField problem;
+    TextField teamProblem;
+    // TextField problem;
     ComboBox outcomes;
     TextField time;
 
@@ -97,8 +97,8 @@ public class BreakingNewsForm extends FormLayout {
 
         newPattern.setSizeUndefined();
 
-        team = new TextField("Team");
-        problem = new TextField("Problem");
+        teamProblem = new TextField("Team,Problem");
+        // problem = new TextField("Problem");
         time = new TextField("Time");
 
         outcomes = new ComboBox("Outcome");
@@ -106,22 +106,26 @@ public class BreakingNewsForm extends FormLayout {
         outcomes.setFilteringMode(FilteringMode.CONTAINS);
         outcomes.setNullSelectionAllowed(true);
 
-        team.addValueChangeListener(event -> updateMessageField());
-        problem.addValueChangeListener(event -> updateMessageField());
+        teamProblem.addValueChangeListener(event -> updateMessageField());
+        // problem.addValueChangeListener(event -> updateMessageField());
         time.addValueChangeListener(event -> updateMessageField());
 
         outcomes.addValueChangeListener(event -> updateMessageField());
 
-        HorizontalLayout parameters = new HorizontalLayout(team, problem, time, outcomes);
+        HorizontalLayout parameters = new HorizontalLayout(teamProblem, time, outcomes);
         parameters.setSpacing(true);
 
         show = new Button("Show");
         show.addClickListener(event -> {
-            if (team.getValue().equals("") || problem.getValue().equals("")) {
+            if (teamProblem.getValue().equals("")) {
                 Notification.show("It requires team id and problem id");
             } else {
-                int teamId = Integer.parseInt(team.getValue()) - 1;
-                int problemId = problem.getValue().charAt(0) - 'A';
+                String[] zz = teamProblem.getValue().split(",");
+                int teamId = Integer.parseInt(zz[0]) - 1;
+                int problemId = zz[1].charAt(0) - 'A';
+
+//                int teamId = Integer.parseInt(team.getValue()) - 1;
+//                int problemId = problem.getValue().charAt(0) - 'A';
                 updateMessageField();
 
                 boolean isSet = parent.mainScreenData.breakingNewsData.setNewsVisible(
@@ -131,12 +135,11 @@ public class BreakingNewsForm extends FormLayout {
 
                 if (!isSet) {
                     Notification.show(
-                            String.format("You need to wait while current breaking news is shown"),
+                            "You need to wait while current breaking news is shown",
                             Notification.Type.WARNING_MESSAGE
                     );
                 } else {
-                    team.clear();
-                    problem.clear();
+                    teamProblem.clear();
                     outcomes.clear();
                     predefinedMessages.clear();
 
@@ -183,13 +186,13 @@ public class BreakingNewsForm extends FormLayout {
 
     public void update(BreakingNews news) {
         if (news == null) {
-            team.clear();
-            problem.clear();
+            teamProblem.clear();
             time.clear();
             outcomes.clear();
         } else {
-            team.setValue(String.valueOf(news.getTeam()));
-            problem.setValue(news.getProblem());
+            teamProblem.setValue(news.getTeam() + "," + news.getProblem());
+//            team.setValue(String.valueOf(news.getTeam()));
+//            problem.setValue(news.getProblem());
             time.setValue(String.valueOf(news.getTimestamp()));
             outcomes.setValue(news.getOutcome());
             currentRunId = news.getRunId();
@@ -200,15 +203,24 @@ public class BreakingNewsForm extends FormLayout {
 
     public void updateMessageField() {
         String result = newPattern.isEmpty() ? (predefinedMessages.isEmpty() ? "" : (String)predefinedMessages.getValue()) : newPattern.getValue();
-        if (!team.isEmpty()) {
-            int teamId = Integer.parseInt(team.getValue()) - 1;
+//        if (!team.isEmpty()) {
+//            int teamId = Integer.parseInt(team.getValue()) - 1;
+//
+//            String teamName = (teamId == -1) ? "" : MainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();
+//            result = result.replace("%team", teamName);
+//        }
+//
+//        if (!problem.isEmpty()) {
+//            result = result.replace("%problem", problem.getValue());
+//        }
+        if (!teamProblem.isEmpty()) {
+            String[] zz = teamProblem.getValue().split(",");
 
+            int teamId = Integer.parseInt(zz[0]) - 1;
             String teamName = (teamId == -1) ? "" : MainScreenData.getProperties().contestInfo.getParticipant(teamId).getName();
             result = result.replace("%team", teamName);
-        }
 
-        if (!problem.isEmpty()) {
-            result = result.replace("%problem", problem.getValue());
+            result = result.replace("%problem", zz[1]);
         }
 
         if (!time.isEmpty()) {
