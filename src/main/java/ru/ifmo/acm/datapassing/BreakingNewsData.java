@@ -1,7 +1,16 @@
 package ru.ifmo.acm.datapassing;
 
+import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.events.WF.WFContestInfo;
+import ru.ifmo.acm.events.WF.WFRunInfo;
+import ru.ifmo.acm.mainscreen.BreakingNews.BreakingNews;
 import ru.ifmo.acm.mainscreen.MainScreenData;
+import ru.ifmo.acm.mainscreen.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -22,7 +31,7 @@ public class BreakingNewsData implements CachedData {
         Data.cache.refresh(BreakingNewsData.class);
     }
 
-    public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String info) {
+    public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String newsMessage, int teamId, int problemId) {
         if (visible && isVisible) {
             return false;
         }
@@ -30,13 +39,11 @@ public class BreakingNewsData implements CachedData {
         this.isVisible = visible;
 
         if (visible) {
-            String[] zz = info.split(" ");
-            int teamId = Integer.parseInt(zz[0]) - 1;
-            int problemId = zz[1].charAt(0) - 'A';
-
             TeamInfo teamInfo = MainScreenData.getProperties().contestInfo.getParticipant(teamId);
             this.teamId = teamId;
             this.problemId = problemId;
+            this.newsMessage = newsMessage;
+
             teamName = teamInfo.getName();
             infoType = type;
             this.isLive = isLive;
@@ -44,13 +51,13 @@ public class BreakingNewsData implements CachedData {
 
         this.timestamp = System.currentTimeMillis();
         recache();
+
         return true;
     }
 
     public void update() {
         boolean change = false;
         synchronized (breakingNewsLock) {
-            //System.err.println(PCMSEventsLoader.getInstance().getContestData().getTeamsNumber());
             if (System.currentTimeMillis() > timestamp +
                     MainScreenData.getProperties().breakingNewsTimeToShow +
                     MainScreenData.getProperties().sleepTime) {
@@ -58,8 +65,45 @@ public class BreakingNewsData implements CachedData {
                 change = true;
             }
         }
-        if (change)
+        if (change) {
             recache();
+        }
+    }
+
+    public static Utils.StoppedThread getUpdaterThread() {
+        Utils.StoppedThread tableUpdater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+            @Override
+            public void run() {
+                while (!stop) {
+                    final BackUp<BreakingNews> backUp = MainScreenData.getProperties().backupBreakingNews;
+                    List<BreakingNews> toDelete = new ArrayList<>();
+                    backUp.getData().forEach(news -> {
+                        if (news.getTimestamp() + MainScreenData.getProperties().breakingNewsTimeToKeepInTable > System.currentTimeMillis()) {
+                            toDelete.add(news);
+                        }
+                    });
+                    toDelete.forEach(msg -> backUp.removeItem(msg));
+
+                    WFContestInfo contestInfo = (WFContestInfo) Preparation.eventsLoader.getContestData();
+                    while (lastShowedRun <= contestInfo.getMaxRunId()) {
+                        WFRunInfo run = contestInfo.getRun(lastShowedRun);
+                        if (run != null) {
+                            // TODO: time or timestamp??
+                            backUp.addItem(new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId(), run.getTime()));
+                        }
+                        lastShowedRun++;
+                    }
+
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        return tableUpdater;
     }
 
     public String toString() {
@@ -89,6 +133,9 @@ public class BreakingNewsData implements CachedData {
     public int problemId;
     public String infoType;
     public boolean isLive;
+    public String newsMessage;
+
+    private static int lastShowedRun = 0;
 
     final private Object breakingNewsLock = new Object();
 }

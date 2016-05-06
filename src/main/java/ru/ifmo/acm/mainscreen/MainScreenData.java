@@ -26,6 +26,10 @@ public class MainScreenData {
             });
             updater.start();
             ContextListener.addThread(updater);
+
+            Utils.StoppedThread breakingNewsTableUpdater = BreakingNewsData.getUpdaterThread();
+            breakingNewsTableUpdater.start();
+            ContextListener.addThread(breakingNewsTableUpdater);
         }
         return mainScreenData;
     }
