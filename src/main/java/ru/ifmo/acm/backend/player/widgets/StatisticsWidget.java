@@ -74,7 +74,7 @@ public class StatisticsWidget extends Widget {
         drawTextInRect(g, "Statistics", 0, 0, -1, plateHeight, POSITION_LEFT,
                 ACCENT_COLOR, Color.white, visibilityState);
 
-        int y = plateHeight + spaceY;
+        int y = plateHeight + spaceY * BIG_SPACE_COUNT;
 
         int fullWidth = this.width - problemWidth - spaceX;
 

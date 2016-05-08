@@ -21,10 +21,11 @@ import java.util.List;
  */
 public class WFEventsLoader extends EventsLoader {
 
-    public static final int FREEZE_TIME = 4 * 60 * 60 * 1000;
+    public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
+    public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static WFContestInfo contestInfo;
 
-    public static double SPEED = 5;
+    public static double SPEED = 20;
 
     private String url;
     private String teamsInfoURL;
@@ -411,6 +412,22 @@ public class WFEventsLoader extends EventsLoader {
                                     contestInfo.setStartTime(System.currentTimeMillis());
                                 }
                                 break;
+                            case "length": {
+                                String s = xmlEventReader.getElementText();
+                                int hh = Integer.parseInt(s.substring(0, 2));
+                                int mm = Integer.parseInt(s.substring(3, 5));
+                                int ss = Integer.parseInt(s.substring(6, 8));
+                                CONTEST_LENGTH = ((hh * 60 + mm) * 60 + ss) * 1000;
+                                break;
+                            }
+                            case "scoreboard-freeze-length": {
+                                String s = xmlEventReader.getElementText();
+                                int hh = Integer.parseInt(s.substring(0, 2));
+                                int mm = Integer.parseInt(s.substring(3, 5));
+                                int ss = Integer.parseInt(s.substring(6, 8));
+                                FREEZE_TIME = CONTEST_LENGTH - ((hh * 60 + mm) * 60 + ss) * 1000;
+                                break;
+                            }
                         }
                     }
                 }

@@ -28,6 +28,7 @@ public abstract class Widget {
     protected static final double PROBLEM_WIDTH = 1.2;
     protected static final double STATUS_WIDTH = 2;
     protected static final int STAR_SIZE = 5;
+    static final int BIG_SPACE_COUNT = 6;
 
     private boolean visible;
 
