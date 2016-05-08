@@ -54,11 +54,7 @@ public class ClockWidget extends Widget {
         drawRect(g, x, y, WIDTH, HEIGHT, DARK_GRAY, opacity);
         g.setColor(Color.WHITE);
         g.setFont(clockFont);
-        long time = Math.abs(Preparation.eventsLoader.getContestData().getCurrentTime() / 1000);
-        //System.err.println("Clock time: " + time);
-        if (time > 5 * 60 * 60) {
-            time = 5 * 60 * 60;
-        }
+        long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
 
         int w1 = g.getFontMetrics(clockFont).charWidth('0');
         int w2 = g.getFontMetrics(clockFont).charWidth(':');

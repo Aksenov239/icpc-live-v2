@@ -154,7 +154,9 @@ public class QueueWidget extends Widget {
         x += problemWidth + spaceX;
 
         if (run.getTime() > WFEventsLoader.FREEZE_TIME) {
-            return;
+            result = "?";
+            resultColor = MAIN_COLOR;
+            inProgress = false;
         }
 
         drawTextInRect(g, result, x, y, statusWidth,

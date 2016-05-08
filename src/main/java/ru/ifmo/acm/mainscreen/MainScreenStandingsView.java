@@ -267,6 +267,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     public void refresh() {
         clockStatus.setValue(getClockStatus());
         standingsStatus.setValue(getStandingsStatus());
+//            breakingNewsStatus.setValue(getBreakingNewsStatus());
         queueStatus.setValue(getQueueStatus());
         statisticsStatus.setValue(getStatisticsStatus());
 

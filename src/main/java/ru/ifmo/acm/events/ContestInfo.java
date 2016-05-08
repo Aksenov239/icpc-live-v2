@@ -35,7 +35,11 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
-        return startTime == 0 ? 0 : (long) ((System.currentTimeMillis() - startTime) * WFEventsLoader.SPEED);
+        return startTime == 0 ? 0 :
+                (long) Math.min(
+                        ((System.currentTimeMillis() - startTime) * WFEventsLoader.SPEED),
+                        WFEventsLoader.CONTEST_LENGTH
+                );
     }
 
     public boolean isFrozen() {

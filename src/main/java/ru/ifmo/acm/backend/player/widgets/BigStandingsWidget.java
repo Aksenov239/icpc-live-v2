@@ -8,6 +8,7 @@ import ru.ifmo.acm.events.ProblemInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
+import ru.ifmo.acm.events.WF.WFEventsLoader;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,11 +20,9 @@ import java.util.List;
 public class BigStandingsWidget extends Widget {
     private static final double V = 0.01;
     private static final int STAR_SIZE = 5;
-    private static final long FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
-    private static final int BIG_SPACE_COUNT = 6;
     public static int PERIOD = STANDING_TIME + MOVING_TIME;
 
     protected static final double TOTAL_WIDTH = 1.8;
@@ -283,7 +282,7 @@ public class BigStandingsWidget extends Widget {
         Color headingColor = ACCENT_COLOR;
         String headingText = "Current Standings";
 
-        if (contestData.getCurrentTime() > FREEZE_TIME) {
+        if (contestData.getCurrentTime() > WFEventsLoader.FREEZE_TIME) {
             if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
                 headingColor = GREEN_COLOR;
                 headingText = "Optimistic Standings";
@@ -342,11 +341,12 @@ public class BigStandingsWidget extends Widget {
                                     status.startsWith("-") ? RED_COLOR :
                                             MAIN_COLOR;
             if (team.isReallyUnknown(i)) {
-                if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
-                    statusColor = YELLOW_GREEN_COLOR;
-                } else {
-                    statusColor = YELLOW_RED_COLOR;
-                }
+                statusColor = YELLOW_COLOR;
+//                if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
+//                    statusColor = YELLOW_GREEN_COLOR;
+//                } else {
+//                    statusColor = YELLOW_RED_COLOR;
+//                }
             }
             if (bright && statusColor == MAIN_COLOR) statusColor = statusColor.brighter();
 
