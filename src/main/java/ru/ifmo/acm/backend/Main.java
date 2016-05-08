@@ -66,6 +66,10 @@ public class Main {
         bigStandingsWidget.alignBottom(994);
         generator.addWidget(bigStandingsWidget);
 
+        generator.addWidget(new StatisticsWidget(
+                519, 200, 39, 1350, updateWait
+        ));
+
         generator.addWidget(new BreakingNewsWidget(
                 updateWait,
                 (int)(Widget.BASE_WIDTH * 0.65),

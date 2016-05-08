@@ -233,7 +233,7 @@ public class NewTeamWidget extends VideoWidget {
             }
 
             drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
-                    PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, false);
+                    PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1);
 
             int x = X - GAP_X;
             for (int j = 0; j < runs.length; j++) {
@@ -242,16 +242,16 @@ public class NewTeamWidget extends VideoWidget {
                 if (j == runs.length - 1) {
                     drawTextInRect(g, format(run.getTime() / 1000), this.x + x - RUN_WIDTH, this.y + y,
                             RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
-                            i == currentProblemId ? getTimeOpacity() : 1, false
+                            i == currentProblemId ? getTimeOpacity() : 1
                     );
                     //System.err.println(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
-                        drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
+                        drawStar(g, this.x + x - STAR_SIZE, (int) (this.y + y + STAR_SIZE), (int) STAR_SIZE);
                     }
                     x -= RUN_WIDTH + GAP_X;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
                     drawTextInRect(g, "", this.x + x - RUN_SMALL_WIDTH, this.y + y,
-                            RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, false);
+                            RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1);
                     x -= RUN_SMALL_WIDTH + GAP_X;
                 }
 

@@ -38,7 +38,8 @@ public abstract class Widget {
     public final static Color ACCENT_COLOR = new Color(0x881F1B);
 
     public static final Color GREEN_COLOR = new Color(0x1b8041);
-    public static final Color YELLOW_COLOR = new Color(0xD4AF37);
+//    public static final Color YELLOW_COLOR = new Color(0xD4AF37);
+    public static final Color YELLOW_COLOR = new Color(0xa59e0c);
     public static final Color RED_COLOR = new Color(0x881f1b);
 
 
@@ -152,25 +153,7 @@ public abstract class Widget {
         return visible;
     }
 
-    Font adjustFont(Graphics2D gT, String text, int width, int height, double percent) {
-        Graphics2D g = (Graphics2D) gT.create();
-        int l = 7;
-        int r = 100;
-        while (l < r - 1) {
-            int m = (l + r) >> 1;
-            g.setFont(Font.decode("Open Sans " + m));
-            Rectangle2D sb = g.getFontMetrics().getStringBounds(text, g);
-            if (sb.getWidth() < percent * width && sb.getHeight() < percent * height) {
-                l = m;
-            } else {
-                r = m;
-            }
-        }
-        g.dispose();
-        return Font.decode("Open Sans " + l);
-    }
-
-    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
+        void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
         g.setComposite(AlphaComposite.SrcOver.derive(1f));
         g.setColor(color);
 
@@ -192,7 +175,7 @@ public abstract class Widget {
 
                 double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
                 double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
-                if (italic) tx -= (ty - (y + height / 2)) * 0.1;
+                if (italic) tx -= (ty - (y + height / 2)) * 0.2;
                 xx[t] = (int) Math.round(tx);
                 yy[t] = (int) Math.round(ty);
             }
@@ -201,7 +184,7 @@ public abstract class Widget {
     }
 
     void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
-        drawRect(g, x, y, width, height, color, opacity, true);
+        drawRect(g, x, y, width, height, color, opacity, false);
     }
 
     static final int POSITION_LEFT = 0;
@@ -209,10 +192,10 @@ public abstract class Widget {
     static final int POSITION_CENTER = 2;
 
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
-        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, true);
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true);
     }
 
-    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic) {
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale) {
         Graphics2D g = (Graphics2D) gg.create();
         //setVisibilityState(state);
         double opacity = getOpacity(visibilityState);
@@ -220,13 +203,23 @@ public abstract class Widget {
         if (text == null) {
             text = "NULL";
         }
+
         int textWidth = g.getFontMetrics().stringWidth(text);
+        double textScale = 1;
+
+        double margin = height * MARGIN;
+
         if (width == -1) {
-            width = (int) (textWidth + 2.5 * height * MARGIN);
+            width = (int) (textWidth + 2 * margin);
             if (position == POSITION_CENTER) {
                 x -= width / 2;
             } else if (position == POSITION_RIGHT) {
                 x -= width;
+            }
+        } else if (scale) {
+            int maxTextWidth = (int) (width - 2 * margin);
+            if (textWidth > maxTextWidth) {
+                textScale = 1.0 * maxTextWidth / textWidth;
             }
         }
 
@@ -243,23 +236,15 @@ public abstract class Widget {
 //        wh = g.getFontMetrics();
 //        }
 
-        int maxTextWidth = (int) (width - 2 * height * MARGIN);
-        double textScale = 1;
-        if (textWidth > maxTextWidth) {
-            textScale = 1.0 * maxTextWidth / textWidth;
-        }
-
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
                 - 0.03f * height;
         float xx;
         if (position == POSITION_LEFT) {
-            xx = x + (float) (height * MARGIN);
+            xx = (float) (x + margin);
         } else if (position == POSITION_CENTER) {
-            int w = g.getFontMetrics().stringWidth(text);
-            xx = x + (width - w) / 2;
+            xx = (float) (x + (width - textWidth * textScale) / 2);
         } else {
-            int w = g.getFontMetrics().stringWidth(text);
-            xx = x + width - w - (float) (1.5 * height * MARGIN);
+            xx = (float) (x + width - textWidth * textScale - margin);
         }
         AffineTransform transform = g.getTransform();
         transform.concatenate(AffineTransform.getTranslateInstance(xx, yy));

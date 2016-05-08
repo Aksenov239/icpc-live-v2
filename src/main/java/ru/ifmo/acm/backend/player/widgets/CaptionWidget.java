@@ -7,10 +7,14 @@ import java.awt.*;
  */
 public class CaptionWidget extends Widget {
 
-    private final int MARGIN = 30;
-    private final int Y = 580;
-    private final int HEIGHT1 = 60;
-    private final int HEIGHT2 = 30;
+    private static final int SPACE = 2;
+    private final int X_LEFT = 30;
+    private final int X_RIGHT = 1890;
+    private final int HEIGHT1 = 80;
+    private final int HEIGHT2 = 39;
+
+    private final int Y = 994 - HEIGHT2 - HEIGHT1 - SPACE;
+
     private final Font FONT1 = Font.decode("Open Sans " + 40);
     private final Font FONT2 = Font.decode("Open Sans " + 20);
 
@@ -35,10 +39,11 @@ public class CaptionWidget extends Widget {
             int x2;
             int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
             if (position == POSITION_LEFT) {
-                x1 = MARGIN;
+                x1 = X_LEFT;
                 x2 = x1 + dx;
+                QueueWidget.Y_SHIFT = 3;
             } else if (position == POSITION_RIGHT) {
-                x1 = width - MARGIN;
+                x1 = X_RIGHT;
                 x2 = x1 - dx;
             } else {
                 x1 = width / 2;
@@ -47,7 +52,7 @@ public class CaptionWidget extends Widget {
             int y = Y;
             g.setFont(FONT1);
             drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, visibilityState);
-            y += HEIGHT1 + 2;
+            y += HEIGHT1 + SPACE;
             g.setFont(FONT2);
             if (description != null && description.length() != 0) {
                 drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, visibilityState);

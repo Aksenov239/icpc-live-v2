@@ -356,13 +356,9 @@ public class WFEventsLoader extends EventsLoader {
                                     try {
                                         long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / SPEED);
                                         if (dt > 0)
-                                            Thread.sleep(1000);
+                                            Thread.sleep(dt);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
-                                    }
-                                    total++;
-                                    if (total > 20) {
-                                        return;
                                     }
                                 }
                                 System.err.println("new run: " + run);
