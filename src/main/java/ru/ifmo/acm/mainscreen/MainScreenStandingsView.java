@@ -227,7 +227,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
     /* Statistics */
 
-    final String[] statisticsStatuses = new String[]{"Statstics is shown", "Statstics isn't shown"};
+    final String[] statisticsStatuses = new String[]{"Statistics is shown", "Statistics isn't shown"};
     Label statisticsStatus;
     Button statisticsShow;
     Button statisticsHide;
@@ -267,7 +267,6 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     public void refresh() {
         clockStatus.setValue(getClockStatus());
         standingsStatus.setValue(getStandingsStatus());
-            breakingNewsStatus.setValue(getBreakingNewsStatus());
         queueStatus.setValue(getQueueStatus());
         statisticsStatus.setValue(getStatisticsStatus());
 
