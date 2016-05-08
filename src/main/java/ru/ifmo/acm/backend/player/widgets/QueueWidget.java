@@ -20,6 +20,8 @@ public class QueueWidget extends Widget {
     public static final int FIRST_TO_SOLVE_WAIT_TIME = 120000;
     private static final int MAX_QUEUE_SIZE = 22;
 
+    public static double Y_SHIFT;
+
     private final int baseX;
     private final int baseY;
     private final int plateHeight;
@@ -78,7 +80,7 @@ public class QueueWidget extends Widget {
         g = (Graphics2D) g.create();
         g.translate(baseX, baseY);
         g.clip(new Rectangle(-width, -height, 2 * width, height));
-
+        g.setFont(font);
 
         for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
             if (r == null)
@@ -99,59 +101,9 @@ public class QueueWidget extends Widget {
                 drawRun(g, 0, (int) (currentPositions[id] * (plateHeight + spaceY)), r);
             }
         }
-//        g.drawString("" + z, 0, -200);
-
-//        if (yShift > 0) {
-//            yShift = (int) (yShift * 0.8);
-//        }
-//
-//        g.setFont(Font.decode("Open Sans Italic " + 20));
-//        drawTextInRect(g, "Current queue size: " + queue.size(), 50, 50, 400, 20, POSITION_CENTER, Color.RED,
-//                Color.BLACK, opacity);
-//        for (int i = 0; i < queue.size(); i++) {
-//            WFRunInfo wfr = (WFRunInfo) queue.get(i);
-//
-//            TeamInfo teamId = info.getParticipant(wfr.getTeamId());
-//            Color teamNameColor = Color.BLUE;
-//
-//            String rank = String.valueOf(teamId.getRank());
-//            String teamName = teamId.getShortName();
-//            int problemNumber = wfr.getProblemNumber();
-//            String problemName = "" + (char) ('A' + problemNumber);
-//            String status = "";
-//            if (wfr.judged) {
-//                if (wfr.isAccepted()) {
-//                    drawRect(g, 50 + 466, 50 + (HEIGHT * (i + 1)) + yShift, 100, HEIGHT, Color.GREEN, opacity);
-//                    status = "AC";
-//                    teamNameColor = Color.GREEN;
-//                } else {
-//                    drawRect(g, 50 + 466, 50 + (HEIGHT * (i + 1)) + yShift, 100, HEIGHT, Color.RED, opacity);
-//                    status = wfr.getResult();
-//                }
-//            } else {
-//                drawRect(g, 50 + 466, 50 + (HEIGHT * (i + 1)) + yShift, 100, HEIGHT, Color.LIGHT_GRAY, opacity);
-//                drawRect(g, 50 + 466, 50 + (HEIGHT * (i + 1)) + yShift,
-//                        (int) (100 * 1.0 * wfr.getPassedTestsNumber() / wfr.getTotalTestsNumber()), HEIGHT,
-//                        Color.YELLOW, opacity);
-//                status = String.valueOf(wfr.getPassedTestsNumber());
-//            }
-//
-//            drawTextInRect(g, rank, 50, 50 + (HEIGHT * (i + 1)) + yShift, 30, HEIGHT, POSITION_CENTER, Color.GRAY,
-//                    Color.WHITE, opacity);
-//            drawTextInRect(g, teamName, 50 + 32, 50 + (HEIGHT * (i + 1)) + yShift, 400, HEIGHT, POSITION_CENTER,
-//                    teamNameColor, Color.WHITE, opacity);
-//            drawTextInRect(g, problemName, 50 + 434, 50 + (HEIGHT * (i + 1)) + yShift, 30, HEIGHT, POSITION_CENTER,
-//                    Color.DARK_GRAY, Color.WHITE, opacity);
-//
-//            drawTextInRect(g, status, 50 + 466, 50 + (HEIGHT * (i + 1)) + yShift, 100, HEIGHT, POSITION_CENTER,
-//                    new Color(0, 0, 0, 0), Color.WHITE, opacity);
-//
-//        }
-
     }
 
     private void drawRun(Graphics2D g, int x, int y, WFRunInfo run) {
-        g.setFont(font);
         TeamInfo team = info.getParticipant(run.getTeamId());
         String name = team.getShortName();
         String problem = info.problems.get(run.getProblemNumber()).letter;
@@ -263,17 +215,17 @@ public class QueueWidget extends Widget {
         Arrays.fill(desiredPositions, 1);
         double pos = -queue.size();
         for (WFRunInfo r : queue) {
-            desiredPositions[r.getId()] = pos;
+            desiredPositions[r.getId()] = pos - Y_SHIFT;
             pos += 1;
         }
 
         pos = -queue.size() - firstToSolves.size();
         if (queue.size() > 0) pos -= 0.5;
         for (WFRunInfo r : firstToSolves) {
-            desiredPositions[r.getId()] = pos;
+            desiredPositions[r.getId()] = pos - Y_SHIFT;
             pos += 1;
         }
-
+        Y_SHIFT = 0;
     }
 
 }

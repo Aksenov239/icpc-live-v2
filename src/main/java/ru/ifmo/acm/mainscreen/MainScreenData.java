@@ -46,6 +46,7 @@ public class MainScreenData {
         splitScreenData = new SplitScreenData();
         breakingNewsData = new BreakingNewsData();
         queueData = new QueueData();
+        statisticsData = new StatisticsData();
     }
 
     public void update() {
@@ -71,6 +72,7 @@ public class MainScreenData {
     public SplitScreenData splitScreenData;
     public BreakingNewsData breakingNewsData;
     public QueueData queueData;
+    public StatisticsData statisticsData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

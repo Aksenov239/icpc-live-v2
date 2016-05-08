@@ -121,6 +121,8 @@ public class BreakingNewsWidget extends VideoWidget {
                     }
                 } else if (run.getResult().length() == 0) {
                     caption = "Submitted";
+                } else {
+                    caption = "Got " + run.getResult() + " on";
                 }
                 caption += " problem " + (char) ('A' + problemId);
             } else {

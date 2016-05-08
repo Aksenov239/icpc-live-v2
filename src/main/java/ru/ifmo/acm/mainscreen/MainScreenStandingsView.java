@@ -195,7 +195,6 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     Button queueShow;
     Button queueHide;
 
-
     public Component getQueueController() {
         queueStatus = new Label(getQueueStatus());
         queueStatus.addStyleName("large");
@@ -225,14 +224,52 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return button;
     }
 
+
+    /* Statistics */
+
+    final String[] statisticsStatuses = new String[]{"Statstics is shown", "Statstics isn't shown"};
+    Label statisticsStatus;
+    Button statisticsShow;
+    Button statisticsHide;
+
+    public Component getStatisticsController() {
+        statisticsStatus = new Label(getStatisticsStatus());
+        statisticsStatus.addStyleName("large");
+
+        statisticsShow = createStatisticsButton("Show statistics", true, 0);
+        statisticsHide = createStatisticsButton("Hide statistics", false, 1);
+
+        CssLayout group = createGroupLayout(statisticsShow, statisticsHide);
+
+        VerticalLayout panel = new VerticalLayout(statisticsStatus, group);
+        setPanelDefaults(panel);
+        return panel;
+    }
+
+    public String getStatisticsStatus() {
+        boolean status = mainScreenData.statisticsData.isVisible();
+        return status ? statisticsStatuses[0] : statisticsStatuses[1];
+    }
+
+    private Button createStatisticsButton(String name, boolean visibility, int status) {
+        Button button = new Button(name);
+        button.addClickListener(event -> {
+            mainScreenData.statisticsData.setVisible(visibility);
+            statisticsStatus.setValue(statisticsStatuses[status]);
+        });
+
+        return button;
+    }
+
     /* mainscreen */
     MainScreenData mainScreenData;
 
     public void refresh() {
         clockStatus.setValue(getClockStatus());
         standingsStatus.setValue(getStandingsStatus());
-        breakingNewsStatus.setValue(getBreakingNewsStatus());
+            breakingNewsStatus.setValue(getBreakingNewsStatus());
         queueStatus.setValue(getQueueStatus());
+        statisticsStatus.setValue(getStatisticsStatus());
 
         mainScreenData.update();
     }
@@ -244,8 +281,10 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         Component standingsController = getStandingsController();
         //Component breakingNewsController = getBreakingNewsController();
         Component queueStatus = getQueueController();
+        Component statisticsController = getStatisticsController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController, queueStatus);
+        VerticalLayout mainPanel = new VerticalLayout(
+                clockController, standingsController, statisticsController, queueStatus);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }
