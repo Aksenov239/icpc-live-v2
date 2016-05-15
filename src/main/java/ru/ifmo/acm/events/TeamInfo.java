@@ -1,10 +1,7 @@
 package ru.ifmo.acm.events;
 
-import java.awt.*;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public interface TeamInfo extends Comparable<TeamInfo> {
     int getId();
@@ -31,6 +28,21 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     default SmallTeamInfo getSmallTeamInfo() {
         return new SmallTeamInfo(this);
+    }
+
+    default RunInfo getLastRun(int problem) {
+        List<RunInfo> runs = getRuns()[problem];
+        synchronized (runs) {
+            if (runs.size() == 0) return null;
+
+            for (RunInfo run : runs) {
+                if ("AC".equals(run.getResult())) {
+                    return run;
+                }
+            }
+
+            return runs.get(runs.size() - 1);
+        }
     }
 
     default String getShortProblemState(int problem) {

@@ -1,8 +1,5 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import java.awt.*;
-
-import com.google.gwt.dom.builder.shared.HRBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
@@ -12,6 +9,7 @@ import ru.ifmo.acm.events.TeamInfo;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
 /**
@@ -46,7 +44,7 @@ public abstract class Widget {
     public final static Color ACCENT_COLOR = new Color(0x881F1B);
 
     public static final Color GREEN_COLOR = new Color(0x1b8041);
-//    public static final Color YELLOW_COLOR = new Color(0xD4AF37);
+    //    public static final Color YELLOW_COLOR = new Color(0xD4AF37);
     public static final Color YELLOW_COLOR = new Color(0xa59e0c);
     public static final Color RED_COLOR = new Color(0x881f1b);
 
@@ -160,7 +158,7 @@ public abstract class Widget {
         return visible;
     }
 
-        void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
+    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
         g.setComposite(AlphaComposite.SrcOver.derive(1f));
         g.setColor(color);
 
@@ -198,21 +196,35 @@ public abstract class Widget {
     static final int POSITION_RIGHT = 1;
     static final int POSITION_CENTER = 2;
 
+    private double lastBlinkingOpacity = 0;
+    private long lastBlinkingOpacityUpdate = 0;
+    private double blinkingValue = 0.20;
+
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
         drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true);
     }
 
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, WidgetAnimation widgetAnimation) {
-        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true, widgetAnimation);
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true, widgetAnimation, false);
     }
 
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale) {
-        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, italic, scale, WidgetAnimation.NOT_ANIMATED);
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, italic, scale, WidgetAnimation.NOT_ANIMATED, false);
     }
 
-    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale, WidgetAnimation widgetAnimation) {
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor,
+                   double visibilityState, boolean isBlinking) {
+        drawTextInRect(gg, text, x, y, width, height, position,
+        color, textColor, visibilityState, false, true,
+        WidgetAnimation.NOT_ANIMATED, isBlinking);
+    }
+
+
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position,
+                        Color color, Color textColor,
+                        double visibilityState, boolean italic, boolean scale,
+                        WidgetAnimation widgetAnimation, boolean isBlinking) {
         Graphics2D g = (Graphics2D) gg.create();
-        //setVisibilityState(state);
         double opacity = getOpacity(visibilityState);
         double textOpacity = getTextOpacity(visibilityState);
         if (text == null) {
@@ -240,7 +252,9 @@ public abstract class Widget {
 
         if (opacity == 0) return;
 
-        if (widgetAnimation.isHorizontalAnimated) {width = (int) round(width * visibilityState);}
+        if (widgetAnimation.isHorizontalAnimated) {
+            width = (int) round(width * visibilityState);
+        }
         if (widgetAnimation.isVerticalAnimated) {
             height = (int) round(height * visibilityState);
         } else {
@@ -248,6 +262,19 @@ public abstract class Widget {
         }
 
         drawRect(g, x, y, width, height, color, opacity, italic);
+
+        if (isBlinking) {
+            if (System.currentTimeMillis() - lastBlinkingOpacityUpdate > 10) {
+                lastBlinkingOpacity += blinkingValue;
+                if (abs(lastBlinkingOpacity - 1) < 1e-9 || lastBlinkingOpacity < 1e-9) {
+                    blinkingValue *= -1;
+                }
+                lastBlinkingOpacityUpdate = System.currentTimeMillis();
+            }
+
+            textOpacity = lastBlinkingOpacity;
+        }
+
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
 
