@@ -131,7 +131,11 @@ public class MainScreenView extends CustomComponent implements View {
         showAdvertisement = new Button("Show advertisement");
         showAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
-                mainScreenData.advertisementData.setAdvertisementVisible(true, (Advertisement) advertisements.getValue());
+                String outcome = mainScreenData.advertisementData.setAdvertisementVisible(true, (Advertisement) advertisements.getValue());
+                if (outcome != null) {
+                    Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
+                    return;
+                }
                 advertisementStatus.setValue(getAdvertisementStatus());
             } else {
                 Notification.show("You should choose advertisement", Type.ERROR_MESSAGE);
@@ -302,7 +306,11 @@ public class MainScreenView extends CustomComponent implements View {
         //showLeftPerson = new Button("Show " + caption + " person");
         showPerson[id].addClickListener(event -> {
             if (persons[id].getValue() != null) {
-                mainScreenData.personData.setLabelVisible(true, (Person) persons[id].getValue(), id);
+                String outcome = mainScreenData.personData.setLabelVisible(true, (Person) persons[id].getValue(), id);
+                if (outcome != null) {
+                    Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
+                    return;
+                }
             } else {
                 Notification.show("You need to choose " + captionPersons[id] + " person", Type.WARNING_MESSAGE);
             }
@@ -322,7 +330,11 @@ public class MainScreenView extends CustomComponent implements View {
                 }
             }
             for (int i = 0; i < 2; i++) {
-                mainScreenData.personData.setLabelVisible(true, (Person) persons[i].getValue(), i);
+                String outcome = mainScreenData.personData.setLabelVisible(true, (Person) persons[i].getValue(), i);
+                if (outcome != null) {
+                    Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
+                    return;
+                }
             }
         });
 

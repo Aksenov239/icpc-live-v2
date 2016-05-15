@@ -39,7 +39,7 @@ public class PersonData implements CachedData {
 
     public String checkOverlays() {
         if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            return "You need to close team view first.";
+            return MainScreenData.getMainScreenData().teamData.getOverlayError();
         }
         return null;
     }

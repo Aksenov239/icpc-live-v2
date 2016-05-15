@@ -40,6 +40,10 @@ public class TeamData implements CachedData {
         MainScreenData.getMainScreenData().personData.hide();
     }
 
+    public String getOverlayError() {
+        return "You should close team view first!";
+    }
+
     public synchronized boolean automaticStart(int number) {
         if (timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis() && isVisible) {
             return false;
