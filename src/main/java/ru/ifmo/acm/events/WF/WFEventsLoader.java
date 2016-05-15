@@ -1,5 +1,7 @@
 package ru.ifmo.acm.events.WF;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
@@ -20,9 +22,13 @@ import java.util.List;
  * Created by aksenov on 16.04.2015.
  */
 public class WFEventsLoader extends EventsLoader {
+    private static final Logger log = LogManager.getLogger(WFEventsLoader.class);
 
-    public static final int FREEZE_TIME = 4 * 60 * 60 * 1000;
+    public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
+    public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static WFContestInfo contestInfo;
+
+    public static double SPEED = 20;
 
     private String url;
     private String teamsInfoURL;
@@ -32,7 +38,6 @@ public class WFEventsLoader extends EventsLoader {
     private String password;
 
     private boolean emulation;
-    private final double EMULATION_SPEED = 1;
 
     public WFEventsLoader() {
         try {
@@ -48,6 +53,8 @@ public class WFEventsLoader extends EventsLoader {
 
             if (!(url.startsWith("http") || url.startsWith("https"))) {
                 emulation = true;
+            } else {
+                SPEED = 1;
             }
 
             problemsInfoURL = properties.getProperty("problems.url");
@@ -56,7 +63,7 @@ public class WFEventsLoader extends EventsLoader {
 
             initialize();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
     }
 
@@ -87,7 +94,7 @@ public class WFEventsLoader extends EventsLoader {
                         problem.name = val;
                         break;
                     case "rgb":
-                        //System.err.println(val + " " + val.length());
+                        val = val.substring(1, val.length() - 1);
                         problem.color = Color.decode(val);
                         break;
                 }
@@ -121,7 +128,6 @@ public class WFEventsLoader extends EventsLoader {
             String hashTag = z[6];
             for (WFTeamInfo info : infos) {
                 if (info.shortName.equals(shortName)) {
-//                    System.err.println(shortName + " " + hashTag);
                     info.hashTag = hashTag.substring(1);
                 }
             }
@@ -134,7 +140,7 @@ public class WFEventsLoader extends EventsLoader {
         List<ProblemInfo> problems = problemsInfoRead();
         int problemsNumber = problems.size();
         WFTeamInfo[] teams = teamsInfoRead(problemsNumber);
-        System.err.println(problemsNumber + " " + teams.length);
+        log.info("Problems " + problemsNumber + ", teams " + teams.length);
         contestInfo = new WFContestInfo(problemsNumber, teams.length);
         contestInfo.problems = problems;
         for (WFTeamInfo team : teams) {
@@ -332,14 +338,15 @@ public class WFEventsLoader extends EventsLoader {
                 // new FileInputStream(new File(properties.getProperty("url"))),
                 // "windows-1251");
 
-                long lastTime = 0;
+                //emulation = false;
 
+                int total = 0;
                 while (xmlEventReader.hasNext()) {
                     XMLEvent xmlEvent = null;
                     try {
                         xmlEvent = xmlEventReader.nextEvent();
                     } catch (XMLStreamException e) {
-                        e.printStackTrace();
+                        log.error("error", e);
                         break;
                     }
                     if (xmlEvent.isStartElement()) {
@@ -348,17 +355,18 @@ public class WFEventsLoader extends EventsLoader {
                             case "run":
                                 WFRunInfo run = readRun(xmlEventReader);
                                 if (emulation) {
-                                    if (lastTime > 0) {
-                                        try {
-                                            long tt = (long) ((run.getTime() - lastTime) / EMULATION_SPEED);
-                                            if (tt > 0) Thread.sleep(tt);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                    try {
+                                        long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / SPEED);
+                                        if (dt > 0)
+                                            Thread.sleep(dt);
+                                        if (total >= 2)
+                                            return;
+                                        total++;
+                                    } catch (InterruptedException e) {
+                                        log.error("error", e);
                                     }
-                                    lastTime = run.getTime();
                                 }
-                                System.err.println("new run: " + run);
+                                log.info("New run: " + run);
                                 if (run.getTime() <= FREEZE_TIME || run.getResult().length() == 0) {
                                     if (contestInfo.runExists(run.getId())) {
                                         run.setTeamInfoBefore(contestInfo.getParticipant(run.getTeamId()).getSmallTeamInfo());
@@ -367,7 +375,7 @@ public class WFEventsLoader extends EventsLoader {
 //                                    if (run.getTime() > contestInfo.getCurrentTime() / 1000 - 600) {
                                     long start = System.currentTimeMillis();
                                     contestInfo.recalcStandings();
-                                    System.err.println("Standings calculated in " + (System.currentTimeMillis() - start) + " ms");
+                                    log.info("Standings calculated in " + (System.currentTimeMillis() - start) + " ms");
 //                                    }
                                 } else {
                                     run.result = "";
@@ -377,15 +385,12 @@ public class WFEventsLoader extends EventsLoader {
                             case "testcase":
                                 WFTestCaseInfo test = readTest(xmlEventReader);
                                 if (emulation) {
-                                    if (lastTime > 0) {
-                                        try {
-                                            long tt = (long) ((test.time - lastTime) / EMULATION_SPEED);
-                                            if (tt > 0) Thread.sleep(tt);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                    try {
+                                        long dt = (long) ((test.time - contestInfo.getCurrentTime()) / SPEED);
+                                        if (dt > 0) Thread.sleep(dt);
+                                    } catch (InterruptedException e) {
+                                        log.error("error", e);
                                     }
-                                    lastTime = test.time;
                                 }
                                 contestInfo.addTest(test);
                                 break;
@@ -411,13 +416,29 @@ public class WFEventsLoader extends EventsLoader {
                                     contestInfo.setStartTime(System.currentTimeMillis());
                                 }
                                 break;
+                            case "length": {
+                                String s = xmlEventReader.getElementText();
+                                int hh = Integer.parseInt(s.substring(0, 2));
+                                int mm = Integer.parseInt(s.substring(3, 5));
+                                int ss = Integer.parseInt(s.substring(6, 8));
+                                CONTEST_LENGTH = ((hh * 60 + mm) * 60 + ss) * 1000;
+                                break;
+                            }
+                            case "scoreboard-freeze-length": {
+                                String s = xmlEventReader.getElementText();
+                                int hh = Integer.parseInt(s.substring(0, 2));
+                                int mm = Integer.parseInt(s.substring(3, 5));
+                                int ss = Integer.parseInt(s.substring(6, 8));
+                                FREEZE_TIME = CONTEST_LENGTH - ((hh * 60 + mm) * 60 + ss) * 1000;
+                                break;
+                            }
                         }
                     }
                 }
                 contestInfo.recalcStandings();
                 break;
             } catch (IOException | XMLStreamException e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
         }
     }
@@ -441,7 +462,7 @@ public class WFEventsLoader extends EventsLoader {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
     }
 

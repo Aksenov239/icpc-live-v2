@@ -106,4 +106,8 @@ public class PCMSContestInfo extends ContestInfo {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    public RunInfo getRun(int id) {
+        return null;
+    }
 }

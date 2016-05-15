@@ -39,7 +39,7 @@ public class CreepingLineWidget extends Widget {
             try {
                 text = new String(bytes, "Windows-1251");
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
             if (!inQueue.contains(text)) {
                 inQueue.add(text);

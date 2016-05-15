@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -17,6 +18,7 @@ public class BreakingNewsWidget extends VideoWidget {
     private int wVideo;
     private int hVideo;
     private final int PLATE_WIDTH;
+    private final int PLATE_HEIGHT;
     private final int GAP;
 
     public BreakingNewsWidget(long updateWait, int x, int y, int width, int height, double aspectRatio, int sleepTime, int duration) {
@@ -25,14 +27,17 @@ public class BreakingNewsWidget extends VideoWidget {
         wVideo = width;
         hVideo = (int) (width / aspectRatio);
 
-        PLATE_WIDTH = (int) (1.2 * width);
-        GAP = (int) (0.05 * hVideo);
+        PLATE_HEIGHT = (int) (0.1 * hVideo);
+        double total_factor = Widget.RANK_WIDTH + Widget.NAME_WIDTH + Widget.TOTAL_WIDTH + Widget.PENALTY_WIDTH + 3 * Widget.SPACE_X;
+        PLATE_WIDTH = (int) (PLATE_HEIGHT * total_factor);
+        GAP = (int) (0.02 * hVideo);
 
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.duration = duration;
+        last = System.currentTimeMillis();
     }
 
     private String caption;
@@ -57,54 +62,81 @@ public class BreakingNewsWidget extends VideoWidget {
             int teamId = data.breakingNewsData.teamId;
             int problemId = data.breakingNewsData.problemId;
 
-            System.err.println("Get request for " + teamId + " " + problemId);
+            log.info("Get request for " + teamId + " " + problemId);
 
             team = Preparation.eventsLoader.getContestData().getParticipant(teamId);
-            java.util.List<RunInfo> runs = team.getRuns()[problemId];
 
-            if (runs.size() == 0) {
-                System.err.println("Team " + teamId + " has no submit for problem " + problemId);
-                return;
-            }
-            run = runs.get(runs.size() - 1);
-            for (RunInfo run1 : runs) {
-                if (run1.isAccepted()) {
-                    run = run1;
+            run = data.breakingNewsData.runId == -1 ? null :
+                    Preparation.eventsLoader.getContestData().getRun(data.breakingNewsData.runId);
+
+            if (run == null || (run.getTeamId() != teamId || run.getProblemNumber() != problemId)) {
+                java.util.List<RunInfo> runs = team.getRuns()[problemId];
+
+                run = null;
+                if (runs.size() != 0) {
+                    run = runs.get(runs.size() - 1);
+                    for (RunInfo run1 : runs) {
+                        if (run1.isAccepted()) {
+                            run = run1;
+                        }
+                    }
                 }
             }
 
             String url;
             if (data.breakingNewsData.isLive) {
-                url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
+                url = TeamUrls.getUrl(team, data.breakingNewsData.infoType);
             } else {
-                url = TeamWidget.getUrl(run);
+                if (run == null) {
+                    log.warn("Couldn't find run for team " + teamId + " and problem " + problemId);
+                    return;
+                }
+                url = TeamUrls.getUrl(run);
             }
 
-            System.err.println("Change to " + url);
+            log.info("Change to " + url);
 
             change(url);
             isLive = data.breakingNewsData.isLive;
 
-            if (run.getResult().equals("AC")) {
-                if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[problemId]) {
-                    caption = "First to solve";
-                } else if (team.getRank() <= 12) {
-                    caption = "Get to " + team.getRank() + " by solving";
-                } else {
-                    caption = "Solved";
-                }
-            } else if (run.getResult().length() == 0) {
-                caption = "Submitted";
+            if (run != null) {
+                currentShow = run.getTeamInfoBefore();
+                currentShow = currentShow == null ? team : currentShow;
+            } else {
+                currentShow = team;
             }
-            caption += " problem " + (char) ('A' + problemId);
 
-            System.err.println("Caption: " + caption);
-
-            currentShow = run.getTeamInfoBefore();
+            if (data.breakingNewsData.newsMessage.length() == 0) {
+                if (isLive && run == null) {
+                    log.warn("Can't generate caption for team" + teamId + " problem " + problemId + ", " +
+                            "because video is live and don't know run id");
+                    return;
+                }
+                if (run.getResult().equals("AC")) {
+                    if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[problemId]) {
+                        caption = "First to solve";
+                    } else if (team.getRank() <= 12) {
+                        caption = "Becomes " + team.getRank() + " by solving";
+                    } else {
+                        caption = "Solved";
+                    }
+                } else if (run.getResult().length() == 0) {
+                    caption = "Submitted";
+                } else {
+                    caption = "Got " + run.getResult() + " on";
+                }
+                caption += " problem " + (char) ('A' + problemId);
+            } else {
+                caption = data.breakingNewsData.newsMessage;
+            }
+            log.info("Caption: " + caption);
             timer = 0;
             rankState = 0;
             visibilityState = 0;
             setVisible(true);
+            if (team == currentShow) {
+                rankState = 4;
+            }
         }
 
         lastUpdate = System.currentTimeMillis();
@@ -112,6 +144,7 @@ public class BreakingNewsWidget extends VideoWidget {
 
     private double localVisibility;
     private int rankState;
+
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
@@ -124,11 +157,11 @@ public class BreakingNewsWidget extends VideoWidget {
         }
 
         if (!ready.get()) {
+            visibilityState = 0;
             return;
         }
 
         timer += dt;
-        System.err.println(localVisibility + " " + visibilityState + " " + isVisible());
         if (rankState == 0) {
             setVisibilityState(0);
             rankState = 1;
@@ -153,15 +186,17 @@ public class BreakingNewsWidget extends VideoWidget {
             }
         }
 
+        log.debug(visibilityState + " " + opacity);
+
         if (run == null || URL.get() != null) {
             int hh = (int) (hVideo * opacity);
             g.drawImage(image.get(), x, y + (hVideo - hh) / 2, wVideo, hh, null);
         }
 
         int y = this.y + hVideo + GAP;
-        int x = this.x + (wVideo - PLATE_WIDTH) / 2;
-        drawTeamPane(g, currentShow, x, y, PLATE_WIDTH, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
-        drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_WIDTH / 10,
+        int x = this.x + (int) (1.1 * wVideo - PLATE_WIDTH);
+        drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
+        drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
                 POSITION_RIGHT, ACCENT_COLOR, Color.white, visibilityState);
     }
 }

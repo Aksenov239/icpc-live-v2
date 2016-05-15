@@ -3,8 +3,6 @@ package ru.ifmo.acm.mainscreen;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
-import ru.ifmo.acm.backend.player.widgets.TeamWidget;
 import ru.ifmo.acm.datapassing.StandingsData;
 
 import static ru.ifmo.acm.mainscreen.Utils.createGroupLayout;
@@ -58,60 +56,66 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     Button hide;
     Label breakingNewsStatus;
 
-    public Component getBreakingNewsController() {
-        breakingNewsStatus = new Label(getBreakingNewsStatus());
-        breakingNewsStatus.addStyleName("large");
-
-        isLive = new CheckBox("Is live");
-        isLive.addValueChangeListener(event -> {
-            //types.setValue(isLive.getValue() ? null: TeamWidget.types[0]);
-//            for (String type : TeamWidget.types) {
-//                types.setItemEnabled(type, !isLive.getValue());
+//    public Component getBreakingNewsController() {
+//        breakingNewsStatus = new Label(getBreakingNewsStatus());
+//        breakingNewsStatus.addStyleName("large");
+//
+//        isLive = new CheckBox("Is live");
+//        isLive.addValueChangeListener(event -> {
+//            //types.setValue(isLive.getValue() ? null: TeamWidget.types[0]);
+////            for (String type : TeamWidget.types) {
+////                types.setItemEnabled(type, !isLive.getValue());
+////            }
+//            types.setEnabled(isLive.getValue());
+//            breakingNewsStatus.setValue(getBreakingNewsStatus());
+//        });
+//        isLive.setValue(false);
+//
+//        types = new OptionGroup();
+//        types.addItems(TeamWidget.types);
+//        types.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+//        types.setValue(TeamWidget.types[0]);
+//        types.setEnabled(false);
+//
+//        team = new TextField("Team: ");
+//        team.setSizeFull();
+//
+//        show = new Button("Show");
+//        show.addClickListener(event -> {
+//            if (team.getValue().equals("")) {
+//                Notification.show("Team field requires team id and problem id");
+//            } else {
+//                String[] zz = team.getValue().split(",");
+//                int teamId = Integer.parseInt(zz[0]) - 1;
+//                int problemId = zz[1].charAt(0) - 'A';
+//                if (!mainScreenData.breakingNewsData.setNewsVisible(true,
+//                        (String) types.getValue(),
+//                        isLive.getValue(), "",
+//                        teamId, problemId, -1)) {
+//                    Notification.show(
+//                            "You need to wait while current breaking news is shown",
+//                            Notification.Type.WARNING_MESSAGE
+//                    );
+//                } else {
+//                    team.clear();
+//                }
+//                breakingNewsStatus.setValue(getBreakingNewsStatus());
 //            }
-            types.setEnabled(isLive.getValue());
-            breakingNewsStatus.setValue(getBreakingNewsStatus());
-        });
-        isLive.setValue(false);
-
-        types = new OptionGroup();
-        types.addItems(TeamWidget.types);
-        types.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-        types.setValue(TeamWidget.types[0]);
-        types.setEnabled(false);
-
-        team = new TextField("Team: ");
-        team.setSizeFull();
-
-        show = new Button("Show");
-        show.addClickListener(event -> {
-            if (team.getValue().equals("")) {
-                Notification.show("Team field requires team id and problem id");
-            } else {
-                if (!mainScreenData.breakingNewsData.setNewsVisible(true, (String) types.getValue(), isLive.getValue(), team.getValue())) {
-                    Notification.show(
-                            String.format("You need to wait while current breaking news is shown"),
-                            Notification.Type.WARNING_MESSAGE
-                    );
-                } else {
-                    team.clear();
-                }
-                breakingNewsStatus.setValue(getBreakingNewsStatus());
-            }
-        });
-
-        hide = new Button("Hide");
-        hide.addClickListener(event -> {
-            mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), null);
-            breakingNewsStatus.setValue(getBreakingNewsStatus());
-        });
-
-        CssLayout teamLayout = createGroupLayout(team, show, hide);
-        VerticalLayout result = new VerticalLayout(breakingNewsStatus, isLive, types, teamLayout);
-        result.setSpacing(true);
-
-        setPanelDefaults(result);
-        return result;
-    }
+//        });
+//
+//        hide = new Button("Hide");
+//        hide.addClickListener(event -> {
+//            mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), "", -1, -1, -1);
+//            breakingNewsStatus.setValue(getBreakingNewsStatus());
+//        });
+//
+//        CssLayout teamLayout = createGroupLayout(team, show, hide);
+//        VerticalLayout result = new VerticalLayout(breakingNewsStatus, isLive, types, teamLayout);
+//        result.setSpacing(true);
+//
+//        setPanelDefaults(result);
+//        return result;
+//    }
 
     /* Standings */
     Label standingsStatus;
@@ -137,10 +141,20 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig, standingsHide);
         standingsOptimismLevel = new OptionGroup();
-        for (StandingsData.OptimismLevel type: StandingsData.OptimismLevel.values()) {
+        for (StandingsData.OptimismLevel type : StandingsData.OptimismLevel.values()) {
             standingsOptimismLevel.addItem(type);
         }
         standingsOptimismLevel.setValue(StandingsData.OptimismLevel.NORMAL);
+
+        standingsOptimismLevel.addValueChangeListener(e -> {
+            mainScreenData.standingsData.setStandingsVisible(
+                    mainScreenData.standingsData.isVisible,
+                    mainScreenData.standingsData.standingsType,
+                    mainScreenData.standingsData.isBig,
+                    StandingsData.OptimismLevel.valueOf(standingsOptimismLevel.getValue().toString().toUpperCase())
+            );
+            standingsStatus.setValue(getStandingsStatus());
+        });
 
         VerticalLayout panel = new VerticalLayout(
                 standingsStatus,
@@ -181,7 +195,6 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     Button queueShow;
     Button queueHide;
 
-
     public Component getQueueController() {
         queueStatus = new Label(getQueueStatus());
         queueStatus.addStyleName("large");
@@ -211,14 +224,52 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return button;
     }
 
+
+    /* Statistics */
+
+    final String[] statisticsStatuses = new String[]{"Statistics is shown", "Statistics isn't shown"};
+    Label statisticsStatus;
+    Button statisticsShow;
+    Button statisticsHide;
+
+    public Component getStatisticsController() {
+        statisticsStatus = new Label(getStatisticsStatus());
+        statisticsStatus.addStyleName("large");
+
+        statisticsShow = createStatisticsButton("Show statistics", true, 0);
+        statisticsHide = createStatisticsButton("Hide statistics", false, 1);
+
+        CssLayout group = createGroupLayout(statisticsShow, statisticsHide);
+
+        VerticalLayout panel = new VerticalLayout(statisticsStatus, group);
+        setPanelDefaults(panel);
+        return panel;
+    }
+
+    public String getStatisticsStatus() {
+        boolean status = mainScreenData.statisticsData.isVisible();
+        return status ? statisticsStatuses[0] : statisticsStatuses[1];
+    }
+
+    private Button createStatisticsButton(String name, boolean visibility, int status) {
+        Button button = new Button(name);
+        button.addClickListener(event -> {
+            mainScreenData.statisticsData.setVisible(visibility);
+            statisticsStatus.setValue(statisticsStatuses[status]);
+        });
+
+        return button;
+    }
+
     /* mainscreen */
     MainScreenData mainScreenData;
 
     public void refresh() {
         clockStatus.setValue(getClockStatus());
         standingsStatus.setValue(getStandingsStatus());
-        breakingNewsStatus.setValue(getBreakingNewsStatus());
+//            breakingNewsStatus.setValue(getBreakingNewsStatus());
         queueStatus.setValue(getQueueStatus());
+        statisticsStatus.setValue(getStatisticsStatus());
 
         mainScreenData.update();
     }
@@ -228,10 +279,12 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         Component clockController = getClockController();
         Component standingsController = getStandingsController();
-        Component breakingNewsController = getBreakingNewsController();
+        //Component breakingNewsController = getBreakingNewsController();
         Component queueStatus = getQueueController();
+        Component statisticsController = getStatisticsController();
 
-        VerticalLayout mainPanel = new VerticalLayout(clockController, standingsController, breakingNewsController, queueStatus);
+        VerticalLayout mainPanel = new VerticalLayout(
+                clockController, standingsController, statisticsController, queueStatus);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }

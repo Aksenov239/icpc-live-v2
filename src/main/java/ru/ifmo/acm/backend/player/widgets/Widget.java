@@ -1,16 +1,25 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import java.awt.*;
+
+import com.google.gwt.dom.builder.shared.HRBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.AffineTransform;
+
+import static java.lang.Math.round;
 
 /**
  * @author: pashka
  */
 public abstract class Widget {
+    protected final Logger log = LogManager.getLogger(getClass());
+
     public final static double OPACITY = 1;
 
     public static final int BASE_WIDTH = 1920;
@@ -23,28 +32,50 @@ public abstract class Widget {
     protected static final double RANK_WIDTH = 1.6;
     protected static final double TOTAL_WIDTH = 1.3;
     protected static final double PENALTY_WIDTH = 2.0;
-    protected static final double PROBLEM_WIDTH = 1;
+    protected static final double PROBLEM_WIDTH = 1.2;
     protected static final double STATUS_WIDTH = 2;
     protected static final int STAR_SIZE = 5;
+    static final int BIG_SPACE_COUNT = 6;
 
     private boolean visible;
 
     // Colors used in graphics
     public final static Color MAIN_COLOR = new Color(0x193C5B);
-    public final static Color ADDITIONAL_COLOR = new Color(0x4C83C3);
+    //    public final static Color ADDITIONAL_COLOR = new Color(0x4C83C3);
+    public final static Color ADDITIONAL_COLOR = new Color(0x3C6373);
     public final static Color ACCENT_COLOR = new Color(0x881F1B);
 
     public static final Color GREEN_COLOR = new Color(0x1b8041);
-    public static final Color YELLOW_COLOR = new Color(0xe0aa12).darker();
+//    public static final Color YELLOW_COLOR = new Color(0xD4AF37);
+    public static final Color YELLOW_COLOR = new Color(0xa59e0c);
     public static final Color RED_COLOR = new Color(0x881f1b);
 
+
+    private static Color mergeColors(Color first, Color second) {
+        int rgb = 0;
+        for (int i = 0; i < 3; i++) {
+            rgb |= ((((first.getRGB() >> (8 * i)) & 255) * 2 +
+                    ((second.getRGB() >> (8 * i)) & 255)) / 3) << (8 * i);
+        }
+        return new Color(rgb);
+    }
+
+    public static final Color YELLOW_GREEN_COLOR = mergeColors(YELLOW_COLOR, GREEN_COLOR);
+    public static final Color YELLOW_RED_COLOR = mergeColors(YELLOW_COLOR, RED_COLOR);
+
     // Medal colors
-    public final static Color GOLD_COLOR = new Color(228, 200, 126);
-    public final static Color GOLD_COLOR2 = new Color(238, 220, 151);
-    public final static Color SILVER_COLOR = new Color(182, 180, 185);
-    public final static Color SILVER_COLOR2 = new Color(205, 203, 206);
-    public final static Color BRONZE_COLOR = new Color(180, 122, 124);
-    public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
+
+    //        public final static Color GOLD_COLOR = new Color(228, 200, 126);
+    public final static Color GOLD_COLOR = new Color(0xD4AF37);
+    public final static Color SILVER_COLOR = new Color(0x9090a0);
+    public final static Color BRONZE_COLOR = new Color(0xCD7F32);
+
+    public final static Color STAR_COLOR = new Color(0xFFFFA0);
+//    public final static Color GOLD_COLOR2 = new Color(238, 220, 151);
+//    public final static Color SILVER_COLOR = new Color(182, 180, 185);
+//    public final static Color SILVER_COLOR2 = new Color(205, 203, 206);
+//    public final static Color BRONZE_COLOR = new Color(180, 122, 124);
+//    public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
 
     // Rectangles rounding
     private static final int POINTS_IN_ROUND = 3;
@@ -74,14 +105,13 @@ public abstract class Widget {
         if (scale != 1) {
             g = (Graphics2D) g.create();
             g.scale(scale, scale);
-            width = (int) Math.round(width / scale);
-            height = (int) Math.round(height / scale);
+            width = (int) round(width / scale);
+            height = (int) round(height / scale);
         }
         try {
             paintImpl(g, width, height);
         } catch (Exception e) {
-            System.err.println("Failed to paint " + this.getClass().toString());
-            e.printStackTrace();
+            log.error("Failed to paint " + this.getClass().toString(), e);
         }
     }
 
@@ -130,25 +160,7 @@ public abstract class Widget {
         return visible;
     }
 
-    Font adjustFont(Graphics2D gT, String text, int width, int height, double percent) {
-        Graphics2D g = (Graphics2D) gT.create();
-        int l = 7;
-        int r = 100;
-        while (l < r - 1) {
-            int m = (l + r) >> 1;
-            g.setFont(Font.decode("Open Sans " + m));
-            Rectangle2D sb = g.getFontMetrics().getStringBounds(text, g);
-            if (sb.getWidth() < percent * width && sb.getHeight() < percent * height) {
-                l = m;
-            } else {
-                r = m;
-            }
-        }
-        g.dispose();
-        return Font.decode("Open Sans " + l);
-    }
-
-    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
+        void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
         g.setComposite(AlphaComposite.SrcOver.derive(1f));
         g.setColor(color);
 
@@ -170,12 +182,16 @@ public abstract class Widget {
 
                 double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
                 double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
-                tx -= (ty - (y + height / 2)) * 0.2;
-                xx[t] = (int) Math.round(tx);
-                yy[t] = (int) Math.round(ty);
+                if (italic) tx -= (ty - (y + height / 2)) * 0.2;
+                xx[t] = (int) round(tx);
+                yy[t] = (int) round(ty);
             }
         }
         g.fill(new Polygon(xx, yy, xx.length));
+    }
+
+    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
+        drawRect(g, x, y, width, height, color, opacity, false);
     }
 
     static final int POSITION_LEFT = 0;
@@ -183,6 +199,18 @@ public abstract class Widget {
     static final int POSITION_CENTER = 2;
 
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true);
+    }
+
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, WidgetAnimation widgetAnimation) {
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true, widgetAnimation);
+    }
+
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale) {
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, italic, scale, WidgetAnimation.NOT_ANIMATED);
+    }
+
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale, WidgetAnimation widgetAnimation) {
         Graphics2D g = (Graphics2D) gg.create();
         //setVisibilityState(state);
         double opacity = getOpacity(visibilityState);
@@ -190,54 +218,76 @@ public abstract class Widget {
         if (text == null) {
             text = "NULL";
         }
+
+        int textWidth = g.getFontMetrics().stringWidth(text);
+        double textScale = 1;
+
+        double margin = height * MARGIN;
+
         if (width == -1) {
-            int w = g.getFontMetrics().stringWidth(text);
-            width = (int) (w + 2.5 * height * MARGIN);
+            width = (int) (textWidth + 2 * margin);
             if (position == POSITION_CENTER) {
                 x -= width / 2;
             } else if (position == POSITION_RIGHT) {
                 x -= width;
             }
+        } else if (scale) {
+            int maxTextWidth = (int) (width - 2 * margin);
+            if (textWidth > maxTextWidth) {
+                textScale = 1.0 * maxTextWidth / textWidth;
+            }
         }
+
         if (opacity == 0) return;
-        drawRect(g, x, y, width, height, color, opacity);
+
+        if (widgetAnimation.isHorizontalAnimated) {width = (int) round(width * visibilityState);}
+        if (widgetAnimation.isVerticalAnimated) {
+            height = (int) round(height * visibilityState);
+        } else {
+            opacity = 1;
+        }
+
+        drawRect(g, x, y, width, height, color, opacity, italic);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
 
         FontMetrics wh = g.getFontMetrics();
 
 //        if (wh.getStringBounds(text, g).getWidth() > width * 0.95) {
-        Font adjustedFont = adjustFont(g, text, width, height, 0.95);
-        g.setFont(adjustedFont);
-        wh = g.getFontMetrics();
+//        Font adjustedFont = adjustFont(g, text, width, height, 0.95);
+//        g.setFont(adjustedFont);
+//        wh = g.getFontMetrics();
 //        }
 
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
                 - 0.03f * height;
+        float xx;
         if (position == POSITION_LEFT) {
-            float xx = x + (float) (height * MARGIN);
-            g.drawString(text, xx, yy);
+            xx = (float) (x + margin);
         } else if (position == POSITION_CENTER) {
-            int w = g.getFontMetrics().stringWidth(text);
-            float xx = x + (width - w) / 2;
-            g.drawString(text, xx, yy);
+            xx = (float) (x + (width - textWidth * textScale) / 2);
         } else {
-            int w = g.getFontMetrics().stringWidth(text);
-            float xx = x + width - w - (float) (1.5 * height * MARGIN);
-            g.drawString(text, xx, yy);
+            xx = (float) (x + width - textWidth * textScale - margin);
         }
+        AffineTransform transform = g.getTransform();
+        transform.concatenate(AffineTransform.getTranslateInstance(xx, yy));
+        transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
+        g.setTransform(transform);
+//        g.translate(xx, yy);
+//        g.getTransform().concatenate();
+        g.drawString(text, 0, 0);
         g.dispose();
     }
 
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
-        Color color = team.getRank() <= 4 ? GOLD_COLOR : team.getRank() <= 8 ? SILVER_COLOR : team.getRank() <= 12 ? BRONZE_COLOR : ACCENT_COLOR;
+        Color color = getTeamRankColor(team);
         if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
-        g.setFont(Font.decode("Open Sans " + (int) Math.round(height * 0.7)));
-        int rankWidth = (int) Math.round(height * RANK_WIDTH);
-        int nameWidth = (int) Math.round(height * NAME_WIDTH);
-        int totalWidth = (int) Math.round(height * TOTAL_WIDTH);
-        int penaltyWidth = (int) Math.round(height * PENALTY_WIDTH);
-        int spaceX = (int) Math.round(height * SPACE_X);
+        g.setFont(Font.decode("Open Sans " + (int) round(height * 0.7)));
+        int rankWidth = (int) round(height * RANK_WIDTH);
+        int nameWidth = (int) round(height * NAME_WIDTH);
+        int totalWidth = (int) round(height * TOTAL_WIDTH);
+        int penaltyWidth = (int) round(height * PENALTY_WIDTH);
+        int spaceX = (int) round(height * SPACE_X);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state);
         x += rankWidth + spaceX;
         drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state);
@@ -271,7 +321,7 @@ public abstract class Widget {
     }
 
     protected void drawStar(Graphics2D g, int x, int y, int size) {
-        g.setColor(GOLD_COLOR);
+        g.setColor(STAR_COLOR);
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};

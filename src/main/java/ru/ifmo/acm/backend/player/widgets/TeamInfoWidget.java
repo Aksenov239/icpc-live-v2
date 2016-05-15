@@ -13,9 +13,8 @@ import java.awt.*;
  */
 public class TeamInfoWidget extends TeamWidget {
 
-
-    public TeamInfoWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
-        super(0, 0, width, height, aspectRatio, sleepTime);
+    public TeamInfoWidget(int baseX, int baseY, long updateWait, int width, int height, double aspectRatio, int sleepTime) {
+        super(baseX, baseY, width, height, aspectRatio, sleepTime);
 
         this.updateWait = updateWait;
         teamId = -1;
@@ -26,7 +25,7 @@ public class TeamInfoWidget extends TeamWidget {
     private String currentInfoType;
 
     public void updateImpl(Data data) {
-        //System.err.println(data.teamData.isTeamVisible);
+        //log.info(data.teamData.isTeamVisible);
 
         if (!data.teamData.isVisible) {
             setVisible(false);
@@ -34,16 +33,16 @@ public class TeamInfoWidget extends TeamWidget {
             stop();
         } else {
             setVisible(true);
-            //System.err.println(data.teamData.teamId + " " + teamId + " " + ready.get());
+            //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
             if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready.get()) {
-                //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
+                //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 if (team == null) {
                     setVisible(false);
                     return;
                 }
 
-                change(TeamWidget.getUrl(team, data.teamData.infoType));
+                change(team, data.teamData.infoType);
                 teamId = data.teamData.getTeamId();
                 currentInfoType = data.teamData.infoType;
             }

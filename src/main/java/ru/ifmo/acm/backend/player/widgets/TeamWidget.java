@@ -1,10 +1,9 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.events.WF.WFTeamInfo;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -14,26 +13,6 @@ import java.util.Properties;
  * @author: pashka
  */
 public class TeamWidget extends VideoWidget {
-    public static String[] types;
-    public static HashMap<String, String> urlTemplates;
-
-    static {
-        Properties properties = new Properties();
-        try {
-            properties.load(TeamWidget.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
-            types = properties.getProperty("info.types", "screen;camera;info").split(";");
-            urlTemplates = new HashMap<>();
-            for (int i = 0; i < types.length; i++) {
-                String url = properties.getProperty("info." + types[i], "");
-                urlTemplates.put(types[i], url);
-            }
-            if (properties.get("info.record") != null) {
-                urlTemplates.put("record", properties.getProperty("info.record"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     protected int teamId;
 
@@ -44,6 +23,8 @@ public class TeamWidget extends VideoWidget {
     private int width;
     private int height;
 
+    VideoWidget smallVideo = null;
+
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
         super(x, y, (int) (height * aspectRatio), height, sleepTime, 0);
         this.width = width;
@@ -53,6 +34,12 @@ public class TeamWidget extends VideoWidget {
         this.xVideo = x + width - widthVideo;
         this.yVideo = y;
         teamId = -1;
+
+        int xSmallVideo = x + (int) (width * 0.7);
+        int ySmallVideo = y + (int) (height * 0.6);
+        int hSmallVideo = (int) (height * 0.25);
+        int wSmallVideo = (int) (hSmallVideo * aspectRatio);
+        smallVideo = new VideoWidget(xSmallVideo, ySmallVideo, wSmallVideo, hSmallVideo, sleepTime, 0);
     }
 
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime, boolean full) {
@@ -120,15 +107,22 @@ public class TeamWidget extends VideoWidget {
         if (team != null && URL.get() != null) {
             g.drawImage(image.get(), xVideo, yVideo, null);
         }
-        if (inChange.get() || team == null) {
+        if (inChange.get()) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
+//            log.info(this + " " + inChange);
             inChange.set(false);
+            smallVideo.switchManually();
         }
 
         if (URL.get() == null || URL.get().contains("info")) {
             return;
         }
+
+        if (smallVideo != null && smallVideo.URL.get() != null) {
+            smallVideo.paintImpl(g, width, height);
+        }
+
         if (currentProblemId >= 0) {
             drawReplay(g, x, y, this.width, this.height);
         }
@@ -140,7 +134,7 @@ public class TeamWidget extends VideoWidget {
 //        if (teamId == null) return;
         g.setFont(FONT1);
         int dx = (int) (this.width * 0.45);
-        int dy = (int) (this.height * 0.85);
+        int dy = (int) (this.height * 0.9);
         drawTeamPane(g, team, x + dx, y + dy, (int) (this.height * 0.08), 1);
 
         g.setFont(FONT2);
@@ -174,7 +168,7 @@ public class TeamWidget extends VideoWidget {
                             RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
-                    //System.err.println(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
+                    //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                     }
@@ -199,32 +193,20 @@ public class TeamWidget extends VideoWidget {
     }
 
     public void change(TeamInfo team, String infoType) {
-        change(getUrl(team, infoType));
+        change(TeamUrls.getUrl(team, infoType));
+        if (!infoType.equals("camera")) {
+            smallVideo.changeManually(TeamUrls.getUrl(team, "camera"));
+        } else {
+            smallVideo.changeManually(TeamUrls.getUrl(team, "screen"));
+        }
         nextProblemId = -1;
         teamId = team.getId();
     }
 
     public void change(RunInfo run) {
-        change(getUrl(run));
+        change(TeamUrls.getUrl(run));
+        smallVideo.changeManually(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
-    }
-
-    public static String getUrl(TeamInfo team, String infoType) {
-        if (team instanceof PCMSTeamInfo) {
-            int aliasId = Integer.parseInt(((PCMSTeamInfo) team).getAlias().substring(1));
-            int hall = aliasId / 100;
-            int place = aliasId % 100;
-            System.err.println("change " + hall + " " + place);
-            return String.format(urlTemplates.get(infoType), hall, place);
-        } else if (team instanceof WFTeamInfo) {
-            System.err.println("change " + (team.getId() + 1) + " " + infoType);
-            return String.format(urlTemplates.get(infoType), team.getId() + 1);
-        }
-        return null;
-    }
-
-    public static String getUrl(RunInfo run) {
-        return String.format(urlTemplates.get("record"), run.getId());
     }
 }

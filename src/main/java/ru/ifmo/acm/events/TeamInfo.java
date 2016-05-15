@@ -56,6 +56,21 @@ public interface TeamInfo extends Comparable<TeamInfo> {
         }
     }
 
+    default boolean isReallyUnknown(int problem) {
+        List<RunInfo> runs = getRuns()[problem];
+        synchronized (runs) {
+            for (RunInfo run : runs) {
+                if ("AC".equals(run.getResult()) && !run.isReallyUnknown()) {
+                    return false;
+                }
+                if (run.isReallyUnknown()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     static Comparator<TeamInfo> comparator = new Comparator<TeamInfo>() {
         @Override
         public int compare(TeamInfo o1, TeamInfo o2) {

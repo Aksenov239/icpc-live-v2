@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.datapassing.TeamData;
 import ru.ifmo.acm.mainscreen.Utils;
@@ -18,6 +20,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 public class BackUp<T> {
+    private static final Logger log = LogManager.getLogger(BackUp.class);
+
     public BackUp(Class<T> type, String backupFileName) {
         this.type = type;
         this.data = new SynchronizedBeanItemContainer<T>(type);
@@ -32,7 +36,7 @@ public class BackUp<T> {
                     try {
                         Thread.sleep(60000L);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        log.error("error", e);
                     }
                 }
             }
@@ -58,7 +62,7 @@ public class BackUp<T> {
                 try {
                     Files.readAllLines(backupFile).forEach(s -> data.addBean(gson.fromJson(s, type)));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
             }
         }
@@ -75,13 +79,19 @@ public class BackUp<T> {
 
             Files.move(tmpFile, backupFile, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
     }
 
     public void addItem(T item) {
         synchronized (data) {
             data.addItem(item);
+        }
+    }
+
+    public void addItemAt(int index, T item) {
+        synchronized (data) {
+            data.addItemAt(index, item);
         }
     }
 

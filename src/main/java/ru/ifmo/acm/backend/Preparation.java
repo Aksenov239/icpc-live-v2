@@ -1,5 +1,7 @@
 package ru.ifmo.acm.backend;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
@@ -18,6 +20,8 @@ import java.io.InputStream;
  * Created by aksenov on 15.04.2015.
  */
 public class Preparation {
+    private static final Logger log = LogManager.getLogger(Preparation.class);
+
     public static EventsLoader eventsLoader;
 
     public static void prepareEventsLoader() {
@@ -55,7 +59,7 @@ public class Preparation {
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
 
 
@@ -91,7 +95,7 @@ public class Preparation {
         con.setRequestProperty("Authorization",
                 "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
         con.connect();
-        System.err.println(con.getHeaderFields());
+        log.debug(con.getHeaderFields());
         return con.getInputStream();
     }
 }

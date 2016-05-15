@@ -14,7 +14,9 @@ public class BreakingNewsData implements CachedData {
         this.isLive = data.isLive;
         this.teamId = data.teamId;
         this.problemId = data.problemId;
+        this.runId = data.runId;
         this.infoType = data.infoType;
+        this.newsMessage = data.newsMessage;
         return this;
     }
 
@@ -22,7 +24,7 @@ public class BreakingNewsData implements CachedData {
         Data.cache.refresh(BreakingNewsData.class);
     }
 
-    public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String info) {
+    public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String newsMessage, int teamId, int problemId, int runId) {
         if (visible && isVisible) {
             return false;
         }
@@ -30,13 +32,12 @@ public class BreakingNewsData implements CachedData {
         this.isVisible = visible;
 
         if (visible) {
-            String[] zz = info.split(" ");
-            int teamId = Integer.parseInt(zz[0]) - 1;
-            int problemId = zz[1].charAt(0) - 'A';
-
             TeamInfo teamInfo = MainScreenData.getProperties().contestInfo.getParticipant(teamId);
             this.teamId = teamId;
             this.problemId = problemId;
+            this.newsMessage = newsMessage;
+            this.runId = runId;
+
             teamName = teamInfo.getName();
             infoType = type;
             this.isLive = isLive;
@@ -44,13 +45,13 @@ public class BreakingNewsData implements CachedData {
 
         this.timestamp = System.currentTimeMillis();
         recache();
+
         return true;
     }
 
     public void update() {
         boolean change = false;
         synchronized (breakingNewsLock) {
-            //System.err.println(PCMSEventsLoader.getInstance().getContestData().getTeamsNumber());
             if (System.currentTimeMillis() > timestamp +
                     MainScreenData.getProperties().breakingNewsTimeToShow +
                     MainScreenData.getProperties().sleepTime) {
@@ -58,8 +59,9 @@ public class BreakingNewsData implements CachedData {
                 change = true;
             }
         }
-        if (change)
+        if (change) {
             recache();
+        }
     }
 
     public String toString() {
@@ -87,8 +89,12 @@ public class BreakingNewsData implements CachedData {
     public int teamId;
     public String teamName;
     public int problemId;
+    public int runId;
     public String infoType;
     public boolean isLive;
+    public String newsMessage;
+
+    private static int lastShowedRun = 0;
 
     final private Object breakingNewsLock = new Object();
 }

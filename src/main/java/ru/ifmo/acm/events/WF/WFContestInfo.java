@@ -92,7 +92,7 @@ public class WFContestInfo extends ContestInfo {
                         team.solved++;
                         int time = (int) (wfrun.getTime() / 60 / 1000);
                         team.penalty += wrong * 20 + time;
-                        team.lastAccepted = Math.max(team.lastAccepted, time);
+                        team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
                         break;
                     } else if (wfrun.getResult().length() > 0) {
                         wrong++;
@@ -182,7 +182,7 @@ public class WFContestInfo extends ContestInfo {
 
     public WFTeamInfo getParticipantByHashTag(String hashTag) {
         for (int i = 0; i < teamNumber; i++) {
-            if (hashTag != null && hashTag.equals(teamInfos[i].getHashTag())) {
+            if (hashTag != null && hashTag.equalsIgnoreCase(teamInfos[i].getHashTag())) {
                 return teamInfos[i];
             }
         }
@@ -204,6 +204,7 @@ public class WFContestInfo extends ContestInfo {
                         clonedRun.judged = true;
                         String expectedResult = isOptimistic ? "AC" : "WA";
                         clonedRun.result = (runIndex == runs.size() - 1) ? expectedResult : "WA";
+                        clonedRun.reallyUnknown = true;
                     }
                     possibleStandings[teamIndex].addRun(clonedRun, j);
                     runIndex++;

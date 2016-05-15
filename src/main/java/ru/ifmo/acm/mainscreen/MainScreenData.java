@@ -1,12 +1,18 @@
 package ru.ifmo.acm.mainscreen;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.datapassing.*;
+
+import static ru.ifmo.acm.mainscreen.BreakingNews.MainScreenBreakingNews.getUpdaterThread;
 
 /**
  * Created by Aksenov239 on 15.11.2015.
  */
 public class MainScreenData {
+    private static final Logger log = LogManager.getLogger(MainScreenData.class);
+
     public static MainScreenData getMainScreenData() {
         if (mainScreenData == null) {
             mainScreenData = new MainScreenData();
@@ -19,13 +25,17 @@ public class MainScreenData {
                         try {
                             Thread.sleep(1000);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error", e);
                         }
                     }
                 }
             });
             updater.start();
             ContextListener.addThread(updater);
+
+            Utils.StoppedThread breakingNewsTableUpdater = getUpdaterThread();
+            breakingNewsTableUpdater.start();
+            ContextListener.addThread(breakingNewsTableUpdater);
         }
         return mainScreenData;
     }
@@ -40,6 +50,7 @@ public class MainScreenData {
         splitScreenData = new SplitScreenData();
         breakingNewsData = new BreakingNewsData();
         queueData = new QueueData();
+        statisticsData = new StatisticsData();
     }
 
     public void update() {
@@ -47,6 +58,7 @@ public class MainScreenData {
         personData.update();
         standingsData.update();
         breakingNewsData.update();
+        teamData.update();
     }
 
     private static MainScreenData mainScreenData;
@@ -64,6 +76,7 @@ public class MainScreenData {
     public SplitScreenData splitScreenData;
     public BreakingNewsData breakingNewsData;
     public QueueData queueData;
+    public StatisticsData statisticsData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

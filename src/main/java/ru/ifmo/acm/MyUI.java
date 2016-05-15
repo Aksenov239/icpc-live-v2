@@ -15,6 +15,7 @@ import ru.ifmo.acm.creepingline.CreepingLineView;
 import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.datapassing.DataRequestHandler;
 import ru.ifmo.acm.login.LoginView;
+import ru.ifmo.acm.mainscreen.BreakingNews.MainScreenBreakingNews;
 import ru.ifmo.acm.mainscreen.*;
 
 import javax.servlet.annotation.WebServlet;
@@ -58,6 +59,8 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenStandingsView.NAME, MainScreenStandingsView.class);
 
+        getNavigator().addView(MainScreenBreakingNews.NAME, MainScreenBreakingNews.class);
+
         getNavigator().addView(MainScreenCameraView.NAME, MainScreenCameraView.class);
 
         getNavigator().addView(MainScreenSplitScreenView.NAME, MainScreenSplitScreenView.class);
@@ -68,6 +71,10 @@ public class MyUI extends UI {
 
         menu.addItem("Standings view", selectedItem -> {
             getNavigator().navigateTo(MainScreenStandingsView.NAME);
+        });
+
+        menu.addItem("Breaking news view", selectedItem -> {
+            getNavigator().navigateTo(MainScreenBreakingNews.NAME);
         });
 
         menu.addItem("Team view (MS)", selectedItem -> {
@@ -108,6 +115,9 @@ public class MyUI extends UI {
             }
             if (currentView instanceof MainScreenCameraView) {
                 ((MainScreenCameraView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenBreakingNews) {
+                ((MainScreenBreakingNews) currentView).refresh();
             }
 
             DataLoader.iterateFrontend();

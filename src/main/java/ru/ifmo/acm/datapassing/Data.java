@@ -3,11 +3,15 @@ package ru.ifmo.acm.datapassing;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
 public class Data implements CachedData {
+    private static final Logger log = LogManager.getLogger(Data.class);
+
     public CreepingLineData creepingLineData;
     public ClockData clockData;
     public AdvertisementData advertisementData;
@@ -18,6 +22,7 @@ public class Data implements CachedData {
     public SplitScreenData splitScreenData;
     public BreakingNewsData breakingNewsData;
     public QueueData queueData;
+    public StatisticsData statisticsData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -41,10 +46,11 @@ public class Data implements CachedData {
             splitScreenData = (SplitScreenData) cache.get(SplitScreenData.class);
             breakingNewsData = (BreakingNewsData) cache.get(BreakingNewsData.class);
             queueData = (QueueData) cache.get(QueueData.class);
+            statisticsData = (StatisticsData) cache.get(StatisticsData.class);
             //cameraData = (CameraData) cache.get(CameraData.class);
-            //System.err.println(teamData);
+            //log.debug(teamData);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return this;
     }

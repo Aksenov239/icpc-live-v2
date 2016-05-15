@@ -21,6 +21,7 @@ public class WFRunInfo implements RunInfo {
     private long lastUpdateTimestamp;
     private SmallTeamInfo teamInfoBefore;
     public TeamInfo team;
+    public boolean reallyUnknown;
 
     public WFRunInfo() {
     }
@@ -103,6 +104,10 @@ public class WFRunInfo implements RunInfo {
     @Override
     public SmallTeamInfo getTeamInfoBefore() {
         return teamInfoBefore;
+    }
+
+    public boolean isReallyUnknown() {
+        return reallyUnknown;
     }
 
     @Override
