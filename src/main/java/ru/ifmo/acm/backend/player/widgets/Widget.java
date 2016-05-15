@@ -1,6 +1,8 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import com.google.gwt.dom.builder.shared.HRBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
@@ -13,6 +15,8 @@ import java.awt.geom.Rectangle2D;
  * @author: pashka
  */
 public abstract class Widget {
+    protected final Logger log = LogManager.getLogger(getClass());
+
     public final static double OPACITY = 1;
 
     public static final int BASE_WIDTH = 1920;
@@ -104,8 +108,7 @@ public abstract class Widget {
         try {
             paintImpl(g, width, height);
         } catch (Exception e) {
-            System.err.println("Failed to paint " + this.getClass().toString());
-            e.printStackTrace();
+            log.error("Failed to paint " + this.getClass().toString(), e);
         }
     }
 

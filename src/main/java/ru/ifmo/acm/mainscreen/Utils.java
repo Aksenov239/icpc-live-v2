@@ -4,7 +4,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.VerticalLayout;
-import ru.ifmo.acm.backend.player.widgets.TeamWidget;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 
 public class Utils {
     /* Utils */
@@ -45,7 +45,7 @@ public class Utils {
         String[] last = z[1].split("\n");
 
         if (current[1].equals("true")) {
-            for (String type1 : TeamWidget.types) {
+            for (String type1 : TeamUrls.types) {
                 if (type1.equals(current[2])) {
                     long currentTime = System.currentTimeMillis() - Long.parseLong(current[0]);
                     if (currentTime > MainScreenData.getProperties().sleepTime) {

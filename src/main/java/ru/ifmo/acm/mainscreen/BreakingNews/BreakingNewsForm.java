@@ -3,7 +3,9 @@ package ru.ifmo.acm.mainscreen.BreakingNews;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import ru.ifmo.acm.backend.player.widgets.TeamWidget;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.nio.file.StandardOpenOption;
 import static ru.ifmo.acm.mainscreen.Utils.createGroupLayout;
 
 public class BreakingNewsForm extends FormLayout {
+    private static final Logger log = LogManager.getLogger(BreakingNewsForm.class);
+
     VerticalLayout form;
 
     final MainScreenBreakingNews parent;
@@ -53,9 +57,9 @@ public class BreakingNewsForm extends FormLayout {
         isLive.setValue(false);
 
         types = new OptionGroup();
-        types.addItems(TeamWidget.types);
+        types.addItems(TeamUrls.types);
         types.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-        types.setValue(TeamWidget.types[0]);
+        types.setValue(TeamUrls.types[0]);
         types.setEnabled(false);
 
         messageToShow = new Label("Message");
@@ -70,7 +74,7 @@ public class BreakingNewsForm extends FormLayout {
             try {
                 Files.readAllLines(patternsFile).forEach(s -> predefinedMessages.addItems(s));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
         }
 
@@ -88,7 +92,7 @@ public class BreakingNewsForm extends FormLayout {
                     predefinedMessages.addItems(newPattern.getValue());
                     newPattern.clear();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
             }
         });

@@ -28,7 +28,7 @@ public class DoublePersonWidget extends Widget {
     protected void updateImpl(Data data) {
         PersonData personData = Preparation.dataLoader.getDataBackend().personData;
 
-        //System.err.println(Arrays.toString(personData.isVisible));
+        //log.debug(Arrays.toString(personData.isVisible));
 
         lastVisibleChangeLeft = personData.timestamp[0];
 

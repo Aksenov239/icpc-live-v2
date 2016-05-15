@@ -4,6 +4,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.player.widgets.ClockWidget;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.WF.WFContestInfo;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainScreenBreakingNews extends CustomComponent implements View {
+    private static final Logger log = LogManager.getLogger(MainScreenBreakingNews.class);
+
     public final static String NAME = "mainscreen-breaking-news";
 
     public MainScreenBreakingNews() {
@@ -108,7 +112,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            log.error("error", e);
                         }
                     }
 
@@ -138,7 +142,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        log.error("error", e);
                     }
                 }
             }

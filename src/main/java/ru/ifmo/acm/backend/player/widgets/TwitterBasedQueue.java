@@ -1,5 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import org.apache.logging.log4j.*;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -12,6 +13,8 @@ import java.util.*;
  * Created by Aksenov239 on 28.03.2016.
  */
 public class TwitterBasedQueue extends Thread {
+    private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(TwitterBasedQueue.class);
+
     private Twitter twitter;
     private String mainHashTag;
     private Queue<Request> queue;
@@ -34,7 +37,7 @@ public class TwitterBasedQueue extends Thread {
             inQueueHashtags = new HashSet<>();
             contestInfo = Preparation.eventsLoader.getContestData();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
     }
 
@@ -82,12 +85,13 @@ public class TwitterBasedQueue extends Thread {
                 step();
             } catch (Throwable e) {
                 twitter = null;
-                e.printStackTrace();
+                log.error("error", e);
+                continue;
             }
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
         }
     }

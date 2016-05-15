@@ -1,22 +1,17 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import org.apache.http.cookie.SM;
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.datapassing.Data;
-import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.events.WF.WFTeamInfo;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * @author: pashka
  */
 public class NewTeamWidget extends VideoWidget {
-
     private static final int BIG_HEIGHT = 780;
     private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
     private static final int BIG_X = 493;
@@ -30,28 +25,6 @@ public class NewTeamWidget extends VideoWidget {
     private static final int TEAM_PANE_X = 936;
     private static final int TEAM_PANE_Y = 909;
     private static final int TEAM_PANE_HEIGHT = 85;
-
-
-    public static String[] types;
-    public static HashMap<String, String> urlTemplates;
-
-    static {
-        Properties properties = new Properties();
-        try {
-            properties.load(NewTeamWidget.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
-            types = properties.getProperty("info.types", "screen;camera;info").split(";");
-            urlTemplates = new HashMap<>();
-            for (int i = 0; i < types.length; i++) {
-                String url = properties.getProperty("info." + types[i], "");
-                urlTemplates.put(types[i], url);
-            }
-            if (properties.get("info.record") != null) {
-                urlTemplates.put("record", properties.getProperty("info.record"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     protected int teamId;
 
@@ -79,15 +52,15 @@ public class NewTeamWidget extends VideoWidget {
     }
 
     public void updateImpl(Data data) {
-        //System.err.println(data.teamData.isTeamVisible);
+        //log.info(data.teamData.isTeamVisible);
 
         if (!data.teamData.isVisible) {
             setVisible(false);
         } else {
             setVisible(true);
-            //System.err.println(data.teamData.teamId + " " + teamId + " " + ready.get());
+            //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
             if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready.get()) {
-                //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
+                //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 if (team == null) {
                     setVisible(false);
@@ -166,7 +139,7 @@ public class NewTeamWidget extends VideoWidget {
         if (inChange.get()) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
-//            System.err.println(this + " " + inChange);
+//            log.info(this + " " + inChange);
             inChange.set(false);
             smallVideo.switchManually();
         }
@@ -244,7 +217,7 @@ public class NewTeamWidget extends VideoWidget {
                             RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
-                    //System.err.println(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
+                    //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         drawStar(g, this.x + x - STAR_SIZE, (int) (this.y + y + STAR_SIZE), (int) STAR_SIZE);
                     }
@@ -269,38 +242,20 @@ public class NewTeamWidget extends VideoWidget {
     }
 
     public void change(TeamInfo team, String infoType) {
-        change(getUrl(team, infoType));
+        change(TeamUrls.getUrl(team, infoType));
         if (!infoType.equals("camera")) {
-            smallVideo.changeManually(getUrl(team, "camera"));
+            smallVideo.changeManually(TeamUrls.getUrl(team, "camera"));
         } else {
-            smallVideo.changeManually(getUrl(team, "screen"));
+            smallVideo.changeManually(TeamUrls.getUrl(team, "screen"));
         }
         nextProblemId = -1;
         teamId = team.getId();
     }
 
     public void change(RunInfo run) {
-        change(getUrl(run));
+        change(TeamUrls.getUrl(run));
         smallVideo.changeManually(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
-    }
-
-    public static String getUrl(TeamInfo team, String infoType) {
-        if (team instanceof PCMSTeamInfo) {
-            int aliasId = Integer.parseInt(((PCMSTeamInfo) team).getAlias().substring(1));
-            int hall = aliasId / 100;
-            int place = aliasId % 100;
-            System.err.println("change " + hall + " " + place);
-            return String.format(urlTemplates.get(infoType), hall, place);
-        } else if (team instanceof WFTeamInfo) {
-            System.err.println("change " + (team.getId() + 1) + " " + infoType);
-            return String.format(urlTemplates.get(infoType), team.getId() + 1);
-        }
-        return null;
-    }
-
-    public static String getUrl(RunInfo run) {
-        return String.format(urlTemplates.get("record"), run.getId());
     }
 }

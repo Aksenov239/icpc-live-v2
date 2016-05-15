@@ -25,7 +25,7 @@ public class TeamInfoWidget extends TeamWidget {
     private String currentInfoType;
 
     public void updateImpl(Data data) {
-        //System.err.println(data.teamData.isTeamVisible);
+        //log.info(data.teamData.isTeamVisible);
 
         if (!data.teamData.isVisible) {
             setVisible(false);
@@ -33,9 +33,9 @@ public class TeamInfoWidget extends TeamWidget {
             stop();
         } else {
             setVisible(true);
-            //System.err.println(data.teamData.teamId + " " + teamId + " " + ready.get());
+            //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
             if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready.get()) {
-                //System.err.println("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
+                //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 if (team == null) {
                     setVisible(false);

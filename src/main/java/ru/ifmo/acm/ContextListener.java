@@ -1,5 +1,7 @@
 package ru.ifmo.acm;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.creepingline.MessageData;
 import ru.ifmo.acm.datapassing.DataLoader;
 import ru.ifmo.acm.events.EventsLoader;
@@ -17,6 +19,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @WebListener("Context listener for doing something or other.")
 public class ContextListener implements ServletContextListener {
+    private static final Logger log = LogManager.getLogger(ContextListener.class);
+
     // Vaadin app deploying/launching.
     @Override
     public void contextInitialized(ServletContextEvent contextEvent) {
@@ -30,7 +34,7 @@ public class ContextListener implements ServletContextListener {
                     try {
                         Thread.sleep(1000);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("error", e);
                     }
                 }
             }

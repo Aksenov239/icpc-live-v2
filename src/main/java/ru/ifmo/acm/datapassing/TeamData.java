@@ -1,6 +1,8 @@
 package ru.ifmo.acm.datapassing;
 
 import com.google.gson.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.mainscreen.MainScreenData;
@@ -9,6 +11,8 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class TeamData implements CachedData {
+    private static final Logger log = LogManager.getLogger(TeamData.class);
+
     public TeamData() {
     }
 
@@ -45,7 +49,7 @@ public class TeamData implements CachedData {
     }
 
     public synchronized void automaticStop() {
-//        System.err.println("STOOOOOOOOOOOP IT!");
+//        log.info("STOOOOOOOOOOOP IT!");
         hideInfo();
         isAutomatic = false;
     }
@@ -61,7 +65,7 @@ public class TeamData implements CachedData {
         lastStatus = currentStatus;
         currentStatus = timestamp + "\n" + isVisible + "\n" + infoType + "\n" + teamName;
 
-        System.err.println(teamInfo.getName() + " " + teamId + " " + type);
+        log.debug(teamInfo.getName() + " " + teamId + " " + type);
         recache();
     }
 
@@ -180,7 +184,7 @@ public class TeamData implements CachedData {
             teamData.infoType = jsonObject.get("infoType").getAsString();
             teamData.teamId = jsonObject.get("teamId").getAsInt();
 
-            //System.err.println("Hello from TeamDataDeserializer!");
+            //log.info("Hello from TeamDataDeserializer!");
 
             return teamData;
         }
