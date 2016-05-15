@@ -22,7 +22,7 @@ public class AdvertisementData implements CachedData {
         Data.cache.refresh(AdvertisementData.class);
     }
 
-    public void setVisible(boolean visible) {
+    public void hide() {
         isVisible = false;
         recache();
     }

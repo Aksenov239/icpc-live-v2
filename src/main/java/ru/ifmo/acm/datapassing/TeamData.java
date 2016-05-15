@@ -35,8 +35,9 @@ public class TeamData implements CachedData {
     String lastStatus = "0\nfalse";
 
     public void switchOverlaysOff() {
-        MainScreenData.getMainScreenData().standingsData.setVisible(false);
-        MainScreenData.getMainScreenData().advertisementData.setVisible(false);
+        MainScreenData.getMainScreenData().standingsData.hide();
+        MainScreenData.getMainScreenData().advertisementData.hide();
+        MainScreenData.getMainScreenData().personData.hide();
     }
 
     public synchronized boolean automaticStart(int number) {
