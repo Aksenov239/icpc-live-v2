@@ -22,6 +22,11 @@ public class AdvertisementData implements CachedData {
         Data.cache.refresh(AdvertisementData.class);
     }
 
+    public void setVisible(boolean visible) {
+        isVisible = false;
+        recache();
+    }
+
     public void update() {
         boolean change = false;
         synchronized (advertisementLock) {
@@ -56,13 +61,27 @@ public class AdvertisementData implements CachedData {
         MainScreenData.getProperties().backupAdvertisements.addItem(advertisement);
     }
 
-    public void setAdvertisementVisible(boolean visible, Advertisement advertisement) {
+    public String checkOverlays() {
+        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+            return "You need to close team view first.";
+        }
+        return null;
+    }
+
+    public String setAdvertisementVisible(boolean visible, Advertisement advertisement) {
+        if (visible) {
+            String outcome = checkOverlays();
+            if (outcome != null) {
+                return outcome;
+            }
+        }
         synchronized (advertisementLock) {
             timestamp = System.currentTimeMillis();
             isVisible = visible;
             this.advertisement = advertisement;
         }
         recache();
+        return null;
     }
 
     public long timestamp;
