@@ -30,6 +30,19 @@ public class StatisticsData implements CachedData {
         return this;
     }
 
+    public String checkOverlays() {
+        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+            return "You need to close team view first.";
+        }
+        return null;
+    }
+
+    @Override
+    public void hide() {
+        isVisible = false;
+        recache();
+    }
+
     private long timestamp;
     private boolean isVisible;
 }
