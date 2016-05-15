@@ -61,8 +61,7 @@ public class SplitScreenWidget extends Widget {
             lastSwitch[i] = System.currentTimeMillis() + switchTime * i;
         }
 
-        usersQueue = new TwitterBasedQueue();
-        usersQueue.start();
+        usersQueue = TwitterBasedQueue.getInstance();
     }
 
     public SplitScreenWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
@@ -122,6 +121,7 @@ public class SplitScreenWidget extends Widget {
                 if (request != null) {
                     //System.err.println("MODE 0 " + request.teamId);
                     teamId = request.teamId;
+                    infoType = request.type;
                     if (teamInUse(teamId)) {
                         continue;
                     }
@@ -142,6 +142,7 @@ public class SplitScreenWidget extends Widget {
                     currentPlace = (currentPlace + 1) % topPlaces;
                     break;
                 }
+                currentPlace = (currentPlace + 1) % topPlaces;
             }
         }
         //System.err.println("Choose " + teamId + " for " + widget + " with mode " + mode);

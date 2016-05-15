@@ -28,7 +28,7 @@ public class PlayerInImage {
         this.frame = frame;
         MediaPlayerFactory factory = new MediaPlayerFactory(new String[0]);
         mediaPlayer = factory.newDirectMediaPlayer(new TestBufferFormatCallback(), new TestRenderCallback());
-        mediaPlayer.setRepeat(true);
+//        mediaPlayer.setRepeat(true);
 //        mediaPlayer.addMediaOptions(":file-caching=1500");
 //        mediaPlayer.setStandardMediaOptions(":file-caching=1500");
 //        mediaPlayer.setVolume(0);
