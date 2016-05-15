@@ -22,11 +22,6 @@ public class AdvertisementData implements CachedData {
         Data.cache.refresh(AdvertisementData.class);
     }
 
-    public void hide() {
-        isVisible = false;
-        recache();
-    }
-
     public void update() {
         boolean change = false;
         synchronized (advertisementLock) {
@@ -66,6 +61,13 @@ public class AdvertisementData implements CachedData {
             return MainScreenData.getMainScreenData().teamData.getOverlayError();
         }
         return null;
+    }
+
+    public void hide() {
+        synchronized (advertisementLock) {
+            timestamp = System.currentTimeMillis();
+            isVisible = false;
+        }
     }
 
     public String setAdvertisementVisible(boolean visible, Advertisement advertisement) {

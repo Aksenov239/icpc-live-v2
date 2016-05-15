@@ -32,6 +32,7 @@ public class PersonData implements CachedData {
         for (int id = 0; id < labelsLock.length; id++) {
             synchronized (labelsLock[id]) {
                 isVisible[id] = false;
+                timestamp[id] = System.currentTimeMillis();
             }
         }
         recache();

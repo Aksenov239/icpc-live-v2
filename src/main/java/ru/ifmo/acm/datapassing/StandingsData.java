@@ -43,9 +43,20 @@ public class StandingsData implements CachedData {
         return null;
     }
 
+    public void switchOverlaysOff() {
+        MainScreenData.getMainScreenData().statisticsData.hide();
+    }
+
     public void hide() {
-        isVisible = false;
+        synchronized (standingsLock) {
+            isVisible = false;
+            timestamp = System.currentTimeMillis();
+        }
         recache();
+    }
+
+    public String getOverlayError() {
+        return "You need to turn standings first!";
     }
 
     public String setStandingsVisible(boolean visible, StandingsType type, boolean isBig, OptimismLevel level) {

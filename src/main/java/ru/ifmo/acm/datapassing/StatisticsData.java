@@ -8,6 +8,10 @@ public class StatisticsData implements CachedData {
         Data.cache.refresh(StatisticsData.class);
     }
 
+    public synchronized void hide() {
+        setVisible(false);
+    }
+
     public synchronized void setVisible(boolean visible) {
         timestamp = System.currentTimeMillis();
         isVisible = visible;
