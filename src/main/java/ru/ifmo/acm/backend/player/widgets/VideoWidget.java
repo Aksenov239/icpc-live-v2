@@ -84,7 +84,7 @@ public class VideoWidget extends Widget implements PlayerWidget {
                 try {
                     Thread.sleep(sleepTime);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
 
                 JComponent component = player.getComponent();

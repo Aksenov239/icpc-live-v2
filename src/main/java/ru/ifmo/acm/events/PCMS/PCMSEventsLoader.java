@@ -1,5 +1,7 @@
 package ru.ifmo.acm.events.PCMS;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,6 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class PCMSEventsLoader extends EventsLoader {
+    private static final Logger log = LogManager.getLogger(PCMSEventsLoader.class);
+
     public PCMSEventsLoader() throws IOException {
         properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("events.properties"));
@@ -58,13 +62,13 @@ public class PCMSEventsLoader extends EventsLoader {
             Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
             parseAndUpdateStandings(doc);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
     }
 
     @Override
     public void run() {
-        //System.err.println(check.getName() + " " + check.getShortName());
+        //log.debug(check.getName() + " " + check.getShortName());
         while (true) {
             try {
                 while (true) {
@@ -72,8 +76,7 @@ public class PCMSEventsLoader extends EventsLoader {
                     sleep(5000);
                 }
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-
+                log.error("error", e);
             }
         }
     }
@@ -93,7 +96,7 @@ public class PCMSEventsLoader extends EventsLoader {
 
         long previousStartTime = contestInfo.get().getStartTime();
         long currentTime = Long.parseLong(element.attr("time"));
-        //System.err.println("Time now " + currentTime);
+        //log.debug("Time now " + currentTime);
         if (previousStartTime == 0 && !"before".equals(element.attr("status"))) {
             // if (previousStartTime < System.currentTimeMillis() - currentTime)
             updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);

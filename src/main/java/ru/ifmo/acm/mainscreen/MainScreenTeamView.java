@@ -6,7 +6,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
-import ru.ifmo.acm.backend.player.widgets.TeamWidget;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.events.TeamInfo;
 
 /**
@@ -23,7 +23,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
     Button automatedShow;
     Button automatedStop;
     ComboBox automatedNumber;
-    final String[] types = TeamWidget.types;
+    final String[] types = TeamUrls.types;
     ComboBox type;
     //    ListSelect teamSelection;
     OptionGroup teamSelection;
@@ -99,7 +99,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         for (TeamInfo team : MainScreenData.getProperties().teamInfos) {
             teamSelection.addItem(team);
             teamSelection.setItemCaption(team, team.toString());
-//            System.err.println(team.toString());
+//            log.debug(team.toString());
         }
         teamSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         teamSelection.setWidth("100%");

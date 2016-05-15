@@ -1,5 +1,7 @@
 package ru.ifmo.acm.mainscreen;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.events.ContestInfo;
@@ -13,12 +15,14 @@ import java.util.Arrays;
 import java.util.Properties;
 
 public class MainScreenProperties {
+    private static final Logger log = LogManager.getLogger(MainScreenProperties.class);
+
     public MainScreenProperties() {
         Properties properties = new Properties();
         try {
             properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
 
         latency = Long.parseLong(properties.getProperty("latency.time"));

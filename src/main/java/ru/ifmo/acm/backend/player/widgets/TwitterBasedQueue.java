@@ -1,5 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import org.apache.logging.log4j.*;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -16,6 +17,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Aksenov239 on 28.03.2016.
  */
 public class TwitterBasedQueue extends Thread {
+    private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(TwitterBasedQueue.class);
+
     private Twitter twitter;
     private String mainHashTag;
     private LinkedBlockingQueue<Request> queue;
@@ -38,7 +41,7 @@ public class TwitterBasedQueue extends Thread {
             inQueueHashtags = new ConcurrentSkipListSet<>();
             contestInfo = Preparation.eventsLoader.getContestData();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
     }
 
@@ -64,7 +67,7 @@ public class TwitterBasedQueue extends Thread {
                 list = twitter.search(query).getTweets();
             } catch (TwitterException e) {
                 twitter = TwitterFactory.getSingleton();
-                e.printStackTrace();
+                log.error("error", e);
                 continue;
             }
             for (Status status : list) {
@@ -98,7 +101,7 @@ public class TwitterBasedQueue extends Thread {
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
             firstRun = false;
         }

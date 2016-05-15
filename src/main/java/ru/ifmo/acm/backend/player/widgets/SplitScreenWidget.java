@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -34,7 +35,7 @@ public class SplitScreenWidget extends Widget {
         try {
             properties.load(this.getClass().getClassLoader().getResourceAsStream("splitscreen.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
 
         switchTime = Integer.parseInt(properties.getProperty("switch.time"));
@@ -120,7 +121,7 @@ public class SplitScreenWidget extends Widget {
             if (mode == 0) {
                 TwitterBasedQueue.Request request = usersQueue.nextRequest();
                 if (request != null) {
-                    //System.err.println("MODE 0 " + request.teamId);
+                    //log.info("MODE 0 " + request.teamId);
                     teamId = request.teamId;
                     if (teamInUse(teamId)) {
                         continue;
@@ -144,12 +145,12 @@ public class SplitScreenWidget extends Widget {
                 }
             }
         }
-        //System.err.println("Choose " + teamId + " for " + widget + " with mode " + mode);
+        //log.info("Choose " + teamId + " for " + widget + " with mode " + mode);
         teamInfoWidgets[widget].change(
                 contestInfo.getParticipant(teamId),
                 infoType
         );
-        //System.err.println("There " + teamInfoWidgets[widget].teamId + " " + teamInfoWidgets[widget].team.getId());
+        //log.info("There " + teamInfoWidgets[widget].teamId + " " + teamInfoWidgets[widget].team.getId());
         lastSwitch[widget] = System.currentTimeMillis();
         mode ^= 1;
     }
@@ -179,7 +180,7 @@ public class SplitScreenWidget extends Widget {
                         teamInfoWidgets[i].readyToShow()) {
                     teamInfoWidgets[i].setTeamId(data.splitScreenData.getTeamId(i));
                     teamInfoWidgets[i].change(
-                            TeamWidget.getUrl(
+                            TeamUrls.getUrl(
                                     Preparation.eventsLoader.getContestData().getParticipant(data.splitScreenData.getTeamId(i)),
                                     data.splitScreenData.controllerDatas[i].infoType
                             )
