@@ -19,7 +19,7 @@ public class QueueWidget extends Widget {
 
     public static final int WAIT_TIME = 60000;
     public static final int FIRST_TO_SOLVE_WAIT_TIME = 120000;
-    private static final int MAX_QUEUE_SIZE = 22;
+    private static final int MAX_QUEUE_SIZE = 16;
 
     public static double Y_SHIFT;
 
@@ -187,12 +187,15 @@ public class QueueWidget extends Widget {
         for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
             if (r == null)
                 continue;
+
+//            System.err.println(r.getTime() + " " + System.currentTimeMillis() + " " + (System.currentTimeMillis() - info.getStartTime()) + " " +
+//                    info.getStartTime() + " " + (long)r.timestamp + " " + (r.timestamp * 1000 - info.getStartTime()));
             if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / WFEventsLoader.SPEED) {
+                if (r.timestamp * 1000 > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / WFEventsLoader.SPEED) {
                     firstToSolves.add(r);
                 }
             } else {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
+                if (r.timestamp * 1000 > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
                     queue.add(r);
                 }
             }
