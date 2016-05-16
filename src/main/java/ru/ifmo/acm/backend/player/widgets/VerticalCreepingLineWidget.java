@@ -126,11 +126,11 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
             messageNow = new Message();
         } else {
             messageNow.position -= V * dt;
-            g.drawString(messageNow.message, 10, (float) (messageNow.position + wh.getAscent()));
+            drawTextToFit(g, messageNow.message, 0, messageNow.position, 0, 0, width - LOGO_WIDTH, HEIGHT);
         }
         if (messageNext.position + messageNext.heigth / 2 > HEIGHT / 2) {
             messageNext.position -= V * dt;
         }
-        g.drawString(messageNext.message, 10, (float) (messageNext.position + wh.getAscent()));
+        drawTextToFit(g, messageNext.message, 0, messageNext.position, 0, 0, width - LOGO_WIDTH, HEIGHT);
     }
 }

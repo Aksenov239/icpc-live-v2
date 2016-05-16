@@ -12,6 +12,7 @@ import java.awt.geom.AffineTransform;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
+import static java.lang.Math.scalb;
 
 /**
  * @author: pashka
@@ -214,10 +215,10 @@ public abstract class Widget {
     }
 
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor,
-                   double visibilityState, boolean isBlinking) {
+                        double visibilityState, boolean isBlinking) {
         drawTextInRect(gg, text, x, y, width, height, position,
-        color, textColor, visibilityState, false, true,
-        WidgetAnimation.NOT_ANIMATED, isBlinking);
+                color, textColor, visibilityState, false, true,
+                WidgetAnimation.NOT_ANIMATED, isBlinking);
     }
 
 
@@ -260,7 +261,7 @@ public abstract class Widget {
             height = (int) round(height * visibilityState);
         }
 
-        if (widgetAnimation == WidgetAnimation.NOT_ANIMATED){
+        if (widgetAnimation == WidgetAnimation.NOT_ANIMATED) {
             opacity = 1;
         }
 
@@ -307,6 +308,29 @@ public abstract class Widget {
 //        g.getTransform().concatenate();
         g.drawString(text, 0, 0);
         g.dispose();
+    }
+
+    void drawTextToFit(Graphics2D gg, String text, double X, double Y, int x, int y, int width, int height) {
+        Graphics2D g = (Graphics2D) gg.create(x, y, width, height);
+        FontMetrics wh = g.getFontMetrics();
+        int textWidth = g.getFontMetrics().stringWidth(text);
+        double textScale = 1;
+
+        double margin = height * MARGIN;
+
+        int maxTextWidth = (int) (width - 2 * margin);
+        if (textWidth > maxTextWidth) {
+            textScale = 1. * maxTextWidth / textWidth;
+        }
+
+        float yy = (float) Y + wh.getAscent() - 0.03f * height;
+        float xx = (float) (X + margin);
+
+        AffineTransform transform = g.getTransform();
+        transform.concatenate(AffineTransform.getTranslateInstance(xx, yy));
+        transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
+        g.setTransform(transform);
+        g.drawString(text, 0, 0);
     }
 
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
