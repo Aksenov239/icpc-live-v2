@@ -58,7 +58,7 @@ public class BigStandingsWidget extends Widget {
     double[] currentTeamPositions;
     double[] desiredTeamPositions;
 
-    long blindingTime;
+    long blinkingTime;
 
     public BigStandingsWidget(int baseX, int baseY, int width, int plateHeight, long updateWait, int teamsOnPage, boolean controlled) {
         super(updateWait);
@@ -364,7 +364,7 @@ public class BigStandingsWidget extends Widget {
             if (bright && statusColor == MAIN_COLOR) statusColor = statusColor.brighter();
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
-            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - ((WFRunInfo)team.getLastRun(i)).timestamp) < blindingTime;
+            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - ((WFRunInfo)team.getLastRun(i)).timestamp) < blinkingTime;
             drawTextInRect(g, status, x, y,
                         problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState, isBlinking);
 
