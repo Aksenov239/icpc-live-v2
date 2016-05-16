@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
@@ -75,6 +76,11 @@ public class ClockWidget extends Widget {
                 dx += w1;
             }
         }
+    }
+
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.clockData;
     }
 
     public static String getTimeString(long time) {

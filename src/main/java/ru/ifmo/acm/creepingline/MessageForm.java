@@ -150,4 +150,15 @@ public class MessageForm extends FormLayout {
         form.setVisible(true);
     }
 
+    public void editFromFlow(Message message) {
+        if (message == null) return;
+        messageObject = null;
+        this.message.clear();
+        timeBox.setVisible(true);
+        timeBox.setValue(timeBoxValues[0]);
+        this.message.setValue((message.getSource() == null || message.getSource().isEmpty() ? "" : message.getSource() + ": ") + message.getMessage());
+        advertBox.setValue(message.getIsAdvertisement());
+        form.setVisible(true);
+    }
+
 }

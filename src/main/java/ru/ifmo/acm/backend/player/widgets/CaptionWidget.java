@@ -2,6 +2,9 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import java.awt.*;
 
+import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.datapassing.CachedData;
+
 /**
  * @author: pashka
  */
@@ -51,12 +54,17 @@ public class CaptionWidget extends Widget {
             }
             int y = Y;
             g.setFont(FONT1);
-            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, visibilityState);
+            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             y += HEIGHT1 + SPACE;
             g.setFont(FONT2);
             if (description != null && description.length() != 0) {
-                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, visibilityState);
+                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             }
         }
+    }
+
+    @Override
+    public CachedData getCorrespondingData(Data data) {
+        return null;
     }
 }

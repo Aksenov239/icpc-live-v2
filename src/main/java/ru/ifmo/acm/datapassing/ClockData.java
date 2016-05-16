@@ -5,7 +5,7 @@ import ru.ifmo.acm.mainscreen.MainScreenData;
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
-public class ClockData implements CachedData {
+public class ClockData extends CachedData {
     public ClockData() {
         isVisible = true;
     }
@@ -28,10 +28,10 @@ public class ClockData implements CachedData {
         ClockData data = MainScreenData.getMainScreenData().clockData;
         this.timestamp = data.timestamp;
         this.isVisible = data.isVisible;
+        this.delay = data.delay;
 
         return this;
     }
 
-    private long timestamp;
     private boolean isVisible;
 }

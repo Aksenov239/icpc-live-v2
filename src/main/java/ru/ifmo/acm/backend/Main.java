@@ -50,14 +50,11 @@ public class Main {
 
         generator.addWidget(new NewTeamWidget(Integer.parseInt(properties.getProperty("sleep.time"))));
 
-        generator.addWidget(new ClockWidget(updateWait));
         generator.addWidget(new VerticalCreepingLineWidget(updateWait,
                 Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
                 properties.getProperty("creeping.line.logo", "ICPC 2016"),
                 Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
                 Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
-        generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
-        generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
         StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
         standingsWidget.alignBottom(994);
@@ -84,6 +81,12 @@ public class Main {
                 Integer.parseInt(properties.getProperty("sleep.time")),
                 Integer.parseInt(properties.getProperty("breakingnews.time"))
         ));
+
+        generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
+        generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
+
+        generator.addWidget(new ClockWidget(updateWait));
+
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 

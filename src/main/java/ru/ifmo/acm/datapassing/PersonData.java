@@ -4,22 +4,24 @@ import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Person;
 
-public class PersonData implements CachedData {
+public class PersonData extends CachedData {
     public PersonData() {
-        timestamp = new long[2];
         isVisible = new boolean[2];
         labelValue = new Person[2];
+        exclusiveTimestamp = new long[2];
     }
 
     public CachedData initialize() {
         PersonData data = MainScreenData.getMainScreenData().personData;
         for (int id = 0; id < 2; id++) {
             synchronized (labelsLock[id]) {
-                this.timestamp[id] = data.getTimestamp(id);
+                timestamp = Math.max(data.getTimestamp(id), timestamp);
+                this.exclusiveTimestamp[id] = data.getTimestamp(id);
                 this.isVisible[id] = data.isVisible(id);
                 this.labelValue[id] = data.getLabelValue(id) == null ? new Person("", "") : data.getLabelValue(id);
             }
         }
+        this.delay = data.delay;
 
         return this;
     }
@@ -32,15 +34,17 @@ public class PersonData implements CachedData {
         for (int id = 0; id < labelsLock.length; id++) {
             synchronized (labelsLock[id]) {
                 isVisible[id] = false;
+                exclusiveTimestamp[id] = System.currentTimeMillis();
+                timestamp = Math.max(timestamp, exclusiveTimestamp[id]);
             }
         }
         recache();
     }
 
     public String checkOverlays() {
-        if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            return "You need to close team view first.";
-        }
+//        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+//            return MainScreenData.getMainScreenData().teamData.getOverlayError();
+//        }
         return null;
     }
 
@@ -53,7 +57,8 @@ public class PersonData implements CachedData {
         }
         //System.err.println("Set visible " + visible + " " + labelsValues[id] + " " + label);
         synchronized (labelsLock[id]) {
-            timestamp[id] = System.currentTimeMillis();
+            exclusiveTimestamp[id] = System.currentTimeMillis();
+            timestamp = exclusiveTimestamp[id];
             isVisible[id] = visible;
             labelValue[id] = label;
         }
@@ -66,9 +71,10 @@ public class PersonData implements CachedData {
 //        System.err.println(labelsTimestamps[0] + " " + timeToShow + " " + System.currentTimeMillis());
         for (int id = 0; id < 2; id++) {
             synchronized (labelsLock[id]) {
-                if (timestamp[id] + MainScreenData.getProperties().personTimeToShow < System.currentTimeMillis()) {
+                if (exclusiveTimestamp[id] + MainScreenData.getProperties().personTimeToShow < System.currentTimeMillis()) {
                     isVisible[id] = false;
                     change = true;
+                    timestamp = System.currentTimeMillis();
                 }
             }
         }
@@ -114,7 +120,7 @@ public class PersonData implements CachedData {
 
     public long getTimestamp(int id) {
         synchronized (labelsLock[id]) {
-            return timestamp[id];
+            return exclusiveTimestamp[id];
         }
     }
 
@@ -132,7 +138,7 @@ public class PersonData implements CachedData {
 
     final private Object[] labelsLock = {new Object(), new Object()};
 
-    public long[] timestamp;
+    public long[] exclusiveTimestamp;
     public boolean[] isVisible;
     public Person[] labelValue;
 }

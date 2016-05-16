@@ -1,5 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
@@ -7,13 +8,10 @@ import java.awt.*;
 /**
  * @author: pashka
  */
-public class AdvertisementWidget extends Widget {
-
-    private final CaptionWidget widget;
+public class AdvertisementWidget extends CaptionWidget {
 
     public AdvertisementWidget(long updateWait, long duration) {
-        super(updateWait);
-        widget = new CaptionWidget(POSITION_CENTER);
+        super(POSITION_CENTER);
         this.duration = duration;
         setVisible(false);
     }
@@ -25,11 +23,11 @@ public class AdvertisementWidget extends Widget {
     protected void updateImpl(Data data) {
         lastVisibleChange = data.advertisementData.timestamp;
         if (lastVisibleChange + duration < System.currentTimeMillis()) {
-            widget.setVisible(false);
+            super.setVisible(false);
         } else {
-            widget.setVisible(data.advertisementData.isVisible);
-            if (widget.isVisible())
-                widget.setCaption(data.advertisementData.advertisement.getAdvertisement(), null);
+            super.setVisible(data.advertisementData.isVisible);
+            if (super.isVisible())
+                super.setCaption(data.advertisementData.advertisement.getAdvertisement(), null);
         }
 
         lastUpdate = System.currentTimeMillis();
@@ -38,6 +36,11 @@ public class AdvertisementWidget extends Widget {
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
-        widget.paintImpl(g, width, height);
+        super.paintImpl(g, width, height);
+    }
+
+    @Override
+    public CachedData getCorrespondingData(Data data) {
+        return data.advertisementData;
     }
 }

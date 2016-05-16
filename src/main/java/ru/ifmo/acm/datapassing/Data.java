@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
-public class Data implements CachedData {
+public class Data extends CachedData {
     private static final Logger log = LogManager.getLogger(Data.class);
 
     public CreepingLineData creepingLineData;

@@ -9,6 +9,7 @@ public class Message {
     private long endTime;
     private long time;
     private boolean isAdvertisement;
+    private String source;
 
 
     public Message(String message, long time, long duration, boolean isAdvertisement) {
@@ -17,6 +18,11 @@ public class Message {
         this.setEndTime(time + duration);
         this.setTime(duration / 1000);
         this.setIsAdvertisement(isAdvertisement);
+    }
+
+    public Message(String message, long time, long duration, boolean isAdvertisement, String source) {
+        this(message, time, duration, isAdvertisement);
+        this.source = source;
     }
 
     public Message(String message, long time, long duration)    {
@@ -65,5 +71,9 @@ public class Message {
 
     public Message clone() {
             return new Message(message, creationTime, endTime - creationTime, isAdvertisement );
+    }
+
+    public String getSource() {
+        return source;
     }
 }

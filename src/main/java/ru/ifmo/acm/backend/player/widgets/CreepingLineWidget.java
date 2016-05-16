@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.mainscreen.Advertisement;
 
@@ -14,7 +15,6 @@ import java.util.Queue;
  * @author: pashka
  */
 public abstract class CreepingLineWidget extends Widget {
-
 
     protected double SEPARATOR = 75;
     public int HEIGHT = 45;
@@ -34,16 +34,9 @@ public abstract class CreepingLineWidget extends Widget {
     }
 
     private void addMessage(String message, Queue<String> queue, Set<String> set) {
-        byte[] bytes = message.getBytes();
-        String text = null;
-        try {
-            text = new String(bytes, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error("error", e);
-        }
-        if (!set.contains(text)) {
-            set.add(text);
-            queue.add(text);
+        if (!set.contains(message)) {
+            set.add(message);
+            queue.add(message);
         }
     }
 
@@ -80,6 +73,10 @@ public abstract class CreepingLineWidget extends Widget {
     public void addMessage(String s) {
         inQueue.add(s);
         messagesQueue.add(s);
+    }
+
+    public CachedData getCorrespondingData(Data data) {
+        return data.creepingLineData;
     }
 
     class Message {

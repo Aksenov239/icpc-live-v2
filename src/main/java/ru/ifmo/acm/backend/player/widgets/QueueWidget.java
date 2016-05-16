@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -103,6 +104,11 @@ public class QueueWidget extends Widget {
         }
     }
 
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.queueData;
+    }
+
     private void drawRun(Graphics2D g, int x, int y, WFRunInfo run) {
         TeamInfo team = info.getParticipant(run.getTeamId());
         String name = team.getShortName();
@@ -138,18 +144,18 @@ public class QueueWidget extends Widget {
 
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
                 rankWidth, plateHeight, POSITION_CENTER,
-                color, Color.white, visibilityState);
+                color, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += rankWidth + spaceX;
 
         drawTextInRect(g, name, x, y,
                 nameWidth, plateHeight, POSITION_LEFT,
-                teamColor, Color.white, visibilityState);
+                teamColor, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, POSITION_CENTER, teamColor, Color.white, visibilityState);
+                plateHeight, POSITION_CENTER, teamColor, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += problemWidth + spaceX;
 
@@ -160,7 +166,7 @@ public class QueueWidget extends Widget {
         }
 
         drawTextInRect(g, result, x, y, statusWidth,
-                plateHeight, POSITION_CENTER, resultColor, Color.white, visibilityState);
+                plateHeight, POSITION_CENTER, resultColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         if (inProgress) {
             drawRect(g, x, y, progressWidth, plateHeight, YELLOW_COLOR.brighter(), visibilityState);
