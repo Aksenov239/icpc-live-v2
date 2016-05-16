@@ -10,6 +10,7 @@ import ru.ifmo.acm.datapassing.CreepingLineData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.AnalystMessage;
 import ru.ifmo.acm.events.ContestInfo;
+import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.mainscreen.Advertisement;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
@@ -69,7 +70,7 @@ public class MessageData {
         update.start();
         ContextListener.addThread(update);
         messageFlow = new SynchronizedBeanItemContainer<>(Message.class);
-        ContestInfo contestInfo  = Preparation.eventsLoader.getContestData();
+        ContestInfo contestInfo = EventsLoader.getInstance().getContestData();
         final BlockingQueue<AnalystMessage> q = contestInfo.getAnalystMessages();
         new Thread(() -> {
             while (true) {
