@@ -387,7 +387,7 @@ public abstract class Widget {
     }
 
     protected Color getTeamRankColor(TeamInfo team) {
-        Color color = ACCENT_COLOR;
+        Color color = ADDITIONAL_COLOR;
         if (team.getSolvedProblemsNumber() > 0 && team.getRank() <= 12) {
             color = team.getRank() <= 4 ? GOLD_COLOR :
                     team.getRank() <= 8 ? SILVER_COLOR : BRONZE_COLOR;

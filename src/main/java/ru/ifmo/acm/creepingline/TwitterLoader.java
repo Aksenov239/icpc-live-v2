@@ -1,5 +1,6 @@
 package ru.ifmo.acm.creepingline;
 
+import com.vaadin.ui.Notification;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.mainscreen.Utils;
@@ -7,6 +8,7 @@ import twitter4j.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -45,7 +47,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
                 Message message = new Message(tweet.getText(), System.currentTimeMillis(), duration, false, "@" + tweet.getUser().getScreenName());
                 MessageData.getMessageData().addMessageToFlow(message);
             };
-            updates.forEach(tweetConsumer);
+//            updates.forEach(tweetConsumer);
             twitterUserStream = new TwitterStreamFactory().getInstance();
 //            twitterKeywordStream = new TwitterStreamFactory().getInstance();
             StatusAdapter tweetsListener = new StatusAdapter() {
@@ -137,4 +139,35 @@ public class TwitterLoader extends Utils.StoppedRunnable {
     private final Twitter twitter;
     private long duration;
     private static TwitterLoader instance;
+
+    public void addSearch(String query) {
+        if (query.startsWith("@")) {
+            String username = query.substring(1);
+            try {
+                List<Status> statuses = twitter.getUserTimeline(username);
+//                Collections.reverse(statuses);
+                for (int i = 4; i >= 0; i--) {
+                    if (i >= statuses.size()) continue;
+                    Status e = statuses.get(i);
+                    MessageData.getMessageData().addMessageToFlow(new Message(e.getText(), System.currentTimeMillis(), duration, false, "@" + e.getUser().getScreenName()));
+                }
+            } catch (TwitterException e) {
+                Notification.show("TwitterException: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                List<Status> statuses = twitter.search(new Query(query)).getTweets();
+//                Collections.reverse(statuses);
+                for (int i = 4; i >= 0; i--) {
+                    if (i >= statuses.size()) continue;
+                    Status e = statuses.get(i);
+                    MessageData.getMessageData().addMessageToFlow(new Message(e.getText(), System.currentTimeMillis(), duration, false, "@" + e.getUser().getScreenName()));
+                }
+            } catch (TwitterException e) {
+                Notification.show("TwitterException: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 }
