@@ -158,7 +158,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         } else {
             try {
                 List<Status> statuses = twitter.search(new Query(query)).getTweets();
-//                Collections.reverse(statuses);
+                Collections.reverse(statuses);
                 for (int i = 4; i >= 0; i--) {
                     if (i >= statuses.size()) continue;
                     Status e = statuses.get(i);
