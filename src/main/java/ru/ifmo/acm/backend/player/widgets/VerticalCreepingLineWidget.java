@@ -1,14 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.datapassing.Data;
-
 import java.awt.*;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
 
 
 /**
@@ -19,8 +11,8 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     public long lastRotation;
     public long logoTime;
     public long lastLogoRotation;
-    public String[] logos;
-    public int currentLogo = 0;
+    // public String[] logos;
+    public String currentLogo = "";
     public long logoChangeTime;
 
     public VerticalCreepingLineWidget(long updateWait, long rotateTime, String logo, long logoTime, long logoChangeTime) {
@@ -28,7 +20,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         this.rotateTime = rotateTime;
         messageNow.position = HEIGHT;
         last = System.currentTimeMillis();
-        this.logos = logo.split(";");
+        // this.logos = logo.split(";");
         lastLogoRotation = System.currentTimeMillis();
         this.logoTime = logoTime;
         this.logoChangeTime = logoChangeTime;
@@ -69,7 +61,13 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                 }
                 break;
             case 2:
-                currentLogo = (currentLogo + 1) % logos.length;
+                // currentLogo = (currentLogo + 1) % logos.length;
+                if (logoQueue.size() > 0) {
+                    currentLogo = logoQueue.poll();
+                    inLogoQueue.remove(currentLogo);
+                } else {
+                    currentLogo = "";
+                }
                 logoState = 3;
                 break;
             case 3:
@@ -98,7 +96,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         g.setColor(ADDITIONAL_COLOR);
         iterateLogo();
 
-        drawTextInRect(g, logos[currentLogo], 0, 0, LOGO_WIDTH, HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, logoVisible);
+        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, logoVisible);
 
         g = (Graphics2D) g.create(LOGO_WIDTH, 0, width - LOGO_WIDTH, HEIGHT);
         g.setColor(MAIN_COLOR);

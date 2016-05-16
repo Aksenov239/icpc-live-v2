@@ -1,10 +1,12 @@
 package ru.ifmo.acm.mainscreen;
 
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
+import ru.ifmo.acm.creepingline.MessageData;
 
 import static ru.ifmo.acm.mainscreen.Utils.createGroupLayout;
 import static ru.ifmo.acm.mainscreen.Utils.setPanelDefaults;
@@ -24,7 +26,7 @@ public class MainScreenView extends CustomComponent implements View {
     Button showAdvertisement;
     Button hideAdvertisement;
     Table advertisements;
-    String[] addAdvertisementButtonStatus = {"Add new", "Edit"};
+    String[] addButtonStatuses = {"Add new", "Edit"};
 
     public Component getAdvertisementController() {
         advertisementStatus = new Label(getAdvertisementStatus());
@@ -38,7 +40,18 @@ public class MainScreenView extends CustomComponent implements View {
 
         CssLayout groupAdd = createGroupLayout(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
 
-        createAdvertisementTable();
+        advertisements = createAdvertisementTable(mainScreenData.advertisementData.getContainer());
+        advertisements.addValueChangeListener(event -> {
+            if (advertisements.getValue() == null) {
+                setDefaultValues();
+                return;
+            }
+            addAdvertisement.setCaption(addButtonStatuses[1]);
+            removeAdvertisement.setVisible(true);
+            discardAdvertisement.setVisible(true);
+            advertisementText.setValue(((Advertisement) advertisements.getValue()).getAdvertisement());
+        });
+
 
         createShowAdvertisementButton();
         createHideAdvertisementButton();
@@ -55,6 +68,82 @@ public class MainScreenView extends CustomComponent implements View {
         return panel;
     }
 
+    /*Small Creeping line */
+    Label creepingLineLogoStatus;
+    TextField creepingLineLogoText;
+
+    // final static BeanItemContainer<Advertisement> logosContainer = new SynchronizedBeanItemContainer<>(Advertisement.class);
+    final static BeanItemContainer<Advertisement> logosContainer = MessageData.getMessageData().logosList.getContainer();
+    Table creepingLineLogos;
+
+    Button addCreepingLineLogoButton;
+    Button removeCreepingLineLogoButton;
+
+    public Component getCreepingLineLogoController() {
+        creepingLineLogoStatus = new Label("Creeping line logos");
+        creepingLineLogoStatus.addStyleName("large");
+        creepingLineLogoText = new TextField("Logo: ");
+
+        creepingLineLogos = createAdvertisementTable(logosContainer);
+        creepingLineLogos.addValueChangeListener(event -> {
+            if (creepingLineLogos.getValue() == null) {
+                setCreepingLineLogoDefaultValues();
+                return;
+            }
+            addCreepingLineLogoButton.setCaption(addButtonStatuses[1]);
+            removeCreepingLineLogoButton.setVisible(true);
+            creepingLineLogoText.setValue(((Advertisement) creepingLineLogos.getValue()).getAdvertisement());
+        });
+
+        createAddCreepingLineLogoButton();
+        createRemoveCreepingLineLogoButton();
+
+        CssLayout groupAdd = createGroupLayout(creepingLineLogoText, addCreepingLineLogoButton, removeCreepingLineLogoButton);
+
+        VerticalLayout panel = new VerticalLayout(
+                creepingLineLogoStatus,
+                groupAdd,
+                creepingLineLogos
+        );
+        setPanelDefaults(panel);
+        return panel;
+    }
+
+    private void createAddCreepingLineLogoButton() {
+        addCreepingLineLogoButton = new Button(addButtonStatuses[0]);
+        addCreepingLineLogoButton.addClickListener(event -> {
+            if (addCreepingLineLogoButton.getCaption().equals(addButtonStatuses[0])) {
+                MessageData.getMessageData().addLogo(new Advertisement(creepingLineLogoText.getValue()));
+            } else {
+                MessageData.getMessageData().setLogoValue(creepingLineLogos.getValue(), creepingLineLogoText.getValue());
+                setCreepingLineLogoDefaultValues();
+            }
+            creepingLineLogoText.clear();
+            creepingLineLogos.refreshRowCache();
+        });
+    }
+
+    private void createRemoveCreepingLineLogoButton() {
+        removeCreepingLineLogoButton = new Button("Remove selected");
+        removeCreepingLineLogoButton.addClickListener(event -> {
+            if (creepingLineLogos.getValue() != null) {
+                MessageData.getMessageData().removeLogo((Advertisement) creepingLineLogos.getValue());
+                creepingLineLogos.refreshRowCache();
+            } else {
+                Notification.show("You should choose logo", Type.ERROR_MESSAGE);
+            }
+            creepingLineLogoText.setValue("");
+            setCreepingLineLogoDefaultValues();
+        });
+        removeCreepingLineLogoButton.setVisible(false);
+    }
+
+    private void setCreepingLineLogoDefaultValues() {
+        creepingLineLogos.setValue(null);
+        addCreepingLineLogoButton.setCaption(addButtonStatuses[0]);
+        removeCreepingLineLogoButton.setVisible(false);
+    }
+
     public String getAdvertisementStatus() {
         return mainScreenData.advertisementData.toString();
 //        AdvertisementData adv = mainScreenData.advertisementStatus.advertisementStatus();
@@ -64,34 +153,26 @@ public class MainScreenView extends CustomComponent implements View {
 
     private void setDefaultValues() {
         advertisements.setValue(null);
-        addAdvertisement.setCaption(addAdvertisementButtonStatus[0]);
+        addAdvertisement.setCaption(addButtonStatuses[0]);
         removeAdvertisement.setVisible(false);
         discardAdvertisement.setVisible(false);
     }
 
-    private void createAdvertisementTable() {
-        advertisements = new Table();
-        advertisements.setContainerDataSource(mainScreenData.advertisementData.getContainer());
-        advertisements.setSelectable(true);
-        advertisements.setEditable(false);
-        advertisements.setSizeFull();
-        advertisements.setPageLength(0);
-        advertisements.addValueChangeListener(event -> {
-            if (advertisements.getValue() == null) {
-                setDefaultValues();
-                return;
-            }
-            addAdvertisement.setCaption(addAdvertisementButtonStatus[1]);
-            removeAdvertisement.setVisible(true);
-            discardAdvertisement.setVisible(true);
-            advertisementText.setValue(((Advertisement) advertisements.getValue()).getAdvertisement());
-        });
+    private Table createAdvertisementTable(BeanItemContainer<Advertisement> container) {
+        Table table = new Table();
+        table.setContainerDataSource(container);
+        table.setSelectable(true);
+        table.setEditable(false);
+        table.setSizeFull();
+        table.setPageLength(0);
+
+        return table;
     }
 
     private void createAddAdvertisementButton() {
-        addAdvertisement = new Button(addAdvertisementButtonStatus[0]);
+        addAdvertisement = new Button(addButtonStatuses[0]);
         addAdvertisement.addClickListener(event -> {
-            if (addAdvertisement.getCaption().equals(addAdvertisementButtonStatus[0])) {
+            if (addAdvertisement.getCaption().equals(addButtonStatuses[0])) {
                 mainScreenData.advertisementData.addAdvertisement(new Advertisement(advertisementText.getValue()));
             } else {
                 mainScreenData.advertisementData.setValue(advertisements.getValue(), advertisementText.getValue());
@@ -354,7 +435,10 @@ public class MainScreenView extends CustomComponent implements View {
 
         Component advertisementController = getAdvertisementController();
         Component personController = getPersonsController();
-        HorizontalLayout mainPanel = new HorizontalLayout(advertisementController, personController);
+        Component creepingLineController = getCreepingLineLogoController();
+        HorizontalLayout horizontalPanel = new HorizontalLayout(advertisementController, personController);
+        horizontalPanel.setSizeFull();
+        VerticalLayout mainPanel = new VerticalLayout(horizontalPanel, creepingLineController);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }

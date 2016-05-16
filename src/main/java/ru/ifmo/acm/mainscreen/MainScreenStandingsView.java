@@ -267,6 +267,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
                 Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
                 return;
             }
+            
             statisticsStatus.setValue(statisticsStatuses[status]);
         });
 
