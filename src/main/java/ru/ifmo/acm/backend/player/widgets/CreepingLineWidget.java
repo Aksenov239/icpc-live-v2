@@ -34,16 +34,9 @@ public abstract class CreepingLineWidget extends Widget {
     }
 
     private void addMessage(String message, Queue<String> queue, Set<String> set) {
-        byte[] bytes = message.getBytes();
-        String text = null;
-        try {
-            text = new String(bytes, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error("error", e);
-        }
-        if (!set.contains(text)) {
-            set.add(text);
-            queue.add(text);
+        if (!set.contains(message)) {
+            set.add(message);
+            queue.add(message);
         }
     }
 
