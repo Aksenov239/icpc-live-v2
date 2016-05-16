@@ -88,7 +88,7 @@ public class DataLoader {
                 tries.add(0);
                 log.info("Accepted socket");
             } catch (Exception e) {
-                log.error("Failed socket", e);
+//                log.error("Failed socket", e);
             }
             List<PrintWriter> newOpenPW = new ArrayList<>();
             List<BufferedReader> newOpenBR = new ArrayList<>();

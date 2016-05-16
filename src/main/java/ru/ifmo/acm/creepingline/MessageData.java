@@ -1,5 +1,6 @@
 package ru.ifmo.acm.creepingline;
 
+import com.vaadin.data.util.BeanItemContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
@@ -10,6 +11,7 @@ import java.util.*;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.CreepingLineData;
 import ru.ifmo.acm.mainscreen.Utils;
+import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -69,11 +71,13 @@ public class MessageData {
         });
         update.start();
         ContextListener.addThread(update);
+        messageFlow = new SynchronizedBeanItemContainer<>(Message.class);
     }
 
     //final List<Message> messageList;
     // final BeanItemContainer<Message> messageList;
     final BackUp<Message> messageList;
+    final BeanItemContainer<Message> messageFlow;
 
 //    public void reload() {
 //        synchronized (messageList) {
@@ -135,6 +139,20 @@ public class MessageData {
     public void addMessage(Message message) {
         // messageList.addBean(message);
         messageList.addItem(message);
+        recache();
+    }
+
+    public void addMessageToFlow(Message message) {
+        // messageList.addBean(message);
+        synchronized (messageFlow) {
+            messageFlow.addItemAt(0, message);
+            int toRemove = 5;
+            if (messageFlow.size() > 2 * toRemove) {
+                while (messageFlow.size() > toRemove) {
+                    messageFlow.removeItem(messageFlow.getIdByIndex(toRemove));
+                }
+            }
+        }
         recache();
     }
 
