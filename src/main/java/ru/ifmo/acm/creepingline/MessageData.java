@@ -11,6 +11,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.AnalystMessage;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
+import ru.ifmo.acm.events.WF.WFAnalystMessage;
 import ru.ifmo.acm.mainscreen.Advertisement;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
@@ -76,9 +77,15 @@ public class MessageData {
             while (true) {
                 try {
                     AnalystMessage e = q.take();
-                    addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "ICPC Analytics"));
+                    if (e.getCategory() == WFAnalystMessage.WFAnalystMessageCategory.HUMAN || e.getPriority() <= 1) {
+                        addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "ICPC Analytics"));
+                    }
                 } catch (InterruptedException e1) {
-                    break;
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
                 }
             }
         }).start();
@@ -87,7 +94,7 @@ public class MessageData {
     final BackUp<Message> messageList;
     final BeanItemContainer<Message> messageFlow;
 
-//    public void reload() {
+    //    public void reload() {
 //        synchronized (messageList) {
 //            messageList.removeAllItems();
 //            File file = new File(backup);
