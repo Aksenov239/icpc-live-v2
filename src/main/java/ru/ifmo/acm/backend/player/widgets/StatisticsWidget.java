@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.ProblemInfo;
@@ -83,6 +84,11 @@ public class StatisticsWidget extends Widget {
     }
 
     @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.statisticsData;
+    }
+
+    @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
 
@@ -95,7 +101,7 @@ public class StatisticsWidget extends Widget {
         g.setFont(font);
 
         drawTextInRect(g, "Statistics", 0, 0, -1, plateHeight, POSITION_LEFT,
-                ACCENT_COLOR, Color.white, visibilityState);
+                ACCENT_COLOR, Color.white, visibilityState, WidgetAnimation.VERTICAL_ANIMATED);
 
         int fullWidth = this.width - problemWidth - spaceX;
 

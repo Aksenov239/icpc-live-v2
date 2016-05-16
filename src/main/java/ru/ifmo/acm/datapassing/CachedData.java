@@ -3,12 +3,23 @@ package ru.ifmo.acm.datapassing;
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
-public interface CachedData {
-    CachedData initialize();
-    default String checkOverlays() {
+public abstract class CachedData {
+    abstract CachedData initialize();
+
+    public String checkOverlays() {
         return null;
     }
-    default void switchOverlaysOff() {
+
+    public void switchOverlaysOff() {
     }
-    default void hide() {}
+
+    public void hide() {
+    }
+
+    public String getOverlayError() {
+        return "";
+    }
+
+    public long delay = 0;
+    public long timestamp = 0;
 }

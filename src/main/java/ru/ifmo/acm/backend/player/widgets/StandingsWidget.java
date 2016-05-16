@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
@@ -158,6 +159,11 @@ public class StandingsWidget extends Widget {
             timer = -TOP_PAGE_STANDING_TIME;
             start = 0;
         }
+    }
+
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.standingsData;
     }
 
     private void drawStandings(Graphics2D g, int x, int y, ContestInfo contestData, int start) {

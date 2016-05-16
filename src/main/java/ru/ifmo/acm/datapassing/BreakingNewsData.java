@@ -6,7 +6,7 @@ import ru.ifmo.acm.mainscreen.MainScreenData;
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
-public class BreakingNewsData implements CachedData {
+public class BreakingNewsData extends CachedData {
     public BreakingNewsData initialize() {
         BreakingNewsData data = MainScreenData.getMainScreenData().breakingNewsData;
         this.timestamp = data.timestamp;
@@ -17,6 +17,7 @@ public class BreakingNewsData implements CachedData {
         this.runId = data.runId;
         this.infoType = data.infoType;
         this.newsMessage = data.newsMessage;
+        this.delay = data.delay;
         return this;
     }
 
@@ -84,7 +85,6 @@ public class BreakingNewsData implements CachedData {
 
     }
 
-    public long timestamp;
     public boolean isVisible;
     public int teamId;
     public String teamName;

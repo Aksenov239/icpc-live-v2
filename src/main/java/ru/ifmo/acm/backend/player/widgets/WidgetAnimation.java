@@ -2,6 +2,7 @@ package ru.ifmo.acm.backend.player.widgets;
 
 public enum WidgetAnimation {
     NOT_ANIMATED(false, false),
+    UNFOLD_ANIMATED(false, false),
     HORIZONTAL_ANIMATED(true, false),
     VERTICAL_ANIMATED(false, true),
     BOTH_ANIMATED(true, true);

@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -52,6 +53,11 @@ public class TeamInfoWidget extends TeamWidget {
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
         super.paintImpl(g, width, height);
+    }
+
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.teamData;
     }
 
     protected int getTeamId() {

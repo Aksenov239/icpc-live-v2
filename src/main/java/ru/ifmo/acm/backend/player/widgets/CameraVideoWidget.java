@@ -1,5 +1,6 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
@@ -24,5 +25,10 @@ public class CameraVideoWidget extends VideoWidget {
         update();
 
         // g.drawImage(image, x, y, null);
+    }
+
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.cameraData;
     }
 }

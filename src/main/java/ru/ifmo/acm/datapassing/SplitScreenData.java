@@ -3,7 +3,7 @@ package ru.ifmo.acm.datapassing;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.events.TeamInfo;
 
-public class SplitScreenData implements CachedData {
+public class SplitScreenData extends CachedData {
     public SplitScreenData() {
         for (int i = 0; i < 4; i++) {
             controllerDatas[i] = new TeamData();
