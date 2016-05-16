@@ -176,7 +176,50 @@ public class TeamWidget extends VideoWidget {
                 drawTextInRect(g, "" + (char) ('A' + i), this.x + x, this.y + dy,
                         PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
             }
+
+
+
             if (!isFull) {
+                for (int j = 0; j < runs.length; j++) {
+                    RunInfo run = runs[j];
+                    if ("AC".equals(run.getResult())) {
+                        if (!isFull) {
+                            drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
+                                    RUN_WIDTH, HEIGHT, POSITION_CENTER, Color.GREEN, Color.WHITE,
+                                    i == currentProblemId ? getTimeOpacity() : 1,
+                                    WidgetAnimation.UNFOLD_ANIMATED
+                            );
+                        }
+
+                        break;
+                    } else {
+                        if (isFull) {
+                            continue;
+                        }
+                        Color color = "".equals(run.getResult()) ? YELLOW : RED;
+                        if (j == runs.length - 1) {
+                            drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
+                                    RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
+                                    i == currentProblemId ? getTimeOpacity() : 1,
+                                    WidgetAnimation.UNFOLD_ANIMATED
+                            );
+
+                            if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
+                               if (!isFull) {
+                                   drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
+                               } else {
+                                   drawStar(g, X + (PR_WIDTH + GAP_X) * i, this.y + dy, (int) STAR_SIZE);
+                               }
+                            }
+                            x += RUN_WIDTH + GAP_X;
+                        } else {
+                            drawTextInRect(g, "", this.x + x, this.y + y,
+                                    RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                            x += RUN_SMALL_WIDTH + GAP_X;
+                        }
+                    }
+                }
+
                 int x = X + PR_WIDTH + GAP_X;
                 for (int j = 0; j < runs.length; j++) {
                     RunInfo run = runs[j];
@@ -193,9 +236,7 @@ public class TeamWidget extends VideoWidget {
                         }
                         x += RUN_WIDTH + GAP_X;
                     } else if (run.getTime() != runs[j + 1].getTime()) {
-                        drawTextInRect(g, "", this.x + x, this.y + y,
-                                RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
-                        x += RUN_SMALL_WIDTH + GAP_X;
+
                     }
 
                 }
