@@ -146,7 +146,8 @@ public class TwitterLoader extends Utils.StoppedRunnable {
             try {
                 List<Status> statuses = twitter.getUserTimeline(username);
                 Collections.reverse(statuses);
-                for (int i = 0; i < 5 && i < statuses.size(); i++) {
+                for (int i = 4; i >= 0; i--) {
+                    if (i >= statuses.size()) continue;
                     Status e = statuses.get(i);
                     MessageData.getMessageData().addMessageToFlow(new Message(e.getText(), System.currentTimeMillis(), duration, false, "@" + e.getUser().getScreenName()));
                 }
@@ -157,8 +158,9 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         } else {
             try {
                 List<Status> statuses = twitter.search(new Query(query)).getTweets();
-                Collections.reverse(statuses);
-                for (int i = 0; i < 5 && i < statuses.size(); i++) {
+//                Collections.reverse(statuses);
+                for (int i = 4; i >= 0; i--) {
+                    if (i >= statuses.size()) continue;
                     Status e = statuses.get(i);
                     MessageData.getMessageData().addMessageToFlow(new Message(e.getText(), System.currentTimeMillis(), duration, false, "@" + e.getUser().getScreenName()));
                 }

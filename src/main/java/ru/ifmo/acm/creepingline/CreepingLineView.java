@@ -118,12 +118,12 @@ public class CreepingLineView extends CustomComponent implements View {
 
         public TwitterStreamQueryForm(String query) {
             field = new TextField("Query", query);
-            field.addShortcutListener(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
-                @Override
-                public void handleAction(Object sender, Object target) {
-                    changeQuery();
-                }
-            });
+//            field.add(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
+//                @Override
+//                public void handleAction(Object sender, Object target) {
+//                    changeQuery();
+//                }
+//            });
             Button apply = new Button("Apply", event -> {
                 changeQuery();
             });
@@ -147,12 +147,12 @@ public class CreepingLineView extends CustomComponent implements View {
 
         public TwitterSearchForm() {
             field = new TextField("Search", "");
-            field.addShortcutListener(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
-                @Override
-                public void handleAction(Object sender, Object target) {
-                    searchQuery();
-                }
-            });
+//            field.addShortcutListener(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
+//                @Override
+//                public void handleAction(Object sender, Object target) {
+//                    searchQuery();
+//                }
+//            });
             Button apply = new Button("Apply", event -> {
                 searchQuery();
             });
