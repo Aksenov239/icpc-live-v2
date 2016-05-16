@@ -256,6 +256,57 @@ public class WFEventsLoader extends EventsLoader {
         return run;
     }
 
+    public WFAnalystMessage readMessage(XMLEventReader xmlEventReader) throws XMLStreamException {
+        WFAnalystMessage message = new WFAnalystMessage();
+        while (true) {
+            XMLEvent xmlEvent = xmlEventReader.nextEvent();
+            if (xmlEvent.isStartElement()) {
+                StartElement startElement = xmlEvent.asStartElement();
+                String name = startElement.getName().getLocalPart();
+                xmlEvent = xmlEventReader.nextEvent();
+                switch (name) {
+                    case "id":
+                        message.setId(Integer.parseInt(xmlEvent.asCharacters().getData()));
+                        break;
+                    case "problem":
+                        message.setProblem(Integer.parseInt(xmlEvent.asCharacters().getData()) - 1);
+                        break;
+                    case "team":
+                        message.setTeam(Integer.parseInt(xmlEvent.asCharacters().getData()) - 1);
+                        break;
+                    case "time":
+                        int time = Integer.parseInt(xmlEvent.asCharacters().getData());
+                        message.setTime(time);
+                        break;
+                    case "priority":
+                        message.setPriority(Integer.parseInt(xmlEvent.asCharacters().getData()));
+                        break;
+                    case "run_id":
+                        break;
+                    case "category":
+                        message.setCategory(WFAnalystMessage.WFAnalystMessageCategory.getCategory(xmlEvent.asCharacters().getData()));
+                        break;
+                    case "message":
+                        message.setMessage(xmlEvent.asCharacters().getData());
+                        break;
+                    case "submission":
+                        //yes, really
+                        message.setRunId(Integer.parseInt(xmlEvent.asCharacters().getData()));
+                        break;
+                    default:
+                        log.warn("Unknown tag: " + name);
+                }
+            }
+            if (xmlEvent.isEndElement()) {
+                EndElement endElement = xmlEvent.asEndElement();
+                if (endElement.getName().getLocalPart().equals("analystmsg")) {
+                    break;
+                }
+            }
+        }
+        return message;
+    }
+
     public WFTeamInfo readTeam(XMLEventReader xmlEventReader) throws XMLStreamException {
         WFTeamInfo team = new WFTeamInfo(contestInfo.getProblemsNumber());
         while (true) {
@@ -429,6 +480,25 @@ public class WFEventsLoader extends EventsLoader {
                                 int ss = Integer.parseInt(s.substring(6, 8));
                                 FREEZE_TIME = CONTEST_LENGTH - ((hh * 60 + mm) * 60 + ss) * 1000;
                                 break;
+                            }
+                            case "analystmsg": {
+                                WFAnalystMessage message = readMessage(xmlEventReader);
+                                if (emulation) {
+                                    try {
+                                        long dt = (long) ((message.getTime() - contestInfo.getCurrentTime()) / SPEED);
+                                        if (dt > 0)
+                                            Thread.sleep(dt);
+                                        total++;
+                                    } catch (InterruptedException e) {
+                                        log.error("error", e);
+                                    }
+                                }
+                                log.info("New message: " + message);
+                                contestInfo.addMessage(message);
+                                break;
+                            }
+                            default: {
+                                log.warn("Unknow tag: " + startElement.getName().getLocalPart());
                             }
                         }
                     }

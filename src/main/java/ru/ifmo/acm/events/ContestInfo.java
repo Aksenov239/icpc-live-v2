@@ -3,6 +3,7 @@ package ru.ifmo.acm.events;
 import ru.ifmo.acm.events.WF.WFEventsLoader;
 
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 public abstract class ContestInfo {
     public int teamNumber;
@@ -61,4 +62,6 @@ public abstract class ContestInfo {
     public abstract RunInfo[] getRuns();
 
     public abstract RunInfo getRun(int id);
+
+    public abstract BlockingQueue<AnalystMessage> getAnalystMessages();
 }

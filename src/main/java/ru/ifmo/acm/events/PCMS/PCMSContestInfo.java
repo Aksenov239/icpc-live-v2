@@ -1,5 +1,6 @@
 package ru.ifmo.acm.events.PCMS;
 
+import ru.ifmo.acm.events.AnalystMessage;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -7,8 +8,12 @@ import ru.ifmo.acm.events.TeamInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class PCMSContestInfo extends ContestInfo {
+    private BlockingQueue<AnalystMessage> messageQueue = new ArrayBlockingQueue<AnalystMessage>(1);
+
     @Override
     public TeamInfo[] getStandings() {
         return standings.stream().toArray(TeamInfo[]::new);
@@ -109,5 +114,10 @@ public class PCMSContestInfo extends ContestInfo {
 
     public RunInfo getRun(int id) {
         return null;
+    }
+
+    @Override
+    public BlockingQueue<AnalystMessage> getAnalystMessages() {
+        return messageQueue;
     }
 }
