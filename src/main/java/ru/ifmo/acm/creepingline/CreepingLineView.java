@@ -6,6 +6,8 @@ import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
+import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.mainscreen.Utils;
 
 /**
@@ -20,6 +22,7 @@ public class CreepingLineView extends CustomComponent implements View {
     final BeanItemContainer<Message> messageFlowContainer;
     Table messageList;
     Table messageFlow;
+    ContestInfo contestInfo;
 //    Button newMessage;
 
     public CreepingLineView() {

@@ -4,9 +4,12 @@ import com.vaadin.data.util.BeanItemContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
+import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.datapassing.CreepingLineData;
 import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.events.AnalystMessage;
+import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.mainscreen.Advertisement;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
@@ -15,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -64,6 +69,18 @@ public class MessageData {
         update.start();
         ContextListener.addThread(update);
         messageFlow = new SynchronizedBeanItemContainer<>(Message.class);
+        ContestInfo contestInfo  = Preparation.eventsLoader.getContestData();
+        final BlockingQueue<AnalystMessage> q = contestInfo.getAnalystMessages();
+        new Thread(() -> {
+            while (true) {
+                try {
+                    AnalystMessage e = q.take();
+                    addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "ICPC Analytics"));
+                } catch (InterruptedException e1) {
+                    break;
+                }
+            }
+        }).start();
     }
 
     final BackUp<Message> messageList;
