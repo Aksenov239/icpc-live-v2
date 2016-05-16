@@ -35,7 +35,7 @@ public class TeamInfoWidget extends TeamWidget {
         } else {
             setVisible(true);
             //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
-            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready.get()) {
+            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready) {
                 //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 if (team == null) {

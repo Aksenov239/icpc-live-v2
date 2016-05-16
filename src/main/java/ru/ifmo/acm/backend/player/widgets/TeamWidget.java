@@ -6,8 +6,6 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * @author: pashka
@@ -104,22 +102,22 @@ public class TeamWidget extends VideoWidget {
         if (!isVisible())
             return;
 
-        if (team != null && URL.get() != null) {
-            g.drawImage(image.get(), xVideo, yVideo, null);
+        if (team != null && currentUrl != null) {
+            g.drawImage(image, xVideo, yVideo, null);
         }
-        if (inChange.get()) {
+        if (inChange) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
-            inChange.set(false);
+            inChange = false;
             smallVideo.switchManually();
         }
 
-        if (URL.get() == null || URL.get().contains("info")) {
+        if (currentUrl == null || currentUrl.contains("info")) {
             return;
         }
 
-        if (smallVideo != null && smallVideo.URL.get() != null) {
+        if (smallVideo != null && smallVideo.currentUrl != null) {
             smallVideo.paintImpl(g, width, height);
         }
 

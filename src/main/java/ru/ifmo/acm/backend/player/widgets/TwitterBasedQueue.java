@@ -76,20 +76,23 @@ public class TwitterBasedQueue extends Thread {
     Map<Request, Integer> votesForTeam = new HashMap<>();
     Map<Request, Long> lastRequest = new HashMap<>();
 
+    TwitterStream twitterStream;
+
     public void run() {
         while (true) {
             try {
+                twitterStream = new TwitterStreamFactory().getInstance();
                 step();
+                break;
             } catch (Throwable e) {
                 twitter = null;
                 log.error("error", e);
-                continue;
             }
-            try {
-                Thread.sleep(sleepTime);
-            } catch (Exception e) {
-                log.error("error", e);
-            }
+//            try {
+//                Thread.sleep(sleepTime);
+//            } catch (Exception e) {
+//                log.error("error", e);
+//            }
         }
     }
 
@@ -134,8 +137,6 @@ public class TwitterBasedQueue extends Thread {
 //    }
 
     private void step() {
-        TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-
         StatusListener statusListener = new StatusListener() {
             @Override
             public void onStatus(Status status) {

@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import ru.ifmo.acm.backend.player.widgets.*;
@@ -16,7 +17,6 @@ import java.util.Properties;
  * @author: pashka
  */
 public class SplitScreen {
-
     public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
         new SplitScreen().run();
     }
