@@ -94,7 +94,7 @@ public class BigStandingsWidget extends Widget {
         } catch (IOException e) {
             log.error("error", e);
         }
-        blindingTime = Long.parseLong(properties.getProperty("standings.blinding.time"));
+        blindingTime = Long.parseLong(properties.getProperty("standings.blinking.time"));
     }
 
     public void setState(StandingsData.StandingsType type) {
