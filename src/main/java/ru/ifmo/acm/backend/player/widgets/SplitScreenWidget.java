@@ -10,6 +10,7 @@ import ru.ifmo.acm.events.WF.WFContestInfo;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
+import ru.ifmo.acm.datapassing.CachedData;
 
 /**
  * @author: pashka
@@ -198,6 +199,11 @@ public class SplitScreenWidget extends Widget {
         for (int i = 0; i < teamInfoWidgets.length; i++) {
             teamInfoWidgets[i].paintImpl(g, width, height);
         }
+    }
+
+    @Override
+    public CachedData getCorrespondingData(Data data){
+        return data.splitScreenData;
     }
 
 }

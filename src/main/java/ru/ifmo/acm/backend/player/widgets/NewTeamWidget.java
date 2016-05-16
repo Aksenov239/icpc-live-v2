@@ -7,6 +7,7 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
+import ru.ifmo.acm.datapassing.CachedData;
 
 /**
  * @author: pashka
@@ -257,5 +258,9 @@ public class NewTeamWidget extends VideoWidget {
         smallVideo.changeManually(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
+    }
+
+    public CachedData getCorrespondingData(Data data){
+        return data.teamData;
     }
 }

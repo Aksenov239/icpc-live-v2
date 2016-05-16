@@ -2,20 +2,25 @@ package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
-public class StatisticsData implements CachedData {
+public class StatisticsData extends CachedData {
 
     public void recache() {
         Data.cache.refresh(StatisticsData.class);
     }
 
-    public synchronized void hide() {
-        setVisible(false);
-    }
-
-    public synchronized void setVisible(boolean visible) {
+    public synchronized String setVisible(boolean visible) {
+        delay = 0;
+        if (visible) {
+            String outcome = checkOverlays();
+            if (outcome != null) {
+                return outcome;
+            }
+            switchOverlaysOff();
+        }
         timestamp = System.currentTimeMillis();
         isVisible = visible;
         recache();
+        return null;
     }
 
     public boolean isVisible() {
@@ -26,23 +31,31 @@ public class StatisticsData implements CachedData {
         StatisticsData data = MainScreenData.getMainScreenData().statisticsData;
         this.timestamp = data.timestamp;
         this.isVisible = data.isVisible;
+        this.delay = data.delay;
 
         return this;
     }
 
     public String checkOverlays() {
         if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            return "You need to close team view first.";
+            return MainScreenData.getMainScreenData().teamData.getOverlayError();
         }
         return null;
     }
 
-    @Override
-    public void hide() {
-        isVisible = false;
-        recache();
+    public void switchOverlaysOff() {
+        if (MainScreenData.getMainScreenData().standingsData.isVisible &&
+                MainScreenData.getMainScreenData().standingsData.isBig) {
+            MainScreenData.getMainScreenData().standingsData.hide();
+            delay = MainScreenData.getProperties().overlayedDelay;
+        }
     }
 
-    private long timestamp;
+    @Override
+    public void hide() {
+        delay = 0;
+        setVisible(false);
+    }
+
     private boolean isVisible;
 }

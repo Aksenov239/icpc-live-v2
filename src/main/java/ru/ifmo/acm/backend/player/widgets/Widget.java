@@ -3,6 +3,7 @@ package ru.ifmo.acm.backend.player.widgets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
 
@@ -257,7 +258,9 @@ public abstract class Widget {
         }
         if (widgetAnimation.isVerticalAnimated) {
             height = (int) round(height * visibilityState);
-        } else {
+        }
+
+        if (widgetAnimation == WidgetAnimation.NOT_ANIMATED){
             opacity = 1;
         }
 
@@ -315,25 +318,46 @@ public abstract class Widget {
         int totalWidth = (int) round(height * TOTAL_WIDTH);
         int penaltyWidth = (int) round(height * PENALTY_WIDTH);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + spaceX;
-        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state);
+        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += nameWidth + spaceX;
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
     }
 
+    long lastChangeTimestamp;
+    long lastTimestamp;
+    Data currentData;
+
     protected void update() {
+
         if (lastUpdate + updateWait < System.currentTimeMillis()) {
             Data data = Preparation.dataLoader.getDataBackend();
-            if (data == null) {
+
+            if (data == null)
+                return;
+
+            CachedData correspondingData = getCorrespondingData(data);
+
+            if (correspondingData == null) {
                 return;
             }
-            updateImpl(data);
+
+            if (correspondingData.timestamp != lastChangeTimestamp) {
+                lastChangeTimestamp = correspondingData.timestamp;
+                lastTimestamp = System.currentTimeMillis();
+            }
+
+            if (lastChangeTimestamp + correspondingData.delay < System.currentTimeMillis()) {
+                currentData = data;
+            }
+            updateImpl(currentData);
             lastUpdate = System.currentTimeMillis();
         }
     }
+
+    protected abstract CachedData getCorrespondingData(Data data);
 
     protected void updateImpl(Data data) {
     }

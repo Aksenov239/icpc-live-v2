@@ -2,7 +2,7 @@ package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
-public class CameraData implements CachedData {
+public class CameraData extends CachedData {
     public CameraData() {
         timestamp = System.currentTimeMillis();
         cameraNumber = 0;
@@ -38,7 +38,6 @@ public class CameraData implements CachedData {
         return timestamp + "\n" + MainScreenData.getProperties().cameraNames[cameraNumber];
     }
 
-    public long timestamp;
     public String cameraURL;
     private int cameraNumber;
 }

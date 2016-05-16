@@ -1,9 +1,13 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.datapassing.Data;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import ru.ifmo.acm.datapassing.CachedData;
 
 /**
  * @author: pashka
@@ -21,5 +25,9 @@ public class GreenScreenWidget extends Widget {
             g.setColor(color);
             g.fillRect(0, 0, width, height);
         }
+    }
+
+    public CachedData getCorrespondingData(Data data) {
+        return null;
     }
 }

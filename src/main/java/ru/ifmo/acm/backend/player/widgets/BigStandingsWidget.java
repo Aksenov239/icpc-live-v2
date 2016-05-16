@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
@@ -288,6 +289,11 @@ public class BigStandingsWidget extends Widget {
         }
     }
 
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.standingsData;
+    }
+
     private void drawHead(Graphics2D g, int x, int y, RunInfo[] firstSolved) {
         g.setFont(font);
         int problemWidth = problemWidth(firstSolved.length);
@@ -307,7 +313,7 @@ public class BigStandingsWidget extends Widget {
 
         drawTextInRect(g, headingText, x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
-                POSITION_CENTER, headingColor, Color.white, visibilityState);
+                POSITION_CENTER, headingColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
@@ -315,7 +321,7 @@ public class BigStandingsWidget extends Widget {
                     ((firstSolved[i] != null) ? YELLOW_GREEN_COLOR : MAIN_COLOR) :
                     GREEN_COLOR;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
-                    POSITION_CENTER, color, Color.white, visibilityState);
+                    POSITION_CENTER, color, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             x += problemWidth + spaceX;
         }
     }
@@ -333,14 +339,14 @@ public class BigStandingsWidget extends Widget {
         Color color = getTeamRankColor(team);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
                 rankWidth, plateHeight, POSITION_CENTER,
-                color, Color.white, visibilityState);
+                color, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += rankWidth + spaceX;
 
         String name = team.getShortName();//getShortName(g, teamId.getShortName());
         drawTextInRect(g, name, x, y,
                 nameWidth, plateHeight, POSITION_LEFT,
-                mainColor, Color.white, visibilityState);
+                mainColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += nameWidth + spaceX;
 
@@ -364,12 +370,12 @@ public class BigStandingsWidget extends Widget {
             if (bright && statusColor == MAIN_COLOR) statusColor = statusColor.brighter();
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
-            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - ((WFRunInfo)team.getLastRun(i)).timestamp) < blinkingTime;
+            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - ((WFRunInfo) team.getLastRun(i)).timestamp) < blinkingTime;
             drawTextInRect(g, status, x, y,
-                        problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState, isBlinking);
+                    problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState, false, true, WidgetAnimation.UNFOLD_ANIMATED, isBlinking);
 
             RunInfo firstSolvedRun = firstSolved[i];
-            if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId()) {
+            if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId() && visibilityState >= 0.5) {
                 stars.add(new Point(x + problemWidth - STAR_SIZE, y + STAR_SIZE));
             }
             x += problemWidth + spaceX;
@@ -377,10 +383,10 @@ public class BigStandingsWidget extends Widget {
 
         g.setFont(font);
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth,
-                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState);
+                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
-                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState);
+                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     private int problemWidth(int problemsNumber) {

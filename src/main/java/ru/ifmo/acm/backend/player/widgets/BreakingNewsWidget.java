@@ -2,6 +2,7 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -186,7 +187,7 @@ public class BreakingNewsWidget extends VideoWidget {
             }
         }
 
-        log.debug(visibilityState + " " + opacity);
+//        log.debug(visibilityState + " " + opacity);
 
         if (run == null || URL.get() != null) {
             int hh = (int) (hVideo * opacity);
@@ -197,6 +198,11 @@ public class BreakingNewsWidget extends VideoWidget {
         int x = this.x + (int) (1.1 * wVideo - PLATE_WIDTH);
         drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
         drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
-                POSITION_RIGHT, ACCENT_COLOR, Color.white, visibilityState);
+                POSITION_RIGHT, ACCENT_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+    }
+
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.breakingNewsData;
     }
 }

@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
@@ -15,7 +16,6 @@ import java.awt.geom.Rectangle2D;
  * @author: pashka
  */
 public abstract class CreepingLineWidget extends Widget {
-
 
     protected double SEPARATOR = 75;
     public int HEIGHT = 45;
@@ -56,6 +56,10 @@ public abstract class CreepingLineWidget extends Widget {
     public void addMessage(String s) {
         inQueue.add(s);
         messagesQueue.add(s);
+    }
+
+    public CachedData getCorrespondingData(Data data) {
+        return data.creepingLineData;
     }
 
     class Message {

@@ -2,7 +2,7 @@ package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
-public class QueueData implements CachedData {
+public class QueueData extends CachedData {
     public QueueData() {
         isVisible = true;
     }
@@ -29,6 +29,5 @@ public class QueueData implements CachedData {
         return this;
     }
 
-    private long timestamp;
     private boolean isVisible;
 }

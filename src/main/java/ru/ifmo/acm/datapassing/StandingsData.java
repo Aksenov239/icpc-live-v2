@@ -6,7 +6,7 @@ import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.MainScreenProperties;
 
-public class StandingsData implements CachedData {
+public class StandingsData extends CachedData {
     @Override
     public StandingsData initialize() {
         StandingsData data = MainScreenData.getMainScreenData().standingsData;
@@ -15,7 +15,8 @@ public class StandingsData implements CachedData {
         this.standingsType = data.standingsType;
         this.optimismLevel = data.optimismLevel;
         this.isBig = data.isBig;
-
+        this.delay = data.delay;
+                
         return this;
     }
 
@@ -44,10 +45,16 @@ public class StandingsData implements CachedData {
     }
 
     public void switchOverlaysOff() {
-        MainScreenData.getMainScreenData().statisticsData.hide();
+        if (isBig) {
+            if (MainScreenData.getMainScreenData().statisticsData.isVisible()) {
+                delay = MainScreenData.getProperties().overlayedDelay;
+                MainScreenData.getMainScreenData().statisticsData.hide();
+            }
+        }
     }
 
     public void hide() {
+        delay = 0;
         synchronized (standingsLock) {
             isVisible = false;
             timestamp = System.currentTimeMillis();
@@ -60,9 +67,14 @@ public class StandingsData implements CachedData {
     }
 
     public String setStandingsVisible(boolean visible, StandingsType type, boolean isBig, OptimismLevel level) {
-        String outcome = checkOverlays();
-        if (outcome != null) {
-            return outcome;
+        delay = 0;
+        if (visible) {
+            String outcome = checkOverlays();
+            this.isBig = isBig;
+            if (outcome != null) {
+                return outcome;
+            }
+            switchOverlaysOff();
         }
         synchronized (standingsLock) {
             timestamp = System.currentTimeMillis();
@@ -117,7 +129,6 @@ public class StandingsData implements CachedData {
         isBig = big;
     }
 
-    public long timestamp;
     public boolean isVisible;
     public StandingsType standingsType = StandingsType.HIDE;
     public boolean isBig;

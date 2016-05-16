@@ -10,7 +10,7 @@ import ru.ifmo.acm.mainscreen.MainScreenData;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-public class TeamData implements CachedData {
+public class TeamData extends CachedData {
     private static final Logger log = LogManager.getLogger(TeamData.class);
 
     public TeamData() {
@@ -23,6 +23,7 @@ public class TeamData implements CachedData {
         this.isVisible = data.isVisible;
         this.infoType = data.infoType;
         this.teamId = data.teamId;
+        this.delay = data.delay;
 
         return this;
     }
@@ -35,10 +36,14 @@ public class TeamData implements CachedData {
     String lastStatus = "0\nfalse";
 
     public void switchOverlaysOff() {
-        MainScreenData.getMainScreenData().standingsData.hide();
-        MainScreenData.getMainScreenData().advertisementData.hide();
-        MainScreenData.getMainScreenData().personData.hide();
-        MainScreenData.getMainScreenData().statisticsData.hide();
+        if (MainScreenData.getMainScreenData().standingsData.isVisible) {
+            MainScreenData.getMainScreenData().standingsData.hide();
+        }
+//        MainScreenData.getMainScreenData().advertisementData.hide();
+//        MainScreenData.getMainScreenData().personData.hide();
+        if (MainScreenData.getMainScreenData().statisticsData.isVisible()) {
+            MainScreenData.getMainScreenData().statisticsData.hide();
+        }
     }
 
     public String getOverlayError() {
@@ -159,7 +164,7 @@ public class TeamData implements CachedData {
         }
     }
 
-    public long timestamp;
+    ;
     public boolean isVisible;
     public String infoType = "";
     private String currentTeamValue;

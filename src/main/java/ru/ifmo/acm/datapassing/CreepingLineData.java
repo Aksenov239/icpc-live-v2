@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
-public class CreepingLineData implements CachedData {
+public class CreepingLineData extends CachedData {
     public List<Message> messages;
 
     public CreepingLineData initialize() {

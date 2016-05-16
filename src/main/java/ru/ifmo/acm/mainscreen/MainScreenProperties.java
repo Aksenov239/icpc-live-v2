@@ -79,7 +79,11 @@ public class MainScreenProperties {
         backupBreakingNewsFilename = properties.getProperty("backup.breakingnews");
 
         breakingNewsPatternsFilename = properties.getProperty("breakingnews.patterns.filename");
+
+        overlayedDelay = Long.parseLong(properties.getProperty("overlayed.delay", "4000"));
     }
+
+    public long overlayedDelay;
 
     // Person
     public final long latency;

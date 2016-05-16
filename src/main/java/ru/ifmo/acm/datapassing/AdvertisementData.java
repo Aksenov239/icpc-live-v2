@@ -7,13 +7,14 @@ import ru.ifmo.acm.mainscreen.MainScreenData;
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
-public class AdvertisementData implements CachedData {
+public class AdvertisementData extends CachedData {
     public AdvertisementData initialize() {
         AdvertisementData data = MainScreenData.getMainScreenData().advertisementData;
         synchronized (advertisementLock) {
             this.timestamp = data.timestamp;
             this.isVisible = data.isVisible;
             this.advertisement = data.advertisement == null ? new Advertisement("") : new Advertisement(data.advertisement.getAdvertisement());
+            this.delay = data.delay;
         }
         return this;
     }
@@ -57,9 +58,9 @@ public class AdvertisementData implements CachedData {
     }
 
     public String checkOverlays() {
-        if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            return MainScreenData.getMainScreenData().teamData.getOverlayError();
-        }
+//        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+//            return MainScreenData.getMainScreenData().teamData.getOverlayError();
+//        }
         return null;
     }
 
@@ -86,7 +87,6 @@ public class AdvertisementData implements CachedData {
         return null;
     }
 
-    public long timestamp;
     public boolean isVisible;
     public Advertisement advertisement;
 
