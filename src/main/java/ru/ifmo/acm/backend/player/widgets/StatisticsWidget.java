@@ -132,7 +132,7 @@ public class StatisticsWidget extends Widget {
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
                         w, plateHeight, POSITION_CENTER, GREEN_COLOR, Color.white,
-                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED);
+                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
 
                 shownWidth = max(0, shownWidth - w);
                 x += w + spaceX;
@@ -145,7 +145,7 @@ public class StatisticsWidget extends Widget {
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
                         w, plateHeight, POSITION_CENTER, YELLOW_COLOR, Color.white,
-                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED);
+                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
 
                 shownWidth = max(0, shownWidth - w);
                 x += w + spaceX;
@@ -158,7 +158,7 @@ public class StatisticsWidget extends Widget {
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
                         w, plateHeight, POSITION_CENTER, RED_COLOR, Color.white,
-                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED);
+                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
             }
 
             y += plateHeight + spaceY;

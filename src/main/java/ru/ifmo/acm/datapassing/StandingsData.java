@@ -36,7 +36,23 @@ public class StandingsData implements CachedData {
         Data.cache.refresh(StandingsData.class);
     }
 
-    public void setStandingsVisible(boolean visible, StandingsType type, boolean isBig, OptimismLevel level) {
+    public String checkOverlays() {
+        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+            return "You need to close team view first";
+        }
+        return null;
+    }
+
+    public void hide() {
+        isVisible = false;
+        recache();
+    }
+
+    public String setStandingsVisible(boolean visible, StandingsType type, boolean isBig, OptimismLevel level) {
+        String outcome = checkOverlays();
+        if (outcome != null) {
+            return outcome;
+        }
         synchronized (standingsLock) {
             timestamp = System.currentTimeMillis();
             isVisible = visible;
@@ -46,6 +62,7 @@ public class StandingsData implements CachedData {
         }
 
         recache();
+        return null;
     }
 
     public static long getTotalTime(boolean isBig, StandingsType type) {

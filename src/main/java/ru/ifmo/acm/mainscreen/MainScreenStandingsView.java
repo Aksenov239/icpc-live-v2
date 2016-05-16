@@ -147,12 +147,16 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         standingsOptimismLevel.setValue(StandingsData.OptimismLevel.NORMAL);
 
         standingsOptimismLevel.addValueChangeListener(e -> {
-            mainScreenData.standingsData.setStandingsVisible(
+            String outcome = mainScreenData.standingsData.setStandingsVisible(
                     mainScreenData.standingsData.isVisible,
                     mainScreenData.standingsData.standingsType,
                     mainScreenData.standingsData.isBig,
                     StandingsData.OptimismLevel.valueOf(standingsOptimismLevel.getValue().toString().toUpperCase())
             );
+            if (outcome != null) {
+                Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
+                return;
+            }
             standingsStatus.setValue(getStandingsStatus());
         });
 
@@ -254,6 +258,16 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     private Button createStatisticsButton(String name, boolean visibility, int status) {
         Button button = new Button(name);
         button.addClickListener(event -> {
+            String outcome = mainScreenData.standingsData.setStandingsVisible(
+                    mainScreenData.standingsData.isVisible,
+                    mainScreenData.standingsData.standingsType,
+                    mainScreenData.standingsData.isBig,
+                    StandingsData.OptimismLevel.valueOf(standingsOptimismLevel.getValue().toString().toUpperCase())
+            );
+            if (outcome != null) {
+                Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
+                return;
+            }
             mainScreenData.statisticsData.setVisible(visibility);
             statisticsStatus.setValue(statisticsStatuses[status]);
         });

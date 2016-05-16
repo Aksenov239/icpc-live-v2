@@ -9,10 +9,13 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
 import ru.ifmo.acm.events.WF.WFEventsLoader;
+import ru.ifmo.acm.events.WF.WFRunInfo;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author: pashka
@@ -55,6 +58,8 @@ public class BigStandingsWidget extends Widget {
     double[] currentTeamPositions;
     double[] desiredTeamPositions;
 
+    long blinkingTime;
+
     public BigStandingsWidget(int baseX, int baseY, int width, int plateHeight, long updateWait, int teamsOnPage, boolean controlled) {
         super(updateWait);
         last = System.currentTimeMillis();
@@ -82,6 +87,14 @@ public class BigStandingsWidget extends Widget {
         this.updateWait = updateWait;
 
         font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
+
+        Properties properties = new Properties();
+        try {
+            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+        } catch (IOException e) {
+            log.error("error", e);
+        }
+        blinkingTime = Long.parseLong(properties.getProperty("standings.blinking.time"));
     }
 
     public void setState(StandingsData.StandingsType type) {
@@ -351,8 +364,10 @@ public class BigStandingsWidget extends Widget {
             if (bright && statusColor == MAIN_COLOR) statusColor = statusColor.brighter();
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
+            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - ((WFRunInfo)team.getLastRun(i)).timestamp) < blinkingTime;
             drawTextInRect(g, status, x, y,
-                    problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState);
+                        problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState, isBlinking);
+
             RunInfo firstSolvedRun = firstSolved[i];
             if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId()) {
                 stars.add(new Point(x + problemWidth - STAR_SIZE, y + STAR_SIZE));

@@ -4,7 +4,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Person;
 
-public class PersonData implements CachedData{
+public class PersonData implements CachedData {
     public PersonData() {
         timestamp = new long[2];
         isVisible = new boolean[2];
@@ -28,7 +28,29 @@ public class PersonData implements CachedData{
         Data.cache.refresh(PersonData.class);
     }
 
-    public void setLabelVisible(boolean visible, Person label, int id) {
+    public void hide() {
+        for (int id = 0; id < labelsLock.length; id++) {
+            synchronized (labelsLock[id]) {
+                isVisible[id] = false;
+            }
+        }
+        recache();
+    }
+
+    public String checkOverlays() {
+        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+            return "You need to close team view first.";
+        }
+        return null;
+    }
+
+    public String setLabelVisible(boolean visible, Person label, int id) {
+        if (visible) {
+            String outcome = checkOverlays();
+            if (outcome != null) {
+                return outcome;
+            }
+        }
         //System.err.println("Set visible " + visible + " " + labelsValues[id] + " " + label);
         synchronized (labelsLock[id]) {
             timestamp[id] = System.currentTimeMillis();
@@ -36,6 +58,7 @@ public class PersonData implements CachedData{
             labelValue[id] = label;
         }
         recache();
+        return null;
     }
 
     public void update() {

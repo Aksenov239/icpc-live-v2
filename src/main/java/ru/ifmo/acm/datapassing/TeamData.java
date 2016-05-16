@@ -34,6 +34,13 @@ public class TeamData implements CachedData {
     String currentStatus = "0\nfalse";
     String lastStatus = "0\nfalse";
 
+    public void switchOverlaysOff() {
+        MainScreenData.getMainScreenData().standingsData.hide();
+        MainScreenData.getMainScreenData().advertisementData.hide();
+        MainScreenData.getMainScreenData().personData.hide();
+        MainScreenData.getMainScreenData().statisticsData.hide();
+    }
+
     public synchronized boolean automaticStart(int number) {
         if (timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis() && isVisible) {
             return false;
@@ -66,6 +73,8 @@ public class TeamData implements CachedData {
         currentStatus = timestamp + "\n" + isVisible + "\n" + infoType + "\n" + teamName;
 
         log.debug(teamInfo.getName() + " " + teamId + " " + type);
+
+        switchOverlaysOff();
         recache();
     }
 
