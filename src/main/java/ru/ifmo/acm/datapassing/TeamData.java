@@ -38,6 +38,7 @@ public class TeamData implements CachedData {
         MainScreenData.getMainScreenData().standingsData.hide();
         MainScreenData.getMainScreenData().advertisementData.hide();
         MainScreenData.getMainScreenData().personData.hide();
+        MainScreenData.getMainScreenData().statisticsData.hide();
     }
 
     public synchronized boolean automaticStart(int number) {
