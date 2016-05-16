@@ -182,7 +182,7 @@ public class WFContestInfo extends ContestInfo {
 
     public WFTeamInfo getParticipantByHashTag(String hashTag) {
         for (int i = 0; i < teamNumber; i++) {
-            if (hashTag != null && hashTag.equals(teamInfos[i].getHashTag())) {
+            if (hashTag != null && hashTag.equalsIgnoreCase(teamInfos[i].getHashTag())) {
                 return teamInfos[i];
             }
         }

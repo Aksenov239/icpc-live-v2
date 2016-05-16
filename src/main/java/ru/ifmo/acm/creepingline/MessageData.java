@@ -1,5 +1,7 @@
 package ru.ifmo.acm.creepingline;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
 
@@ -13,6 +15,8 @@ import ru.ifmo.acm.mainscreen.Utils;
  * Created by Aksenov239 on 14.11.2015.
  */
 public class MessageData {
+    private static final Logger log = LogManager.getLogger(MessageData.class);
+
     private static MessageData messageData;
 
     public static MessageData getMessageData() {
@@ -33,7 +37,7 @@ public class MessageData {
             properties.load(getClass().getResourceAsStream("/creepingline.properties"));
             backup = properties.getProperty("backup.file.name");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
 //        messageList = new ArrayList<>();
 //        messageList = new BeanItemContainer<>(Message.class);
@@ -58,7 +62,7 @@ public class MessageData {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        log.error("error", e);
                     }
                 }
             }
@@ -87,7 +91,7 @@ public class MessageData {
 //                    }
 //                    sc.close();
 //                } catch (IOException e) {
-//                    e.printStackTrace();
+//                    log.error("error", e);
 //                }
 //            }
 //        }
@@ -112,7 +116,7 @@ public class MessageData {
 //
 //            Files.move(new File(tmpFile).toPath(), new File(backup).toPath(), StandardCopyOption.REPLACE_EXISTING);
 //        } catch (IOException e) {
-//            e.printStackTrace();
+//            log.error("error", e);
 //        }
 //    }
 

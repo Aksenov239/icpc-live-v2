@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
@@ -61,7 +62,7 @@ public class BreakingNewsWidget extends VideoWidget {
             int teamId = data.breakingNewsData.teamId;
             int problemId = data.breakingNewsData.problemId;
 
-            System.err.println("Get request for " + teamId + " " + problemId);
+            log.info("Get request for " + teamId + " " + problemId);
 
             team = Preparation.eventsLoader.getContestData().getParticipant(teamId);
 
@@ -84,16 +85,16 @@ public class BreakingNewsWidget extends VideoWidget {
 
             String url;
             if (data.breakingNewsData.isLive) {
-                url = TeamWidget.getUrl(team, data.breakingNewsData.infoType);
+                url = TeamUrls.getUrl(team, data.breakingNewsData.infoType);
             } else {
                 if (run == null) {
-                    System.err.println("Couldn't find run for team " + teamId + " and problem " + problemId);
+                    log.warn("Couldn't find run for team " + teamId + " and problem " + problemId);
                     return;
                 }
-                url = TeamWidget.getUrl(run);
+                url = TeamUrls.getUrl(run);
             }
 
-            System.err.println("Change to " + url);
+            log.info("Change to " + url);
 
             change(url);
             isLive = data.breakingNewsData.isLive;
@@ -107,7 +108,7 @@ public class BreakingNewsWidget extends VideoWidget {
 
             if (data.breakingNewsData.newsMessage.length() == 0) {
                 if (isLive && run == null) {
-                    System.err.println("Can't generate caption for team" + teamId + " problem " + problemId + ", " +
+                    log.warn("Can't generate caption for team" + teamId + " problem " + problemId + ", " +
                             "because video is live and don't know run id");
                     return;
                 }
@@ -128,7 +129,7 @@ public class BreakingNewsWidget extends VideoWidget {
             } else {
                 caption = data.breakingNewsData.newsMessage;
             }
-            System.err.println("Caption: " + caption);
+            log.info("Caption: " + caption);
             timer = 0;
             rankState = 0;
             visibilityState = 0;
@@ -185,7 +186,8 @@ public class BreakingNewsWidget extends VideoWidget {
             }
         }
 
-        System.err.println(visibilityState + " " + opacity);
+        log.debug(visibilityState + " " + opacity);
+
         if (run == null || URL.get() != null) {
             int hh = (int) (hVideo * opacity);
             g.drawImage(image.get(), x, y + (hVideo - hh) / 2, wVideo, hh, null);

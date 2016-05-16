@@ -4,7 +4,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import ru.ifmo.acm.backend.player.widgets.TeamWidget;
+import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.events.TeamInfo;
 
 /**
@@ -66,7 +66,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
 
         automated[id].addValueChangeListener(event -> {
             boolean auto = automated[id].getValue();
-            types[id].setValue(auto ? null : TeamWidget.types[0]);
+            types[id].setValue(auto ? null : TeamUrls.types[0]);
             types[id].setEnabled(!auto);
 
             shows[id].setEnabled(!auto);
@@ -77,13 +77,13 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
         });
 
         types[id] = new OptionGroup();
-        types[id].addItems(TeamWidget.types);
+        types[id].addItems(TeamUrls.types);
         types[id].setNullSelectionAllowed(false);
-        types[id].setValue(TeamWidget.types[0]);
+        types[id].setValue(TeamUrls.types[0]);
         types[id].addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         types[id].setWidth("50%");
         types[id].setEnabled(false);
-        mainScreenData.splitScreenData.controllerDatas[id].infoType = TeamWidget.types[0];
+        mainScreenData.splitScreenData.controllerDatas[id].infoType = TeamUrls.types[0];
 
         teams[id] = new TextField("Team: ");
         teams[id].setSizeFull();

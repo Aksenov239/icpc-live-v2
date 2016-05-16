@@ -1,5 +1,7 @@
 package ru.ifmo.acm.creepingline;
 
+import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.mainscreen.Utils;
 import twitter4j.*;
 
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.Properties;
 
 public class TwitterLoader extends Utils.StoppedRunnable {
+    private static final Logger log = LogManager.getLogger(TwitterLoader.class);
+
     public static TwitterLoader getInstance() {
         if (instance == null) {
             instance = new TwitterLoader();
@@ -25,7 +29,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
             List<Status> updates = twitter.getUserTimeline(account);
             lastId = (updates.size() > 0) ? updates.get(0).getId() : -1;
         } catch (IOException | TwitterException e) {
-            e.printStackTrace();
+            log.error("Twitter init failure", e);
         }
     }
 
@@ -43,7 +47,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         try {
             Status status = twitter.updateStatus(message);
         } catch (TwitterException e) {
-            e.printStackTrace();
+            log.error("Twitter update failure", e);
         }
     }
 
@@ -58,7 +62,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
                 });
                 Thread.sleep(60000);
             } catch (InterruptedException | TwitterException e) {
-                e.printStackTrace();
+                log.error("Twitter get updates failure", e);
             }
         }
     }

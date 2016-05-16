@@ -1,5 +1,7 @@
 package ru.ifmo.acm.backend.player;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.direct.BufferFormat;
@@ -17,6 +19,7 @@ import java.awt.image.DataBufferInt;
  * @author: pashka
  */
 public class PlayerInImage {
+    private static final Logger log = LogManager.getLogger(PlayerInImage.class);
 
     private final BufferedImage image;
     private JComponent frame;
@@ -28,14 +31,14 @@ public class PlayerInImage {
         this.frame = frame;
         MediaPlayerFactory factory = new MediaPlayerFactory(new String[0]);
         mediaPlayer = factory.newDirectMediaPlayer(new TestBufferFormatCallback(), new TestRenderCallback());
-        mediaPlayer.setRepeat(true);
+//        mediaPlayer.setRepeat(true);
 //        mediaPlayer.addMediaOptions(":file-caching=1500");
 //        mediaPlayer.setStandardMediaOptions(":file-caching=1500");
 //        mediaPlayer.setVolume(0);
         mediaPlayer.setAspectRatio("4:3");
         if (media != null)
             mediaPlayer.playMedia(media, ":file-caching=0");
-        System.err.println("PLAY!!! " + media);
+        log.info("PLAY!!! " + media);
     }
 
     public void stop() {

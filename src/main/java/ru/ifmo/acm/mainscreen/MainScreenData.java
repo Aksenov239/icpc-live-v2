@@ -1,5 +1,7 @@
 package ru.ifmo.acm.mainscreen;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.datapassing.*;
 
@@ -9,6 +11,8 @@ import static ru.ifmo.acm.mainscreen.BreakingNews.MainScreenBreakingNews.getUpda
  * Created by Aksenov239 on 15.11.2015.
  */
 public class MainScreenData {
+    private static final Logger log = LogManager.getLogger(MainScreenData.class);
+
     public static MainScreenData getMainScreenData() {
         if (mainScreenData == null) {
             mainScreenData = new MainScreenData();
@@ -21,7 +25,7 @@ public class MainScreenData {
                         try {
                             Thread.sleep(1000);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error", e);
                         }
                     }
                 }

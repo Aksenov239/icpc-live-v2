@@ -2,6 +2,8 @@ package ru.ifmo.acm.datapassing;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -16,6 +18,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by Aksenov239 on 21.11.2015.
  */
 public class DataLoader {
+    private static final Logger log = LogManager.getLogger(DataLoader.class);
+
     public static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataDeserializer())
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataSerializer())
@@ -46,9 +50,9 @@ public class DataLoader {
             try {
                 serverSocket.close();
                 serverSocket = null;
-                System.err.println("Socket is closed!");
+                log.info("Socket is closed!");
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
         }
     }
@@ -60,14 +64,14 @@ public class DataLoader {
                 try {
                     properties.load(DataLoader.class.getResourceAsStream("/mainscreen.properties"));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
                 int port = Integer.parseInt(properties.getProperty("data.port"));
                 try {
                     serverSocket = new ServerSocket(port);
                     serverSocket.setReuseAddress(true);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
                 openPW = new ArrayList<>();
                 openBR = new ArrayList<>();
@@ -82,8 +86,9 @@ public class DataLoader {
                 openPW.add(new PrintWriter(new OutputStreamWriter(newSocket.getOutputStream(), StandardCharsets.UTF_8)));
                 openBR.add(new BufferedReader(new InputStreamReader(newSocket.getInputStream(), StandardCharsets.UTF_8)));
                 tries.add(0);
-                System.err.println("Accepted socket");
+                log.info("Accepted socket");
             } catch (Exception e) {
+                log.error("Failed socket", e);
             }
             List<PrintWriter> newOpenPW = new ArrayList<>();
             List<BufferedReader> newOpenBR = new ArrayList<>();
@@ -93,31 +98,31 @@ public class DataLoader {
                 BufferedReader br = openBR.get(i);
                 int ntries = tries.get(i);
                 boolean send = false;
-                //System.err.println("Start waiting");
+                //log.info("Start waiting");
                 try {
                     while (br.ready()) {
                         br.readLine();
-                        //System.err.println("Ready to send");
+                        //log.info("Ready to send");
                         send = true;
                     }
                 } catch (IOException e) {
-                    System.err.println("Client socket is closed");
+                    log.info("Client socket is closed");
                     continue;
                 }
                 if (send) {
                     String data = getDataFrontend();
-//                    System.err.println(data);
+//                    log.info(data);
                     pw.println(getDataFrontend());
                     pw.flush();
                     ntries = 0;
                     if (pw.checkError()) {
-                        System.err.println("Client socket is closed");
+                        log.info("Client socket is closed");
                         continue;
                     }
                 } else {
                     ntries++;
                     if (ntries == 5) {
-                        System.err.println("Client socket is closed");
+                        log.info("Client socket is closed");
                         continue;
                     }
                 }
@@ -129,7 +134,7 @@ public class DataLoader {
             openBR = newOpenBR;
             tries = newTries;
         } catch (Throwable e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
     }
 
@@ -138,7 +143,7 @@ public class DataLoader {
         try {
             properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         String host = properties.getProperty("data.host");
         int port = Integer.parseInt(properties.getProperty("data.port"));
@@ -158,11 +163,11 @@ public class DataLoader {
                         writer.println("ready");
                         writer.flush();
                         if (writer.checkError()) {
-                            System.err.println("Socket closed");
+                            log.info("Socket closed");
                             break;
                         }
 
-//                    System.err.println("Trying to read");
+//                    log.info("Trying to read");
                         String line = reader.readLine();
 //                    System.out.println(line);
                         Data newData = gson.fromJson(line, Data.class);
@@ -170,12 +175,12 @@ public class DataLoader {
                             data.set(newData);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
                 try {
                     Thread.sleep(5000);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
             }
         }).start();

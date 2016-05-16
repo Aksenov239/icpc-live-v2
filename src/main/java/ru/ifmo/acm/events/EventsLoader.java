@@ -1,5 +1,7 @@
 package ru.ifmo.acm.events;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.events.PCMS.PCMSContestInfo;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.events.WF.WFEventsLoader;
@@ -8,6 +10,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 public abstract class EventsLoader extends Thread {
+    private static final Logger log = LogManager.getLogger(EventsLoader.class);
+
     private static EventsLoader instance;
 
     public static EventsLoader getInstance() {
@@ -25,7 +29,7 @@ public abstract class EventsLoader extends Thread {
                     instance = new PCMSEventsLoader();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
         }
         return instance;
