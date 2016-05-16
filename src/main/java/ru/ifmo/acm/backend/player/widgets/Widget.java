@@ -261,7 +261,7 @@ public abstract class Widget {
             height = (int) round(height * visibilityState);
         }
 
-        if (widgetAnimation == WidgetAnimation.NOT_ANIMATED) {
+        if (widgetAnimation != WidgetAnimation.UNFOLD_ANIMATED) {
             opacity = 1;
         }
 
@@ -333,14 +333,16 @@ public abstract class Widget {
         g.drawString(text, 0, 0);
     }
 
-    void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
+    void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state,
+                      double rank_width, double name_width, double total_width, double penalty_width) {
+
         Color color = getTeamRankColor(team);
         if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
         g.setFont(Font.decode("Open Sans " + (int) round(height * 0.7)));
-        int rankWidth = (int) round(height * RANK_WIDTH);
-        int nameWidth = (int) round(height * NAME_WIDTH);
-        int totalWidth = (int) round(height * TOTAL_WIDTH);
-        int penaltyWidth = (int) round(height * PENALTY_WIDTH);
+        int rankWidth = (int) round(height * rank_width);
+        int nameWidth = (int) round(height * name_width);
+        int totalWidth = (int) round(height * total_width);
+        int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + spaceX;
@@ -349,6 +351,10 @@ public abstract class Widget {
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
+    }
+
+    void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
+        drawTeamPane(g, team, x, y, height, state, RANK_WIDTH, NAME_WIDTH, TOTAL_WIDTH, PENALTY_WIDTH);
     }
 
     long lastChangeTimestamp;
