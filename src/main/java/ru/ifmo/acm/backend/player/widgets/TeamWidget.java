@@ -23,6 +23,8 @@ public class TeamWidget extends VideoWidget {
     private int width;
     private int height;
 
+    private boolean isFull = false;
+
     VideoWidget smallVideo = null;
 
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
@@ -45,13 +47,16 @@ public class TeamWidget extends VideoWidget {
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime, boolean full) {
         this(x, y, width, height, aspectRatio, sleepTime);
 
+        this.isFull = full;
         if (full) {
             int problems = Preparation.eventsLoader.getContestData().getProblemsNumber();
-
+            X = 10;
             Y = 17;
             GAP_Y = 4;
-            GAP_X = 4;
-            HEIGHT = (int) (1. * (height - Y - (problems - 1) * GAP_Y) / problems);
+            GAP_X = 3;
+            HEIGHT = 35;
+            // WIGHT =  (int) (1. * (width - X - (problems - 1) * GAP_X ) / problems);
+            PR_WIDTH = 38;
         }
     }
 
@@ -73,6 +78,7 @@ public class TeamWidget extends VideoWidget {
     protected int RUN_WIDTH = 80;
     protected int RUN_SMALL_WIDTH = 20;
     protected int HEIGHT = 45;
+    protected int WIGHT = 30;
     protected int STAR_SIZE = 5;
     Font FONT2 = Font.decode("Open Sans Italic " + 30);
 
@@ -133,13 +139,18 @@ public class TeamWidget extends VideoWidget {
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
         g.setFont(FONT1);
-        int dx = (int) (this.width * 0.45);
-        int dy = (int) (this.height * 0.9);
-        drawTeamPane(g, team, x + dx, y + dy, (int) (this.height * 0.08), 1);
+        int problemsNumber = team.getRuns().length;
 
+        int dx = (isFull) ? X + (PR_WIDTH + GAP_X) * problemsNumber + 6 * GAP_X : (int) (this.width * 0.45);
+        // int dx = (isFull) ? (this.width - X + (PR_WIDTH + GAP_X) * problemsNumber) : (int) (this.width * 0.45);
+        int dy = (int) (this.height * 0.9);
+        if (!isFull) {
+            drawTeamPane(g, team, x + dx, y + dy, (int) (this.height * 0.08), 1);
+        } else {
+            drawTeamPane(g, team, x + dx, y + dy, HEIGHT, 1, RANK_WIDTH * 0.9, NAME_WIDTH, TOTAL_WIDTH * 0.9, PENALTY_WIDTH * 0.9);
+        }
         g.setFont(FONT2);
         for (int i = 0; i < team.getRuns().length; i++) {
-            int y = Y + (HEIGHT + GAP_Y) * i;
             RunInfo[] runs = team.getRuns()[i].toArray(new RunInfo[0]);
 
             Color problemColor = MAIN_COLOR;
@@ -156,30 +167,38 @@ public class TeamWidget extends VideoWidget {
                 }
             }
 
-            drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
-                    PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
-
-            int x = X + PR_WIDTH + GAP_X;
-            for (int j = 0; j < runs.length; j++) {
-                RunInfo run = runs[j];
-                Color color = run.getResult().equals("AC") ? GREEN : run.getResult().equals("") ? YELLOW : RED;
-                if (j == runs.length - 1) {
-                    drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
-                            RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
-                            i == currentProblemId ? getTimeOpacity() : 1,
-                            WidgetAnimation.UNFOLD_ANIMATED
-                    );
-                    //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
-                    if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
-                        drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
+            if (!isFull) {
+                int y = Y + (HEIGHT + GAP_Y) * i;
+                drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
+                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            } else {
+                int x = X + (PR_WIDTH + GAP_X) * i;
+                drawTextInRect(g, "" + (char) ('A' + i), this.x + x, this.y + dy,
+                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            }
+            if (!isFull) {
+                int x = X + PR_WIDTH + GAP_X;
+                for (int j = 0; j < runs.length; j++) {
+                    RunInfo run = runs[j];
+                    Color color = run.getResult().equals("AC") ? GREEN : run.getResult().equals("") ? YELLOW : RED;
+                    if (j == runs.length - 1) {
+                        drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
+                                RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
+                                i == currentProblemId ? getTimeOpacity() : 1,
+                                WidgetAnimation.UNFOLD_ANIMATED
+                        );
+                        //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
+                        if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
+                            drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
+                        }
+                        x += RUN_WIDTH + GAP_X;
+                    } else if (run.getTime() != runs[j + 1].getTime()) {
+                        drawTextInRect(g, "", this.x + x, this.y + y,
+                                RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                        x += RUN_SMALL_WIDTH + GAP_X;
                     }
-                    x += RUN_WIDTH + GAP_X;
-                } else if (run.getTime() != runs[j + 1].getTime()) {
-                    drawTextInRect(g, "", this.x + x, this.y + y,
-                            RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
-                    x += RUN_SMALL_WIDTH + GAP_X;
-                }
 
+                }
             }
         }
     }
