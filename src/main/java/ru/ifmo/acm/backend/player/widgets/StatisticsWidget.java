@@ -10,9 +10,10 @@ import ru.ifmo.acm.events.TeamInfo;
 import java.awt.*;
 import java.util.List;
 
-public class StatisticsWidget extends Widget {
+import static java.lang.Math.*;
 
-    private static final double V = 0.01;
+public class StatisticsWidget extends Widget {
+    private static final double V = 1e-3;
 
     public static double Y_SHIFT;
 
@@ -32,6 +33,9 @@ public class StatisticsWidget extends Widget {
     int[] pending;
     int[] submitted;
 
+    private double problemsVisibilityState = 0;
+    private double statisticVisibilityState = 0;
+
     public StatisticsWidget(int baseX, int baseY, int plateHeight, int width, long updateWait) {
         super(updateWait);
 
@@ -40,11 +44,11 @@ public class StatisticsWidget extends Widget {
         this.plateHeight = plateHeight;
         this.margin = 0;//(int) (plateHeight * MARGIN * 2);
 
-        spaceX = (int) Math.round(plateHeight * SPACE_X);
-        spaceY = (int) Math.round(plateHeight * SPACE_Y);
+        spaceX = (int) round(plateHeight * SPACE_X);
+        spaceY = (int) round(plateHeight * SPACE_Y);
 
         this.width = width;
-        problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
+        problemWidth = (int) round(PROBLEM_WIDTH * plateHeight);
 
         font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
 
@@ -59,14 +63,33 @@ public class StatisticsWidget extends Widget {
         lastUpdate = System.currentTimeMillis();
     }
 
+    @Override
+    protected int updateVisibilityState() {
+        int dt = super.updateVisibilityState();
+        double EPS = V * 0.01;
+        if (isVisible()) {
+            problemsVisibilityState = min(problemsVisibilityState + dt * V, 1);
+            if (abs(problemsVisibilityState - 1) < EPS) {
+                statisticVisibilityState = min(statisticVisibilityState + dt * V, 1);
+            }
+        } else {
+            statisticVisibilityState = Math.max(statisticVisibilityState - dt * V, 0);
+            if (abs(statisticVisibilityState) < EPS) {
+                problemsVisibilityState = Math.max(problemsVisibilityState - dt * V, 0);
+            }
+        }
+
+        return dt;
+    }
 
     @Override
     public void paintImpl(Graphics2D g, int width, int height) {
         update();
 
+        int dt = updateVisibilityState();
+
         if (info == null) return;
 
-        int dt = updateVisibilityState();
         g = (Graphics2D) g.create();
         g.translate(baseX, baseY);
         g.setFont(font);
@@ -74,50 +97,72 @@ public class StatisticsWidget extends Widget {
         drawTextInRect(g, "Statistics", 0, 0, -1, plateHeight, POSITION_LEFT,
                 ACCENT_COLOR, Color.white, visibilityState);
 
-        int y = plateHeight + spaceY * BIG_SPACE_COUNT;
-
         int fullWidth = this.width - problemWidth - spaceX;
 
         List<ProblemInfo> problems = info.problems;
+
+        int y = plateHeight + spaceY * BIG_SPACE_COUNT;
+        double timePerProblem = 1.0 / problems.size();
         for (int problemId = 0; problemId < problems.size(); problemId++) {
             ProblemInfo problem = problems.get(problemId);
-            int x = 0;
+            double tmp = max(0, problemsVisibilityState - problemId * timePerProblem);
+            tmp = tmp > timePerProblem ? 1 : tmp * problems.size();
 
-            drawTextInRect(g, problem.letter, x, y, problemWidth,
-                    plateHeight, POSITION_CENTER, MAIN_COLOR, Color.white, visibilityState);
+            drawTextInRect(g, problem.letter, 0, y, problemWidth,
+                    plateHeight, POSITION_CENTER, MAIN_COLOR, Color.white, tmp, WidgetAnimation.VERTICAL_ANIMATED);
 
-            x += problemWidth + spaceX;
-
-            if (solved[problemId] > 0) {
-                int w = fullWidth * solved[problemId] / info.teamNumber;
-                String text = solved[problemId] < 2 ? "" : "" + solved[problemId];
-                drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, GREEN_COLOR, Color.white,
-                        visibilityState, false, false);
-                x += w + spaceX;
-            }
-            if (pending[problemId] > 0) {
-                int w = fullWidth * pending[problemId] / info.teamNumber;
-                String text = pending[problemId] < 2 ? "" : "" + pending[problemId];
-                drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, YELLOW_COLOR, Color.white,
-                        visibilityState, false, false);
-                x += w + spaceX;
-            }
-            int wrong = submitted[problemId] - pending[problemId] - solved[problemId];
-            if (wrong > 0) {
-                int w = fullWidth * wrong / info.teamNumber;
-                String text = wrong < 2 ? "" : "" + wrong;
-                drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, RED_COLOR, Color.white,
-                        visibilityState, false, false);
-                x += w + spaceX;
-            }
             y += plateHeight + spaceY;
         }
 
 
+        y = plateHeight + spaceY * BIG_SPACE_COUNT;
+        for (int problemId = 0; problemId < problems.size(); problemId++) {
+            int x = problemWidth + spaceX;
 
+            int totalW = fullWidth * solved[problemId] / info.teamNumber +
+                         fullWidth * pending[problemId] / info.teamNumber +
+                         fullWidth * pending[problemId] / info.teamNumber;
+
+            int shownWidth = (int)ceil(statisticVisibilityState * totalW);
+
+            if (solved[problemId] > 0) {
+                int w = fullWidth * solved[problemId] / info.teamNumber;
+                String text = solved[problemId] < 2 ? "" : "" + solved[problemId];
+
+                double visState = 1.0 * min(shownWidth, w) / w;
+                drawTextInRect(g, text, x, y,
+                        w, plateHeight, POSITION_CENTER, GREEN_COLOR, Color.white,
+                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED);
+
+                shownWidth = max(0, shownWidth - w);
+                x += w + spaceX;
+            }
+
+            if (pending[problemId] > 0) {
+                int w = fullWidth * pending[problemId] / info.teamNumber;
+                String text = pending[problemId] < 2 ? "" : "" + pending[problemId];
+
+                double visState = 1.0 * min(shownWidth, w) / w;
+                drawTextInRect(g, text, x, y,
+                        w, plateHeight, POSITION_CENTER, YELLOW_COLOR, Color.white,
+                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED);
+
+                shownWidth = max(0, shownWidth - w);
+                x += w + spaceX;
+            }
+
+            int wrong = submitted[problemId] - pending[problemId] - solved[problemId];
+            if (wrong > 0) {
+                int w = fullWidth * wrong / info.teamNumber;
+                String text = wrong < 2 ? "" : "" + wrong;
+                double visState = 1.0 * min(shownWidth, w) / w;
+                drawTextInRect(g, text, x, y,
+                        w, plateHeight, POSITION_CENTER, RED_COLOR, Color.white,
+                        visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED);
+            }
+
+            y += plateHeight + spaceY;
+        }
     }
 
 

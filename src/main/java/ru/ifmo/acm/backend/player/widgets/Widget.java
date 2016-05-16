@@ -1,13 +1,13 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import com.google.gwt.dom.builder.shared.HRBuilder;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
+
+import static java.lang.Math.round;
 
 /**
  * @author: pashka
@@ -98,8 +98,8 @@ public abstract class Widget {
         if (scale != 1) {
             g = (Graphics2D) g.create();
             g.scale(scale, scale);
-            width = (int) Math.round(width / scale);
-            height = (int) Math.round(height / scale);
+            width = (int) round(width / scale);
+            height = (int) round(height / scale);
         }
         try {
             paintImpl(g, width, height);
@@ -177,8 +177,8 @@ public abstract class Widget {
                 double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
                 double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
                 if (italic) tx -= (ty - (y + height / 2)) * 0.2;
-                xx[t] = (int) Math.round(tx);
-                yy[t] = (int) Math.round(ty);
+                xx[t] = (int) round(tx);
+                yy[t] = (int) round(ty);
             }
         }
         g.fill(new Polygon(xx, yy, xx.length));
@@ -196,7 +196,15 @@ public abstract class Widget {
         drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true);
     }
 
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, WidgetAnimation widgetAnimation) {
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true, widgetAnimation);
+    }
+
     void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale) {
+        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, italic, scale, WidgetAnimation.NOT_ANIMATED);
+    }
+
+    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale, WidgetAnimation widgetAnimation) {
         Graphics2D g = (Graphics2D) gg.create();
         //setVisibilityState(state);
         double opacity = getOpacity(visibilityState);
@@ -225,6 +233,14 @@ public abstract class Widget {
         }
 
         if (opacity == 0) return;
+
+        if (widgetAnimation.isHorizontalAnimated) {width = (int) round(width * visibilityState);}
+        if (widgetAnimation.isVerticalAnimated) {
+            height = (int) round(height * visibilityState);
+        } else {
+            opacity = 1;
+        }
+
         drawRect(g, x, y, width, height, color, opacity, italic);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
@@ -260,12 +276,12 @@ public abstract class Widget {
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
         Color color = getTeamRankColor(team);
         if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
-        g.setFont(Font.decode("Open Sans " + (int) Math.round(height * 0.7)));
-        int rankWidth = (int) Math.round(height * RANK_WIDTH);
-        int nameWidth = (int) Math.round(height * NAME_WIDTH);
-        int totalWidth = (int) Math.round(height * TOTAL_WIDTH);
-        int penaltyWidth = (int) Math.round(height * PENALTY_WIDTH);
-        int spaceX = (int) Math.round(height * SPACE_X);
+        g.setFont(Font.decode("Open Sans " + (int) round(height * 0.7)));
+        int rankWidth = (int) round(height * RANK_WIDTH);
+        int nameWidth = (int) round(height * NAME_WIDTH);
+        int totalWidth = (int) round(height * TOTAL_WIDTH);
+        int penaltyWidth = (int) round(height * PENALTY_WIDTH);
+        int spaceX = (int) round(height * SPACE_X);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state);
         x += rankWidth + spaceX;
         drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state);
