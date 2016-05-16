@@ -84,14 +84,17 @@ public class CreepingLineView extends CustomComponent implements View {
 //        HorizontalLayout actions = new HorizontalLayout(newMessage);
 
         TwitterStreamQueryForm twitterQueryForm = new TwitterStreamQueryForm(TwitterLoader.getInstance().getTwitterQueryString());
-        VerticalLayout left = new VerticalLayout(messageList, twitterQueryForm, messageFlow);
+        TwitterSearchForm twitterSearchForm = new TwitterSearchForm();
+        VerticalLayout left = new VerticalLayout(messageList, twitterQueryForm, twitterSearchForm, messageFlow);
         left.setSizeFull();
         messageList.setSizeFull();
         messageFlow.setSizeFull();
         twitterQueryForm.setSizeFull();
+        twitterSearchForm.setSizeFull();
         left.setExpandRatio(messageList, 1);
         left.setExpandRatio(messageFlow, 1);
         left.setExpandRatio(twitterQueryForm, 1);
+        left.setExpandRatio(twitterSearchForm, 1);
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, messageForm);
         mainLayout.setSizeFull();
@@ -136,6 +139,35 @@ public class CreepingLineView extends CustomComponent implements View {
         private void changeQuery() {
             synchronized (field) {
                 TwitterLoader.changeStreamInInstance(field.getValue());
+            }
+        }
+    }
+    class TwitterSearchForm extends FormLayout {
+        private final TextField field;
+
+        public TwitterSearchForm() {
+            field = new TextField("Search", "");
+            field.addShortcutListener(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
+                @Override
+                public void handleAction(Object sender, Object target) {
+                    searchQuery();
+                }
+            });
+            Button apply = new Button("Apply", event -> {
+                searchQuery();
+            });
+            CssLayout layout = Utils.createGroupLayout(field, apply);
+//            layout.setExpandRatio(field, 4);
+//            layout.setExpandRatio(apply, 1);
+            field.setSizeFull();
+//            field.set
+            addComponent(layout);
+            layout.setSizeFull();
+        }
+
+        private void searchQuery() {
+            synchronized (field) {
+                TwitterLoader.getInstance().addSearch(field.getValue());
             }
         }
     }

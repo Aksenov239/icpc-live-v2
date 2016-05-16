@@ -149,7 +149,7 @@ public class MessageData {
         // messageList.addBean(message);
         synchronized (messageFlow) {
             messageFlow.addItemAt(0, message);
-            int toRemove = 5;
+            int toRemove = 200;
             if (messageFlow.size() > 2 * toRemove) {
                 while (messageFlow.size() > toRemove) {
                     messageFlow.removeItem(messageFlow.getIdByIndex(toRemove));
