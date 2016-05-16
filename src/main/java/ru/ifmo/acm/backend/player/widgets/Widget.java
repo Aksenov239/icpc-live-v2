@@ -324,6 +324,7 @@ public abstract class Widget {
         x += nameWidth + spaceX;
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
     }
 
     long lastChangeTimestamp;

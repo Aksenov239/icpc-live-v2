@@ -154,7 +154,8 @@ public class NewTeamWidget extends VideoWidget {
 //            return;
 //        }
 
-        int newVolume = (int) (10 * visibilityState) * 5;
+        int newVolume = (int) (10 * visibilityState) * 10;
+        newVolume = Math.min(newVolume, 99);
         if (newVolume != volume) {
             System.out.println("Set volume " + newVolume);
             volume = newVolume;
