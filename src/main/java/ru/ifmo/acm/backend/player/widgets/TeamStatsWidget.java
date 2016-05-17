@@ -48,8 +48,8 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final Color TOP_FOREGROUND = Color.WHITE;
     private static final Color STATS_TITLE = Color.WHITE;
     private static final Color NAME_COLOR = Color.WHITE;
-    private static final Color TOP_BACKGROUND = Color.CYAN;
-    private static final Color BOTTOM_BACKGROUND = Color.BLUE;
+    private static final Color TOP_BACKGROUND = Color.decode("#3567AD");
+    private static final Color BOTTOM_BACKGROUND = Color.decode("#3A235B");
     private static final String[] TITLE = {
             "Appearances",
             "Wins",

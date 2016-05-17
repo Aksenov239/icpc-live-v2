@@ -91,7 +91,7 @@ public class Main {
 
         generator.addWidget(widget);
 
-//        widget.showTeam(74);
+        widget.showTeam(74);
 
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
