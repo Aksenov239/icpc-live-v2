@@ -166,4 +166,13 @@ public class RotatableWidget extends Widget {
     public void setMovable(BufferedImage movable) {
         this.movable = movable;
     }
+
+    public void close() {
+        if (state == State.FADING_OUT || state == State.HIDDEN) {
+            return;
+        }
+        state = State.FADING_OUT;
+        timeRemaining = fadeTime;
+        lastDraw = System.currentTimeMillis();
+    }
 }
