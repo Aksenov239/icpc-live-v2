@@ -60,7 +60,7 @@ public class SplitScreenWidget extends Widget {
             teamInfoWidgets[i].setVisible(true);
             teamInfoWidgets[i].change(
                     Preparation.eventsLoader.getContestData().getParticipant(teamId), defaultType);
-            lastSwitch[i] = System.currentTimeMillis() + switchTime * i;
+            lastSwitch[i] = System.currentTimeMillis() + switchTime / (4 - i);
         }
 
         usersQueue = TwitterBasedQueue.getInstance();
@@ -103,7 +103,7 @@ public class SplitScreenWidget extends Widget {
         // TODO: when frozen always switch onto teamId screen
         while (currentRunId <= contestInfo.getMaxRunId() && replayRun == null) {
             if (contestInfo.getRun(currentRunId) != null &&
-                    contestInfo.getRun(currentRunId).getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&
+                    contestInfo.getRun(currentRunId).timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
                     contestInfo.getRun(currentRunId).isAccepted()) {
                 replayRun = contestInfo.getRun(currentRunId);
             }
@@ -190,7 +190,6 @@ public class SplitScreenWidget extends Widget {
                 }
             }
         }
-
     }
 
     @Override

@@ -458,8 +458,13 @@ public class WFEventsLoader extends EventsLoader {
                                 contestInfo.problemNumber++;
                                 break;*/
                             case "starttime":
+                                String starttime = xmlEventReader.getElementText();
+                                if ("undefined".equals(starttime)) {
+                                    Thread.sleep(2000);
+                                    throw new Exception("The start time is undefined");
+                                }
                                 contestInfo.setStartTime(
-                                        (long) (Double.parseDouble(xmlEventReader.getElementText().replace(",", "."))
+                                        (long) (Double.parseDouble(starttime.replace(",", "."))
                                                 * 1000));
                                 if (emulation) {
                                     contestInfo.setStartTime(System.currentTimeMillis());
@@ -505,7 +510,7 @@ public class WFEventsLoader extends EventsLoader {
                 }
                 contestInfo.recalcStandings();
                 break;
-            } catch (IOException | XMLStreamException e) {
+            } catch (Exception e) {
                 log.error("error", e);
             }
         }

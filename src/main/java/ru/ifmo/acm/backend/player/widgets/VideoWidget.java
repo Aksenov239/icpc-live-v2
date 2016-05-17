@@ -8,53 +8,53 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author: pashka
  */
 public class VideoWidget extends Widget implements PlayerWidget {
     private PlayerInImage player;
-    protected AtomicReference<BufferedImage> image;
-    protected AtomicBoolean inChange;
-    protected AtomicBoolean ready;
-    protected AtomicBoolean stopped;
+    protected BufferedImage image;
+
+    protected boolean inChange;
+    protected boolean ready;
+    protected boolean stopped;
+
     protected int x;
     protected int y;
     protected int width;
     protected int height;
     protected int sleepTime;
-    protected AtomicReference<String> URL;
+    protected String currentUrl;
 
     public VideoWidget(int x, int y, int width, int height, int sleepTime, long updateWait) {
         super(updateWait);
-        this.URL = new AtomicReference<>(null);
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         player = new PlayerInImage(width, height, null, null);
-        image = new AtomicReference<BufferedImage>(player.getImage());
+        image = player.getImage();
         this.sleepTime = sleepTime;
-        inChange = new AtomicBoolean();
-        ready = new AtomicBoolean(true);
-        stopped = new AtomicBoolean();
+        ready = true;
     }
 
     private PlayerInImage manualTempPlayer;
     private String manualTempURL;
 
     public void changeManually(String url) {
-        if (url == null) {
-            manualTempURL = null;
-            return;
-        }
-        manualTempPlayer = new PlayerInImage(width, height, null, url);
-        manualTempURL = url;
+        SwingUtilities.invokeLater(() -> {
+            if (url == null) {
+                manualTempURL = null;
+                return;
+            }
+            manualTempPlayer = new PlayerInImage(width, height, null, url);
+            manualTempURL = url;
+        });
     }
 
     public void switchManually() {
+        checkEDT();
         if (manualTempURL == null) {
             stop();
             return;
@@ -62,66 +62,68 @@ public class VideoWidget extends Widget implements PlayerWidget {
         JComponent component = player.getComponent();
         player.setComponent(null);
         manualTempPlayer.setComponent(component);
-        if (!stopped.get()) {
+        if (!stopped) {
             player.stop();
         }
         player = manualTempPlayer;
-        image.set(player.getImage());
-        URL.set(manualTempURL);
-        stopped.set(false);
+        image = player.getImage();
+        currentUrl = manualTempURL;
+        stopped = false;
     }
 
-    public void change(final String url) {
-        if (url == null) {
-            if (!stopped.get()) {
-                URL.set(null);
-                stop();
-            }
-            return;
-        }
-        ready.set(false);
-        new Thread() {
-            public void run() {
-                PlayerInImage player2 = new PlayerInImage(width, height, null, url);
-                try {
-                    Thread.sleep(sleepTime);
-                } catch (Exception e) {
-                    log.error("error", e);
+    public void change(String url) {
+        log.info("Change to " + url);
+        SwingUtilities.invokeLater(() -> {
+            if (url == null) {
+                if (!stopped) {
+                    currentUrl = null;
+                    stop();
                 }
-
+                return;
+            }
+            ready = false;
+            PlayerInImage player2 = new PlayerInImage(width, height, null, url);
+            Timer timer = new Timer(sleepTime, (a) -> {
                 JComponent component = player.getComponent();
                 player.setComponent(null);
                 player2.setComponent(component);
-                inChange.set(true);
-                if (!stopped.get()) {
+                inChange = true;
+                if (!stopped) {
                     player.stop();
                 }
                 player = player2;
-                image.set(player2.getImage());
-                ready.set(true);
-                URL.set(url);
-                stopped.set(false);
-            }
-        }.start();
+                image = player2.getImage();
+                ready = true;
+                currentUrl = url;
+                stopped = false;
+            });
+            timer.setRepeats(false);
+            timer.start();
+        });
     }
 
     public void setVolume(int volume) {
+        checkEDT();
         player.setVolume(volume);
     }
 
     public void stop() {
-        if (player != null && !stopped.get()) {
-            player.stop();
-        }
-        stopped.set(true);
-        URL.set(null);
+        SwingUtilities.invokeLater(() -> {
+            if (player != null && !stopped) {
+                player.stop();
+            }
+            stopped = true;
+            currentUrl = null;
+        });
     }
 
     public boolean readyToShow() {
-        return ready.get();
+        checkEDT();
+        return ready;
     }
 
     public MediaPlayer getPlayer() {
+        checkEDT();
         return player.getPlayer();
     }
 
@@ -132,6 +134,14 @@ public class VideoWidget extends Widget implements PlayerWidget {
     @Override
     protected CachedData getCorrespondingData(Data data) {
         return null;
+    }
+
+    private void checkEDT() {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            IllegalStateException e = new IllegalStateException();
+            log.error("Not in EDT!", e);
+            throw e;
+        }
     }
 
 }
