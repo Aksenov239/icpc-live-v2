@@ -11,6 +11,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
 import ru.ifmo.acm.datapassing.CachedData;
+import ru.ifmo.acm.events.WF.WFRunInfo;
 
 /**
  * @author: pashka
@@ -101,15 +102,18 @@ public class SplitScreenWidget extends Widget {
         WFContestInfo contestInfo = (WFContestInfo) Preparation.eventsLoader.getContestData();
         RunInfo replayRun = null;
         // TODO: when frozen always switch onto teamId screen
+        System.err.println("Choosing replay");
         while (currentRunId <= contestInfo.getMaxRunId() && replayRun == null) {
-            if (contestInfo.getRun(currentRunId) != null &&
-//                    contestInfo.getRun(currentRunId).timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
-                    contestInfo.getRun(currentRunId).getLastUpdateTimestamp() * 1000 + relevanceTime > System.currentTimeMillis() &&
-                    contestInfo.getRun(currentRunId).isAccepted()) {
-                replayRun = contestInfo.getRun(currentRunId);
+            WFRunInfo run = contestInfo.getRun(currentRunId);
+            if (run != null &&
+                    contestInfo.getRun(currentRunId).timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
+//                    run.getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&
+                    run.isAccepted()) {
+                replayRun = run;
             }
             currentRunId++;
         }
+        log.info("Found replay " + replayRun);
         if (replayRun != null) {
             teamInfoWidgets[widget].change(replayRun);
             lastSwitch[widget] = System.currentTimeMillis() - switchTime + replayTime;

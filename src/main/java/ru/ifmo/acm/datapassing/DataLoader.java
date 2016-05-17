@@ -117,12 +117,16 @@ public class DataLoader {
                     ntries = 0;
                     if (pw.checkError()) {
                         log.info("Client socket is closed");
+                        pw.close();
+                        br.close();
                         continue;
                     }
                 } else {
                     ntries++;
                     if (ntries == 5) {
                         log.info("Client socket is closed");
+                        pw.close();
+                        br.close();
                         continue;
                     }
                 }
@@ -156,10 +160,14 @@ public class DataLoader {
 //        new Timer().schedule(new TimerTask() {
         new Thread(() -> {
             while (true) {
-                try (Socket socket = new Socket(host, port)) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-                    while (!socket.isClosed()) {
+                try (
+                        Socket socket = new Socket(host, port);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                        PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))
+                ) {
+                    while (!socket.isClosed())
+
+                    {
                         writer.println("ready");
                         writer.flush();
                         if (writer.checkError()) {
