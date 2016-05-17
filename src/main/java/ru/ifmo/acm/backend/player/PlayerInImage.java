@@ -22,30 +22,51 @@ public class PlayerInImage {
     private static final Logger log = LogManager.getLogger(PlayerInImage.class);
 
     private final BufferedImage image;
+    private final String media;
     private JComponent frame;
+    private final MediaPlayerFactory factory;
     private final MediaPlayer mediaPlayer;
+    private boolean stopped;
 
     public PlayerInImage(int width, int height, JComponent frame, String media) {
+        this.media = media;
         image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height);
         image.setAccelerationPriority(1.0f);
         this.frame = frame;
-        MediaPlayerFactory factory = new MediaPlayerFactory(new String[0]);
+        factory = new MediaPlayerFactory(new String[0]);
         mediaPlayer = factory.newDirectMediaPlayer(new TestBufferFormatCallback(), new TestRenderCallback());
 //        mediaPlayer.setRepeat(true);
 //        mediaPlayer.addMediaOptions(":file-caching=1500");
 //        mediaPlayer.setStandardMediaOptions(":file-caching=1500");
 //        mediaPlayer.setVolume(0);
-        mediaPlayer.setAspectRatio("4:3");
+        mediaPlayer.setAspectRatio("16:9");
         if (media != null)
             mediaPlayer.playMedia(media, ":file-caching=0");
         log.info("PLAY!!! " + media);
     }
 
     public void stop() {
-        new Thread(() -> {
+        checkEDT();
+        if (stopped)
+            return;
+        stopped = true;
+        Thread t = new Thread(() -> {
+            log.info("Stopping media player");
             mediaPlayer.stop();
+            log.info("Stopped media player");
             mediaPlayer.release();
-        });
+            factory.release();
+        }, "Stopper-" + media);
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void checkEDT() {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            IllegalStateException e = new IllegalStateException();
+            log.error("Not in EDT!", e);
+            throw e;
+        }
     }
 
     public JComponent getComponent() {

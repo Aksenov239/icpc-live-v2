@@ -18,7 +18,6 @@ public class VideoWidget extends Widget implements PlayerWidget {
 
     protected boolean inChange;
     protected boolean ready;
-    protected boolean stopped;
 
     protected int x;
     protected int y;
@@ -62,23 +61,18 @@ public class VideoWidget extends Widget implements PlayerWidget {
         JComponent component = player.getComponent();
         player.setComponent(null);
         manualTempPlayer.setComponent(component);
-        if (!stopped) {
-            player.stop();
-        }
+        player.stop();
         player = manualTempPlayer;
         image = player.getImage();
         currentUrl = manualTempURL;
-        stopped = false;
     }
 
     public void change(String url) {
         log.info("Change to " + url);
         SwingUtilities.invokeLater(() -> {
             if (url == null) {
-                if (!stopped) {
-                    currentUrl = null;
-                    stop();
-                }
+                currentUrl = null;
+                stop();
                 return;
             }
             ready = false;
@@ -88,14 +82,11 @@ public class VideoWidget extends Widget implements PlayerWidget {
                 player.setComponent(null);
                 player2.setComponent(component);
                 inChange = true;
-                if (!stopped) {
-                    player.stop();
-                }
+                player.stop();
                 player = player2;
                 image = player2.getImage();
                 ready = true;
                 currentUrl = url;
-                stopped = false;
             });
             timer.setRepeats(false);
             timer.start();
@@ -109,10 +100,9 @@ public class VideoWidget extends Widget implements PlayerWidget {
 
     public void stop() {
         SwingUtilities.invokeLater(() -> {
-            if (player != null && !stopped) {
+            if (player != null) {
                 player.stop();
             }
-            stopped = true;
             currentUrl = null;
         });
     }
