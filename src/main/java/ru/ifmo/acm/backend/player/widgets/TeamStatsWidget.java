@@ -36,7 +36,7 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int TOP_HEIGHT = 132;
     private static final int[] SHIFTS = new int[]{0, INITIAL_SHIFT, INITIAL_SHIFT + PERSON_SHIFT,
             INITIAL_SHIFT + PERSON_SHIFT * 2, BOTTOM_WIDTH - WIDTH};
-    private static final int SHOW_TIME = 3000;
+    private static final int SHOW_TIME = 5000;
     private static final int SHIFT_SPEED = 1100;
     private static final int FADE_TIME = 1000;
     private static final int UNIVERSITY_NAME_X = 128;
