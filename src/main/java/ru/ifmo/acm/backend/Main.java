@@ -5,13 +5,13 @@ import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import ru.ifmo.acm.backend.player.widgets.*;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 //import org.json.JSONException;
 
@@ -86,6 +86,12 @@ public class Main {
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
         generator.addWidget(new ClockWidget(updateWait));
+
+        TeamStatsWidget widget = new TeamStatsWidget(updateWait);
+
+        generator.addWidget(widget);
+
+        widget.showTeam(74);
 
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
