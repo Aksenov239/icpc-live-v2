@@ -178,67 +178,43 @@ public class TeamWidget extends VideoWidget {
             }
 
 
+            for (int j = 0; j < runs.length; j++) {
+                RunInfo run = runs[j];
+                if ("AC".equals(run.getResult())) {
+                    if (!isFull) {
+                        drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
+                                RUN_WIDTH, HEIGHT, POSITION_CENTER, Color.GREEN, Color.WHITE,
+                                i == currentProblemId ? getTimeOpacity() : 1,
+                                WidgetAnimation.UNFOLD_ANIMATED
+                        );
+                    }
 
-            if (!isFull) {
-                for (int j = 0; j < runs.length; j++) {
-                    RunInfo run = runs[j];
-                    if ("AC".equals(run.getResult())) {
+                    if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         if (!isFull) {
-                            drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
-                                    RUN_WIDTH, HEIGHT, POSITION_CENTER, Color.GREEN, Color.WHITE,
-                                    i == currentProblemId ? getTimeOpacity() : 1,
-                                    WidgetAnimation.UNFOLD_ANIMATED
-                            );
-                        }
-
-                        break;
-                    } else {
-                        if (isFull) {
-                            continue;
-                        }
-                        Color color = "".equals(run.getResult()) ? YELLOW : RED;
-                        if (j == runs.length - 1) {
-                            drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
-                                    RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
-                                    i == currentProblemId ? getTimeOpacity() : 1,
-                                    WidgetAnimation.UNFOLD_ANIMATED
-                            );
-
-                            if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
-                               if (!isFull) {
-                                   drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
-                               } else {
-                                   drawStar(g, X + (PR_WIDTH + GAP_X) * i, this.y + dy, (int) STAR_SIZE);
-                               }
-                            }
-                            x += RUN_WIDTH + GAP_X;
+                            drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                         } else {
-                            drawTextInRect(g, "", this.x + x, this.y + y,
-                                    RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
-                            x += RUN_SMALL_WIDTH + GAP_X;
+                            drawStar(g, X + (PR_WIDTH + GAP_X) * i + PR_WIDTH, (this.y + dy), (int) (STAR_SIZE * 0.9));
                         }
                     }
-                }
-
-                int x = X + PR_WIDTH + GAP_X;
-                for (int j = 0; j < runs.length; j++) {
-                    RunInfo run = runs[j];
-                    Color color = run.getResult().equals("AC") ? GREEN : run.getResult().equals("") ? YELLOW : RED;
+                    break;
+                } else {
+                    if (isFull) {
+                        continue;
+                    }
+                    Color color = "".equals(run.getResult()) ? YELLOW : RED;
                     if (j == runs.length - 1) {
                         drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
                                 RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
-                        //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
-                        if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
-                            drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
-                        }
+
                         x += RUN_WIDTH + GAP_X;
-                    } else if (run.getTime() != runs[j + 1].getTime()) {
-
+                    } else {
+                        drawTextInRect(g, "", this.x + x, this.y + y,
+                                RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                        x += RUN_SMALL_WIDTH + GAP_X;
                     }
-
                 }
             }
         }
