@@ -28,7 +28,7 @@ public class WFEventsLoader extends EventsLoader {
     public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static WFContestInfo contestInfo;
 
-    public static double SPEED = 1;
+    public static double SPEED = 20;
 
     private String url;
     private String teamsInfoURL;

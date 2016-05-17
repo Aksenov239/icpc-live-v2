@@ -60,7 +60,7 @@ public class NewTeamWidget extends VideoWidget {
         } else {
             setVisible(true);
             //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
-            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready.get()) {
+            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready) {
                 //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 if (team == null) {
@@ -137,20 +137,20 @@ public class NewTeamWidget extends VideoWidget {
             return;
         }
 
-        if (inChange.get()) {
+        if (inChange) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
-            inChange.set(false);
+            inChange = false;
             smallVideo.switchManually();
         }
 
-        if (team == null || URL.get() == null) {
+        if (team == null || currentUrl == null) {
             setVisibilityState(0);
             return;
         }
 
-//        if (URL.get() == null || URL.get().contains("info")) {
+//        if (currentUrl.get() == null || currentUrl.get().contains("info")) {
 //            return;
 //        }
 
@@ -167,13 +167,13 @@ public class NewTeamWidget extends VideoWidget {
             double x = visibilityState;
             xVideo = this.x = (int) (BIG_X + width * (1 - 3 * x * x + 2 * x * x * x));
         }
-        if (smallVideo != null && smallVideo.URL.get() != null) {
+        if (smallVideo != null && smallVideo.currentUrl != null) {
             double x = visibilityState;
             smallVideo.x = (int) (SMALL_X - width * (1 - 3 * x * x + 2 * x * x * x));
             smallVideo.paintImpl(g, width, height);
         }
 
-        g.drawImage(image.get(), xVideo, yVideo, null);
+        g.drawImage(image, xVideo, yVideo, null);
 
         if (currentProblemId >= 0) {
             drawReplay(g, x, y, this.width, this.height);

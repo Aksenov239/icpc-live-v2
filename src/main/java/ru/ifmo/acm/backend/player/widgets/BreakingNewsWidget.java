@@ -157,7 +157,7 @@ public class BreakingNewsWidget extends VideoWidget {
             return;
         }
 
-        if (!ready.get()) {
+        if (!ready) {
             visibilityState = 0;
             return;
         }
@@ -189,9 +189,9 @@ public class BreakingNewsWidget extends VideoWidget {
 
 //        log.debug(visibilityState + " " + opacity);
 
-        if (run == null || URL.get() != null) {
+        if (run == null || currentUrl != null) {
             int hh = (int) (hVideo * opacity);
-            g.drawImage(image.get(), x, y + (hVideo - hh) / 2, wVideo, hh, null);
+            g.drawImage(image, x, y + (hVideo - hh) / 2, wVideo, hh, null);
         }
 
         int y = this.y + hVideo + GAP;

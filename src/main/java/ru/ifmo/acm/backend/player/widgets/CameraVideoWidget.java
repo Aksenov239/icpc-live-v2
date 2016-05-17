@@ -16,7 +16,7 @@ public class CameraVideoWidget extends VideoWidget {
     }
 
     protected void updateImpl(Data data) {
-        if (data.cameraData.cameraURL != null && !data.cameraData.cameraURL.equals(URL) && !inChange.get() && ready.get()) {
+        if (data.cameraData.cameraURL != null && !data.cameraData.cameraURL.equals(currentUrl) && !inChange && ready) {
             change(data.cameraData.cameraURL);
         }
     }
