@@ -29,13 +29,13 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int INITIAL_SHIFT = WIDTH + MARGIN;
     private static final int PERSON_WIDTH = 1066;
     private static final int PERSON_SHIFT = PERSON_WIDTH + MARGIN;
-    private static final int BOTTOM_WIDTH = WIDTH + 4 * PERSON_WIDTH + 4 * MARGIN;
+    private static final int BOTTOM_WIDTH = WIDTH + 3 * PERSON_WIDTH + 4 * MARGIN + WIDTH;
     private static final int BOTTOM_HEIGHT = 178;
     private static final int LOGO_SIZE = 88;
     private static final int LOGO_SHIFT = 22;
     private static final int TOP_HEIGHT = 132;
     private static final int[] SHIFTS = new int[]{0, INITIAL_SHIFT, INITIAL_SHIFT + PERSON_SHIFT,
-            INITIAL_SHIFT + PERSON_SHIFT * 2, BOTTOM_WIDTH - WIDTH};
+            INITIAL_SHIFT + PERSON_SHIFT * 2, INITIAL_SHIFT + PERSON_SHIFT * 3};
     private static final int SHOW_TIME = 5000;
     private static final int SHIFT_SPEED = 1100;
     private static final int FADE_TIME = 1000;
@@ -130,7 +130,7 @@ public class TeamStatsWidget extends RotatableWidget {
         Person[] persons = {record.coach, record.contestants[0], record.contestants[1], record.contestants[2]};
         for (int i = 0; i < 4; i++) {
             g.setColor(BOTTOM_BACKGROUND);
-            g.fillRect(x, 0, PERSON_WIDTH, BOTTOM_HEIGHT);
+            g.fillRect(x, 0, i == 3 ? WIDTH : PERSON_WIDTH, BOTTOM_HEIGHT);
             drawPersonProfile(g, x, persons[i], i == 0);
             x += PERSON_WIDTH + MARGIN;
         }
