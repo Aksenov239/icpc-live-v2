@@ -393,13 +393,8 @@ public class WFEventsLoader extends EventsLoader {
 
                 int total = 0;
                 while (xmlEventReader.hasNext()) {
-                    XMLEvent xmlEvent = null;
-                    try {
-                        xmlEvent = xmlEventReader.nextEvent();
-                    } catch (XMLStreamException e) {
-                        log.error("error", e);
-                        break;
-                    }
+                    XMLEvent xmlEvent =
+                            xmlEventReader.nextEvent();
                     if (xmlEvent.isStartElement()) {
                         StartElement startElement = xmlEvent.asStartElement();
                         switch (startElement.getName().getLocalPart()) {
@@ -460,7 +455,7 @@ public class WFEventsLoader extends EventsLoader {
                             case "starttime":
                                 String starttime = xmlEventReader.getElementText();
                                 if ("undefined".equals(starttime)) {
-                                    Thread.sleep(2000);
+                                    contestInfo.setStartTime(0);
                                     throw new Exception("The start time is undefined");
                                 }
                                 contestInfo.setStartTime(
@@ -512,6 +507,13 @@ public class WFEventsLoader extends EventsLoader {
                 break;
             } catch (Exception e) {
                 log.error("error", e);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e1){
+                    log.error("error", e1);
+                }
+                log.info("Restart event read");
+                System.err.println("Restart event read");
             }
         }
     }
