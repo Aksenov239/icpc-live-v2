@@ -9,6 +9,7 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Math.*;
@@ -124,10 +125,10 @@ public class StatisticsWidget extends Widget {
         y = plateHeight + spaceY * BIG_SPACE_COUNT;
         for (int problemId = 0; problemId < problems.size(); problemId++) {
             int x = problemWidth + spaceX;
-
+            int wrong = submitted[problemId] - solved[problemId] - pending[problemId];
             int totalW = fullWidth * solved[problemId] / info.teamNumber +
                          fullWidth * pending[problemId] / info.teamNumber +
-                         fullWidth * pending[problemId] / info.teamNumber;
+                         fullWidth * wrong / info.teamNumber;
 
             int shownWidth = (int)ceil(statisticVisibilityState * totalW);
 
@@ -157,7 +158,7 @@ public class StatisticsWidget extends Widget {
                 x += w + spaceX;
             }
 
-            int wrong = submitted[problemId] - pending[problemId] - solved[problemId];
+            ;
             if (wrong > 0) {
                 int w = fullWidth * wrong / info.teamNumber;
                 String text = wrong < 2 ? "" : "" + wrong;
@@ -194,6 +195,7 @@ public class StatisticsWidget extends Widget {
                         }
                         if (!runInfo.isJudged()) {
                             pending[problemId]++;
+                            break;
                         }
                     }
                 }
