@@ -42,8 +42,10 @@ public class PlayerInImage {
     }
 
     public void stop() {
-        mediaPlayer.stop();
-        mediaPlayer.release();
+        new Thread(() -> {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        });
     }
 
     public JComponent getComponent() {

@@ -455,8 +455,10 @@ public class WFEventsLoader extends EventsLoader {
                             case "starttime":
                                 String starttime = xmlEventReader.getElementText();
                                 if ("undefined".equals(starttime)) {
-                                    contestInfo.setStartTime(0);
+                                    contestInfo.setPaused(true);
                                     throw new Exception("The start time is undefined");
+                                } else {
+                                    contestInfo.setPaused(false);
                                 }
                                 contestInfo.setStartTime(
                                         (long) (Double.parseDouble(starttime.replace(",", "."))
