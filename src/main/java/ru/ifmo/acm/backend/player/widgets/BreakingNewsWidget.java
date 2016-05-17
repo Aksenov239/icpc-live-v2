@@ -117,7 +117,7 @@ public class BreakingNewsWidget extends VideoWidget {
                     if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[problemId]) {
                         caption = "First to solve";
                     } else if (team.getRank() <= 12) {
-                        caption = "Becomes " + team.getRank() + " by solving";
+                        caption = "Solved";
                     } else {
                         caption = "Solved";
                     }
