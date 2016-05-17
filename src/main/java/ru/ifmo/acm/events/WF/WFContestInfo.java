@@ -1,12 +1,15 @@
 package ru.ifmo.acm.events.WF;
 
 import ru.ifmo.acm.datapassing.StandingsData;
+import ru.ifmo.acm.events.AnalystMessage;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by aksenov on 05.05.2015.
@@ -18,6 +21,7 @@ public class WFContestInfo extends ContestInfo {
     public long[] timeFirstSolved;
     private int maxRunId;
     WFRunInfo[] firstSolvedRun;
+    private BlockingQueue<AnalystMessage> messageQueue = new LinkedBlockingQueue<>();
 
     private WFTeamInfo[] standings = null;
 
@@ -229,5 +233,14 @@ public class WFContestInfo extends ContestInfo {
         }
 
         return null;
+    }
+
+    @Override
+    public BlockingQueue<AnalystMessage> getAnalystMessages() {
+        return messageQueue;
+    }
+
+    public void addMessage(AnalystMessage message) {
+        messageQueue.add(message);
     }
 }

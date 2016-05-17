@@ -156,7 +156,7 @@ public class MessageForm extends FormLayout {
         this.message.clear();
         timeBox.setVisible(true);
         timeBox.setValue(timeBoxValues[0]);
-        this.message.setValue(message.getMessage());
+        this.message.setValue((message.getSource() == null || message.getSource().isEmpty() ? "" : message.getSource() + ": ") + message.getMessage());
         advertBox.setValue(message.getIsAdvertisement());
         form.setVisible(true);
     }
