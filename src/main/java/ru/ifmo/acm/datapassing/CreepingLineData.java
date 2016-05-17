@@ -2,6 +2,7 @@ package ru.ifmo.acm.datapassing;
 
 import ru.ifmo.acm.creepingline.Message;
 import ru.ifmo.acm.creepingline.MessageData;
+import ru.ifmo.acm.mainscreen.Advertisement;
 
 import java.util.List;
 //import java.util.concurrent.atomic.AtomicStampedReference;
@@ -11,9 +12,12 @@ import java.util.List;
  */
 public class CreepingLineData implements CachedData {
     public List<Message> messages;
+    public List<Advertisement> logos;
 
     public CreepingLineData initialize() {
         messages = MessageData.getMessageData().getMessages();
+        logos = MessageData.getMessageData().getLogos();
+
         return this;
     }
 }

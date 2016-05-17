@@ -4,12 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
+import ru.ifmo.acm.datapassing.CreepingLineData;
+import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.mainscreen.Advertisement;
+import ru.ifmo.acm.mainscreen.Utils;
 
 import java.io.IOException;
-import java.util.*;
-import ru.ifmo.acm.datapassing.Data;
-import ru.ifmo.acm.datapassing.CreepingLineData;
-import ru.ifmo.acm.mainscreen.Utils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -30,30 +33,19 @@ public class MessageData {
     }
 
     private String backup;
+    private String logoBackup;
 
     public MessageData() {
         Properties properties = new Properties();
         try {
             properties.load(getClass().getResourceAsStream("/creepingline.properties"));
             backup = properties.getProperty("backup.file.name");
+            logoBackup = properties.getProperty("backup.logo.file.name");
         } catch (IOException e) {
             log.error("error", e);
         }
-//        messageList = new ArrayList<>();
-//        messageList = new BeanItemContainer<>(Message.class);
-        messageList = new BackUp<Message>(Message.class, backup);
-//        reload();
-//
-//        new Timer().scheduleAtFixedRate(
-//                new TimerTask() {
-//                    public void run() {
-//                        backup();
-//                    }
-//                },
-//                0L,
-//                60000L);
-
-//                }, 0L, 2000L);
+        messageList = new BackUp<>(Message.class, backup);
+        logosList = new BackUp<>(Advertisement.class, logoBackup);
         Utils.StoppedThread update = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
             public void run() {
@@ -71,94 +63,44 @@ public class MessageData {
         ContextListener.addThread(update);
     }
 
-    //final List<Message> messageList;
-    // final BeanItemContainer<Message> messageList;
     final BackUp<Message> messageList;
-
-//    public void reload() {
-//        synchronized (messageList) {
-//            messageList.removeAllItems();
-//            File file = new File(backup);
-//            if (file.exists()) {
-//                try {
-//                    Scanner sc = new Scanner(file);//getClass().getResourceAsStream("/" + backup));
-//                    while (sc.hasNextLine()) {
-//                        long start = Long.parseLong(sc.nextLine());
-//                        long end = Long.parseLong(sc.nextLine());
-//                        String msg = sc.nextLine();
-//                        boolean isAd = Boolean.parseBoolean(sc.nextLine());
-//                        messageList.addBean(new Message(msg, start, end - start, isAd));
-//                    }
-//                    sc.close();
-//                } catch (IOException e) {
-//                    log.error("error", e);
-//                }
-//            }
-//        }
-//    }
-//
-//    public void backup() {
-//        try {
-//            String path = backup;//getClass().getResource(backup).getPath();
-//
-//            String tmpFile = path + ".tmp";
-//
-//            PrintWriter out = new PrintWriter(path + ".tmp");
-//            synchronized (messageList) {
-//                for (Message message : messageList.getItemIds()) {
-//                    out.println(message.getCreationTime());
-//                    out.println(message.getEndTime());
-//                    out.println(message.getMessage());
-//                    out.println(message.getIsAdvertisement());
-//                }
-//            }
-//            out.close();
-//
-//            Files.move(new File(tmpFile).toPath(), new File(backup).toPath(), StandardCopyOption.REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            log.error("error", e);
-//        }
-//    }
+    public final BackUp<Advertisement> logosList;
 
     private void recache() {
         Data.cache.refresh(CreepingLineData.class);
     }
 
+    public void addLogo(Advertisement logo) {
+        logosList.addItem(logo);
+    }
+
+    public void removeLogo(Advertisement logo) {
+        logosList.removeItem(logo);
+    }
+
+    public List<Advertisement> getLogos() {
+        return logosList.getData();
+    }
+
+    public void setLogoValue(Object key, String value) {
+        logosList.setProperty(key, "advertisement", value);
+    }
+
     public void removeMessage(Message message) {
-//        synchronized (messageList) {
-//            messageList.removeItem(message);
-//        }
         messageList.removeItem(message);
         recache();
     }
 
     public void addMessage(Message message) {
-        // messageList.addBean(message);
         messageList.addItem(message);
         recache();
     }
 
     public List<Message> getMessages() {
-//        synchronized (messageList) {
-//            return messageList.getItemIds();
-//        }
         return messageList.getData();
     }
 
     public void tick() {
-//        synchronized (messageList) {
-//            List<Message> toDelete = new ArrayList<Message>();
-//            for (Message message : messageList.getItemIds()) {
-//                if (message.getEndTime() < System.currentTimeMillis()) {
-//                    toDelete.add(message);
-//                }
-//            }
-//
-//            for (Message message : toDelete) {
-//                messageList.removeItem(message);
-//            }
-//            fireListeners();
-//        }
         List<Message> toDelete = new ArrayList<Message>();
         messageList.getData().forEach(msg -> {
             if (msg.getEndTime() < System.currentTimeMillis()) {
