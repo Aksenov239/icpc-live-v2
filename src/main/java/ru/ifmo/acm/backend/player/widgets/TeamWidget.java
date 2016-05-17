@@ -148,21 +148,19 @@ public class TeamWidget extends VideoWidget {
             drawTeamPane(g, team, x + dx, y + dy, HEIGHT, 1, RANK_WIDTH * 0.9, NAME_WIDTH, TOTAL_WIDTH * 0.9, PENALTY_WIDTH * 0.9);
         }
         g.setFont(FONT2);
+
         for (int i = 0; i < team.getRuns().length; i++) {
             RunInfo[] runs = team.getRuns()[i].toArray(new RunInfo[0]);
 
             Color problemColor = MAIN_COLOR;
             for (int j = 0; j < runs.length; j++) {
                 RunInfo run = runs[j];
-                if (run.getResult().equals("AC")) {
+                if ("AC".equals(run.getResult())) {
                     problemColor = GREEN;
                     break;
                 }
-                if (run.getResult().equals("")) {
-                    problemColor = YELLOW;
-                } else {
-                    problemColor = RED;
-                }
+
+                problemColor = "".equals(run.getResult()) ? YELLOW : RED;
             }
 
             if (!isFull) {
@@ -186,12 +184,12 @@ public class TeamWidget extends VideoWidget {
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
                     }
-
                     if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         if (!isFull) {
                             drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                         } else {
-                            drawStar(g, X + (PR_WIDTH + GAP_X) * i + PR_WIDTH, (this.y + dy), (int) (STAR_SIZE * 0.9));
+                            int x = X + (PR_WIDTH + GAP_X) * i + PR_WIDTH;
+                            drawStar(g, this.x + x, (this.y + dy), (int) (STAR_SIZE * 0.9));
                         }
                     }
                     break;
