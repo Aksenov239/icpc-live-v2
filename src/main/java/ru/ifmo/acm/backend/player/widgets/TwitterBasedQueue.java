@@ -51,7 +51,7 @@ public class TwitterBasedQueue extends Thread {
         return tbq;
     }
 
-    public int currentThreshold() {
+    public synchronized int currentThreshold() {
         return Math.min(votesToShow, queue.size() / 2 + 1);
     }
 
@@ -136,35 +136,39 @@ public class TwitterBasedQueue extends Thread {
 //        firstRun = false;
 //    }
 
+    private synchronized void doOnStatus(Status status) {
+        long timestamp = status.getCreatedAt().getTime();
+        if (lastTweetFromUser.getOrDefault(status.getUser().getId(), 0L) + accountWaitTime > timestamp) {
+            return;
+        }
+        lastId = Math.max(status.getId(), lastId);
+        for (HashtagEntity entity : status.getHashtagEntities()) {
+            String hashTag = entity.getText();
+            TeamInfo teamInfo = contestInfo.getParticipantByHashTag(hashTag);
+            if (teamInfo != null && !inQueueHashtags.contains(hashTag)) {
+                Request request = new Request(teamInfo.getId(),
+                        status.getText().contains("camera") ? "camera" : "screen",
+                        hashTag
+                );
+                System.err.println("Read request for team " + request.teamId + " " + request.type);
+                int total = votesForTeam.getOrDefault(request, 0) + 1;
+                lastRequest.put(request, status.getId());
+                if (total == currentThreshold()) {
+                    enqueue(request);
+                    total = 0;
+                }
+                votesForTeam.put(request, total);
+                break;
+            }
+        }
+        lastTweetFromUser.put(status.getUser().getId(), timestamp);
+    }
+
     private void step() {
         StatusListener statusListener = new StatusListener() {
             @Override
             public void onStatus(Status status) {
-                long timestamp = status.getCreatedAt().getTime();
-                if (lastTweetFromUser.getOrDefault(status.getUser().getId(), 0L) + accountWaitTime > timestamp) {
-                    return;
-                }
-                lastId = Math.max(status.getId(), lastId);
-                for (HashtagEntity entity : status.getHashtagEntities()) {
-                    String hashTag = entity.getText();
-                    TeamInfo teamInfo = contestInfo.getParticipantByHashTag(hashTag);
-                    if (teamInfo != null && !inQueueHashtags.contains(hashTag)) {
-                        Request request = new Request(teamInfo.getId(),
-                                status.getText().contains("camera") ? "camera" : "screen",
-                                hashTag
-                        );
-                        System.err.println("Read request for team " + request.teamId + " " + request.type);
-                        int total = votesForTeam.getOrDefault(request, 0) + 1;
-                        lastRequest.put(request, status.getId());
-                        if (total == currentThreshold()) {
-                            enqueue(request);
-                            total = 0;
-                        }
-                        votesForTeam.put(request, total);
-                        break;
-                    }
-                }
-                lastTweetFromUser.put(status.getUser().getId(), timestamp);
+                doOnStatus(status);
             }
 
             @Override

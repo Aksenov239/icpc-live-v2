@@ -9,6 +9,7 @@ import ru.ifmo.acm.events.WF.WFTeamInfo;
 
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Arrays;
 
 public class TeamUrls {
     private static final Logger log = LogManager.getLogger(TeamUrls.class);
@@ -23,6 +24,8 @@ public class TeamUrls {
         try {
             properties.load(TeamUrls.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
             TeamUrls.types = properties.getProperty("info.types", "screen;camera;info").split(";");
+            TeamUrls.types = Arrays.copyOf(TeamUrls.types, TeamUrls.types.length + 1);
+            TeamUrls.types[TeamUrls.types.length - 1] = "";
             TeamUrls.urlTemplates = new HashMap<>();
             for (int i = 0; i < TeamUrls.types.length; i++) {
                 String url = properties.getProperty("info." + TeamUrls.types[i], "");

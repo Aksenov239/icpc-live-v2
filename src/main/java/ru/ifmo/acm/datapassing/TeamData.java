@@ -25,6 +25,7 @@ public class TeamData extends CachedData {
         this.teamId = data.teamId;
         this.delay = data.delay;
 
+
         return this;
     }
 
@@ -99,13 +100,16 @@ public class TeamData extends CachedData {
     public synchronized boolean setInfoManual(boolean visible, String type, TeamInfo teamInfo) {
         if (inAutomaticShow())
             return false;
-        if (visible) {
+        if (teamInfo == null && visible) {
+            return false;
+        }
+        if (visible && !"".equals(type)) {
             if (((teamInfo.getId() == teamId && infoType.equals(type))
                     || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible) {
                 return false;
             }
             setInfo(type, teamInfo);
-        } else {
+        } else if (!visible) {
             hideInfo();
         }
 

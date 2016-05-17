@@ -51,6 +51,7 @@ public class MainScreenData {
         breakingNewsData = new BreakingNewsData();
         queueData = new QueueData();
         statisticsData = new StatisticsData();
+        teamStatsData = new TeamStatsData();
     }
 
     public void update() {
@@ -77,6 +78,7 @@ public class MainScreenData {
     public BreakingNewsData breakingNewsData;
     public QueueData queueData;
     public StatisticsData statisticsData;
+    public TeamStatsData teamStatsData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }
