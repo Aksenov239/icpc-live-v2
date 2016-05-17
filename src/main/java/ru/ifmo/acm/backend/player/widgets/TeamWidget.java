@@ -169,8 +169,9 @@ public class TeamWidget extends VideoWidget {
                         PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
             } else {
                 int x = X + (PR_WIDTH + GAP_X) * i;
+                double timeOpacity = i == currentProblemId ? getTimeOpacity() : 1;
                 drawTextInRect(g, "" + (char) ('A' + i), this.x + x, this.y + dy,
-                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
             }
 
 
