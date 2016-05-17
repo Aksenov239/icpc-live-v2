@@ -11,6 +11,8 @@ public abstract class ContestInfo {
     protected long startTime = 0;
     protected final long totalTime = 0;
     public List<ProblemInfo> problems;
+    private long lastTime;
+    public boolean isPaused;
 
     protected ContestInfo() {
     }
@@ -27,6 +29,11 @@ public abstract class ContestInfo {
         return problemNumber;
     }
 
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+        lastTime = getCurrentTime();
+    }
+
     public long getStartTime() {
         return startTime;
     }
@@ -36,11 +43,12 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
-        return startTime == 0 ? 0 :
-                (long) Math.min(
-                        ((System.currentTimeMillis() - startTime) * WFEventsLoader.SPEED),
-                        WFEventsLoader.CONTEST_LENGTH
-                );
+        return isPaused ? lastTime :
+                startTime == 0 ? 0 :
+                        (long) Math.min(
+                                ((System.currentTimeMillis() - startTime) * WFEventsLoader.SPEED),
+                                WFEventsLoader.CONTEST_LENGTH
+                        );
     }
 
     public boolean isFrozen() {
