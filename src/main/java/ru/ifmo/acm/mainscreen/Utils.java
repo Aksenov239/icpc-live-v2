@@ -64,6 +64,9 @@ public class Utils {
             }
             return "Some error happened";
         } else {
+            if (MainScreenData.getMainScreenData().teamStatsData.isVisible) {
+                return "Not showing team view of team " + MainScreenData.getMainScreenData().teamStatsData.getTeamString() + ", but probably team stats is shown.";
+            }
             return "No team view is shown";
         }
     }
