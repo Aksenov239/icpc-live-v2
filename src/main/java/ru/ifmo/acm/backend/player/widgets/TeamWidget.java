@@ -192,9 +192,9 @@ public class TeamWidget extends VideoWidget {
                         if (!isFull) {
                             drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                         } else {
-                            // int x = X + (PR_WIDTH + GAP_X) * i + PR_WIDTH;
-                            int x = this.width - dx - (PR_WIDTH + GAP_X) * (problemsNumber - i);
-                            drawStar(g, this.x + x, (this.y + dy), (int) (STAR_SIZE * 0.9));
+                            int star_shift = 6;
+                            int x = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i - 1) - X - star_shift;
+                            drawStar(g, this.x + x, (this.y + dy + star_shift), (int) (STAR_SIZE * 0.8));
                         }
                     }
                     break;
