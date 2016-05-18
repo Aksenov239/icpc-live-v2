@@ -46,4 +46,5 @@ public class SplitScreenData extends CachedData {
 
     public TeamData[] controllerDatas = new TeamData[4];
     public boolean[] isAutomatic = new boolean[4];
+    public long[] timestamps = new long[4];
 }

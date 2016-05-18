@@ -371,16 +371,27 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void run() {
+        XMLEventReader xmlEventReader;
         while (true) {
             try {
-                initialize();
-
                 XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
-                XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(
-                        Preparation.openAuthorizedStream(url, login, password),
-                        "windows-1251"
-                );
+                try {
+                    xmlEventReader = xmlInputFactory.createXMLEventReader(
+                            Preparation.openAuthorizedStream(url, login, password),
+                            "windows-1251"
+                    );
+                } catch (XMLStreamException e) {
+                    log.error("error", e);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e1) {
+                        log.error("error", e1);
+                    }
+                    continue;
+                }
+
+                initialize();
 
                 // XMLInputFactory xmlInputFactory =
                 // XMLInputFactory.newInstance();
@@ -511,7 +522,7 @@ public class WFEventsLoader extends EventsLoader {
                 log.error("error", e);
                 try {
                     Thread.sleep(2000);
-                } catch (InterruptedException e1){
+                } catch (InterruptedException e1) {
                     log.error("error", e1);
                 }
                 log.info("Restart event read");

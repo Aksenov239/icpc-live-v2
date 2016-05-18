@@ -15,6 +15,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.datapassing.CachedData;
+
 /**
  * @author egor@egork.net
  */
@@ -91,8 +94,34 @@ public class TeamStatsWidget extends RotatableWidget {
     private ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public TeamStatsWidget(long updateWait) {
+    public TeamStatsWidget(long updateWait, long sleepTime) {
         super(updateWait, X, Y, MARGIN, SHIFTS, SHOW_TIME, SHIFT_SPEED, FADE_TIME);
+        this.sleepTime = sleepTime;
+    }
+
+    private long sleepTime;
+    private long lastUpdateTimestamp;
+    private long lastUpdateLocalTimestamp = Long.MAX_VALUE / 2;
+    private boolean previousVisible;
+
+    public void updateImpl(Data data) {
+        if (data.teamStatsData.timestamp > lastUpdateTimestamp) {
+            lastUpdateTimestamp = data.teamStatsData.timestamp;
+            setVisible(data.teamStatsData.isVisible);
+            lastUpdateLocalTimestamp = System.currentTimeMillis();
+            if (!isVisible()) {
+                hide();
+                previousVisible = false;
+            }
+        }
+        if (isVisible() && lastUpdateLocalTimestamp + sleepTime < System.currentTimeMillis()) {
+            showTeam(data.teamData.getTeamId() + 1);
+            if (previousVisible) {
+                setFaded();
+            }
+            lastUpdateLocalTimestamp = Long.MAX_VALUE / 2;
+            previousVisible = true;
+        }
     }
 
     public void showTeam(int id) {
@@ -112,6 +141,10 @@ public class TeamStatsWidget extends RotatableWidget {
     private BufferedImage prepareBottomPlaque(Record record) {
         BufferedImage image = new BufferedImage(BOTTOM_WIDTH, BOTTOM_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g = (Graphics2D) image.getGraphics();
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
         int x = 0;
         int[] stats = {
                 record.university.getAppearances(),
@@ -246,6 +279,10 @@ public class TeamStatsWidget extends RotatableWidget {
     private BufferedImage prepareTopPlaque(Record record, BufferedImage logo) {
         BufferedImage image = new BufferedImage(WIDTH, TOP_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g = (Graphics2D) image.getGraphics();
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
         g.setColor(TOP_BACKGROUND);
         g.fillRect(0, 0, INITIAL_SHIFT, TOP_HEIGHT);
         drawScaledImage(g, logo, LOGO_SHIFT, LOGO_SHIFT, LOGO_SIZE, LOGO_SIZE);
@@ -261,7 +298,16 @@ public class TeamStatsWidget extends RotatableWidget {
     }
 
     private void drawScaledImage(Graphics2D g, BufferedImage image, int x, int y, int width, int height) {
-        g.drawImage(image, new AffineTransform((double)width / image.getWidth(), 0, 0,
-                (double)height / image.getHeight(), x, y), null);
+        g.drawImage(image, new AffineTransform((double) width / image.getWidth(), 0, 0,
+                (double) height / image.getHeight(), x, y), null);
+    }
+
+    public void paintImpl(Graphics2D g, int width, int height) {
+        update();
+        super.paintImpl(g, width, height);
+    }
+
+    public CachedData getCorrespondingData(Data data) {
+        return data.teamData;
     }
 }

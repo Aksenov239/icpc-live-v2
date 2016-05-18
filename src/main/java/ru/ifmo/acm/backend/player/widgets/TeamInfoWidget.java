@@ -28,7 +28,7 @@ public class TeamInfoWidget extends TeamWidget {
     public void updateImpl(Data data) {
         //log.info(data.teamData.isTeamVisible);
 
-        if (!data.teamData.isVisible) {
+        if (!data.teamData.isVisible || "".equals(data.teamData.infoType)) {
             setVisible(false);
             teamId = -1;
             stop();

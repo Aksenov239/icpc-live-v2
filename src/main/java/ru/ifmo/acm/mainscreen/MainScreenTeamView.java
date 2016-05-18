@@ -27,6 +27,8 @@ public class MainScreenTeamView extends CustomComponent implements View {
     ComboBox type;
     //    ListSelect teamSelection;
     OptionGroup teamSelection;
+    CheckBox stats;
+
 
     public static String getTeamStatus() {
         String status = MainScreenData.getMainScreenData().teamData.infoStatus();
@@ -77,7 +79,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 Notification.show("Automatic show is already on", Type.WARNING_MESSAGE);
                 return;
             }
-            if (mainScreenData.teamData.automaticStart((int)automatedNumber.getValue())) {
+            if (mainScreenData.teamData.automaticStart((int) automatedNumber.getValue())) {
                 Notification.show(automatedNumber.getValue() + " first teams are in automatic show", Type.TRAY_NOTIFICATION);
             } else {
                 Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
@@ -101,6 +103,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
             teamSelection.setItemCaption(team, team.toString());
 //            log.debug(team.toString());
         }
+        teamSelection.setValue(MainScreenData.getProperties().teamInfos[0]);
         teamSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         teamSelection.setWidth("100%");
 
@@ -114,9 +117,13 @@ public class MainScreenTeamView extends CustomComponent implements View {
                     teamSelection.setValue(mainScreenData.teamData.getTeamString());
                     Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
 
+                } else {
+                    mainScreenData.teamStatsData.setVisible(true, (TeamInfo) teamSelection.getValue());
                 }
             }
         });
+
+        stats = new CheckBox("Statistics");
 
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
@@ -126,6 +133,8 @@ public class MainScreenTeamView extends CustomComponent implements View {
             }
             if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                 Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
+            } else {
+                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
             }
         });
 
@@ -136,10 +145,11 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 return;
             }
             mainScreenData.teamData.setInfoManual(false, null, null);
+            mainScreenData.teamStatsData.setVisible(false, null);
         });
 
         Component controlAutomaticGroup = createGroupLayout(automatedShow, automatedStop, automatedNumber);
-        Component controlGroup = createGroupLayout(teamShow, teamHide, type);
+        Component controlGroup = createGroupLayout(stats, teamShow, teamHide, type);
         VerticalLayout result = new VerticalLayout(
                 automaticStatus,
                 controlAutomaticGroup,

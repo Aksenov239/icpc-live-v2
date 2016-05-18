@@ -119,6 +119,9 @@ public class MyUI extends UI {
             if (currentView instanceof MainScreenBreakingNews) {
                 ((MainScreenBreakingNews) currentView).refresh();
             }
+            if (currentView instanceof MainScreenSplitScreenView) {
+                ((MainScreenSplitScreenView) currentView).refresh();
+            }
 
             DataLoader.iterateFrontend();
         });

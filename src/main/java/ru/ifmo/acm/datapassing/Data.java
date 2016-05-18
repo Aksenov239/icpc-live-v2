@@ -23,6 +23,7 @@ public class Data extends CachedData {
     public BreakingNewsData breakingNewsData;
     public QueueData queueData;
     public StatisticsData statisticsData;
+    public TeamStatsData teamStatsData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -47,6 +48,7 @@ public class Data extends CachedData {
             breakingNewsData = (BreakingNewsData) cache.get(BreakingNewsData.class);
             queueData = (QueueData) cache.get(QueueData.class);
             statisticsData = (StatisticsData) cache.get(StatisticsData.class);
+            teamStatsData = (TeamStatsData) cache.get(TeamStatsData.class);
             //cameraData = (CameraData) cache.get(CameraData.class);
             //log.debug(teamData);
         } catch (Exception e) {

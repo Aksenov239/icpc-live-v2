@@ -87,11 +87,11 @@ public class Main {
 
         generator.addWidget(new ClockWidget(updateWait));
 
-        TeamStatsWidget widget = new TeamStatsWidget(updateWait);
+        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
 
         generator.addWidget(widget);
 
-//        widget.showTeam(74);
+        //widget.showTeam(74);
 
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }

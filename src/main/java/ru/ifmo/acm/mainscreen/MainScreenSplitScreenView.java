@@ -4,8 +4,11 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import ru.ifmo.acm.backend.Main;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.events.TeamInfo;
+
+import java.util.Arrays;
 
 /**
  * Created by forgotenn on 3/16/16.
@@ -54,9 +57,21 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
     }
 
     public static String getTeamStatus(int controllerId) {
+        if (MainScreenData.getMainScreenData().splitScreenData.isAutomatic[controllerId]) {
+            return "Screen in automatic mode";
+        }
         String status = MainScreenData.getMainScreenData().splitScreenData.infoStatus(controllerId);
-
         return Utils.getTeamStatus(status);
+    }
+
+    private long[] lastChangeTimestamp = new long[4];
+
+    public void enableComponents(int id) {
+        boolean auto = automated[id].getValue();
+        types[id].setValue(auto ? null : TeamUrls.types[0]);
+        types[id].setEnabled(!auto);
+        shows[id].setEnabled(!auto);
+        hides[id].setEnabled(!auto);
     }
 
     public Component getOneControllerTeam(int id) {
@@ -65,14 +80,11 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
         automated[id].setValue(true);
 
         automated[id].addValueChangeListener(event -> {
-            boolean auto = automated[id].getValue();
-            types[id].setValue(auto ? null : TeamUrls.types[0]);
-            types[id].setEnabled(!auto);
-
-            shows[id].setEnabled(!auto);
-            hides[id].setEnabled(!auto);
-            if (auto) {
+            enableComponents(id);
+            if (automated[id].getValue()) {
                 mainScreenData.splitScreenData.isAutomatic[id] = true;
+                mainScreenData.splitScreenData.timestamps[id] = System.currentTimeMillis();
+                mainScreenData.splitScreenData.setInfoVisible(id, false, null, null);
             }
         });
 
@@ -90,7 +102,8 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
 
         shows[id] = new Button("Show");
         shows[id].addClickListener(event -> {
-                    mainScreenData.splitScreenData.isAutomatic[id] = !automated[id].isEmpty();
+                    mainScreenData.splitScreenData.isAutomatic[id] = false;//!automated[id].isEmpty();
+                    mainScreenData.splitScreenData.timestamps[id] = System.currentTimeMillis();
 //                    if (!automated[id].isEmpty()) {
 //                        Notification.show("You can not use this button in automatic mode");
 //                    } else {
@@ -119,7 +132,8 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
                         mainScreenData.splitScreenData.setInfoVisible(id, false, null, null);
                     }
                 }
-        );                          hides[id].setEnabled(false);
+        );
+        hides[id].setEnabled(false);
 
         CssLayout team = createGroupLayout(teams[id], shows[id], hides[id]);
         VerticalLayout result = new VerticalLayout(labels[id], automated[id], types[id], team);
@@ -131,6 +145,13 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
     public void refresh() {
         for (int i = 0; i < 4; i++) {
             labels[i].setValue("Controller " + (i + 1) + " (" + getTeamStatus(i) + ")");
+
+            if (mainScreenData.splitScreenData.timestamps[i] > lastChangeTimestamp[i]) {
+                automated[i].setValue(mainScreenData.splitScreenData.isAutomatic[i]);
+                enableComponents(i);
+                lastChangeTimestamp[i] = mainScreenData.splitScreenData.timestamps[i];
+            }
+
         }
     }
 

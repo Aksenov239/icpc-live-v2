@@ -100,6 +100,15 @@ public class RotatableWidget extends Widget {
         return data;
     }
 
+    protected void hide() {
+        state = State.FADING_OUT;
+        timeRemaining = fadeTime;
+    }
+    protected void setFaded(){
+        state = State.SHOWING;
+        timeRemaining = showTime;
+    }
+
     private void prepare() {
         if (state == State.HIDDEN) {
             return;

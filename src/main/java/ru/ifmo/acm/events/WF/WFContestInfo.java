@@ -132,9 +132,9 @@ public class WFContestInfo extends ContestInfo {
     public void addRun(WFRunInfo run) {
 //		System.err.println("add run: " + run);
         if (!runExists(run.getId())) {
-            maxRunId = Math.max(maxRunId, run.getId());
             runs[run.getId()] = run;
             teamInfos[run.getTeamId()].addRun(run, run.getProblemNumber());
+            maxRunId = Math.max(maxRunId, run.getId());
         }
     }
 
