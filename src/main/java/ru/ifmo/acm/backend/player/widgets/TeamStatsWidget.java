@@ -127,7 +127,7 @@ public class TeamStatsWidget extends RotatableWidget {
     public void showTeam(int id) {
         try {
             Record record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
-            BufferedImage logo = ImageIO.read(new File("teamData/" + id + ".png"));
+            BufferedImage logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
             BufferedImage unmovable = prepareTopPlaque(record, logo);
             BufferedImage movable = prepareBottomPlaque(record);
             setUnmovable(unmovable);
@@ -285,7 +285,7 @@ public class TeamStatsWidget extends RotatableWidget {
 
         g.setColor(TOP_BACKGROUND);
         g.fillRect(0, 0, INITIAL_SHIFT, TOP_HEIGHT);
-        drawScaledImage(g, logo, LOGO_SHIFT, LOGO_SHIFT, LOGO_SIZE, LOGO_SIZE);
+        g.drawImage(logo, LOGO_SHIFT, LOGO_SHIFT, null);
         g.setColor(TOP_FOREGROUND);
         g.setFont(UNIVERSITY_NAME);
         g.drawString(record.university.getFullName(), UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
@@ -298,8 +298,9 @@ public class TeamStatsWidget extends RotatableWidget {
     }
 
     private void drawScaledImage(Graphics2D g, BufferedImage image, int x, int y, int width, int height) {
-        g.drawImage(image, new AffineTransform((double) width / image.getWidth(), 0, 0,
-                (double) height / image.getHeight(), x, y), null);
+        g.drawImage(getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true), x, y, null);
+//        g.drawImage(image, new AffineTransform((double) width / image.getWidth(), 0, 0,
+//                (double) height / image.getHeight(), x, y), null);
     }
 
     public void paintImpl(Graphics2D g, int width, int height) {
@@ -309,5 +310,51 @@ public class TeamStatsWidget extends RotatableWidget {
 
     public CachedData getCorrespondingData(Data data) {
         return data.teamData;
+    }
+
+
+    protected BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
+        int type = (img.getTransparency() == Transparency.OPAQUE)
+                ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+
+        BufferedImage ret = (BufferedImage) img;
+
+        if (targetHeight > 0 || targetWidth > 0) {
+            int w, h;
+            if (higherQuality) {
+                w = img.getWidth();
+                h = img.getHeight();
+            } else {
+                w = targetWidth;
+                h = targetHeight;
+            }
+
+            do {
+                if (higherQuality && w > targetWidth) {
+                    w /= 2;
+                    if (w < targetWidth) {
+                        w = targetWidth;
+                    }
+                }
+
+                if (higherQuality && h > targetHeight) {
+                    h /= 2;
+                    if (h < targetHeight) {
+                        h = targetHeight;
+                    }
+                }
+
+                BufferedImage tmp = new BufferedImage(Math.max(w, 1), Math.max(h, 1), type);
+                Graphics2D g2 = tmp.createGraphics();
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
+                g2.drawImage(ret, 0, 0, w, h, null);
+                g2.dispose();
+
+                ret = tmp;
+            } while (w != targetWidth || h != targetHeight);
+        } else {
+            ret = new BufferedImage(1, 1, type);
+        }
+        return ret;
     }
 }
