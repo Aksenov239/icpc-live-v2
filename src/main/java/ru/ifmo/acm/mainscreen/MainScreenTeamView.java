@@ -9,6 +9,8 @@ import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.events.TeamInfo;
 
+import java.util.Set;
+
 /**
  * Created by Aksenov239 on 21.11.2015.
  */
@@ -100,9 +102,13 @@ public class MainScreenTeamView extends CustomComponent implements View {
         automatedNumber.setValue(10);
 
         teamSelection = new OptionGroup();
+        teamSelection.setHtmlContentAllowed(true);
+
+        Set<Integer> topTeamsIds = MainScreenData.getProperties().topteamsids;
         for (TeamInfo team : MainScreenData.getProperties().teamInfos) {
             teamSelection.addItem(team);
-            teamSelection.setItemCaption(team, team.toString());
+            String teamHtml = topTeamsIds.contains(team.getId()) ? "<b>" + team.toString() + "</b>" : team.toString();
+            teamSelection.setItemCaption(team, teamHtml);
 //            log.debug(team.toString());
         }
         teamSelection.setValue(MainScreenData.getProperties().teamInfos[0]);
@@ -111,10 +117,15 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         teamSelection.addValueChangeListener(event -> {
             if (mainScreenData.teamData.isVisible()) {
+                if (stats.getValue() && "".equals(type.getValue())) {
+                    return;
+                }
+
                 if (mainScreenData.teamData.inAutomaticShow()) {
                     Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                     return;
                 }
+
                 if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                     teamSelection.setValue(mainScreenData.teamData.getTeamString());
                     Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
@@ -127,16 +138,32 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         stats = new CheckBox("Statistics");
 
+        stats.addValueChangeListener(event -> {
+            if (!"".equals(type.getValue())) {
+                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+            }
+        });
+
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
             if (mainScreenData.teamData.inAutomaticShow()) {
                 Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                 return;
             }
-            if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
-            } else {
+
+            if ("".equals(type.getValue()) && stats.isEmpty()) {
+                Notification.show("Empty info should not be shown");
+                return;
+            }
+
+
+            if (stats.getValue() && !mainScreenData.teamStatsData.isVisible()) {
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+                return;
+            }
+
+            if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
+                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first");
             }
         });
 
