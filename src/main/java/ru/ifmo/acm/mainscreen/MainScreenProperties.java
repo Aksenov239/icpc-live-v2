@@ -11,7 +11,10 @@ import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFTeamInfo;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class MainScreenProperties {
@@ -34,6 +37,15 @@ public class MainScreenProperties {
         automatedShowTime = Integer.parseInt(properties.getProperty("automated.show.time"));
         automatedInfo = properties.getProperty("automated.info");
         EventsLoader loader = EventsLoader.getInstance();
+
+        String topteamsfilename = properties.getProperty("top.teams.file");
+        try {
+            topteamsids = new HashSet<>();
+            // topteamsids = Files.lines(Paths.get(topteamsfilename)).mapToInt(Integer::parseInt).collect(Collectors.toSet());
+            Files.lines(Paths.get(topteamsfilename)).mapToInt(Integer::parseInt).forEach(x -> topteamsids.add(x - 1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Utils.StoppedThread loaderThread = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             public void run() {
@@ -97,6 +109,7 @@ public class MainScreenProperties {
     public final String automatedInfo;
     public final ContestInfo contestInfo;
     public TeamInfo[] teamInfos;
+    public static HashSet<Integer> topteamsids;
 
     // Camera
     public final int cameraNumber;
