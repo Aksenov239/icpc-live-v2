@@ -80,7 +80,7 @@ public class MessageData {
                     AnalystMessage e = q.poll(5000, TimeUnit.MILLISECONDS);
                     if (e == null) continue;
                     if (e.getCategory() == WFAnalystMessage.WFAnalystMessageCategory.HUMAN || e.getPriority() <= 1) {
-                        addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "ICPC Analytics"));
+                        addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "Analytics"));
                     }
                 } catch (InterruptedException e1) {
                     try {
