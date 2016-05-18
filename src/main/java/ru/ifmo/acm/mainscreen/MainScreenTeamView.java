@@ -117,10 +117,15 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         teamSelection.addValueChangeListener(event -> {
             if (mainScreenData.teamData.isVisible()) {
+                if (stats.getValue() && "".equals(type.getValue())) {
+                    return;
+                }
+
                 if (mainScreenData.teamData.inAutomaticShow()) {
                     Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                     return;
                 }
+
                 if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                     teamSelection.setValue(mainScreenData.teamData.getTeamString());
                     Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
@@ -133,16 +138,28 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         stats = new CheckBox("Statistics");
 
+        stats.addValueChangeListener(event -> {
+            if (!"".equals(type.getValue())) {
+                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+            }
+        });
+
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
             if (mainScreenData.teamData.inAutomaticShow()) {
                 Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                 return;
             }
-            if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
-            } else {
+
+            if ("".equals(type.getValue()) && stats.isEmpty()) {
+                Notification.show("Empty info should not be shown");
+            }
+
+            if (stats.getValue() && !mainScreenData.teamStatsData.isVisible()) {
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+                if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
+                    Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first");
+                }
             }
         });
 
