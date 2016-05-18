@@ -51,8 +51,8 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final Color TOP_FOREGROUND = Color.WHITE;
     private static final Color STATS_TITLE = Color.WHITE;
     private static final Color NAME_COLOR = Color.WHITE;
-    private static final Color TOP_BACKGROUND = Color.decode("#3567AD");
-    private static final Color BOTTOM_BACKGROUND = Color.decode("#3A235B");
+    private static final Color TOP_BACKGROUND = new Color(0x3567AD);
+    private static final Color BOTTOM_BACKGROUND = new Color(0x3A235B);
     private static final String[] TITLE = {
             "Appearances",
             "Wins",
@@ -63,12 +63,12 @@ public class TeamStatsWidget extends RotatableWidget {
     };
 
     private static final Color[] STATS_COLOR = {
-            Color.decode("#7ED2EF"),
-            Color.decode("#EA513B"),
-            Color.decode("#E9D61D"),
-            Color.decode("#E4E9EA"),
-            Color.decode("#AD742A"),
-            Color.decode("#75C590"),
+            new Color(0x7ED2EF),
+            new Color(0xEA513B),
+            new Color(0xE9D61D),
+            new Color(0xE4E9EA),
+            new Color(0xAD742A),
+            new Color(0x75C590),
     };
 
     private static final int STRIP_HEIGHT = 8;
@@ -83,12 +83,12 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int PERSON_NAME_Y = 50;
     private static final Font PERSON_NAME_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
     private static final int PERSON_RATING_Y = 86;
-    private static final Font RATING_FONT = Font.decode("Open Sans 18").deriveFont(Font.BOLD);
+    private static final Font RATING_FONT = Font.decode("Open Sans 18");
     private static final int RATING_SPACE = 18;
     private static final int TOP_ACHIEVEMENT_Y = 114;
     private static final int BOTTOM_ACHIEVEMENT_Y = 144;
     private static final int ACHIEVEMENT_WIDTH = 314;
-    private static final Color ACHIEVEMENT_COLOR = Color.decode("#EFDFED");
+    private static final Color ACHIEVEMENT_COLOR = new Color(0xEFDFED);
     private static final Font ACHIEVEMENT_FONT = Font.decode("Open Sans 18");
 
     private ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
@@ -226,40 +226,40 @@ public class TeamStatsWidget extends RotatableWidget {
 
     private Color getTcColor(int tcRating) {
         if (tcRating >= 2200) {
-            return Color.RED;
+            return new Color(0xED1F24);
         }
         if (tcRating >= 1500) {
-            return Color.YELLOW;
+            return new Color(0xEDD221);
         }
         if (tcRating >= 1200) {
-            return Color.BLUE;
+            return new Color(0x5169B1);
         }
         if (tcRating >= 900) {
-            return Color.GREEN;
+            return new Color(0x148A43);
         }
-        return Color.GRAY;
+        return new Color(0x808080);
     }
 
     private Color getCfColor(int tcRating) {
         if (tcRating >= 2400) {
-            return Color.decode("#ff0000");
+            return new Color(0xED1F24);
         }
         if (tcRating >= 2200) {
-            return Color.decode("#FF8C00");
+            return new Color(0xF79A3B);
         }
         if (tcRating >= 1900) {
-            return Color.decode("#AA00AA");
+            return new Color(0x7B59A5);
         }
         if (tcRating >= 1600) {
-            return Color.decode("#0000FF");
+            return new Color(0x5169B1);
         }
         if (tcRating >= 1400) {
-            return Color.decode("#03A89E");
+            return new Color(0x63C29E);
         }
         if (tcRating >= 1200) {
-            return Color.decode("#008000");
+            return new Color(0x148A43);
         }
-        return Color.decode("#808080");
+        return new Color(0x808080);
     }
 
     private void drawStatsPlaque(Graphics2D g, int x, String title, int value, Color color) {
