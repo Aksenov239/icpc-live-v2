@@ -46,8 +46,8 @@ public class MessageForm extends FormLayout {
 
         message = new TextField("Message:");
         timeBox = new ComboBox("Duration:");
-        timeBoxValues = new String[]{"30 seconds", "1 minute", "2 minutes", "5 minutes", "infinity milliseconds"};
-        final int[] duration = new int[]{30000, 60000, 120000, 3000000, Integer.MAX_VALUE};
+        timeBoxValues = new String[]{"30 seconds", "1 minute", "2 minutes", "5 minutes", "10 minutes", "15 minutes", "30 minutes", "infinity milliseconds"};
+        final int[] duration = new int[]{30000, 60000, 120000, 300000, 600000, 900000, 1800000, Integer.MAX_VALUE};
         timeBox.addItems(timeBoxValues);
         timeBox.setNullSelectionAllowed(false);
         timeBox.setValue(timeBoxValues[0]);
