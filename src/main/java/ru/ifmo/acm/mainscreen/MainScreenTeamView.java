@@ -55,15 +55,17 @@ public class MainScreenTeamView extends CustomComponent implements View {
         type.setNullSelectionAllowed(false);
         type.setValue(types[0]);
 
-        /*type.addValueChangeListener(event -> {
+        type.addValueChangeListener(event -> {
             if (teamSelection.getValue() == null)
                 return;
             if (mainScreenData.teamData.isVisible() &&
-                    !mainScreenData.teamData.setInfoVisible(true, (String) type.getValue(), (String) teamSelection.getValue())) {
+                    !mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                 type.setValue(mainScreenData.teamData.infoType);
-                Notification.show("You need to wait 30 seconds first", Type.WARNING_MESSAGE);
+                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
+            } else {
+                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
             }
-        });*/
+        });
 
         //teamSelection = new ListSelect();
         //teamSelection.addItems(mainScreenData.teamStatus.teamNames);
@@ -118,7 +120,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
                     Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
 
                 } else {
-                    mainScreenData.teamStatsData.setVisible(true, (TeamInfo) teamSelection.getValue());
+                    mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
                 }
             }
         });
