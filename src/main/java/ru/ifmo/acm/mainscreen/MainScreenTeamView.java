@@ -162,7 +162,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
             }
 
             if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first");
+                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first");
             }
         });
 
