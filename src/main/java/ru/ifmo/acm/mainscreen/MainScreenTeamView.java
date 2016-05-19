@@ -153,13 +153,17 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
             if ("".equals(type.getValue()) && stats.isEmpty()) {
                 Notification.show("Empty info should not be shown");
+                return;
             }
+
 
             if (stats.getValue() && !mainScreenData.teamStatsData.isVisible()) {
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
-                if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                    Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first");
-                }
+                return;
+            }
+
+            if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
+                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first");
             }
         });
 
