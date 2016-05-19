@@ -152,7 +152,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
                     MessageData.getMessageData().addMessageToFlow(new Message(e.getText(), System.currentTimeMillis(), duration, false, "@" + e.getUser().getScreenName()));
                 }
             } catch (TwitterException e) {
-                Notification.show("TwitterException: " + e.getMessage());
+                Notification.show("TwitterException: " + e.getMessage(), Notification.Type.TRAY_NOTIFICATION);
                 e.printStackTrace();
             }
         } else {
@@ -165,7 +165,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
                     MessageData.getMessageData().addMessageToFlow(new Message(e.getText(), System.currentTimeMillis(), duration, false, "@" + e.getUser().getScreenName()));
                 }
             } catch (TwitterException e) {
-                Notification.show("TwitterException: " + e.getMessage());
+                Notification.show("TwitterException: " + e.getMessage(), Notification.Type.TRAY_NOTIFICATION);
                 e.printStackTrace();
             }
         }
