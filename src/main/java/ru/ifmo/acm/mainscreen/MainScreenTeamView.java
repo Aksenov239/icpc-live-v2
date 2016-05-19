@@ -125,6 +125,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
                     Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                     return;
                 }
+
                 if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                     teamSelection.setValue(mainScreenData.teamData.getTeamString());
                     Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
@@ -137,6 +138,12 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         stats = new CheckBox("Statistics");
 
+        stats.addValueChangeListener(event -> {
+            if (!"".equals(type.getValue())) {
+                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+            }
+        });
+
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
             if (mainScreenData.teamData.inAutomaticShow()) {
@@ -144,9 +151,11 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 return;
             }
             if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
-            } else {
-                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+                if (stats.getValue() && !mainScreenData.teamStatsData.isVisible()) {
+                    mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+                } else {
+                    Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first");
+                }
             }
         });
 
