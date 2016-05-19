@@ -157,7 +157,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
             }
 
 
-            if (stats.getValue() && !mainScreenData.teamStatsData.isVisible()) {
+            if (stats.getValue()) {
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
                 return;
             }
