@@ -62,7 +62,7 @@ public class WFContestInfo extends ContestInfo {
                             firstSolvedRun[j] = wfrun;
                         }
                         break;
-                    } else if (wfrun.getResult().length() > 0) {
+                    } else if (wfrun.getResult().length() > 0 && !"CE".equals(run.getResult())) {
                         wrong++;
                     }
                 }
@@ -98,7 +98,7 @@ public class WFContestInfo extends ContestInfo {
                         team.penalty += wrong * 20 + time;
                         team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
                         break;
-                    } else if (wfrun.getResult().length() > 0) {
+                    } else if (wfrun.getResult().length() > 0 && !"CE".equals(run.getResult())) {
                         wrong++;
                     }
                 }
