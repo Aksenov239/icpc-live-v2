@@ -91,7 +91,18 @@ public class Main {
 
         generator.addWidget(widget);
 
-        //widget.showTeam(74);
+        new Timer().schedule(new TimerTask() {
+            int id = 68;
+
+            @Override
+            public void run() {
+                widget.showTeam(id);
+                id++;
+                if (id == 129) {
+                    id = 1;
+                }
+            }
+        }, 1000, 32000);
 
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
