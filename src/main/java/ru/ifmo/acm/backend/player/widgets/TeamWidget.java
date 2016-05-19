@@ -139,7 +139,9 @@ public class TeamWidget extends VideoWidget {
         g.setFont(FONT1);
         int problemsNumber = team.getRuns().length;
 
-        int dx = (isFull) ? X + (PR_WIDTH + GAP_X) * problemsNumber + 6 * GAP_X : (int) (this.width * 0.45);
+        int dx = (isFull) ? (int) (this.width - X - HEIGHT * (RANK_WIDTH * 0.9 + NAME_WIDTH + TOTAL_WIDTH * 0.9 + PENALTY_WIDTH * 0.9))
+                : (int) (this.width * 0.45);
+
         // int dx = (isFull) ? (this.width - X + (PR_WIDTH + GAP_X) * problemsNumber) : (int) (this.width * 0.45);
         int dy = (int) (this.height * 0.9);
         if (!isFull) {
@@ -168,7 +170,8 @@ public class TeamWidget extends VideoWidget {
                 drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
                         PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
             } else {
-                int x = X + (PR_WIDTH + GAP_X) * i;
+                // int x = X + (PR_WIDTH + GAP_X) * i;
+                int x = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i) - X;
                 double timeOpacity = i == currentProblemId ? getTimeOpacity() : 1;
                 drawTextInRect(g, "" + (char) ('A' + i), this.x + x, this.y + dy,
                         PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
@@ -189,8 +192,9 @@ public class TeamWidget extends VideoWidget {
                         if (!isFull) {
                             drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                         } else {
-                            int x = X + (PR_WIDTH + GAP_X) * i + PR_WIDTH;
-                            drawStar(g, this.x + x, (this.y + dy), (int) (STAR_SIZE * 0.9));
+                            int star_shift = 6;
+                            int x = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i - 1) - X - star_shift;
+                            drawStar(g, this.x + x, (this.y + dy + star_shift), (int) (STAR_SIZE * 0.8));
                         }
                     }
                     break;

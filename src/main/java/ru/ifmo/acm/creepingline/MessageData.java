@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -71,14 +72,15 @@ public class MessageData {
         update.start();
         ContextListener.addThread(update);
         messageFlow = new SynchronizedBeanItemContainer<>(Message.class);
-        ContestInfo contestInfo = EventsLoader.getInstance().getContestData();
-        final BlockingQueue<AnalystMessage> q = contestInfo.getAnalystMessages();
+        EventsLoader eventsLoader = EventsLoader.getInstance();
         new Thread(() -> {
             while (true) {
+                final BlockingQueue<AnalystMessage> q = eventsLoader.getContestData().getAnalystMessages();
                 try {
-                    AnalystMessage e = q.take();
+                    AnalystMessage e = q.poll(5000, TimeUnit.MILLISECONDS);
+                    if (e == null) continue;
                     if (e.getCategory() == WFAnalystMessage.WFAnalystMessageCategory.HUMAN || e.getPriority() <= 1) {
-                        addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "ICPC Analytics"));
+                        addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "Analytics"));
                     }
                 } catch (InterruptedException e1) {
                     try {

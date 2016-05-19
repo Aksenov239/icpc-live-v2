@@ -14,7 +14,7 @@ public abstract class EventsLoader extends Thread {
 
     private static EventsLoader instance;
 
-    public static EventsLoader getInstance() {
+    public static synchronized EventsLoader getInstance() {
         if (instance == null) {
             Properties properties = new Properties();
 
