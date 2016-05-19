@@ -63,7 +63,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
             if (mainScreenData.teamData.isVisible() &&
                     !mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                 type.setValue(mainScreenData.teamData.infoType);
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
+                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
             } else {
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
             }
@@ -86,7 +86,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
             if (mainScreenData.teamData.automaticStart((int) automatedNumber.getValue())) {
                 Notification.show(automatedNumber.getValue() + " first teams are in automatic show", Type.TRAY_NOTIFICATION);
             } else {
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
+                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
             }
         });
         automatedStop = new Button("Stop automatic");
@@ -128,7 +128,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
                 if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
                     teamSelection.setValue(mainScreenData.teamData.getTeamString());
-                    Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime + " seconds first", Type.WARNING_MESSAGE);
+                    Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
 
                 } else {
                     mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
