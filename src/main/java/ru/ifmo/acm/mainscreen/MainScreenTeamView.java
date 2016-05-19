@@ -117,6 +117,10 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         teamSelection.addValueChangeListener(event -> {
             if (mainScreenData.teamData.isVisible()) {
+                if (stats.getValue() && "".equals(type.getValue())) {
+                    return;
+                }
+
                 if (mainScreenData.teamData.inAutomaticShow()) {
                     Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                     return;
