@@ -5,13 +5,10 @@ import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import ru.ifmo.acm.backend.player.widgets.*;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Properties;
 
 //import org.json.JSONException;
 
@@ -91,19 +88,19 @@ public class Main {
 
         generator.addWidget(widget);
 
-        new Timer().schedule(new TimerTask() {
-            int id = 68;
-
-            @Override
-            public void run() {
-                widget.showTeam(id);
-                id++;
-                if (id == 129) {
-                    id = 1;
-                }
-            }
-        }, 1000, 32000);
-
+//        new Timer().schedule(new TimerTask() {
+//            int id = 1;
+//
+//            @Override
+//            public void run() {
+//                widget.showTeam(id);
+//                id++;
+//                if (id == 129) {
+//                    id = 1;
+//                }
+//            }
+//        }, 1000, 32000);
+//
         new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
     }
 
