@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -298,42 +299,36 @@ public class BigStandingsWidget extends Widget {
         g.setFont(font);
         int problemWidth = problemWidth(firstSolved.length);
 
-        Color headingColor = ACCENT_COLOR;
+        PlateStyle heading = BigStandingsStylesheet.heading;
+
         String headingText = "Current Standings";
 
         if (contestData.getCurrentTime() > WFEventsLoader.FREEZE_TIME) {
             if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
-                headingColor = GREEN_COLOR;
+                heading = BigStandingsStylesheet.optimisticHeading;
                 headingText = "Optimistic Standings";
             } else {
-                headingColor = YELLOW_COLOR;
+                heading = BigStandingsStylesheet.frozenHeading;
                 headingText = "Frozen Standings";
             }
         }
 
         drawTextInRect(g, headingText, x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
-                POSITION_CENTER, headingColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                POSITION_CENTER, heading.background, heading.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
-            Color color = (contestData.firstSolvedRun()[i] == null) ?
-                    ((firstSolved[i] != null) ? YELLOW_GREEN_COLOR : MAIN_COLOR) :
-                    GREEN_COLOR;
+            PlateStyle color = (contestData.firstSolvedRun()[i] == null) ?
+                    ((firstSolved[i] != null) ? BigStandingsStylesheet.udProblem : BigStandingsStylesheet.noProblem) :
+                    BigStandingsStylesheet.acProblem;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
-                    POSITION_CENTER, color, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                    POSITION_CENTER, color.background, color.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             x += problemWidth + spaceX;
         }
     }
 
     private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
-        Color mainColor = MAIN_COLOR;
-        Color additionalColor = ADDITIONAL_COLOR;
-        if (bright) {
-            mainColor = mainColor.brighter();
-            additionalColor = additionalColor.brighter();
-        }
-
         Font font = this.font;
         g.setFont(font);
         Color color = getTeamRankColor(team);
@@ -343,10 +338,14 @@ public class BigStandingsWidget extends Widget {
 
         x += rankWidth + spaceX;
 
+        PlateStyle nameStyle = BigStandingsStylesheet.name;
+        if (bright) {
+            nameStyle = nameStyle.brighter();
+        }
         String name = team.getShortName();//getShortName(g, teamId.getShortName());
         drawTextInRect(g, name, x, y,
                 nameWidth, plateHeight, POSITION_LEFT,
-                mainColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                nameStyle.background, nameStyle.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += nameWidth + spaceX;
 
@@ -354,25 +353,29 @@ public class BigStandingsWidget extends Widget {
 
         for (int i = 0; i < contestData.getProblemsNumber(); i++) {
             String status = team.getShortProblemState(i);
-            Color statusColor =
-                    status.startsWith("+") ? GREEN_COLOR :
-                            status.startsWith("?") ? YELLOW_COLOR :
-                                    status.startsWith("-") ? RED_COLOR :
-                                            MAIN_COLOR;
+            PlateStyle statusColor =
+                    status.startsWith("+") ? BigStandingsStylesheet.acProblem :
+                            status.startsWith("?") ? BigStandingsStylesheet.udProblem :
+                                    status.startsWith("-") ? BigStandingsStylesheet.waProblem :
+                                            BigStandingsStylesheet.noProblem;
             if (team.isReallyUnknown(i)) {
-                statusColor = YELLOW_COLOR;
+                statusColor = BigStandingsStylesheet.udProblem;
 //                if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
 //                    statusColor = YELLOW_GREEN_COLOR;
 //                } else {
 //                    statusColor = YELLOW_RED_COLOR;
 //                }
             }
-            if (bright && statusColor == MAIN_COLOR) statusColor = statusColor.brighter();
+//            if (bright && statusColor == MAIN_COLOR) statusColor = statusColor.brighter();
+
+            if(bright && statusColor == BigStandingsStylesheet.noProblem) {
+                statusColor = statusColor.brighter();
+            }
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
             boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - ((WFRunInfo) team.getLastRun(i)).timestamp * 1000) < blinkingTime;
             drawTextInRect(g, status, x, y,
-                    problemWidth, plateHeight, POSITION_CENTER, statusColor, Color.WHITE, visibilityState, false, true, WidgetAnimation.UNFOLD_ANIMATED, isBlinking);
+                    problemWidth, plateHeight, POSITION_CENTER, statusColor.background, statusColor.text, visibilityState, false, true, WidgetAnimation.UNFOLD_ANIMATED, isBlinking);
 
             RunInfo firstSolvedRun = firstSolved[i];
             if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId() && visibilityState >= 0.5) {
@@ -382,11 +385,19 @@ public class BigStandingsWidget extends Widget {
         }
 
         g.setFont(font);
+        PlateStyle problemsColor = BigStandingsStylesheet.problems;
+        if (bright) {
+            problemsColor = problemsColor.brighter();
+        }
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth,
-                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                plateHeight, POSITION_CENTER, problemsColor.background, problemsColor.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
+        PlateStyle penaltyColor = BigStandingsStylesheet.penalty;
+        if (bright) {
+            penaltyColor = penaltyColor.brighter();
+        }
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
-                plateHeight, POSITION_CENTER, additionalColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                plateHeight, POSITION_CENTER, penaltyColor.background, penaltyColor.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     private int problemWidth(int problemsNumber) {

@@ -5,6 +5,7 @@ import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -52,8 +53,8 @@ public class ClockWidget extends Widget {
         update();
         updateVisibilityState();
         if (opacity == 0) return;
-        drawRect(g, x, y, WIDTH, HEIGHT, DARK_GRAY, opacity);
-        g.setColor(Color.WHITE);
+        drawRect(g, x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, opacity);
+        g.setColor(ClockStylesheet.main.text);
         g.setFont(clockFont);
         long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
 

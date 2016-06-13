@@ -4,6 +4,7 @@ import java.awt.*;
 
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.CachedData;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -54,11 +55,11 @@ public class CaptionWidget extends Widget {
             }
             int y = Y;
             g.setFont(FONT1);
-            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, ADDITIONAL_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, CaptionStylesheet.main.background, CaptionStylesheet.main.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             y += HEIGHT1 + SPACE;
             g.setFont(FONT2);
             if (description != null && description.length() != 0) {
-                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, MAIN_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, CaptionStylesheet.description.background, CaptionStylesheet.description.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             }
         }
     }
