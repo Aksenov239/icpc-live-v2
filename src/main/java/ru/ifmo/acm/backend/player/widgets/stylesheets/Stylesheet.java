@@ -15,12 +15,13 @@ public class Stylesheet {
         Properties mainProperties = new Properties();
         properties = new Properties();
         try {
-            mainProperties.load(Stylesheet.class.getResourceAsStream("mainscreen.properties"));
+            mainProperties.load(Stylesheet.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
             String stylesheet = mainProperties.getProperty("stylesheet");
 
-            properties.load(Stylesheet.class.getResourceAsStream(stylesheet));
+            properties.load(Stylesheet.class.getClassLoader().getResourceAsStream(stylesheet));
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(0);
         }
 
         for (String name : properties.stringPropertyNames()) {

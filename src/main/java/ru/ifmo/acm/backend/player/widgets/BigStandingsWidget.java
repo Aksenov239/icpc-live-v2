@@ -331,10 +331,10 @@ public class BigStandingsWidget extends Widget {
     private void drawFullTeamPane(Graphics2D g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
         Font font = this.font;
         g.setFont(font);
-        Color color = getTeamRankColor(team);
+        PlateStyle color = getTeamRankColor(team);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
                 rankWidth, plateHeight, POSITION_CENTER,
-                color, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                color.background, color.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += rankWidth + spaceX;
 

@@ -24,7 +24,7 @@ public class BigStandingsStylesheet extends Stylesheet {
         waProblem = new PlateStyle("big.standings.wa");
         udProblem = new PlateStyle("big.standings.ud");
         noProblem = new PlateStyle("big.standings.no");
-        problems = new PlateStyle("big.standing.problems");
+        problems = new PlateStyle("big.standings.problems");
         penalty = new PlateStyle("big.standings.penalty");
         heading = new PlateStyle("big.standings.heading");
         optimisticHeading = new PlateStyle("big.standings.optimistic.heading");

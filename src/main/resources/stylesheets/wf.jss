@@ -13,25 +13,25 @@ ud.color=yellow.color
 no.color=main.color
 
 #team pane
-team.pane.rank.color=additional.color
-team.pane.rank.text=color.white
+team.pane.rank.background=additional.color
+team.pane.rank.text=white.color
 team.pane.rank.zero.background=accent.color
-team.pane.rank.zero.text=color.white
+team.pane.rank.zero.text=white.color
 team.pane.rank.gold.places=4
 team.pane.rank.gold.background=#D4AF37
-team.pane.rank.gold.text=color.white
-team.pane.team.pane.rank.silver.places=4
+team.pane.rank.gold.text=white.color
+team.pane.rank.silver.places=4
 team.pane.rank.silver.background=#9090a0
-team.pane.rank.silver.text=color.white
+team.pane.rank.silver.text=white.color
 team.pane.rank.bronze.places=4
 team.pane.rank.bronze.background=#CD7F32
-team.pane.rank.bronze.text=color.white
+team.pane.rank.bronze.text=white.color
 team.pane.name.background=main.color
-team.pane.name.text=color.white
+team.pane.name.text=white.color
 team.pane.problems.background=additional.color
-team.pane.problems.text=color.white
+team.pane.problems.text=white.color
 team.pane.penalty.background=additional.color
-team.pane.penalty.text=color.white
+team.pane.penalty.text=white.color
 star.color=#FFFFA0
 
 #big standings
@@ -60,8 +60,8 @@ big.standings.star=star.color
 #caption
 caption.main.background=additional.color
 caption.main.text=white.color
-caption.description=main.color
-caption.description=white.color
+caption.description.background=main.color
+caption.description.text=white.color
 
 #clock
 clock.background=#404047
@@ -101,9 +101,11 @@ queue.name.text=white.color
 #statistics
 statistics.header.background=accent.color
 statistics.header.text=white.color
+statistics.problem.alias.background=main.color
+statistics.problem.alias.text=white.color
 statistics.ac.background=ac.color
 statistics.ac.text=white.color
 statistics.wa.background=wa.color
 statistics.wa.text=white.color
 statistics.ud.background=ud.color
-statistics.ud.text=white.text
+statistics.ud.text=white.color
