@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
@@ -115,18 +116,17 @@ public class QueueWidget extends Widget {
         String problem = info.problems.get(run.getProblemNumber()).letter;
         String result = run.getResult();
 
-        Color mainColor = MAIN_COLOR;
-        Color teamColor = MAIN_COLOR;
-        Color resultColor = MAIN_COLOR;
+        PlateStyle teamColor = QueueStylesheet.name;
+        PlateStyle resultColor = QueueStylesheet.udProblem;
 
         boolean inProgress = false;
         int progressWidth = 0;
 
         if (run.judged) {
             if (run.isAccepted()) {
-                resultColor = teamColor = GREEN_COLOR;
+                resultColor = teamColor = QueueStylesheet.acProblem;
             } else {
-                resultColor = teamColor = RED_COLOR;
+                resultColor = teamColor = QueueStylesheet.waProblem;
             }
         } else {
             inProgress = true;
@@ -134,42 +134,42 @@ public class QueueWidget extends Widget {
         }
 
         if (desiredPositions[run.getId()] > 0) {
-            mainColor = mainColor.darker();
+
             teamColor = teamColor.darker();
             resultColor = resultColor.darker();
             return;
         }
 
-        Color color = getTeamRankColor(team);
+        PlateStyle color = getTeamRankColor(team);
 
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
                 rankWidth, plateHeight, POSITION_CENTER,
-                color, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                color.background, color.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += rankWidth + spaceX;
 
         drawTextInRect(g, name, x, y,
                 nameWidth, plateHeight, POSITION_LEFT,
-                teamColor, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, POSITION_CENTER, teamColor, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                plateHeight, POSITION_CENTER, teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += problemWidth + spaceX;
 
         if (run.getTime() > WFEventsLoader.FREEZE_TIME) {
             result = "?";
-            resultColor = MAIN_COLOR;
+            resultColor = QueueStylesheet.frozenProblem;
             inProgress = false;
         }
 
         drawTextInRect(g, result, x, y, statusWidth,
-                plateHeight, POSITION_CENTER, resultColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                plateHeight, POSITION_CENTER, resultColor.background, resultColor.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         if (inProgress) {
-            drawRect(g, x, y, progressWidth, plateHeight, YELLOW_COLOR.brighter(), visibilityState);
+            drawRect(g, x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState);
         }
 
         if (run == info.firstSolvedRun()[run.getProblemNumber()]) {

@@ -8,6 +8,7 @@ import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
 import ru.ifmo.acm.datapassing.CachedData;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -117,7 +118,7 @@ public class NewTeamWidget extends VideoWidget {
     private void drawReplay(Graphics2D g, int x, int y, int width, int height) {
         g.setFont(FONT2);
         drawTextInRect(g, "R", (int) (x + width * 0.95), (int) (y + height * 0.17), -1, HEIGHT,
-                POSITION_CENTER, RED_COLOR, Color.WHITE, getTimeOpacity());
+                POSITION_CENTER, TeamStylesheet.replay.background, TeamStylesheet.replay.text, getTimeOpacity());
     }
 
     @Override
@@ -193,30 +194,30 @@ public class NewTeamWidget extends VideoWidget {
             int y = Y + (HEIGHT + GAP_Y) * i;
             RunInfo[] runs = team.getRuns()[i].toArray(new RunInfo[0]);
 
-            Color problemColor = MAIN_COLOR;
+            PlateStyle problemColor = TeamStylesheet.noProblem;
             for (int j = 0; j < runs.length; j++) {
                 RunInfo run = runs[j];
                 if (run.getResult().equals("AC")) {
-                    problemColor = GREEN_COLOR;
+                    problemColor = TeamStylesheet.acProblem;
                     break;
                 }
                 if (run.getResult().equals("")) {
-                    problemColor = YELLOW_COLOR;
+                    problemColor = TeamStylesheet.udProblem;
                 } else {
-                    problemColor = RED_COLOR;
+                    problemColor = TeamStylesheet.waProblem;
                 }
             }
 
             drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
-                    PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1);
+                    PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor.background, problemColor.text, 1);
 
             int x = X - GAP_X;
             for (int j = 0; j < runs.length; j++) {
                 RunInfo run = runs[j];
-                Color color = run.getResult().equals("AC") ? GREEN_COLOR : run.getResult().equals("") ? YELLOW_COLOR : RED_COLOR;
+                PlateStyle color = run.getResult().equals("AC") ? TeamStylesheet.acProblem : run.getResult().equals("") ? TeamStylesheet.udProblem : TeamStylesheet.waProblem;
                 if (j == runs.length - 1) {
                     drawTextInRect(g, format(run.getTime() / 1000), this.x + x - RUN_WIDTH, this.y + y,
-                            RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
+                            RUN_WIDTH, HEIGHT, POSITION_CENTER, color.background, color.text,
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
                     //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
@@ -226,7 +227,7 @@ public class NewTeamWidget extends VideoWidget {
                     x -= RUN_WIDTH + GAP_X;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
                     drawTextInRect(g, "", this.x + x - RUN_SMALL_WIDTH, this.y + y,
-                            RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1);
+                            RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color.background, color.text, 1);
                     x -= RUN_SMALL_WIDTH + GAP_X;
                 }
 

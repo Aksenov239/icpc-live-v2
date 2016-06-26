@@ -6,6 +6,7 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -154,27 +155,27 @@ public class TeamWidget extends VideoWidget {
         for (int i = 0; i < team.getRuns().length; i++) {
             RunInfo[] runs = team.getRuns()[i].toArray(new RunInfo[0]);
 
-            Color problemColor = MAIN_COLOR;
+            PlateStyle problemColor = TeamStylesheet.noProblem;
             for (int j = 0; j < runs.length; j++) {
                 RunInfo run = runs[j];
                 if ("AC".equals(run.getResult())) {
-                    problemColor = GREEN;
+                    problemColor = TeamStylesheet.acProblem;
                     break;
                 }
 
-                problemColor = "".equals(run.getResult()) ? YELLOW : RED;
+                problemColor = "".equals(run.getResult()) ? TeamStylesheet.udProblem: TeamStylesheet.waProblem;
             }
 
             if (!isFull) {
                 int y = Y + (HEIGHT + GAP_Y) * i;
                 drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
-                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor.background, problemColor.text, 1, WidgetAnimation.UNFOLD_ANIMATED);
             } else {
                 // int x = X + (PR_WIDTH + GAP_X) * i;
                 int x = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i) - X;
                 double timeOpacity = i == currentProblemId ? getTimeOpacity() : 1;
                 drawTextInRect(g, "" + (char) ('A' + i), this.x + x, this.y + dy,
-                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor, Color.WHITE, timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
+                        PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor.background, problemColor.text, timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
             }
 
 
@@ -183,7 +184,7 @@ public class TeamWidget extends VideoWidget {
                 if ("AC".equals(run.getResult())) {
                     if (!isFull) {
                         drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
-                                RUN_WIDTH, HEIGHT, POSITION_CENTER, Color.GREEN, Color.WHITE,
+                                RUN_WIDTH, HEIGHT, POSITION_CENTER, TeamStylesheet.acProblem.background, TeamStylesheet.acProblem.text,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
@@ -202,10 +203,10 @@ public class TeamWidget extends VideoWidget {
                     if (isFull) {
                         continue;
                     }
-                    Color color = "".equals(run.getResult()) ? YELLOW : RED;
+                    PlateStyle color = "".equals(run.getResult()) ? TeamStylesheet.udProblem: TeamStylesheet.waProblem;
                     if (j == runs.length - 1) {
                         drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
-                                RUN_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE,
+                                RUN_WIDTH, HEIGHT, POSITION_CENTER, color.background, color.text,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
@@ -213,7 +214,7 @@ public class TeamWidget extends VideoWidget {
                         x += RUN_WIDTH + GAP_X;
                     } else {
                         drawTextInRect(g, "", this.x + x, this.y + y,
-                                RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color, Color.WHITE, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                                RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color.background, color.text, 1, WidgetAnimation.UNFOLD_ANIMATED);
                         x += RUN_SMALL_WIDTH + GAP_X;
                     }
                 }

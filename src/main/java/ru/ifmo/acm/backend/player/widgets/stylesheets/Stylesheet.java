@@ -9,10 +9,11 @@ import java.util.Properties;
  */
 public class Stylesheet {
     public static HashMap<String, String> colors = new HashMap<>();
+    static Properties properties;
 
     static {
         Properties mainProperties = new Properties();
-        Properties properties = new Properties();
+        properties = new Properties();
         try {
             mainProperties.load(Stylesheet.class.getResourceAsStream("mainscreen.properties"));
             String stylesheet = mainProperties.getProperty("stylesheet");

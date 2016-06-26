@@ -1,7 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import java.awt.*;
-
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -96,14 +96,14 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         g.setColor(ADDITIONAL_COLOR);
         iterateLogo();
 
-        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, logoVisible);
+        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, POSITION_CENTER, CreepingLineStylesheet.logo.background, CreepingLineStylesheet.logo.text, logoVisible);
 
         g = (Graphics2D) g.create(LOGO_WIDTH, 0, width - LOGO_WIDTH, HEIGHT);
-        g.setColor(MAIN_COLOR);
+        g.setColor(CreepingLineStylesheet.main.background);
         g.fillRect(0, 0, width, HEIGHT);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (1)));
         g.setFont(messageFont);
-        g.setColor(Color.white);
+        g.setColor(CreepingLineStylesheet.logo.background);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
         last = time;

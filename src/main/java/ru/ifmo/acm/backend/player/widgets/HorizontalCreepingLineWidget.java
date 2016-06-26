@@ -4,12 +4,8 @@ import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.Data;
 
 import java.awt.*;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
-
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -30,11 +26,11 @@ public class HorizontalCreepingLineWidget extends CreepingLineWidget {
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
         update();
         g.setComposite(AlphaComposite.SrcOver.derive(1f));
-        g.setColor(MAIN_COLOR);
+        g.setColor(CreepingLineStylesheet.main.background);
         g.fillRect(0, height - HEIGHT - MARGIN, width, HEIGHT);
         g.setComposite(AlphaComposite.SrcOver.derive((float) (1)));
         g.setFont(messageFont);
-        g.setColor(Color.white);
+        g.setColor(CreepingLineStylesheet.main.text);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
         last = time;

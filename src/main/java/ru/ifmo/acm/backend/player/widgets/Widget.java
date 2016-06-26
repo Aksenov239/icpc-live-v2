@@ -1,8 +1,10 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import net.egork.teaminfo.data.Team;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
@@ -12,7 +14,6 @@ import java.awt.geom.AffineTransform;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
-import static java.lang.Math.scalb;
 
 /**
  * @author: pashka
@@ -336,21 +337,21 @@ public abstract class Widget {
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state,
                       double rank_width, double name_width, double total_width, double penalty_width) {
 
-        Color color = getTeamRankColor(team);
-        if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
+        PlateStyle color = getTeamRankColor(team);
+        if (team.getSolvedProblemsNumber() == 0) color = TeamPaneStylesheet.zero;
         g.setFont(Font.decode("Open Sans " + (int) round(height * 0.7)));
         int rankWidth = (int) round(height * rank_width);
         int nameWidth = (int) round(height * name_width);
         int totalWidth = (int) round(height * total_width);
         int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color.background, color.text, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + spaceX;
-        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, TeamPaneStylesheet.name.background, TeamPaneStylesheet.name.text, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += nameWidth + spaceX;
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, TeamPaneStylesheet.problems.background, TeamPaneStylesheet.problems.text, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, POSITION_CENTER, TeamPaneStylesheet.penalty.background, TeamPaneStylesheet.penalty.text, state);
     }
 
     void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
@@ -393,11 +394,11 @@ public abstract class Widget {
     protected void updateImpl(Data data) {
     }
 
-    protected Color getTeamRankColor(TeamInfo team) {
-        Color color = ADDITIONAL_COLOR;
-        if (team.getSolvedProblemsNumber() > 0 && team.getRank() <= 12) {
-            color = team.getRank() <= 4 ? GOLD_COLOR :
-                    team.getRank() <= 8 ? SILVER_COLOR : BRONZE_COLOR;
+    protected PlateStyle getTeamRankColor(TeamInfo team) {
+        PlateStyle color = TeamPaneStylesheet.none;
+        if (team.getSolvedProblemsNumber() > 0 && team.getRank() <= TeamPaneStylesheet.goldPlaces + TeamPaneStylesheet.silverPlaces + TeamPaneStylesheet.bronzePlaces) {
+            color = team.getRank() <= TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.gold :
+                    team.getRank() <= TeamPaneStylesheet.silverPlaces ? TeamPaneStylesheet.silver : TeamPaneStylesheet.bronze;
         }
         return color;
     }

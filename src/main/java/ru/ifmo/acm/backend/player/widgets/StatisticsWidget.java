@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.StatisticsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
@@ -9,7 +10,6 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Math.*;
@@ -102,7 +102,7 @@ public class StatisticsWidget extends Widget {
         g.setFont(font);
 
         drawTextInRect(g, "Statistics", 0, 0, -1, plateHeight, POSITION_LEFT,
-                ACCENT_COLOR, Color.white, visibilityState, WidgetAnimation.VERTICAL_ANIMATED);
+                StatisticsStylesheet.header.background, StatisticsStylesheet.header.text, visibilityState, WidgetAnimation.VERTICAL_ANIMATED);
 
         int fullWidth = this.width - problemWidth - spaceX;
 
@@ -116,7 +116,7 @@ public class StatisticsWidget extends Widget {
             tmp = tmp > timePerProblem ? 1 : tmp * problems.size();
 
             drawTextInRect(g, problem.letter, 0, y, problemWidth,
-                    plateHeight, POSITION_CENTER, MAIN_COLOR, Color.white, tmp, WidgetAnimation.VERTICAL_ANIMATED);
+                    plateHeight, POSITION_CENTER, StatisticsStylesheet.problemAlias.background, StatisticsStylesheet.problemAlias.text, tmp, WidgetAnimation.VERTICAL_ANIMATED);
 
             y += plateHeight + spaceY;
         }
@@ -127,10 +127,10 @@ public class StatisticsWidget extends Widget {
             int x = problemWidth + spaceX;
             int wrong = submitted[problemId] - solved[problemId] - pending[problemId];
             int totalW = fullWidth * solved[problemId] / info.teamNumber +
-                         fullWidth * pending[problemId] / info.teamNumber +
-                         fullWidth * wrong / info.teamNumber;
+                    fullWidth * pending[problemId] / info.teamNumber +
+                    fullWidth * wrong / info.teamNumber;
 
-            int shownWidth = (int)ceil(statisticVisibilityState * totalW);
+            int shownWidth = (int) ceil(statisticVisibilityState * totalW);
 
             if (solved[problemId] > 0) {
                 int w = fullWidth * solved[problemId] / info.teamNumber;
@@ -138,7 +138,7 @@ public class StatisticsWidget extends Widget {
 
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, GREEN_COLOR, Color.white,
+                        w, plateHeight, POSITION_CENTER, StatisticsStylesheet.acProblem.background, StatisticsStylesheet.acProblem.text,
                         visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
 
                 shownWidth = max(0, shownWidth - w);
@@ -151,27 +151,25 @@ public class StatisticsWidget extends Widget {
 
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, YELLOW_COLOR, Color.white,
+                        w, plateHeight, POSITION_CENTER, StatisticsStylesheet.udProblem.background, StatisticsStylesheet.udProblem.text,
                         visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
 
                 shownWidth = max(0, shownWidth - w);
                 x += w + spaceX;
             }
 
-            ;
             if (wrong > 0) {
                 int w = fullWidth * wrong / info.teamNumber;
                 String text = wrong < 2 ? "" : "" + wrong;
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, RED_COLOR, Color.white,
+                        w, plateHeight, POSITION_CENTER, StatisticsStylesheet.waProblem.background, StatisticsStylesheet.waProblem.text,
                         visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
             }
 
             y += plateHeight + spaceY;
         }
     }
-
 
 
     public void calculateStatistics() {
