@@ -1,12 +1,12 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.PlayerInImage;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
@@ -117,8 +117,8 @@ public class VideoWidget extends Widget implements PlayerWidget {
         return player.getPlayer();
     }
 
-    public void paintImpl(Graphics2D g, int width, int height) {
-        g.drawImage(player.getImage(), x, y, null);
+    public void paintImpl(Graphics g, int width, int height) {
+        g.drawImage(player.getImage(), x, y, this.width, this.height);
     }
 
     @Override

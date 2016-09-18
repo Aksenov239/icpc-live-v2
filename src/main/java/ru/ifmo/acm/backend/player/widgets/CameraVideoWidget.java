@@ -1,9 +1,8 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
-
-import java.awt.*;
 
 /**
  * @author: Aksenov239
@@ -21,7 +20,7 @@ public class CameraVideoWidget extends VideoWidget {
         }
     }
 
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 
         // g.drawImage(image, x, y, null);

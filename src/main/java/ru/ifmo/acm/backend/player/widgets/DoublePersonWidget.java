@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.PersonData;
@@ -17,8 +18,8 @@ public class DoublePersonWidget extends Widget {
 
     public DoublePersonWidget(long updateWait, long duration) {
         super(updateWait);
-        leftWidget = new CaptionWidget(POSITION_LEFT);
-        rightWidget = new CaptionWidget(POSITION_RIGHT);
+        leftWidget = new CaptionWidget(Graphics.Position.POSITION_LEFT);
+        rightWidget = new CaptionWidget(Graphics.Position.POSITION_RIGHT);
         this.duration = duration;
     }
 
@@ -29,7 +30,7 @@ public class DoublePersonWidget extends Widget {
     protected void updateImpl(Data data) {
         PersonData personData = Preparation.dataLoader.getDataBackend().personData;
 
-        
+
         //log.debug(Arrays.toString(personData.isVisible));
 
         lastVisibleChangeLeft = personData.exclusiveTimestamp[0];
@@ -54,7 +55,7 @@ public class DoublePersonWidget extends Widget {
 
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
         leftWidget.paintImpl(g, width, height);
         rightWidget.paintImpl(g, width, height);

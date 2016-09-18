@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
@@ -147,7 +148,7 @@ public class BreakingNewsWidget extends VideoWidget {
     private int rankState;
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 
         int dt = updateVisibilityState();
@@ -191,14 +192,15 @@ public class BreakingNewsWidget extends VideoWidget {
 
         if (run == null || currentUrl != null) {
             int hh = (int) (hVideo * opacity);
-            g.drawImage(image, x, y + (hVideo - hh) / 2, wVideo, hh, null);
+            g.drawImage(image, x, y + (hVideo - hh) / 2, wVideo, hh);
         }
 
         int y = this.y + hVideo + GAP;
         int x = this.x + (int) (1.1 * wVideo - PLATE_WIDTH);
         drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
+        Font font = Font.decode("Open Sans " + (int) Math.round(PLATE_HEIGHT * 0.7));
         drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
-                POSITION_RIGHT, ACCENT_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                Graphics.Position.POSITION_RIGHT, font, ACCENT_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     @Override

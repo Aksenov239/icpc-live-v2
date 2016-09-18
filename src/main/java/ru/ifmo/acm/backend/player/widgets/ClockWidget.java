@@ -3,7 +3,7 @@ package ru.ifmo.acm.backend.player.widgets;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
-
+import ru.ifmo.acm.backend.graphics.Graphics;
 import java.awt.*;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
@@ -48,12 +48,11 @@ public class ClockWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
-//        g.drawImage(clock, x, y, null);
+    public void paintImpl(Graphics g, int width, int height) {
         update();
         updateVisibilityState();
         if (opacity == 0) return;
-        drawRect(g, x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, opacity);
+        /*g.drawRect(x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, opacity);
         g.setColor(ClockStylesheet.main.text);
         g.setFont(clockFont);
         long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
@@ -76,7 +75,10 @@ public class ClockWidget extends Widget {
                 g.drawString("" + c, x + dx + dd, y + dy);
                 dx += w1;
             }
-        }
+        } */
+        long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
+        String timeS = getTimeString(Math.abs(time));
+        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.POSITION_CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
     }
 
     @Override

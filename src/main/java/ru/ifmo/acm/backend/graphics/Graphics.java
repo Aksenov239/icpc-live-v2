@@ -1,6 +1,8 @@
 package ru.ifmo.acm.backend.graphics;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
  * Created by Aksenov239 on 04.09.2016.
@@ -26,6 +28,8 @@ public abstract class Graphics {
         POSITION_RIGHT
     }
 
+    public abstract void drawString(String text, int x, int y, Font font, Color color);
+
     public abstract void drawRectWithText(String text, int x, int y, int width, int height, Position position, Font font,
                                           Color color, Color textColor, double opacity, double textOpacity,
                                           double margin, boolean italic, boolean scale);
@@ -35,9 +39,13 @@ public abstract class Graphics {
 
     public abstract void drawStar(int x, int y, int size, Color color);
 
+    public abstract void drawImage(BufferedImage image, int x, int y, int width, int height);
+
     public void setFont(Font font) {
         this.font = font;
     }
+
+    public abstract Rectangle2D getStringBounds(String text, Font font);
 
     public void clip(int x, int y, int width, int height) {
         this.x += x;

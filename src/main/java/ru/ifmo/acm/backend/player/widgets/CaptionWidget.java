@@ -1,10 +1,11 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import java.awt.*;
-
-import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.CaptionStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
-import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
+import ru.ifmo.acm.datapassing.Data;
+
+import java.awt.*;
 
 /**
  * @author: pashka
@@ -24,9 +25,9 @@ public class CaptionWidget extends Widget {
 
     private String caption;
     private String description;
-    private final int position;
+    private final Graphics.Position position;
 
-    public CaptionWidget(int position) {
+    public CaptionWidget(Graphics.Position position) {
         this.position = position;
     }
 
@@ -36,17 +37,17 @@ public class CaptionWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         updateVisibilityState();
         if (visibilityState > 0) {
             int x1;
             int x2;
             int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
-            if (position == POSITION_LEFT) {
+            if (position == Graphics.Position.POSITION_LEFT) {
                 x1 = X_LEFT;
                 x2 = x1 + dx;
                 QueueWidget.Y_SHIFT = 3;
-            } else if (position == POSITION_RIGHT) {
+            } else if (position == Graphics.Position.POSITION_RIGHT) {
                 x1 = X_RIGHT;
                 x2 = x1 - dx;
             } else {
@@ -54,12 +55,10 @@ public class CaptionWidget extends Widget {
                 x2 = x1;
             }
             int y = Y;
-            g.setFont(FONT1);
-            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, CaptionStylesheet.main.background, CaptionStylesheet.main.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, FONT1, CaptionStylesheet.main.background, CaptionStylesheet.main.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             y += HEIGHT1 + SPACE;
-            g.setFont(FONT2);
             if (description != null && description.length() != 0) {
-                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, CaptionStylesheet.description.background, CaptionStylesheet.description.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, FONT2, CaptionStylesheet.description.background, CaptionStylesheet.description.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             }
         }
     }

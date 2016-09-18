@@ -1,7 +1,11 @@
 package ru.ifmo.acm.backend.graphics;
 
+import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import static java.lang.Math.round;
 
@@ -25,8 +29,9 @@ public class GraphicsSWT extends Graphics {
         return new GraphicsSWT((Graphics2D) g.create(x, y, width, height));
     }
 
-    private int POINTS_IN_ROUND = 3;
-    private int ROUND_RADIUS = 4;
+    private final int POINTS_IN_ROUND = 3;
+    private final int ROUND_RADIUS = 4;
+
     @Override
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, boolean italic) {
         g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
@@ -56,12 +61,17 @@ public class GraphicsSWT extends Graphics {
         }
         g.fill(new Polygon(xx, yy, xx.length));
     }
-
+    @Override
+    public void drawString(String text, int x, int y, Font font, Color color) {
+        g.setFont(font);
+        g.setColor(color);
+        g.drawString(text, x, y);
+    }
     @Override
     public void drawRectWithText(String text, int x, int y, int width, int height, Position position, Font font,
                                  Color color, Color textColor, double opacity, double textOpacity, double margin,
                                  boolean italic, boolean scale) {
-        Graphics2D g = (Graphics2D)this.g.create();
+        Graphics2D g = (Graphics2D) this.g.create();
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;
 
@@ -130,7 +140,27 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public void drawStar(int x, int y, int size, Color color) {
+        g.setColor(Color.decode(Stylesheet.colors.get("star.color")));
+        int[] xx = new int[10];
+        int[] yy = new int[10];
 
+        double[] d = {size, size * 2};
+        for (int i = 0; i < 10; i++) {
+            xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
+            yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
+        }
+        g.fillPolygon(xx, yy, 10);
+    }
+
+    @Override
+    public void drawImage(BufferedImage image, int x, int y, int width, int height) {
+        g.drawImage(image, x, y, width, height, null);
+    }
+
+    @Override
+    public Rectangle2D getStringBounds(String message, Font font) {
+        g.setFont(font);
+        return g.getFontMetrics().getStringBounds(message, g);
     }
 
     @Override
