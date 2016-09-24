@@ -6,7 +6,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFTeamInfo;
-
+import ru.ifmo.acm.backend.graphics.Graphics;
 import java.awt.*;
 
 /**
@@ -50,7 +50,7 @@ public class TeamInfoWidget extends TeamWidget {
         }
     }
 
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
         super.paintImpl(g, width, height);
     }

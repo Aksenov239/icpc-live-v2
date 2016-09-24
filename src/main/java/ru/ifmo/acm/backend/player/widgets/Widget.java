@@ -170,10 +170,7 @@ public abstract class Widget {
         return visible;
     }
 
-    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
-        g.setComposite(AlphaComposite.SrcOver.derive(1f));
-        g.setColor(color);
-
+    void drawRect(Graphics g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
         int hh = (int) (height * opacity);
         y += (height - hh) / 2;
         height = hh;
@@ -197,10 +194,10 @@ public abstract class Widget {
                 yy[t] = (int) round(ty);
             }
         }
-        g.fill(new Polygon(xx, yy, xx.length));
+        g.fillPolygon(xx, yy, color);
     }
 
-    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
+    void drawRect(Graphics g, int x, int y, int width, int height, Color color, double opacity) {
         drawRect(g, x, y, width, height, color, opacity, false);
     }
 
@@ -270,27 +267,9 @@ public abstract class Widget {
         g.drawRectWithText(text, x, y, width, height, position, font, color, textColor, opacity, textOpacity, MARGIN, italic, scale);
     }
 
-    void drawTextToFit(Graphics2D gg, String text, double X, double Y, int x, int y, int width, int height) {
-        Graphics2D g = (Graphics2D) gg.create(x, y, width, height);
-        FontMetrics wh = g.getFontMetrics();
-        int textWidth = g.getFontMetrics().stringWidth(text);
-        double textScale = 1;
-
-        double margin = height * MARGIN;
-
-        int maxTextWidth = (int) (width - 2 * margin);
-        if (textWidth > maxTextWidth) {
-            textScale = 1. * maxTextWidth / textWidth;
-        }
-
-        float yy = (float) Y + wh.getAscent() - 0.03f * height;
-        float xx = (float) (X + margin);
-
-        AffineTransform transform = g.getTransform();
-        transform.concatenate(AffineTransform.getTranslateInstance(xx, yy));
-        transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
-        g.setTransform(transform);
-        g.drawString(text, 0, 0);
+    void drawTextToFit(Graphics gg, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
+        Graphics g = gg.create(x, y, width, height);
+        g.drawTextThatFits(text, (int)(X - x), (int)(Y - y), width, height, font, color, MARGIN);
     }
 
     void drawTeamPane(Graphics g, TeamInfo team, int x, int y, int height, double state,
@@ -362,8 +341,7 @@ public abstract class Widget {
         return color;
     }
 
-    protected void drawStar(Graphics2D g, int x, int y, int size) {
-        g.setColor(STAR_COLOR);
+    protected void drawStar(Graphics g, int x, int y, int size) {
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};
@@ -371,6 +349,6 @@ public abstract class Widget {
             xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
             yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
         }
-        g.fillPolygon(new Polygon(xx, yy, 10));
+        g.fillPolygon(xx, yy, STAR_COLOR);
     }
 }

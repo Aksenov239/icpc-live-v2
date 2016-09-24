@@ -1,14 +1,16 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.TeamStylesheet;
+import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
-import ru.ifmo.acm.datapassing.CachedData;
-import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 
 /**
  * @author: pashka
@@ -115,14 +117,13 @@ public class NewTeamWidget extends VideoWidget {
         return (second % 2 == 0 ? v : 1 - v) / 2 + 0.5;
     }
 
-    private void drawReplay(Graphics2D g, int x, int y, int width, int height) {
-        g.setFont(FONT2);
+    private void drawReplay(Graphics g, int x, int y, int width, int height) {
         drawTextInRect(g, "R", (int) (x + width * 0.95), (int) (y + height * 0.17), -1, HEIGHT,
-                POSITION_CENTER, TeamStylesheet.replay.background, TeamStylesheet.replay.text, getTimeOpacity());
+                Graphics.Position.POSITION_CENTER, FONT2, TeamStylesheet.replay.background, TeamStylesheet.replay.text, getTimeOpacity());
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 
 //        if (teamId == -1) return;
@@ -174,7 +175,7 @@ public class NewTeamWidget extends VideoWidget {
             smallVideo.paintImpl(g, width, height);
         }
 
-        g.drawImage(image, xVideo, yVideo, null);
+        g.drawImage(image, xVideo, yVideo, this.widthVideo, this.heightVideo);
 
         if (currentProblemId >= 0) {
             drawReplay(g, x, y, this.width, this.height);
@@ -189,7 +190,6 @@ public class NewTeamWidget extends VideoWidget {
         g.setFont(FONT1);
         drawTeamPane(g, team, TEAM_PANE_X, TEAM_PANE_Y, TEAM_PANE_HEIGHT, visibilityState);
 
-        g.setFont(FONT2);
         for (int i = 0; i < team.getRuns().length; i++) {
             int y = Y + (HEIGHT + GAP_Y) * i;
             RunInfo[] runs = team.getRuns()[i].toArray(new RunInfo[0]);
@@ -209,7 +209,7 @@ public class NewTeamWidget extends VideoWidget {
             }
 
             drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
-                    PR_WIDTH, HEIGHT, POSITION_CENTER, problemColor.background, problemColor.text, 1);
+                    PR_WIDTH, HEIGHT, Graphics.Position.POSITION_CENTER, FONT2, problemColor.background, problemColor.text, 1);
 
             int x = X - GAP_X;
             for (int j = 0; j < runs.length; j++) {
@@ -217,7 +217,7 @@ public class NewTeamWidget extends VideoWidget {
                 PlateStyle color = run.getResult().equals("AC") ? TeamStylesheet.acProblem : run.getResult().equals("") ? TeamStylesheet.udProblem : TeamStylesheet.waProblem;
                 if (j == runs.length - 1) {
                     drawTextInRect(g, format(run.getTime() / 1000), this.x + x - RUN_WIDTH, this.y + y,
-                            RUN_WIDTH, HEIGHT, POSITION_CENTER, color.background, color.text,
+                            RUN_WIDTH, HEIGHT, Graphics.Position.POSITION_CENTER, FONT2, color.background, color.text,
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
                     //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
@@ -227,7 +227,7 @@ public class NewTeamWidget extends VideoWidget {
                     x -= RUN_WIDTH + GAP_X;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
                     drawTextInRect(g, "", this.x + x - RUN_SMALL_WIDTH, this.y + y,
-                            RUN_SMALL_WIDTH, HEIGHT, POSITION_CENTER, color.background, color.text, 1);
+                            RUN_SMALL_WIDTH, HEIGHT, Graphics.Position.POSITION_CENTER, FONT2, color.background, color.text, 1);
                     x -= RUN_SMALL_WIDTH + GAP_X;
                 }
 
@@ -262,7 +262,7 @@ public class NewTeamWidget extends VideoWidget {
         teamId = run.getTeamId();
     }
 
-    public CachedData getCorrespondingData(Data data){
+    public CachedData getCorrespondingData(Data data) {
         return data.teamData;
     }
 }

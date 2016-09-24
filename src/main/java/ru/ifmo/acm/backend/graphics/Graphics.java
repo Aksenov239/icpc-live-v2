@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
  */
 public abstract class Graphics {
     protected int x, y, width, height;
+    protected int x0, y0;
     protected Font font;
     protected Color color;
 
@@ -35,11 +36,13 @@ public abstract class Graphics {
                                           double margin, boolean italic, boolean scale);
 
     public abstract void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color,
-                                          double opacity, double margin);
+                                          double margin);
 
-    public abstract void drawStar(int x, int y, int size, Color color);
+    public abstract void drawStar(int x, int y, int size);
 
     public abstract void drawImage(BufferedImage image, int x, int y, int width, int height);
+
+    public abstract void fillPolygon(int[] x, int[] y, Color color);
 
     public void setFont(Font font) {
         this.font = font;
@@ -47,11 +50,13 @@ public abstract class Graphics {
 
     public abstract Rectangle2D getStringBounds(String text, Font font);
 
-    public void clip(int x, int y, int width, int height) {
-        this.x += x;
-        this.y += y;
-        this.width = width;
-        this.height = height;
+    public abstract void clip();
+
+    public abstract void clip(int x, int y, int width, int height);
+
+    public void translate(int x, int y) {
+        x0 += x;
+        y0 += y;
     }
 
     public void reset() {

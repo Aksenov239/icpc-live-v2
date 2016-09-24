@@ -26,6 +26,10 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public Graphics create(int x, int y, int width, int height) {
+        this.x += x + x0;
+        this.y += y + y0;
+        this.width = width;
+        this.height = height;
         return new GraphicsSWT((Graphics2D) g.create(x, y, width, height));
     }
 
@@ -34,6 +38,8 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, boolean italic) {
+        x += x0;
+        y += y0;
         g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
         g.setColor(color);
 
@@ -59,18 +65,20 @@ public class GraphicsSWT extends Graphics {
                 yy[t] = (int) round(ty);
             }
         }
-        g.fill(new Polygon(xx, yy, xx.length));
+        g.fillPolygon(xx, yy, xx.length);
     }
     @Override
     public void drawString(String text, int x, int y, Font font, Color color) {
         g.setFont(font);
         g.setColor(color);
-        g.drawString(text, x, y);
+        g.drawString(text, x + x0, y + y0);
     }
     @Override
     public void drawRectWithText(String text, int x, int y, int width, int height, Position position, Font font,
                                  Color color, Color textColor, double opacity, double textOpacity, double margin,
                                  boolean italic, boolean scale) {
+        x += x0;
+        y += y0;
         Graphics2D g = (Graphics2D) this.g.create();
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;
@@ -116,7 +124,9 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double opacity, double margin) {
+    public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double margin) {
+        x += x0;
+        y += y0;
         FontMetrics wh = g.getFontMetrics();
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;
@@ -139,28 +149,50 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void drawStar(int x, int y, int size, Color color) {
+    public void drawStar(int x, int y, int size) {
         g.setColor(Color.decode(Stylesheet.colors.get("star.color")));
         int[] xx = new int[10];
         int[] yy = new int[10];
 
         double[] d = {size, size * 2};
         for (int i = 0; i < 10; i++) {
-            xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
-            yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
+            xx[i] = x0 + (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
+            yy[i] = y0 + (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
         }
-        g.fillPolygon(xx, yy, 10);
+        g.fillPolygon(xx, yy, xx.length);
     }
 
     @Override
     public void drawImage(BufferedImage image, int x, int y, int width, int height) {
-        g.drawImage(image, x, y, width, height, null);
+        g.drawImage(image, x0 + x, y0 + y, width, height, null);
+    }
+
+    @Override
+    public void fillPolygon(int[] x, int[] y, Color color) {
+        g.setColor(color);
+        int[] xx = new int[x.length];
+        int[] yy = new int[y.length];
+        for (int i = 0; i < x.length; i++) {
+            xx[i] = x[i] + x0;
+            yy[i] = y[i] + y0;
+        }
+        g.fillPolygon(xx, yy, xx.length);
     }
 
     @Override
     public Rectangle2D getStringBounds(String message, Font font) {
         g.setFont(font);
         return g.getFontMetrics().getStringBounds(message, g);
+    }
+
+    @Override
+    public void clip() {
+        g.clipRect(0, 0, this.width, this.height);
+    }
+
+    @Override
+    public void clip(int x, int y, int width, int height) {
+        g.clipRect(x + x0, y + y0, width, height);
     }
 
     @Override

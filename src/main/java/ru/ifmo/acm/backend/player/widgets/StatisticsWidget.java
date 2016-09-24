@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.StatisticsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
@@ -90,19 +91,18 @@ public class StatisticsWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 
         int dt = updateVisibilityState();
 
         if (info == null) return;
 
-        g = (Graphics2D) g.create();
+        g = g.create();
         g.translate(baseX, baseY);
-        g.setFont(font);
 
-        drawTextInRect(g, "Statistics", 0, 0, -1, plateHeight, POSITION_LEFT,
-                StatisticsStylesheet.header.background, StatisticsStylesheet.header.text, visibilityState, WidgetAnimation.VERTICAL_ANIMATED);
+        drawTextInRect(g, "Statistics", 0, 0, -1, plateHeight, Graphics.Position.POSITION_LEFT,
+                font, StatisticsStylesheet.header.background, StatisticsStylesheet.header.text, visibilityState, WidgetAnimation.VERTICAL_ANIMATED);
 
         int fullWidth = this.width - problemWidth - spaceX;
 
@@ -116,7 +116,7 @@ public class StatisticsWidget extends Widget {
             tmp = tmp > timePerProblem ? 1 : tmp * problems.size();
 
             drawTextInRect(g, problem.letter, 0, y, problemWidth,
-                    plateHeight, POSITION_CENTER, StatisticsStylesheet.problemAlias.background, StatisticsStylesheet.problemAlias.text, tmp, WidgetAnimation.VERTICAL_ANIMATED);
+                    plateHeight, Graphics.Position.POSITION_CENTER, font, StatisticsStylesheet.problemAlias.background, StatisticsStylesheet.problemAlias.text, tmp, WidgetAnimation.VERTICAL_ANIMATED);
 
             y += plateHeight + spaceY;
         }
@@ -138,7 +138,7 @@ public class StatisticsWidget extends Widget {
 
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, StatisticsStylesheet.acProblem.background, StatisticsStylesheet.acProblem.text,
+                        w, plateHeight, Graphics.Position.POSITION_CENTER, font, StatisticsStylesheet.acProblem.background, StatisticsStylesheet.acProblem.text,
                         visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
 
                 shownWidth = max(0, shownWidth - w);
@@ -151,7 +151,7 @@ public class StatisticsWidget extends Widget {
 
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, StatisticsStylesheet.udProblem.background, StatisticsStylesheet.udProblem.text,
+                        w, plateHeight, Graphics.Position.POSITION_CENTER, font, StatisticsStylesheet.udProblem.background, StatisticsStylesheet.udProblem.text,
                         visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
 
                 shownWidth = max(0, shownWidth - w);
@@ -163,7 +163,7 @@ public class StatisticsWidget extends Widget {
                 String text = wrong < 2 ? "" : "" + wrong;
                 double visState = 1.0 * min(shownWidth, w) / w;
                 drawTextInRect(g, text, x, y,
-                        w, plateHeight, POSITION_CENTER, StatisticsStylesheet.waProblem.background, StatisticsStylesheet.waProblem.text,
+                        w, plateHeight, Graphics.Position.POSITION_CENTER, font, StatisticsStylesheet.waProblem.background, StatisticsStylesheet.waProblem.text,
                         visState, false, false, WidgetAnimation.HORIZONTAL_ANIMATED, false);
             }
 

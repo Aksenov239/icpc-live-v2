@@ -1,13 +1,16 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
+import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.QueueStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFEventsLoader;
 import ru.ifmo.acm.events.WF.WFRunInfo;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -73,15 +76,13 @@ public class QueueWidget extends Widget {
 
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 
         if (info == null) return;
 
         int dt = updateVisibilityState();
-        g = (Graphics2D) g.create();
-        g.translate(baseX, baseY);
-        g.clip(new Rectangle(-width, -height, 2 * width, height));
+        g.clip(baseX - width, baseY - height, 2 * width, height);
         g.setFont(font);
 
         for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
@@ -100,7 +101,7 @@ public class QueueWidget extends Widget {
                 }
             }
             if (currentPositions[id] < 0) {
-                drawRun(g, 0, (int) (currentPositions[id] * (plateHeight + spaceY)), r);
+                drawRun(g, baseX, baseY + (int) (currentPositions[id] * (plateHeight + spaceY)), r);
             }
         }
     }
@@ -110,7 +111,7 @@ public class QueueWidget extends Widget {
         return data.queueData;
     }
 
-    private void drawRun(Graphics2D g, int x, int y, WFRunInfo run) {
+    private void drawRun(Graphics g, int x, int y, WFRunInfo run) {
         TeamInfo team = info.getParticipant(run.getTeamId());
         String name = team.getShortName();
         String problem = info.problems.get(run.getProblemNumber()).letter;
@@ -143,19 +144,19 @@ public class QueueWidget extends Widget {
         PlateStyle color = getTeamRankColor(team);
 
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, POSITION_CENTER,
-                color.background, color.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                rankWidth, plateHeight, Graphics.Position.POSITION_CENTER,
+                font, color.background, color.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += rankWidth + spaceX;
 
         drawTextInRect(g, name, x, y,
-                nameWidth, plateHeight, POSITION_LEFT,
-                teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                nameWidth, plateHeight, Graphics.Position.POSITION_LEFT,
+                font, teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, POSITION_CENTER, teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                plateHeight, Graphics.Position.POSITION_CENTER, font, teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += problemWidth + spaceX;
 
@@ -166,14 +167,14 @@ public class QueueWidget extends Widget {
         }
 
         drawTextInRect(g, result, x, y, statusWidth,
-                plateHeight, POSITION_CENTER, resultColor.background, resultColor.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                plateHeight, Graphics.Position.POSITION_CENTER, font, resultColor.background, resultColor.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         if (inProgress) {
             drawRect(g, x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState);
         }
 
         if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
-            drawStar(g, x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+            g.drawStar(x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
         }
 
     }

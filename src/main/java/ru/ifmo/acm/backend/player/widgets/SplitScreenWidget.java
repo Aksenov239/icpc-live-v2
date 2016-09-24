@@ -6,7 +6,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
-
+import ru.ifmo.acm.backend.graphics.Graphics;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
@@ -198,7 +198,7 @@ public class SplitScreenWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
         for (int i = 0; i < teamInfoWidgets.length; i++) {
             teamInfoWidgets[i].paintImpl(g, width, height);
