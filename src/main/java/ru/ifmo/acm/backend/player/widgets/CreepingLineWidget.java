@@ -98,6 +98,10 @@ public abstract class CreepingLineWidget extends Widget {
             width = (int) Math.ceil(wh.getWidth());
             heigth = (int) Math.ceil(wh.getHeight());
         }
+
+        public String toString() {
+            return message + " " + position;
+        }
     }
 
 }

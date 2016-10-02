@@ -20,7 +20,7 @@ public abstract class Graphics {
     public abstract void drawRect(int x, int y, int width, int height, Color color, double opacity, boolean italic);
 
     public void drawRect(int x, int y, int width, int height, Color color, double opacity) {
-        drawRect(x, y, width, height, color, opacity);
+        drawRect(x, y, width, height, color, opacity, false);
     }
 
     public enum Position {

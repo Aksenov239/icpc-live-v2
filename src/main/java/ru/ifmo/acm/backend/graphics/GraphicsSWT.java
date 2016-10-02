@@ -13,7 +13,7 @@ import static java.lang.Math.round;
  * Created by Aksenov239 on 04.09.2016.
  */
 public class GraphicsSWT extends Graphics {
-    Graphics2D g;
+    public Graphics2D g;
 
     public GraphicsSWT(Graphics2D g) {
         this.g = (Graphics2D) g.create();
@@ -26,11 +26,7 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public Graphics create(int x, int y, int width, int height) {
-        this.x += x + x0;
-        this.y += y + y0;
-        this.width = width;
-        this.height = height;
-        return new GraphicsSWT((Graphics2D) g.create(x, y, width, height));
+        return new GraphicsSWT((Graphics2D) g.create(x + x0, y + y0, width, height));
     }
 
     private final int POINTS_IN_ROUND = 3;
@@ -80,6 +76,7 @@ public class GraphicsSWT extends Graphics {
         x += x0;
         y += y0;
         Graphics2D g = (Graphics2D) this.g.create();
+        g.setFont(font);
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;
 
@@ -99,7 +96,7 @@ public class GraphicsSWT extends Graphics {
             }
         }
 
-        drawRect(x, y, width, height, color, opacity, italic);
+        drawRect(x - x0, y - y0, width, height, color, opacity, italic);
 
         g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
         g.setColor(textColor);
@@ -127,6 +124,8 @@ public class GraphicsSWT extends Graphics {
     public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double margin) {
         x += x0;
         y += y0;
+        Graphics2D g = (Graphics2D)this.g.create();
+        g.setFont(font);g.setColor(color);
         FontMetrics wh = g.getFontMetrics();
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;
@@ -146,6 +145,7 @@ public class GraphicsSWT extends Graphics {
         transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
         g.setTransform(transform);
         g.drawString(text, 0, 0);
+        g.dispose();
     }
 
     @Override

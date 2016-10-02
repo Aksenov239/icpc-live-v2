@@ -1,6 +1,8 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import java.awt.*;
+
+import ru.ifmo.acm.backend.graphics.GraphicsSWT;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 import ru.ifmo.acm.backend.graphics.Graphics;
 /**
@@ -107,7 +109,6 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         if (messagesQueue.size() > 0 && lastRotation + rotateTime < System.currentTimeMillis()) {
             messageNow = messageNext;
             if (messagesQueue.size() > 0) {
-
                 messageNext = new Message(messagesQueue.poll(), g, messageFont);
             } else {
                 messageNext = new Message();

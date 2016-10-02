@@ -240,7 +240,7 @@ public class BigStandingsWidget extends Widget {
             }
 
             drawHead(g, spaceX, 0, firstSolved);
-            g = g.create();
+
             int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
             g.clip(-plateHeight,
                     initY - STAR_SIZE * 2,
@@ -330,10 +330,9 @@ public class BigStandingsWidget extends Widget {
 
     private void drawFullTeamPane(Graphics g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
         Font font = this.font;
-        g.setFont(font);
         PlateStyle color = getTeamRankColor(team);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, Graphics.Position.POSITION_LEFT,
+                rankWidth, plateHeight, Graphics.Position.POSITION_CENTER,
                 font, color.background, color.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += rankWidth + spaceX;

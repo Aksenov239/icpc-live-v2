@@ -24,5 +24,7 @@ public class TeamPaneStylesheet extends Stylesheet {
         goldPlaces = Integer.parseInt(properties.getProperty("team.pane.rank.gold.places", "4"));
         silverPlaces = Integer.parseInt(properties.getProperty("team.pane.rank.silver.places", "4"));
         bronzePlaces = Integer.parseInt(properties.getProperty("team.pane.rank.bronze.places", "4"));
+        name = new PlateStyle("team.pane.name");
+        problems = new PlateStyle("team.pane.name");penalty = new PlateStyle("team.pane.penalty");
     }
 }

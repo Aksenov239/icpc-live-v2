@@ -116,7 +116,7 @@ public abstract class Widget {
 
     }
 
-    public void paint(GLAutoDrawable drawable, int width, int height) {
+    public void paint(Graphics drawable, int width, int height) {
         if (Preparation.eventsLoader.getContestData() == null) return;
         try {
             paintImpl(drawable, width, height);
@@ -267,8 +267,8 @@ public abstract class Widget {
         g.drawRectWithText(text, x, y, width, height, position, font, color, textColor, opacity, textOpacity, MARGIN, italic, scale);
     }
 
-    void drawTextToFit(Graphics gg, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
-        Graphics g = gg.create(x, y, width, height);
+    void drawTextToFit(Graphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
+//        Graphics g = gg.create(x, y, width, height);
         g.drawTextThatFits(text, (int)(X - x), (int)(Y - y), width, height, font, color, MARGIN);
     }
 
