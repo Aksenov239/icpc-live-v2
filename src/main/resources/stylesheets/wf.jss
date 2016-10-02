@@ -5,6 +5,7 @@ green.color=#1b8041
 yellow.color=#a59e0c
 red.color=#881f1b
 white.color=#FFFFFF
+chromakey.color = #FF00FF
 
 #problem colors
 ac.color=green.color
