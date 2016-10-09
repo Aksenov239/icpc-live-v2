@@ -2,6 +2,7 @@ package ru.ifmo.acm.backend.opengl;
 
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import ru.ifmo.acm.backend.player.widgets.ClockWidget;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,11 @@ public class Main {
         int height = Integer.parseInt(properties.getProperty("height", "720"));
         int frameRate = Integer.parseInt(properties.getProperty("rate", "30"));
 
+        long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
+
         WidgetManager manager = new WidgetManager(properties);
+
+        manager.addWidget(new ClockWidget(updateWait));
 
         GLCanvas canvas = new GLCanvas();
         canvas.addGLEventListener(manager);

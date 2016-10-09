@@ -175,7 +175,6 @@ public abstract class Widget {
         y += (height - hh) / 2;
         height = hh;
 
-
         int[] xx = new int[POINTS_IN_ROUND * 4];
         int[] yy = new int[POINTS_IN_ROUND * 4];
         for (int i = 0; i < 4; i++) {
@@ -194,7 +193,7 @@ public abstract class Widget {
                 yy[t] = (int) round(ty);
             }
         }
-        g.fillPolygon(xx, yy, color);
+        g.fillPolygon(xx, yy, x, y, color, opacity);
     }
 
     void drawRect(Graphics g, int x, int y, int width, int height, Color color, double opacity) {

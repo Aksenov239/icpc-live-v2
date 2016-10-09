@@ -26,43 +26,12 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public Graphics create(int x, int y, int width, int height) {
-        return new GraphicsSWT((Graphics2D) g.create(x + x0, y + y0, width, height));
+        GraphicsSWT g2 = new GraphicsSWT((Graphics2D) g.create(x + x0, y + y0, width, height));
+        g2.width = width;
+        g2.height = height;
+        return g2;
     }
 
-    private final int POINTS_IN_ROUND = 3;
-    private final int ROUND_RADIUS = 4;
-
-    @Override
-    public void drawRect(int x, int y, int width, int height, Color color, double opacity, boolean italic) {
-        x += x0;
-        y += y0;
-        g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
-        g.setColor(color);
-
-        int hh = (int) (height * opacity);
-        y += (height - hh) / 2;
-        height = hh;
-
-        int[] xx = new int[POINTS_IN_ROUND * 4];
-        int[] yy = new int[POINTS_IN_ROUND * 4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < POINTS_IN_ROUND; j++) {
-                int t = i * POINTS_IN_ROUND + j;
-                double a = Math.PI / 2 * j / (POINTS_IN_ROUND - 1);
-                int dx = new int[]{0, 1, 0, -1}[i];
-                int dy = new int[]{1, 0, -1, 0}[i];
-                double baseX = (i == 0 || i == 3 ? x + ROUND_RADIUS : x + width - ROUND_RADIUS);
-                double baseY = (i == 2 || i == 3 ? y + ROUND_RADIUS : y + height - ROUND_RADIUS);
-
-                double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
-                double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
-                if (italic) tx -= (ty - (y + height / 2)) * 0.2;
-                xx[t] = (int) round(tx);
-                yy[t] = (int) round(ty);
-            }
-        }
-        g.fillPolygon(xx, yy, xx.length);
-    }
     @Override
     public void drawString(String text, int x, int y, Font font, Color color) {
         g.setFont(font);
@@ -98,8 +67,7 @@ public class GraphicsSWT extends Graphics {
 
         drawRect(x - x0, y - y0, width, height, color, opacity, italic);
 
-        g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
-        g.setColor(textColor);
+        setColor(textColor, textOpacity);
 
         FontMetrics wh = g.getFontMetrics();
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
@@ -168,8 +136,8 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void fillPolygon(int[] x, int[] y, Color color) {
-        g.setColor(color);
+    public void fillPolygon(int[] x, int[] y, Color color, double opacity) {
+        setColor(color, opacity);
         int[] xx = new int[x.length];
         int[] yy = new int[y.length];
         for (int i = 0; i < x.length; i++) {
@@ -177,6 +145,11 @@ public class GraphicsSWT extends Graphics {
             yy[i] = y[i] + y0;
         }
         g.fillPolygon(xx, yy, xx.length);
+    }
+
+    @Override
+    public void fillPolygon(int[] x, int[] y, int xC, int yC, Color color, double opacity) {
+        fillPolygon(x, y, color, opacity);
     }
 
     @Override
@@ -196,7 +169,14 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void init() {
+    public void setColor(Color color) {
+        g.setColor(color);
+    }
+
+    @Override
+    public void setColor(Color color, double opacity) {
+        g.setColor(color);
+        g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
     }
 
     @Override
