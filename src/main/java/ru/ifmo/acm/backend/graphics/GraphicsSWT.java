@@ -7,8 +7,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import static java.lang.Math.round;
-
 /**
  * Created by Aksenov239 on 04.09.2016.
  */
@@ -38,6 +36,7 @@ public class GraphicsSWT extends Graphics {
         g.setColor(color);
         g.drawString(text, x + x0, y + y0);
     }
+
     @Override
     public void drawRectWithText(String text, int x, int y, int width, int height, Position position, Font font,
                                  Color color, Color textColor, double opacity, double textOpacity, double margin,
@@ -92,8 +91,9 @@ public class GraphicsSWT extends Graphics {
     public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double margin) {
         x += x0;
         y += y0;
-        Graphics2D g = (Graphics2D)this.g.create();
-        g.setFont(font);g.setColor(color);
+        Graphics2D g = (Graphics2D) this.g.create();
+        g.setFont(font);
+        g.setColor(color);
         FontMetrics wh = g.getFontMetrics();
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;

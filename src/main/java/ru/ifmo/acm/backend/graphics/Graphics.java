@@ -39,11 +39,11 @@ public abstract class Graphics {
                 double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
                 double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
                 if (italic) tx -= (ty - (y + height / 2)) * 0.2;
-                xx[t] = (int) Math.round(tx);
-                yy[t] = (int) Math.round(ty);
+                xx[t] = (int)(i == 0 || i == 3 ? Math.ceil(tx) : Math.floor(tx));//(int) Math.round(tx);
+                yy[t] = (int)(i == 2 || i == 3 ? Math.ceil(ty) : Math.floor(ty));//(int) Math.round(ty);
             }
         }
-        fillPolygon(xx, yy, x, y, color, opacity);
+        fillPolygon(xx, yy, x + width / 2, y + height / 2, color, opacity);
     }
 
     public void drawRect(int x, int y, int width, int height, Color color, double opacity) {

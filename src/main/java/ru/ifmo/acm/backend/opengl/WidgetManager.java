@@ -1,12 +1,22 @@
 package ru.ifmo.acm.backend.opengl;
 
+import com.jogamp.graph.curve.Region;
+import com.jogamp.graph.curve.opengl.RegionRenderer;
+import com.jogamp.graph.curve.opengl.RenderState;
+import com.jogamp.graph.curve.opengl.TextRegionUtil;
+import com.jogamp.graph.font.Font;
+import com.jogamp.graph.font.FontFactory;
+import com.jogamp.graph.geom.SVertex;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
+import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.PMVMatrix;
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.GraphicsSWT;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.util.ArrayList;
@@ -30,6 +40,21 @@ public class WidgetManager implements GLEventListener {
 
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
+
+        GraphicsGL.renderState = RenderState.createRenderState(SVertex.factory());
+//        GraphicsGL.renderState.setColorStatic(1, 1, 1, 1);
+//        GraphicsGL.renderState.setHintMask(RenderState.BITHINT_BLENDING_ENABLED);
+
+        GraphicsGL.regionRenderer = RegionRenderer.create(GraphicsGL.renderState, RegionRenderer.defaultBlendEnable, RegionRenderer.defaultBlendDisable);
+        GraphicsGL.regionRenderer.init(gl, Region.DEFAULT_TWO_PASS_TEXTURE_UNIT);
+
+        GraphicsGL.textRegionUtil = new TextRegionUtil(Region.DEFAULT_TWO_PASS_TEXTURE_UNIT);
+
+        GraphicsGL.regionRenderer.enable(gl, true);
+        GraphicsGL.regionRenderer.reshapeOrtho(width, height, 0.1f, 1000f);
+        GraphicsGL.regionRenderer.enable(gl, false);
+        GraphicsGL.loadFonts();
+
         glu = new GLU();
         gl.glClearDepth(1f);
         gl.glEnable(GL.GL_DEPTH_TEST);
@@ -50,6 +75,10 @@ public class WidgetManager implements GLEventListener {
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
+
+        GraphicsGL.regionRenderer.enable(gl, true);
+        GraphicsGL.regionRenderer.reshapeOrtho(width, height, 0.1f, 1000.0f);
+        GraphicsGL.regionRenderer.enable(gl, false);
     }
 
     public void display(GLAutoDrawable drawable) {
@@ -62,9 +91,18 @@ public class WidgetManager implements GLEventListener {
         for (Widget widget : widgets) {
             widget.paint(g, width, height);
         }
+//        PMVMatrix pmv = GraphicsGL.renderState.getMatrix();
+//        pmv.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+//        pmv.glLoadIdentity();
+//        pmv.glTranslatef(0, 0, -300);
+//        Font font = GraphicsGL.fonts.get("Open Sans Light");
+//        float pixelSize = font.getPixelSize(32, 96);
+//        GraphicsGL.textRegionUtil.drawString3D(drawable.getGL().getGL2(),
+//                GraphicsGL.regionRenderer, font, pixelSize, "Test", null, new int[]{4});
     }
 
     public void dispose(GLAutoDrawable drawable) {
+        GraphicsGL.regionRenderer.destroy(drawable.getGL().getGL2());
     }
 
     public void addWidget(Widget widget) {
