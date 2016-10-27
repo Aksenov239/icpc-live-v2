@@ -78,8 +78,9 @@ public class ClockWidget extends Widget {
         } */
         long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
         String timeS = getTimeString(Math.abs(time));
-//        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.POSITION_CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
-        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.POSITION_CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, 1, WidgetAnimation.VERTICAL_ANIMATED);
+//        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
+        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Alignment.CENTER,
+                clockFont, ClockStylesheet.main, 1, WidgetAnimation.VERTICAL_ANIMATED);
 //        drawRect(g, x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, 1);
     }
 

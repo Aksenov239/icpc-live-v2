@@ -12,7 +12,6 @@ import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.backend.graphics.Graphics;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
@@ -208,29 +207,27 @@ public abstract class Widget {
     private long lastBlinkingOpacityUpdate = 0;
     private double blinkingValue = 0.20;
 
-    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Position position, Font font, Color color, Color textColor, double visibilityState) {
-        drawTextInRect(gg, text, x, y, width, height, position, font, color, textColor, visibilityState, false, true);
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height,
+                        Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                        double visibilityState) {
+        drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true);
     }
 
-    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Position position, Font font, Color color, Color textColor, double visibilityState, WidgetAnimation widgetAnimation) {
-        drawTextInRect(gg, text, x, y, width, height, position, font, color, textColor, visibilityState, false, true, widgetAnimation, false);
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height,
+                        Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                        double visibilityState, WidgetAnimation widgetAnimation) {
+        drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true, widgetAnimation, false);
     }
 
-    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Position position, Font font, Color color, Color textColor, double visibilityState, boolean italic, boolean scale) {
-        drawTextInRect(gg, text, x, y, width, height, position, font, color, textColor, visibilityState, italic, scale, WidgetAnimation.NOT_ANIMATED, false);
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height,
+                        Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                        double visibilityState, boolean scale) {
+        drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, scale, WidgetAnimation.NOT_ANIMATED, false);
     }
 
-    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Position position, Font font, Color color, Color textColor,
-                        double visibilityState, boolean isBlinking) {
-        drawTextInRect(gg, text, x, y, width, height, position,
-                font, color, textColor, visibilityState, false, true,
-                WidgetAnimation.NOT_ANIMATED, isBlinking);
-    }
-
-
-    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Position position,
-                        Font font, Color color, Color textColor,
-                        double visibilityState, boolean italic, boolean scale,
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Alignment alignment,
+                        Font font, PlateStyle plateStyle,
+                        double visibilityState, boolean scale,
                         WidgetAnimation widgetAnimation, boolean isBlinking) {
         Graphics g = gg.create();
         double opacity = getOpacity(visibilityState);
@@ -263,7 +260,8 @@ public abstract class Widget {
             textOpacity = lastBlinkingOpacity;
         }
 
-        g.drawRectWithText(text, x, y, width, height, position, font, color, textColor, opacity, textOpacity, MARGIN, italic, scale);
+        g.drawRectWithText(text, x, y, width, height, alignment, font, plateStyle,
+                opacity, textOpacity, MARGIN, scale);
     }
 
     void drawTextToFit(Graphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
@@ -282,13 +280,13 @@ public abstract class Widget {
         int totalWidth = (int) round(height * total_width);
         int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, Graphics.Position.POSITION_CENTER, font, color.background, color.text, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, Graphics.Alignment.CENTER, font, color, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + spaceX;
-        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, Graphics.Position.POSITION_LEFT, font, TeamPaneStylesheet.name.background, TeamPaneStylesheet.name.text, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, Graphics.Alignment.LEFT, font, TeamPaneStylesheet.name, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += nameWidth + spaceX;
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, Graphics.Position.POSITION_CENTER, font, TeamPaneStylesheet.problems.background, TeamPaneStylesheet.problems.text, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, Graphics.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, Graphics.Position.POSITION_CENTER, font, TeamPaneStylesheet.penalty.background, TeamPaneStylesheet.penalty.text, state);
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, Graphics.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state);
     }
 
     void drawTeamPane(Graphics g, TeamInfo team, int x, int y, int height, double state) {

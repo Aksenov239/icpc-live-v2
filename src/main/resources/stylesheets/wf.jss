@@ -58,6 +58,10 @@ big.standings.frozen.headings.background=yellow.color
 big.standings.frozen.headings.text=white.color
 big.standings.star=star.color
 
+#breaking news
+breaking.news.caption.background=accent.color
+breaking.news.caption.text=white.color
+
 #caption
 caption.main.background=additional.color
 caption.main.text=white.color
@@ -71,8 +75,10 @@ clock.text=white.color
 #creeping line
 creeping.line.main.background=main.color
 creeping.line.main.text=white.color
+creeping.line.main.style=solid
 creeping.line.logo.background=additional.color
 creeping.line.logo.text=white.color
+creeping.line.logo.style=solid
 
 #team
 team.replay.background=red.color

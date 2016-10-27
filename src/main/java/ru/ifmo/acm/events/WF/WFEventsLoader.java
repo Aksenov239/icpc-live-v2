@@ -400,6 +400,8 @@ public class WFEventsLoader extends EventsLoader {
                 // new FileInputStream(new File(properties.getProperty("url"))),
                 // "windows-1251");
 
+                if (1 == 1)
+                    return;
                 //emulation = false;
 
                 int total = 0;

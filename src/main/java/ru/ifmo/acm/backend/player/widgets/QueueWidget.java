@@ -10,7 +10,6 @@ import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFEventsLoader;
 import ru.ifmo.acm.events.WF.WFRunInfo;
-import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -144,19 +143,19 @@ public class QueueWidget extends Widget {
         PlateStyle color = getTeamRankColor(team);
 
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, Graphics.Position.POSITION_CENTER,
-                font, color.background, color.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                rankWidth, plateHeight, Graphics.Alignment.CENTER,
+                font, color, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += rankWidth + spaceX;
 
         drawTextInRect(g, name, x, y,
-                nameWidth, plateHeight, Graphics.Position.POSITION_LEFT,
-                font, teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                nameWidth, plateHeight, Graphics.Alignment.LEFT,
+                font, teamColor, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, Graphics.Position.POSITION_CENTER, font, teamColor.background, teamColor.text, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                plateHeight, Graphics.Alignment.CENTER, font, teamColor, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += problemWidth + spaceX;
 
@@ -167,7 +166,7 @@ public class QueueWidget extends Widget {
         }
 
         drawTextInRect(g, result, x, y, statusWidth,
-                plateHeight, Graphics.Position.POSITION_CENTER, font, resultColor.background, resultColor.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                plateHeight, Graphics.Alignment.CENTER, font, resultColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         if (inProgress) {
             drawRect(g, x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState);

@@ -16,6 +16,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.Widget;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
@@ -122,9 +123,9 @@ public class GraphicsGL extends Graphics {
     }
 
     @Override
-    public void drawRectWithText(String text, int x, int y, int width, int height, Position position, Font font,
-                                 Color color, Color textColor, double opacity, double textOpacity, double margin,
-                                 boolean italic, boolean scale) {
+    public void drawRectWithText(String text, int x, int y, int width, int height, Alignment alignment, Font font,
+                                 PlateStyle plateStyle, double opacity, double textOpacity, double margin,
+                                 boolean scale) {
         x += x0;
         y += y0;
         com.jogamp.graph.font.Font joglFont = getFont(font);
@@ -136,9 +137,9 @@ public class GraphicsGL extends Graphics {
 
         if (width == -1) {
             width = (int) (textWidth + 2 * margin);
-            if (position == Position.POSITION_CENTER) {
+            if (alignment == Alignment.CENTER) {
                 x -= width / 2;
-            } else if (position == Position.POSITION_RIGHT) {
+            } else if (alignment == Alignment.RIGHT) {
                 x -= width;
             }
         } else if (scale) {
@@ -148,20 +149,20 @@ public class GraphicsGL extends Graphics {
             }
         }
 
-        drawRect(x - x0, y - y0, width, height, color, opacity, italic);
+        drawRect(x - x0, y - y0, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
 
         float yy = (float) (y + 1.0 * (height - bounds.getHeight()) / 2) + joglFont.getPixelSize(font.getSize(), dpiH)
                 - 0.03f * height;
         float xx;
-        if (position == Position.POSITION_LEFT) {
+        if (alignment == Alignment.LEFT) {
             xx = (float) (x + margin);
-        } else if (position == Position.POSITION_CENTER) {
+        } else if (alignment == Alignment.CENTER) {
             xx = (float) (x + (width - textWidth * textScale) / 2);
         } else {
             xx = (float) (x + width - textWidth * textScale - margin);
         }
 
-        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), textColor);
+        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), plateStyle.text);
     }
 
     @Override
@@ -191,7 +192,7 @@ public class GraphicsGL extends Graphics {
     public void drawStar(int x, int y, int size) {
         x += x0;
         y += y0;
-        setColor(Color.decode(Stylesheet.colors.get("star.color")));
+        setColor(Color.decode(Stylesheet.styles.get("star.color")));
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};

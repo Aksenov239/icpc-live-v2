@@ -29,6 +29,6 @@ public class BigStandingsStylesheet extends Stylesheet {
         heading = new PlateStyle("big.standings.heading");
         optimisticHeading = new PlateStyle("big.standings.optimistic.heading");
         frozenHeading = new PlateStyle("big.standings.frozen.heading");
-        star = Color.decode(Stylesheet.colors.getOrDefault("big.standings.star", "#FFFFA0"));
+        star = Color.decode(Stylesheet.styles.getOrDefault("big.standings.star", "#FFFFA0"));
     }
 }

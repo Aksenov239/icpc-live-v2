@@ -3,6 +3,7 @@ package ru.ifmo.acm.backend.player.widgets;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.BreakingNewsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
@@ -200,7 +201,7 @@ public class BreakingNewsWidget extends VideoWidget {
         drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
         Font font = Font.decode("Open Sans " + (int) Math.round(PLATE_HEIGHT * 0.7));
         drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
-                Graphics.Position.POSITION_RIGHT, font, ACCENT_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                Graphics.Alignment.RIGHT, font, BreakingNewsStylesheet.caption, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     @Override

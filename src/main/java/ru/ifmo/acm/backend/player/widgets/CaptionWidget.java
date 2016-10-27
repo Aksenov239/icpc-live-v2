@@ -25,10 +25,10 @@ public class CaptionWidget extends Widget {
 
     private String caption;
     private String description;
-    private final Graphics.Position position;
+    private final Graphics.Alignment alignment;
 
-    public CaptionWidget(Graphics.Position position) {
-        this.position = position;
+    public CaptionWidget(Graphics.Alignment alignment) {
+        this.alignment = alignment;
     }
 
     public void setCaption(String caption, String description) {
@@ -43,11 +43,11 @@ public class CaptionWidget extends Widget {
             int x1;
             int x2;
             int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
-            if (position == Graphics.Position.POSITION_LEFT) {
+            if (alignment == Graphics.Alignment.LEFT) {
                 x1 = X_LEFT;
                 x2 = x1 + dx;
                 QueueWidget.Y_SHIFT = 3;
-            } else if (position == Graphics.Position.POSITION_RIGHT) {
+            } else if (alignment == Graphics.Alignment.RIGHT) {
                 x1 = X_RIGHT;
                 x2 = x1 - dx;
             } else {
@@ -55,10 +55,12 @@ public class CaptionWidget extends Widget {
                 x2 = x1;
             }
             int y = Y;
-            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, position, FONT1, CaptionStylesheet.main.background, CaptionStylesheet.main.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+            drawTextInRect(g, caption, x1, y, -1, HEIGHT1, alignment, FONT1,
+                    CaptionStylesheet.main, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             y += HEIGHT1 + SPACE;
             if (description != null && description.length() != 0) {
-                drawTextInRect(g, description, x2, y, -1, HEIGHT2, position, FONT2, CaptionStylesheet.description.background, CaptionStylesheet.description.text, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                drawTextInRect(g, description, x2, y, -1, HEIGHT2, alignment, FONT2,
+                        CaptionStylesheet.description, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
             }
         }
     }

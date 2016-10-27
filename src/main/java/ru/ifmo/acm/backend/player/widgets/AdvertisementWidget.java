@@ -10,7 +10,7 @@ import ru.ifmo.acm.datapassing.Data;
 public class AdvertisementWidget extends CaptionWidget {
 
     public AdvertisementWidget(long updateWait, long duration) {
-        super(Graphics.Position.POSITION_CENTER);
+        super(Graphics.Alignment.CENTER);
         this.duration = duration;
         setVisible(false);
     }

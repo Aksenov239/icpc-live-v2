@@ -19,6 +19,6 @@ public class TeamStylesheet extends Stylesheet {
         udProblem = new PlateStyle("team.ud");
         noProblem = new PlateStyle("team.no");
         replay = new PlateStyle("team.replay");
-        star = Color.decode(Stylesheet.colors.getOrDefault("team.star", "#FFFFA0"));
+        star = Color.decode(Stylesheet.styles.getOrDefault("team.star", "#FFFFA0"));
     }
 }

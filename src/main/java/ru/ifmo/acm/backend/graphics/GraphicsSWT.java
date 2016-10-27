@@ -1,5 +1,6 @@
 package ru.ifmo.acm.backend.graphics;
 
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
@@ -38,12 +39,13 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void drawRectWithText(String text, int x, int y, int width, int height, Position position, Font font,
-                                 Color color, Color textColor, double opacity, double textOpacity, double margin,
-                                 boolean italic, boolean scale) {
+    public void drawRectWithText(String text, int x, int y, int width, int height, Alignment alignment, Font font,
+                                 PlateStyle plateStyle, double opacity, double textOpacity, double margin,
+                                 boolean scale) {
+        Graphics2D saved = g;
         x += x0;
         y += y0;
-        Graphics2D g = (Graphics2D) this.g.create();
+        g = (Graphics2D) saved.create();
         g.setFont(font);
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;
@@ -52,9 +54,9 @@ public class GraphicsSWT extends Graphics {
 
         if (width == -1) {
             width = (int) (textWidth + 2 * margin);
-            if (position == Position.POSITION_CENTER) {
+            if (alignment == Alignment.CENTER) {
                 x -= width / 2;
-            } else if (position == Position.POSITION_RIGHT) {
+            } else if (alignment == Alignment.RIGHT) {
                 x -= width;
             }
         } else if (scale) {
@@ -64,17 +66,17 @@ public class GraphicsSWT extends Graphics {
             }
         }
 
-        drawRect(x - x0, y - y0, width, height, color, opacity, italic);
+        drawRect(x - x0, y - y0, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
 
-        setColor(textColor, textOpacity);
+        setColor(plateStyle.text, textOpacity);
 
         FontMetrics wh = g.getFontMetrics();
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
                 - 0.03f * height;
         float xx;
-        if (position == Position.POSITION_LEFT) {
+        if (alignment == Alignment.LEFT) {
             xx = (float) (x + margin);
-        } else if (position == Position.POSITION_CENTER) {
+        } else if (alignment == Alignment.CENTER) {
             xx = (float) (x + (width - textWidth * textScale) / 2);
         } else {
             xx = (float) (x + width - textWidth * textScale - margin);
@@ -85,13 +87,15 @@ public class GraphicsSWT extends Graphics {
         g.setTransform(transform);
         g.drawString(text, 0, 0);
         g.dispose();
+        g = saved;
     }
 
     @Override
     public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double margin) {
+        Graphics2D saved = g;
         x += x0;
         y += y0;
-        Graphics2D g = (Graphics2D) this.g.create();
+        g = (Graphics2D) saved.create();
         g.setFont(font);
         g.setColor(color);
         FontMetrics wh = g.getFontMetrics();
@@ -113,12 +117,12 @@ public class GraphicsSWT extends Graphics {
         transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
         g.setTransform(transform);
         g.drawString(text, 0, 0);
-        g.dispose();
+        g.dispose();        g = saved;
     }
 
     @Override
     public void drawStar(int x, int y, int size) {
-        g.setColor(Color.decode(Stylesheet.colors.get("star.color")));
+        g.setColor(Color.decode(Stylesheet.styles.get("star.color")));
         int[] xx = new int[10];
         int[] yy = new int[10];
 

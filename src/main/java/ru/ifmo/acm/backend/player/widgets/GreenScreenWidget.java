@@ -18,7 +18,7 @@ public class GreenScreenWidget extends Widget {
     @Override
     public void paintImpl(Graphics g, int width, int height) {
         if (isVisible()) {
-            g.drawRect(0, 0, width, height, Color.decode(Stylesheet.colors.get("chromakey.color")), 1);
+            g.drawRect(0, 0, width, height, Color.decode(Stylesheet.styles.get("chromakey.color")), 1);
         }
     }
 

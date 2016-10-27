@@ -8,7 +8,7 @@ import java.util.Properties;
  * Created by Aksenov239 on 12.06.2016.
  */
 public class Stylesheet {
-    public static HashMap<String, String> colors = new HashMap<>();
+    public static HashMap<String, String> styles = new HashMap<>();
     static Properties properties;
 
     static {
@@ -25,16 +25,16 @@ public class Stylesheet {
         }
 
         for (String name : properties.stringPropertyNames()) {
-            colors.put(name, properties.getProperty(name));
+            styles.put(name, properties.getProperty(name));
         }
 
         boolean changed = true;
         while (changed) {
             changed = false;
             for (String name : properties.stringPropertyNames()) {
-                if (colors.containsKey(colors.get(name))) {
+                if (styles.containsKey(styles.get(name))) {
                     changed = true;
-                    colors.put(name, colors.get(colors.get(name)));
+                    styles.put(name, styles.get(styles.get(name)));
                 }
             }
         }

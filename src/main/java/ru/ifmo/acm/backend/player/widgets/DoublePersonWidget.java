@@ -6,8 +6,6 @@ import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.PersonData;
 
-import java.awt.*;
-
 /**
  * @author: pashka
  */
@@ -18,8 +16,8 @@ public class DoublePersonWidget extends Widget {
 
     public DoublePersonWidget(long updateWait, long duration) {
         super(updateWait);
-        leftWidget = new CaptionWidget(Graphics.Position.POSITION_LEFT);
-        rightWidget = new CaptionWidget(Graphics.Position.POSITION_RIGHT);
+        leftWidget = new CaptionWidget(Graphics.Alignment.LEFT);
+        rightWidget = new CaptionWidget(Graphics.Alignment.RIGHT);
         this.duration = duration;
     }
 
