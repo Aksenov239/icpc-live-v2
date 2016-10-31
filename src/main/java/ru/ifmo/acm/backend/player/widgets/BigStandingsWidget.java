@@ -58,6 +58,7 @@ public class BigStandingsWidget extends Widget {
 
     private ContestInfo contestData;
     private StandingsData.OptimismLevel optimismLevel = StandingsData.OptimismLevel.NORMAL;
+    private String region = "all";
 
     double[] currentTeamPositions;
     double[] desiredTeamPositions;
@@ -148,11 +149,12 @@ public class BigStandingsWidget extends Widget {
                     setState(data.standingsData.getStandingsType());
                 }
             }
+            optimismLevel = data.standingsData.optimismLevel;
+            region = data.standingsData.region;
         } else {
             setVisible(false);
         }
         lastChange = data.standingsData.getStandingsTimestamp();
-        optimismLevel = data.standingsData.optimismLevel;
     }
 
     List<Point> stars = new ArrayList<>();
@@ -179,12 +181,7 @@ public class BigStandingsWidget extends Widget {
         g.translate(baseX, baseY);
 
         TeamInfo[] standings;
-        if (contestData instanceof WFContestInfo) {
-            standings = ((WFContestInfo) contestData).getStandings(optimismLevel);
-        } else {
-            standings = contestData.getStandings();
-        }
-
+        standings = contestData.getStandings(region, optimismLevel);
 
         if (contestData == null || standings == null) return;
 
@@ -301,9 +298,9 @@ public class BigStandingsWidget extends Widget {
 
         PlateStyle heading = BigStandingsStylesheet.heading;
 
-        String headingText = "Current Standings";
+        String headingText = region.equals(StandingsData.ALL_REGIONS) ? "Current Standings" : region;
 
-        if (contestData.getCurrentTime() > WFEventsLoader.FREEZE_TIME) {
+        if (contestData.getCurrentTime() > ContestInfo.FREEZE_TIME) {
             if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
                 heading = BigStandingsStylesheet.optimisticHeading;
                 headingText = "Optimistic Standings";
@@ -372,7 +369,7 @@ public class BigStandingsWidget extends Widget {
             }
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
-            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - ((WFRunInfo) team.getLastRun(i)).timestamp * 1000) < blinkingTime;
+            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - team.getLastRun(i).getTimestamp() * 1000) < blinkingTime;
             drawTextInRect(g, status, x, y,
                     problemWidth, plateHeight, Graphics.Alignment.CENTER,
                     font, statusColor, visibilityState,

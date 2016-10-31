@@ -8,24 +8,25 @@ public class PCMSRunInfo implements RunInfo {
         this.judged = true;
     }
 
-    PCMSRunInfo(boolean judged, String result, int problem, long time) {
-        this(judged, result, problem, time, false);
-    }
-
-    PCMSRunInfo(String result, int problem, long time, boolean firstToSolve) {
-        this(true, result, problem, time, firstToSolve);
-    }
-
-    PCMSRunInfo(boolean judged, String result, int problem, long time, boolean firstToSolve) {
+    PCMSRunInfo(boolean judged, String result, int problem, long time, int teamId) {
         this.judged = judged;
         this.result = result;
         this.problem = problem;
         this.time = time;
-        this.firstToSolve = firstToSolve;
+        this.timestamp = 1. * System.currentTimeMillis() / 1000;
+        this.lastUpdateTimestamp = System.currentTimeMillis();
+        this.teamId = teamId;
+    }
+
+    PCMSRunInfo(RunInfo run) {
+        this.judged = run.isJudged();
+        this.result = run.getResult();
+        this.problem = run.getProblemNumber();
+        this.time = run.getTime();
     }
 
     public int getId() {
-        throw new AssertionError("PCMSRunInfo doesn't have id");
+        return id;
     }
 
     public boolean isAccepted() {
@@ -52,9 +53,18 @@ public class PCMSRunInfo implements RunInfo {
         return time;
     }
 
+    @Override
+    public long getLastUpdateTimestamp() {
+        return time;
+    }
+
+    @Override
+    public double getTimestamp() {
+        return timestamp;
+    }
+
     public int getTeamId() {
-        throw new AssertionError("getTeamId function on PCMSRunInfo is not implemented");
-        //return 0;
+        return teamId;
     }
 
     public boolean isReallyUnknown() {
@@ -65,11 +75,17 @@ public class PCMSRunInfo implements RunInfo {
         return null;
     }
 
+    public double getPercentage() {
+        return 0;
+    }
+
     protected boolean judged;
     protected String result = "";
+    protected int id;
+    protected int teamId;
     protected int problem;
     protected long time;
+    protected double timestamp;
+    protected long lastUpdateTimestamp;
     public boolean reallyUnknown;
-
-    protected boolean firstToSolve;
 }

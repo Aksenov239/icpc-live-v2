@@ -66,6 +66,16 @@ public class WFTeamInfo implements TeamInfo {
     }
 
     @Override
+    public String getAlias() {
+        return (id + 1) + "";
+    }
+
+    @Override
+    public String getRegion() {
+        return region;
+    }
+
+    @Override
     public int getPenalty() {
         return penalty;
     }

@@ -1,6 +1,6 @@
 package ru.ifmo.acm.mainscreen.BreakingNews;
 
-import ru.ifmo.acm.events.WF.WFRunInfo;
+import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 
 public class BreakingNews {
@@ -18,7 +18,7 @@ public class BreakingNews {
         this.runId = runId;
     }
 
-    public void update(WFRunInfo run) {
+    public void update(RunInfo run) {
         if (run != null) {
             setOutcome(run.getResult());
             setTimestamp(run.getTime());

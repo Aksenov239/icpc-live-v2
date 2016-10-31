@@ -103,7 +103,7 @@ public class SplitScreenWidget extends Widget {
         RunInfo replayRun = null;
         // TODO: when frozen always switch onto teamId screen
         System.err.println("Choosing replay");
-        while (currentRunId <= contestInfo.getMaxRunId() && replayRun == null) {
+        while (currentRunId <= contestInfo.getLastRunId() && replayRun == null) {
             WFRunInfo run = contestInfo.getRun(currentRunId);
             if (run != null &&
                     contestInfo.getRun(currentRunId).timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&

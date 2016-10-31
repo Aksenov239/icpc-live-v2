@@ -286,7 +286,7 @@ public abstract class Widget {
         x += nameWidth + spaceX;
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, Graphics.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, Graphics.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state);
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, Graphics.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     void drawTeamPane(Graphics g, TeamInfo team, int x, int y, int height, double state) {
@@ -331,9 +331,12 @@ public abstract class Widget {
 
     protected PlateStyle getTeamRankColor(TeamInfo team) {
         PlateStyle color = TeamPaneStylesheet.none;
-        if (team.getSolvedProblemsNumber() > 0 && team.getRank() <= TeamPaneStylesheet.goldPlaces + TeamPaneStylesheet.silverPlaces + TeamPaneStylesheet.bronzePlaces) {
+        if (team.getSolvedProblemsNumber() > 0 &&
+                team.getRank() <= TeamPaneStylesheet.goldPlaces + TeamPaneStylesheet.silverPlaces +
+                        TeamPaneStylesheet.bronzePlaces) {
             color = team.getRank() <= TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.gold :
-                    team.getRank() <= TeamPaneStylesheet.silverPlaces ? TeamPaneStylesheet.silver : TeamPaneStylesheet.bronze;
+                    team.getRank() <= TeamPaneStylesheet.silverPlaces + TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.silver :
+                            TeamPaneStylesheet.bronze;
         }
         return color;
     }

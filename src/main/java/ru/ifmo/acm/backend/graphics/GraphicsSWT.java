@@ -20,7 +20,10 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public Graphics create() {
-        return new GraphicsSWT(g);
+        GraphicsSWT newG = new GraphicsSWT(g);
+        newG.x0 = x0;
+        newG.y0 = y0;
+        return newG;
     }
 
     @Override

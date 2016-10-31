@@ -8,8 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.player.widgets.ClockWidget;
 import ru.ifmo.acm.events.EventsLoader;
-import ru.ifmo.acm.events.WF.WFContestInfo;
-import ru.ifmo.acm.events.WF.WFRunInfo;
+import ru.ifmo.acm.events.ContestInfo;
+import ru.ifmo.acm.events.PCMS.PCMSContestInfo;
+import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
@@ -101,23 +102,26 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
     private static int lastShowedRun = 0;
 
     public static Utils.StoppedThread getUpdaterThread() {
-        Utils.StoppedThread tableUpdater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+        return new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
             public void run() {
                 while (!stop) {
                     // final BackUp<BreakingNews> backUp = MainScreenData.getProperties().backupBreakingNews;
-                    WFContestInfo contestInfo = null;
+                    ContestInfo contestInfo = null;
                     while (contestInfo == null) {
-                        contestInfo = (WFContestInfo) EventsLoader.getInstance().getContestData();
+                        contestInfo = EventsLoader.getInstance().getContestData();
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             log.error("error", e);
                         }
                     }
+                    if (contestInfo instanceof PCMSContestInfo) {
+                        return;
+                    }
 
-                    while (lastShowedRun <= contestInfo.getMaxRunId()) {
-                        WFRunInfo run = contestInfo.getRun(lastShowedRun);
+                    while (lastShowedRun <= contestInfo.getLastRunId()) {
+                        RunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
                             container.addItemAt(0,
                                     new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId() + 1, run.getTime(), run.getId()));
@@ -135,7 +139,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
 
                     for (int i = 0; i < container.getItemIds().size(); i++) {
                         int runId = container.getItemIds().get(i).getRunId();
-                        WFRunInfo run = contestInfo.getRun(runId);
+                        RunInfo run = contestInfo.getRun(runId);
                         container.getItemIds().get(i).update(run);
                     }
 
@@ -147,7 +151,5 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
                 }
             }
         });
-
-        return tableUpdater;
     }
 }

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Stream;
 
 /**
  * Created by aksenov on 05.05.2015.
@@ -91,14 +92,13 @@ public class WFContestInfo extends ContestInfo {
                 List<RunInfo> runs = team.getRuns()[j];
                 int wrong = 0;
                 for (RunInfo run : runs) {
-                    WFRunInfo wfrun = (WFRunInfo) run;
                     if ("AC".equals(run.getResult())) {
                         team.solved++;
-                        int time = (int) (wfrun.getTime() / 60 / 1000);
+                        int time = (int) (run.getTime() / 60 / 1000);
                         team.penalty += wrong * 20 + time;
-                        team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
+                        team.lastAccepted = Math.max(team.lastAccepted, run.getTime());
                         break;
-                    } else if (wfrun.getResult().length() > 0 && !"CE".equals(run.getResult())) {
+                    } else if (run.getResult().length() > 0 && !"CE".equals(run.getResult())) {
                         wrong++;
                     }
                 }
@@ -138,7 +138,7 @@ public class WFContestInfo extends ContestInfo {
         }
     }
 
-    public int getMaxRunId() {
+    public int getLastRunId() {
         return maxRunId;
     }
 
@@ -193,7 +193,7 @@ public class WFContestInfo extends ContestInfo {
         return null;
     }
 
-    public TeamInfo[] getPossibleStandings(boolean isOptimistic) {
+    private TeamInfo[] getPossibleStandings(boolean isOptimistic) {
         WFTeamInfo[] possibleStandings = new WFTeamInfo[teamNumber];
         int teamIndex = 0;
         for (WFTeamInfo team : standings) {

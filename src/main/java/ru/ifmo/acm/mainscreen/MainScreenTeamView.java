@@ -104,10 +104,11 @@ public class MainScreenTeamView extends CustomComponent implements View {
         teamSelection = new OptionGroup();
         teamSelection.setHtmlContentAllowed(true);
 
-        Set<Integer> topTeamsIds = MainScreenData.getProperties().topteamsids;
+        Set<String> topTeamsIds = MainScreenProperties.topteamsids;
         for (TeamInfo team : MainScreenData.getProperties().teamInfos) {
             teamSelection.addItem(team);
-            String teamHtml = topTeamsIds.contains(team.getId()) ? "<b>" + team.toString() + "</b>" : team.toString();
+            String teamHtml = topTeamsIds.contains(team.getAlias()) ?
+                    "<b>" + team.toString() + "</b>" : team.toString();
             teamSelection.setItemCaption(team, teamHtml);
 //            log.debug(team.toString());
         }
