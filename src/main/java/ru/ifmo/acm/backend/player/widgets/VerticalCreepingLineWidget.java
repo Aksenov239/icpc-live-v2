@@ -91,15 +91,15 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     @Override
     public void paintImpl(Graphics gg, int width, int height) {
         update();
-        Graphics g = gg.create(0, height - HEIGHT - MARGIN, width, HEIGHT);
+        Graphics g = gg.create(0, BASE_HEIGHT - HEIGHT - MARGIN, BASE_WIDTH, HEIGHT);
         g.setFont(messageFont);
         iterateLogo();
 
         drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, Graphics.Alignment.CENTER,
                 messageFont, CreepingLineStylesheet.logo, logoVisible);
 
-        g = g.create(LOGO_WIDTH, 0, width - LOGO_WIDTH, HEIGHT);
-        g.drawRect(0, 0, width, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
+        g = g.create(LOGO_WIDTH, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
+        g.drawRect(0, 0, BASE_WIDTH, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
         last = time;

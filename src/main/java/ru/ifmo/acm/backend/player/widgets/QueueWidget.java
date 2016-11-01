@@ -41,8 +41,9 @@ public class QueueWidget extends Widget {
     ContestInfo info;
     double[] currentPositions;
     double[] desiredPositions;
+    boolean showVerdict;
 
-    public QueueWidget(int baseX, int baseY, int plateHeight, long updateWait) {
+    public QueueWidget(int baseX, int baseY, int plateHeight, long updateWait, boolean showVerdict) {
         super(updateWait);
 
         this.baseX = baseX;
@@ -61,6 +62,7 @@ public class QueueWidget extends Widget {
 
         currentPositions = new double[1000000];
         desiredPositions = new double[1000000];
+        this.showVerdict = showVerdict;
 
         setVisibilityState(1);
         setVisible(true);
@@ -156,23 +158,28 @@ public class QueueWidget extends Widget {
         drawTextInRect(g, problem, x, y, problemWidth,
                 plateHeight, Graphics.Alignment.CENTER, font, teamColor, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
-        x += problemWidth + spaceX;
+        if (showVerdict) {
+            x += problemWidth + spaceX;
 
-        if (run.getTime() > ContestInfo.FREEZE_TIME) {
-            result = "?";
-            resultColor = QueueStylesheet.frozenProblem;
-            inProgress = false;
-        }
+            if (run.getTime() > ContestInfo.FREEZE_TIME) {
+                result = "?";
+                resultColor = QueueStylesheet.frozenProblem;
+                inProgress = false;
+            }
 
-        drawTextInRect(g, result, x, y, statusWidth,
-                plateHeight, Graphics.Alignment.CENTER, font, resultColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+            drawTextInRect(g, result, x, y, statusWidth,
+                    plateHeight, Graphics.Alignment.CENTER, font, resultColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
-        if (inProgress) {
-            drawRect(g, x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState);
-        }
-
-        if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
-            g.drawStar(x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+            if (inProgress) {
+                drawRect(g, x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState);
+            }
+            if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
+                g.drawStar(x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+            }
+        } else {
+            if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
+                g.drawStar(x + problemWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+            }
         }
 
     }

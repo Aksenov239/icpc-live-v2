@@ -55,7 +55,7 @@ public class PCMSRunInfo implements RunInfo {
 
     @Override
     public long getLastUpdateTimestamp() {
-        return time;
+        return lastUpdateTimestamp;
     }
 
     @Override

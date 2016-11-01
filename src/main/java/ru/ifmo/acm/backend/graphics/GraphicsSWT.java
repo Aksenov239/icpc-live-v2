@@ -35,9 +35,9 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void drawString(String text, int x, int y, Font font, Color color) {
+    public void drawString(String text, int x, int y, Font font, Color color, double opacity) {
         g.setFont(font);
-        g.setColor(color);
+        setColor(color, opacity);
         g.drawString(text, x + x0, y + y0);
     }
 
@@ -74,8 +74,10 @@ public class GraphicsSWT extends Graphics {
         setColor(plateStyle.text, textOpacity);
 
         FontMetrics wh = g.getFontMetrics();
+
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
                 - 0.03f * height;
+
         float xx;
         if (alignment == Alignment.LEFT) {
             xx = (float) (x + margin);
@@ -120,7 +122,8 @@ public class GraphicsSWT extends Graphics {
         transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
         g.setTransform(transform);
         g.drawString(text, 0, 0);
-        g.dispose();        g = saved;
+        g.dispose();
+        g = saved;
     }
 
     @Override

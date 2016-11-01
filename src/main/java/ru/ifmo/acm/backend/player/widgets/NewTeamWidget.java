@@ -232,7 +232,8 @@ public class NewTeamWidget extends VideoWidget {
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         drawStar(g, this.x + x - STAR_SIZE, (int) (this.y + y + STAR_SIZE), (int) STAR_SIZE);
                     }
-                    x -= RUN_WIDTH + GAP_X;break;
+                    x -= RUN_WIDTH + GAP_X;
+                    break;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
                     drawTextInRect(g, "", this.x + x - RUN_SMALL_WIDTH, this.y + y,
                             RUN_SMALL_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, color, 1);

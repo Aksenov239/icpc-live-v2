@@ -59,7 +59,8 @@ public class Main {
         standingsWidget.alignBottom(994);
         generator.addWidget(standingsWidget);
 
-        generator.addWidget(new QueueWidget(30, 994, 39, 100));
+        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
+        generator.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
 
         BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
                 1350, 39, updateWait, 20, true);
@@ -86,8 +87,8 @@ public class Main {
 
         generator.addWidget(new ClockWidget(updateWait));
 
-        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
-        generator.addWidget(widget);
+//        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
+//        generator.addWidget(widget);
 
 //        new Timer().schedule(new TimerTask() {
 //            int id = 1;

@@ -29,6 +29,9 @@ public abstract class Graphics {
     }
 
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
+        if (opacity < 0.1) {
+            return;
+        }
         int hh = (int) (height * opacity);
         y += (height - hh) / 2;
         height = hh;
@@ -73,8 +76,11 @@ public abstract class Graphics {
         CENTER,
         RIGHT
     }
+    public abstract void drawString(String text, int x, int y, Font font, Color color, double opacity);
 
-    public abstract void drawString(String text, int x, int y, Font font, Color color);
+    public void drawString(String text, int x, int y, Font font, Color color) {
+        drawString(text, x, y, font, color, 1D);
+    }
 
     public abstract void drawRectWithText(String text, int x, int y, int width, int height, Alignment alignment, Font font,
                                           PlateStyle plateStyle, double opacity, double textOpacity,

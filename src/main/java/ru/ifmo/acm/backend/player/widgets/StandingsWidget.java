@@ -1,12 +1,13 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.backend.graphics.Graphics;
+
 import java.awt.*;
 
 /**
@@ -122,11 +123,16 @@ public class StandingsWidget extends Widget {
     public void paintImpl(Graphics g, int width, int height) {
         update();
 //        standings = StandingsLoader.getLoaded();
+
         contestData = Preparation.eventsLoader.getContestData();
         if (contestData == null || contestData.getStandings() == null) return;
         if (LENGTH == 0)
             LENGTH = contestData.getTeamsNumber();
         int dt = updateVisibilityState();
+
+//        if (!isVisible()) {
+//            setState(StandingsData.StandingsType.ONE_PAGE);
+//        }
 
         if (visibilityState > 0) {
             if (isVisible()) {
