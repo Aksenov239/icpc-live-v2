@@ -3,12 +3,13 @@ package ru.ifmo.acm.backend.opengl;
 import com.jogamp.graph.curve.opengl.RegionRenderer;
 import com.jogamp.graph.curve.opengl.RenderState;
 import com.jogamp.graph.curve.opengl.TextRegionUtil;
-import com.jogamp.graph.font.FontFactory;
+import com.jogamp.graph.font.*;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.math.geom.AABBox;
 import com.jogamp.opengl.util.PMVMatrix;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureCoords;
 import com.jogamp.opengl.util.texture.TextureData;
@@ -20,10 +21,12 @@ import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
+import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -34,28 +37,61 @@ public class GraphicsGL extends Graphics {
     public static RegionRenderer regionRenderer;
     public static TextRegionUtil textRegionUtil;
     private final int[] sampleCount = new int[]{4};
-    private final float dpiH = 96;
+    private final float dpiH = 72;
     public static HashMap<String, com.jogamp.graph.font.Font> fonts = new HashMap<>();
+    public HashMap<String, Double> ascent = new HashMap<>();
+    private static com.jogamp.graph.font.Font defaultFont;
+    private static HashMap<String, TextRenderer> textRenderers = new HashMap<>();
+    private static Graphics2D localGraphics;
+
+    static {
+        BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        localGraphics = (Graphics2D) image.getGraphics();
+    }
 
     public static void loadFonts() {
         try {
-//            fonts.put("Open Sans Light",
-//                    FontFactory.get(0).get(0, 0));
-//            fonts.put("Open Sans Regular",
-//                    FontFactory.get(0).get(0, 0));
-//            fonts.put("Open Sans Light",
-//                    FontFactory.get(new File(GraphicsGL.class.getClassLoader().getResource("fonts/ALS_Schlange_sans_light.otf").getFile())));
-            fonts.put("Open Sans Light",
-                    FontFactory.get(new File(GraphicsGL.class.getClassLoader().getResource("fonts/times.ttf").getFile())));
-//            fonts.put("Open Sans Regular",
-//                    FontFactory.get(new File(GraphicsGL.class.getClassLoader().getResource("fonts/OpenSans-Regular.ttf").getFile())));
+            defaultFont = //FontFactory.getDefault().getDefault();
+//                    FontFactory.get(new File(GraphicsGL.class.getClassLoader().getResource("fonts/times.ttf").getFile()));
+                    FontFactory.get(new File(GraphicsGL.class.getClassLoader().getResource("fonts/OpenSans-Regular.ttf").getFile()));
+            fonts.put("Open Sans Light", FontFactory.get(new File(GraphicsGL.class.getClassLoader().getResource("fonts/OpenSans-Light.ttf").getFile())));
+            fonts.put("Open Sans Regular", FontFactory.get(new File(GraphicsGL.class.getClassLoader().getResource("fonts/OpenSans-Regular.ttf").getFile())));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public double getAscent(Font font) {
+        String name = font.toString();
+        if (ascent.containsKey(name)) {
+            return ascent.get(name);
+        }
+        localGraphics.setFont(font);
+        double ascent = localGraphics.getFontMetrics().getAscent();
+        this.ascent.put(name, ascent);
+        return ascent;
+    }
+
+    public FontMetrics getFontMetrics(com.jogamp.graph.font.Font font, int fontSize) {
+        String name = font.toString() + " " + fontSize;
+        localGraphics.setFont(Font.decode(name));
+        return localGraphics.getFontMetrics();
+    }
+
     public com.jogamp.graph.font.Font getFont(Font font) {
-        return fonts.get(font.getName());
+        return fonts.getOrDefault(font.getName(), defaultFont);
+    }
+
+    public TextRenderer getTextRenderer(Font font) {
+        if (!textRenderers.containsKey(font.toString())) {
+            textRenderers.put(font.toString(), new TextRenderer(font));
+        }
+        return textRenderers.get(font.toString());
+    }
+
+    public Rectangle2D getBounds(Font font, String text) {
+        localGraphics.setFont(font);
+        return localGraphics.getFontMetrics().getStringBounds(text, localGraphics);
     }
 
     int xS = -1, yS = -1, widthS = -1, heightS = -1;
@@ -79,8 +115,8 @@ public class GraphicsGL extends Graphics {
     @Override
     public Graphics create() {
         GraphicsGL g = new GraphicsGL(x, y, width, height, gl2, glu);
-        g.x0 = x;
-        g.y0 = y;
+        g.x0 = x0;
+        g.y0 = y0;
         g.xS = xS;
         g.yS = yS;
         g.widthS = widthS;
@@ -100,26 +136,51 @@ public class GraphicsGL extends Graphics {
         return g;
     }
 
-    private void drawString(String text, float x, float y, float scaleX, float scaleY, com.jogamp.graph.font.Font joglFont,
-                            int fontSize, Color color) {
-        final PMVMatrix pmv = regionRenderer.getMatrix();
-        pmv.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-        pmv.glLoadIdentity();
-        pmv.glOrthof(0, Widget.BASE_WIDTH, 0, Widget.BASE_HEIGHT, -1, 1);
-        pmv.glTranslatef(x, Widget.BASE_HEIGHT - y, 0);
-        pmv.glScalef(scaleX, scaleY, 1);
+    private void drawString(String text, float x, float y, float scaleX, float scaleY,
+//                            com.jogamp.graph.font.Font joglFont, int fontSize,
+                            Font font,
+                            Color color, double opacity) {
+//        com.jogamp.graph.font.Font joglFont = getFont(font);
+//        int fontSize = font.getSize();
+//        final PMVMatrix pmv = regionRenderer.getMatrix();
+//        pmv.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+//        pmv.glLoadIdentity();
+//        pmv.glOrthof(0, Widget.BASE_WIDTH, 0, Widget.BASE_HEIGHT, -1, 1);
+//        pmv.glTranslatef(x, Widget.BASE_HEIGHT - y, 0);
+//        pmv.glScalef(scaleX, scaleY, 1);
+//
+//        float[] rgbColor = fromColor(color);
+//        rgbColor[3] = 1;
+//        renderState.setColorStatic(rgbColor[0], rgbColor[1], rgbColor[2], (float)opacity);
+//
+//        regionRenderer.enable(gl2, true);
+////        textRegionUtil.clear(gl2);
+//        textRegionUtil.drawString3D(gl2, regionRenderer, joglFont, joglFont.getPixelSize(fontSize, dpiH), text,
+//                rgbColor, sampleCount);
+////        TextRegionUtil.drawString3D(gl2, Region.MAX_QUALITY | Region.COLORCHANNEL_RENDERING_BIT,
+////                regionRenderer, joglFont, joglFont.getPixelSize(fontSize, dpiH), text,
+////                rgbColor, sampleCount, new AffineTransform(), new AffineTransform());
+//        regionRenderer.enable(gl2, false);
+        gl2.glPushMatrix();
+        gl2.glTranslated(x, Widget.BASE_HEIGHT - y, 0);
+        gl2.glScaled(scaleX, scaleY, 1);
+
+        TextRenderer textRenderer = getTextRenderer(font);
+        textRenderer.begin3DRendering();
 
         float[] rgbColor = fromColor(color);
-        renderState.setColorStatic(rgbColor[0], rgbColor[1], rgbColor[2], rgbColor[3]);
-        regionRenderer.enable(gl2, true);
-        textRegionUtil.drawString3D(gl2, regionRenderer, joglFont, joglFont.getPixelSize(fontSize, dpiH), text,
-                null, sampleCount);
-        regionRenderer.enable(gl2, false);
+        textRenderer.setColor(rgbColor[0], rgbColor[1], rgbColor[2], (float) opacity);
+        textRenderer.draw(text, 0, 0);
+
+        textRenderer.end3DRendering();
+
+        gl2.glPopMatrix();
     }
 
     @Override
-    public void drawString(String text, int x, int y, Font font, Color color) {
-        drawString(text, x, y, 1, 1, getFont(font), font.getSize(), color);
+    public void drawString(String text, int x, int y, Font font, Color color, double opacity) {
+//        drawString(text, x, y, 1, 1, getFont(font), font.getSize(), color, opacity);
+        drawString(text, x, y, 1, 1, font, color, opacity);
     }
 
     @Override
@@ -128,9 +189,15 @@ public class GraphicsGL extends Graphics {
                                  boolean scale) {
         x += x0;
         y += y0;
-        com.jogamp.graph.font.Font joglFont = getFont(font);
-        AABBox bounds = joglFont.getMetricBounds(text, joglFont.getPixelSize(font.getSize(), dpiH));
-        int textWidth = (int) Math.ceil(bounds.getWidth());
+//        com.jogamp.graph.font.Font joglFont = getFont(font);
+//        float pixelSize = joglFont.getPixelSize(font.getSize(), dpiH);
+////        FontMetrics fm = getFontMetrics(joglFont, font.getSize());
+//        AABBox bounds = joglFont.getMetricBounds(text, pixelSize);
+////        Rectangle2D bounds = fm.getStringBounds(text, localGraphics);
+//        TextRenderer textRenderer = getTextRenderer(font);
+//        Rectangle2D bounds = textRenderer.getBounds(text);
+        Rectangle2D bounds = getBounds(font, text);
+        double textWidth = bounds.getWidth();
         double textScale = 1;
 
         margin = height * margin;
@@ -151,8 +218,11 @@ public class GraphicsGL extends Graphics {
 
         drawRect(x - x0, y - y0, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
 
-        float yy = (float) (y + 1.0 * (height - bounds.getHeight()) / 2) + joglFont.getPixelSize(font.getSize(), dpiH)
-                - 0.03f * height;
+        float yy = (float) (y + 1. * (height - bounds.getHeight()) / 2
+                + getAscent(font)
+//                + fm.getAscent()
+                - 0.03f * height);
+
         float xx;
         if (alignment == Alignment.LEFT) {
             xx = (float) (x + margin);
@@ -162,7 +232,8 @@ public class GraphicsGL extends Graphics {
             xx = (float) (x + width - textWidth * textScale - margin);
         }
 
-        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), plateStyle.text);
+//        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), plateStyle.text, textOpacity);
+        drawString(text, xx, yy, (float) textScale, 1f, font, plateStyle.text, textOpacity);
     }
 
     @Override
@@ -170,9 +241,11 @@ public class GraphicsGL extends Graphics {
         x += x0;
         y += y0;
 
-        com.jogamp.graph.font.Font joglFont = getFont(font);
-        AABBox bounds = joglFont.getMetricBounds(text, joglFont.getPixelSize(font.getSize(), dpiH));
-        float textWidth = bounds.getWidth();
+//        com.jogamp.graph.font.Font joglFont = getFont(font);
+//        AABBox bounds = joglFont.getMetricBounds(text, joglFont.getPixelSize(font.getSize(), dpiH));
+//        Rectangle2D bounds = getTextRenderer(font).getBounds(text);
+        Rectangle2D bounds = getBounds(font, text);
+        double textWidth = bounds.getWidth();
         double textScale = 1;
 
         margin = height * margin;
@@ -182,17 +255,18 @@ public class GraphicsGL extends Graphics {
             textScale = 1. * maxTextWidth / textWidth;
         }
 
-        float yy = (float) y + font.getSize() - 0.03f * height;
+        float yy = (float) y + (float)getAscent(font) - 0.03f * height;
         float xx = (float) (x + margin);
 
-        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), color);
+//        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), color, 1);
+        drawString(text, xx, yy, (float) textScale, 1f, font, color, 1);
     }
 
     @Override
     public void drawStar(int x, int y, int size) {
         x += x0;
         y += y0;
-        setColor(Color.decode(Stylesheet.styles.get("star.color")));
+        setColor(Color.decode(Stylesheet.styles.get("star.color")), 1);
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};
@@ -271,6 +345,9 @@ public class GraphicsGL extends Graphics {
         yS = y;
         widthS = width;
         heightS = height;
+        System.err.println(x + " " + y + " " + widthS + " " + heightS);
+//        gl2.glScissor(xS, Widget.BASE_HEIGHT - yS, widthS, heightS);
+//        gl2.glEnable(GL2.GL_SCISSOR_TEST);
     }
 
     @Override
@@ -279,6 +356,13 @@ public class GraphicsGL extends Graphics {
         yS = y + y0;
         widthS = width;
         heightS = height;
+//        gl2.glScissor(xS, Widget.BASE_HEIGHT - yS, widthS, heightS);
+//        gl2.glEnable(GL2.GL_SCISSOR_TEST);
+    }
+
+    @Override
+    public void unclip() {
+//        gl2.glDisable(GL2.GL_SCISSOR_TEST);
     }
 
     @Override
@@ -286,11 +370,11 @@ public class GraphicsGL extends Graphics {
     }
 
     private float[] fromColor(Color color) {
-        return new float[]{1f * color.getRed() / 256, 1f * color.getGreen(), 1f * color.getBlue() / 256, 1f * color.getAlpha() / 256};
+        return new float[]{1f * color.getRed() / 256, 1f * color.getGreen() / 256, 1f * color.getBlue() / 256, 1f * color.getAlpha() / 256};
     }
 
     private float[] fromColor(Color color, double opacity) {
-        return new float[]{1f * color.getRed() / 156, 1f * color.getGreen(), 1f * color.getBlue() / 256, (float) opacity};
+        return new float[]{1f * color.getRed() / 156, 1f * color.getGreen() / 256, 1f * color.getBlue() / 256, (float) opacity};
     }
 
     @Override

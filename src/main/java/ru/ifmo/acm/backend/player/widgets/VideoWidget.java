@@ -12,18 +12,12 @@ import java.awt.image.BufferedImage;
 /**
  * @author: pashka
  */
-public class VideoWidget extends Widget implements PlayerWidget {
+public class VideoWidget extends PlayerWidget {
     private PlayerInImage player;
     protected BufferedImage image;
 
-    protected boolean inChange;
     protected boolean ready;
 
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
-    protected int sleepTime;
     protected String currentUrl;
 
     public VideoWidget(int x, int y, int width, int height, int sleepTime, long updateWait) {
@@ -115,6 +109,10 @@ public class VideoWidget extends Widget implements PlayerWidget {
     public MediaPlayer getPlayer() {
         checkEDT();
         return player.getPlayer();
+    }
+
+    public String getCurrentURL() {
+        return currentUrl;
     }
 
     public void paintImpl(Graphics g, int width, int height) {

@@ -115,6 +115,8 @@ public abstract class Graphics {
 
     public abstract void clip(int x, int y, int width, int height);
 
+    public abstract void unclip();
+
     public void translate(int x, int y) {
         x0 += x;
         y0 += y;

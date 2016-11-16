@@ -39,7 +39,7 @@ public class NewTeamWidget extends VideoWidget {
     private int width;
     private int height;
 
-    VideoWidget smallVideo = null;
+    PlayerWidget smallVideo = null;
     boolean doubleVideo;
     private String currentInfoType;
 
@@ -55,7 +55,7 @@ public class NewTeamWidget extends VideoWidget {
 
         this.doubleVideo = doubleVideo;
         if (doubleVideo) {
-            smallVideo = new VideoWidget(SMALL_X, SMALL_Y, SMALL_WIDTH, SMALL_HEIGHT, sleepTime, 0);
+            smallVideo = PlayerWidget.getPlayerWidget(SMALL_X, SMALL_Y, SMALL_WIDTH, SMALL_HEIGHT, sleepTime, 0);
         }
     }
 
@@ -177,7 +177,7 @@ public class NewTeamWidget extends VideoWidget {
             double x = visibilityState;
             xVideo = this.x = (int) (BIG_X + width * (1 - 3 * x * x + 2 * x * x * x));
         }
-        if (doubleVideo && smallVideo != null && smallVideo.currentUrl != null) {
+        if (doubleVideo && smallVideo != null && smallVideo.getCurrentURL() != null) {
             double x = visibilityState;
             smallVideo.x = (int) (SMALL_X - width * (1 - 3 * x * x + 2 * x * x * x));
             smallVideo.paintImpl(g, width, height);

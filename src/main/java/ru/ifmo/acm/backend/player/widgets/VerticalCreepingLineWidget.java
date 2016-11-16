@@ -99,6 +99,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                 messageFont, CreepingLineStylesheet.logo, logoVisible);
 
         g = g.create(LOGO_WIDTH, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
+        g.clip();
         g.drawRect(0, 0, BASE_WIDTH, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
@@ -128,5 +129,6 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         }
         drawTextToFit(g, messageNext.message, 0, messageNext.position, 0, 0, width - LOGO_WIDTH, HEIGHT,
                 messageFont, CreepingLineStylesheet.main.text);
+        g.unclip();
     }
 }

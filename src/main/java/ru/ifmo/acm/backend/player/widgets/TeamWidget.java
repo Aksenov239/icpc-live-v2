@@ -2,6 +2,8 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
+import ru.ifmo.acm.datapassing.CachedData;
+import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.backend.graphics.Graphics;
@@ -11,36 +13,29 @@ import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
 /**
  * @author: pashka
  */
-public class TeamWidget extends VideoWidget {
+public class TeamWidget extends Widget {
 
     protected int teamId;
 
-    private int xVideo;
-    private int yVideo;
-    private int widthVideo;
-    private int heightVideo;
     private int width;
     private int height;
 
     private boolean isFull = false;
 
-    VideoWidget smallVideo = null;
+    PlayerWidget mainVideo = null;
+    PlayerWidget smallVideo = null;
 
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime) {
-        super(x, y, (int) (height * aspectRatio), height, sleepTime, 0);
+        mainVideo = PlayerWidget.getPlayerWidget(x + width - (int) (height * aspectRatio), y, (int) (height * aspectRatio), height, sleepTime, 0);
         this.width = width;
         this.height = height;
-        this.widthVideo = (int) (height * aspectRatio);
-        this.heightVideo = height;
-        this.xVideo = x + width - widthVideo;
-        this.yVideo = y;
         teamId = -1;
 
         int xSmallVideo = x + (int) (width * 0.7);
         int ySmallVideo = y + (int) (height * 0.6);
         int hSmallVideo = (int) (height * 0.25);
         int wSmallVideo = (int) (hSmallVideo * aspectRatio);
-        smallVideo = new VideoWidget(xSmallVideo, ySmallVideo, wSmallVideo, hSmallVideo, sleepTime, 0);
+        smallVideo = PlayerWidget.getPlayerWidget(xSmallVideo, ySmallVideo, wSmallVideo, hSmallVideo, sleepTime, 0);
     }
 
     public TeamWidget(int x, int y, int width, int height, double aspectRatio, int sleepTime, boolean full) {
@@ -109,31 +104,34 @@ public class TeamWidget extends VideoWidget {
         if (!isVisible())
             return;
 
-        if (team != null && currentUrl != null) {
-            g.drawImage(image, xVideo, yVideo, widthVideo, heightVideo);
+        if (team != null && mainVideo.getCurrentURL() != null) {
+            mainVideo.paint(g, width, height);
         }
-        if (inChange) {
+        if (mainVideo.inChange) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
-            inChange = false;
+            mainVideo.inChange = false;
             smallVideo.switchManually();
         }
 
-        if (currentUrl == null || currentUrl.contains("info")) {
+        if (mainVideo.getCurrentURL() == null || mainVideo.getCurrentURL().contains("info")) {
             return;
         }
 
-        if (smallVideo != null && smallVideo.currentUrl != null) {
+        if (smallVideo != null && smallVideo.getCurrentURL() != null) {
             smallVideo.paintImpl(g, width, height);
         }
+
+        int x = mainVideo.x;
+        int y = mainVideo.y;
 
         if (currentProblemId >= 0) {
             drawReplay(g, x, y, this.width, this.height);
         }
 
         // TODO: fill rect
-        g.drawRect(x, y, this.width - widthVideo, height, new Color(0, 0, 30), 1);
+        g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1);
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
         int problemsNumber = team.getRuns().length;
@@ -164,15 +162,15 @@ public class TeamWidget extends VideoWidget {
             }
 
             if (!isFull) {
-                int y = Y + (HEIGHT + GAP_Y) * i;
-                drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
+                int yy = Y + (HEIGHT + GAP_Y) * i;
+                drawTextInRect(g, "" + (char) ('A' + i), x + X, y + yy,
                         PR_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2,
                         problemColor, 1, WidgetAnimation.UNFOLD_ANIMATED);
             } else {
                 // int x = X + (PR_WIDTH + GAP_X) * i;
-                int x = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i) - X;
+                int xx = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i) - X;
                 double timeOpacity = i == currentProblemId ? getTimeOpacity() : 1;
-                drawTextInRect(g, "" + (char) ('A' + i), this.x + x, this.y + dy,
+                drawTextInRect(g, "" + (char) ('A' + i), x + xx, y + dy,
                         PR_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, problemColor,
                         timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
             }
@@ -182,7 +180,7 @@ public class TeamWidget extends VideoWidget {
                 RunInfo run = runs[j];
                 if ("AC".equals(run.getResult())) {
                     if (!isFull) {
-                        drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
+                        drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
                                 RUN_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, TeamStylesheet.acProblem,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
@@ -190,11 +188,11 @@ public class TeamWidget extends VideoWidget {
                     }
                     if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         if (!isFull) {
-                            drawStar(g, this.x + x + RUN_WIDTH, (int) (this.y + y + STAR_SIZE / 2), (int) STAR_SIZE);
+                            drawStar(g, x + x + RUN_WIDTH, (int) (y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                         } else {
                             int star_shift = 6;
-                            int x = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i - 1) - X - star_shift;
-                            drawStar(g, this.x + x, (this.y + dy + star_shift), (int) (STAR_SIZE * 0.8));
+                            int xx = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i - 1) - X - star_shift;
+                            drawStar(g, x + xx, (y + dy + star_shift), (int) (STAR_SIZE * 0.8));
                         }
                     }
                     break;
@@ -204,7 +202,7 @@ public class TeamWidget extends VideoWidget {
                     }
                     PlateStyle color = "".equals(run.getResult()) ? TeamStylesheet.udProblem: TeamStylesheet.waProblem;
                     if (j == runs.length - 1) {
-                        drawTextInRect(g, format(run.getTime() / 1000), this.x + x, this.y + y,
+                        drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
                                 RUN_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, color,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
@@ -212,7 +210,7 @@ public class TeamWidget extends VideoWidget {
 
                         x += RUN_WIDTH + GAP_X;
                     } else {
-                        drawTextInRect(g, "", this.x + x, this.y + y,
+                        drawTextInRect(g, "", x + x, y + y,
                                 RUN_SMALL_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
                         x += RUN_SMALL_WIDTH + GAP_X;
                     }
@@ -231,7 +229,7 @@ public class TeamWidget extends VideoWidget {
     }
 
     public void change(TeamInfo team, String infoType) {
-        change(TeamUrls.getUrl(team, infoType));
+        mainVideo.change(TeamUrls.getUrl(team, infoType));
         if (!infoType.equals("camera")) {
             smallVideo.changeManually(TeamUrls.getUrl(team, "camera"));
         } else {
@@ -242,9 +240,14 @@ public class TeamWidget extends VideoWidget {
     }
 
     public void change(RunInfo run) {
-        change(TeamUrls.getUrl(run));
+        mainVideo.change(TeamUrls.getUrl(run));
         smallVideo.changeManually(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
+    }
+
+    @Override
+    public CachedData getCorrespondingData(Data data) {
+        return null;
     }
 }

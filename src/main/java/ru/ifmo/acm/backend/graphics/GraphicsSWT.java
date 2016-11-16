@@ -179,6 +179,10 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
+    public void unclip() {
+    }
+
+    @Override
     public void setColor(Color color) {
         g.setColor(color);
     }
