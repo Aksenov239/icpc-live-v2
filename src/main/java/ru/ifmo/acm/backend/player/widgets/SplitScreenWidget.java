@@ -184,9 +184,9 @@ public class SplitScreenWidget extends Widget {
                 automatic[i] = false;
                 if ((data.splitScreenData.getTeamId(i) != teamInfoWidgets[i].getTeamId()
                         && !data.splitScreenData.infoStatus(i).equals(currentInfoType[i])) &&
-                        teamInfoWidgets[i].readyToShow()) {
+                        teamInfoWidgets[i].mainVideo.readyToShow()) {
                     teamInfoWidgets[i].setTeamId(data.splitScreenData.getTeamId(i));
-                    teamInfoWidgets[i].change(
+                    teamInfoWidgets[i].mainVideo.change(
                             TeamUrls.getUrl(
                                     Preparation.eventsLoader.getContestData().getParticipant(data.splitScreenData.getTeamId(i)),
                                     data.splitScreenData.controllerDatas[i].infoType

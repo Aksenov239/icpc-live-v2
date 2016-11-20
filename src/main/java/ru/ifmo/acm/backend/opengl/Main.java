@@ -25,13 +25,17 @@ public class Main {
 
     private void run() throws IOException {
         String dir = new File(".").getCanonicalPath();
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            if (System.getProperty("sun.arch.data.model").equals("32")) {
-                NativeLibrary.addSearchPath("libvlc", dir + "/libvlc/x86");
-            } else {
-                NativeLibrary.addSearchPath("libvlc", dir + "/libvlc/x64");
-            }
-        }
+//        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+//            if (System.getProperty("sun.arch.data.model").equals("32")) {
+//                NativeLibrary.addSearchPath("libvlc", dir + "/libvlc/x86");
+//            } else {
+//                NativeLibrary.addSearchPath("libvlc", dir + "/libvlc/x64");
+//            }
+//        }
+
+        NativeLibrary.addSearchPath("libav", dir + "/libav/x64");
+
+//        System.setProperty("jogamp.debug", "true");
 
         Properties properties = readProperties();
         int width = Integer.parseInt(properties.getProperty("width", "1280"));
@@ -44,9 +48,9 @@ public class Main {
 
         WidgetManager manager = new WidgetManager(properties);
 
-//        manager.addWidget(new NewTeamWidget(
-//                Integer.parseInt(properties.getProperty("sleep.time")),
-//                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
+        manager.addWidget(new NewTeamWidget(
+                Integer.parseInt(properties.getProperty("sleep.time")),
+                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
 
 //        manager.addWidget(new VerticalCreepingLineWidget(updateWait,
 //                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),

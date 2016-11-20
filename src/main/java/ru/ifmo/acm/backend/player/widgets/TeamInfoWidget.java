@@ -31,11 +31,11 @@ public class TeamInfoWidget extends TeamWidget {
         if (!data.teamData.isVisible || "".equals(data.teamData.infoType)) {
             setVisible(false);
             teamId = -1;
-            stop();
+            mainVideo.stop();
         } else {
             setVisible(true);
             //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
-            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready) {
+            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && mainVideo.readyToShow()) {
                 //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 if (team == null) {

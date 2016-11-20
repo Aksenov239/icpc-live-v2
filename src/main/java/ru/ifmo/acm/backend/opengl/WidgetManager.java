@@ -1,17 +1,17 @@
 package ru.ifmo.acm.backend.opengl;
 
-import com.jogamp.graph.curve.Region;
-import com.jogamp.graph.curve.opengl.RegionRenderer;
-import com.jogamp.graph.curve.opengl.RenderState;
-import com.jogamp.graph.curve.opengl.TextRegionUtil;
-import com.jogamp.graph.geom.SVertex;
+import com.jogamp.common.net.Uri;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.av.GLMediaPlayer;
+import com.jogamp.opengl.util.av.GLMediaPlayerFactory;
 import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureCoords;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
@@ -36,6 +36,8 @@ public class WidgetManager implements GLEventListener {
     }
 
     TextRenderer renderer;
+    GLMediaPlayer player;
+
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
 
@@ -64,10 +66,30 @@ public class WidgetManager implements GLEventListener {
         gl.glClearDepth(1f);
         gl.glEnable(GL.GL_DEPTH_TEST);// | GL.GL_BLEND);
         gl.glDepthFunc(GL.GL_LEQUAL);
-        gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
-        gl.glShadeModel(GLLightingFunc.GL_SMOOTH);
+//        gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
+//        gl.glShadeModel(GLLightingFunc.GL_SMOOTH);
 
         renderer = new TextRenderer(Font.decode("Open Sans 18"));
+
+        player = GLMediaPlayerFactory.create(GLMediaPlayer.class.getClassLoader(), "jogamp.opengl.util.av.impl.FFMPEGMediaPlayer");
+        try {
+            player.initStream(Uri.cast("C:/work/svn/icpc-live-v2/pics/BigBuckBunny_320x180.mp4"),
+                    GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.TEXTURE_COUNT_DEFAULT);
+        } catch (java.net.URISyntaxException e) {
+            e.printStackTrace();
+            return;
+        }
+        while (player.getState() != GLMediaPlayer.State.Initialized) {}
+        try {
+            player.initGL(gl);
+        } catch (GLMediaPlayer.StreamException e) {
+            e.printStackTrace();
+        }
+        while (player.getState() != GLMediaPlayer.State.Paused) {
+        }
+        player.play();
+        while (player.getState() != GLMediaPlayer.State.Playing) {
+        }
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -96,7 +118,27 @@ public class WidgetManager implements GLEventListener {
         GraphicsGL g = new GraphicsGL(0, 0, width, height, gl, glu);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
-        gl.glClearColor(1, 0, 1, 0);
+//        gl.glClearColor(1, 0, 1, 0);
+        gl.glClearColor(1, 1, 1, 1);
+
+        Texture texture = player.getNextTexture(gl).getTexture();
+//        Texture texture = player.getLastTexture().getTexture();
+//        gl.glActiveTexture(GL.GL_TEXTURE0 + player.getTextureUnit());
+        texture.enable(gl);
+        texture.bind(gl);
+        TextureCoords coords = texture.getImageTexCoords();
+        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_COLOR, GL2.GL_REPLACE);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glTexCoord2f(coords.left(), coords.bottom());
+        gl.glVertex2i(0, 0);
+        gl.glTexCoord2f(coords.left(), coords.top());
+        gl.glVertex2i(0, 180);
+        gl.glTexCoord2f(coords.right(), coords.top());
+        gl.glVertex2i(320, 180);
+        gl.glTexCoord2f(coords.right(), coords.bottom());
+        gl.glVertex2i(320, 0);
+        gl.glEnd();
+        texture.disable(gl);
 
 //        gl.glPushMatrix();
 //        gl.glTranslatef(100f, 0, 0);
@@ -108,9 +150,9 @@ public class WidgetManager implements GLEventListener {
 //        renderer.end3DRendering();
 //        gl.glPopMatrix();
 
-        for (Widget widget : widgets) {
-            widget.paint(g, Widget.BASE_WIDTH, Widget.BASE_HEIGHT);
-        }
+//        for (Widget widget : widgets) {
+//            widget.paint(g, Widget.BASE_WIDTH, Widget.BASE_HEIGHT);
+//        }
 //        PMVMatrix pmv = GraphicsGL.renderState.getMatrix();
 //        pmv.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 //        pmv.glLoadIdentity();

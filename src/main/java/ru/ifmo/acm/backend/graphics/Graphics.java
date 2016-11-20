@@ -5,6 +5,7 @@ import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import com.jogamp.opengl.util.texture.Texture;
 
 /**
  * Created by Aksenov239 on 04.09.2016.
@@ -92,6 +93,10 @@ public abstract class Graphics {
     public abstract void drawStar(int x, int y, int size);
 
     public abstract void drawImage(BufferedImage image, int x, int y, int width, int height);
+
+    public void drawTexture(Texture texture, int x, int y, int width, int height) {
+        throw  new AssertionError("Drawing OpenGL Textures is not supported by this Graphics class");
+    }
 
     public abstract void fillPolygon(int[] x, int[] y, Color color, double opacity);
 

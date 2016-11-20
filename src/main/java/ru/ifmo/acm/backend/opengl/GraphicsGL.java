@@ -3,12 +3,10 @@ package ru.ifmo.acm.backend.opengl;
 import com.jogamp.graph.curve.opengl.RegionRenderer;
 import com.jogamp.graph.curve.opengl.RenderState;
 import com.jogamp.graph.curve.opengl.TextRegionUtil;
-import com.jogamp.graph.font.*;
+import com.jogamp.graph.font.FontFactory;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.math.geom.AABBox;
-import com.jogamp.opengl.util.PMVMatrix;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureCoords;
@@ -21,12 +19,10 @@ import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
-import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -98,6 +94,10 @@ public class GraphicsGL extends Graphics {
 
     private GL2 gl2;
     private GLU glu;
+
+    public GL2 getGL() {
+        return gl2;
+    }
 
     public GraphicsGL(int x, int y, int width, int height, GL2 gl2, GLU glu) {
         this.gl2 = gl2;
@@ -255,7 +255,7 @@ public class GraphicsGL extends Graphics {
             textScale = 1. * maxTextWidth / textWidth;
         }
 
-        float yy = (float) y + (float)getAscent(font) - 0.03f * height;
+        float yy = (float) y + (float) getAscent(font) - 0.03f * height;
         float xx = (float) (x + margin);
 
 //        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), color, 1);
@@ -286,12 +286,16 @@ public class GraphicsGL extends Graphics {
 
     @Override
     public void drawImage(BufferedImage image, int x, int y, int width, int height) {
-        x += x0;
-        y += y0;
-
         TextureData textureData = AWTTextureIO.newTextureData(gl2.getGLProfile(), image, false);
         Texture texture = TextureIO.newTexture(textureData);
 
+        drawTexture(texture, x, y, width, height);
+        texture.destroy(gl2);
+    }
+
+    public void drawTexture(Texture texture, int x, int y, int width, int height) {
+        x += x0;
+        y += y0;
         texture.enable(gl2);
         texture.bind(gl2);
         TextureCoords coords = texture.getImageTexCoords();
@@ -307,7 +311,7 @@ public class GraphicsGL extends Graphics {
         gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y - height);
         gl2.glEnd();
 
-        texture.destroy(gl2);
+        texture.disable(gl2);
     }
 
     @Override

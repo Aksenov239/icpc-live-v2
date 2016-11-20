@@ -101,6 +101,7 @@ public class TeamWidget extends Widget {
 
     @Override
     public void paintImpl(Graphics g, int width, int height) {
+        mainVideo.updateState(g, false);
         if (!isVisible())
             return;
 
@@ -247,7 +248,7 @@ public class TeamWidget extends Widget {
     }
 
     @Override
-    public CachedData getCorrespondingData(Data data) {
+    protected CachedData getCorrespondingData(Data data) {
         return null;
     }
 }

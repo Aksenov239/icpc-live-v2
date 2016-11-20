@@ -15,7 +15,7 @@ import java.awt.*;
 /**
  * @author: pashka
  */
-public class NewTeamWidget extends VideoWidget {
+public class NewTeamWidget extends Widget {
     private static final int BIG_HEIGHT = 780;
     private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
     private static final int BIG_X = 493;
@@ -32,25 +32,19 @@ public class NewTeamWidget extends VideoWidget {
 
     protected int teamId;
 
-    private int xVideo;
-    private int yVideo;
-    private int widthVideo;
-    private int heightVideo;
     private int width;
     private int height;
+
+    PlayerWidget mainVideo = null;
 
     PlayerWidget smallVideo = null;
     boolean doubleVideo;
     private String currentInfoType;
 
     public NewTeamWidget(int sleepTime, boolean doubleVideo) {
-        super(BIG_X, BIG_Y, BIG_WIDTH, BIG_HEIGHT, sleepTime, 0);
         this.width = BIG_WIDTH;
         this.height = BIG_HEIGHT;
-        this.widthVideo = BIG_WIDTH;
-        this.heightVideo = BIG_HEIGHT;
-        this.xVideo = x + width - widthVideo;
-        this.yVideo = y;
+        mainVideo = PlayerWidget.getPlayerWidget(BIG_X, BIG_Y, BIG_WIDTH, BIG_HEIGHT, sleepTime, 0);
         teamId = -1;
 
         this.doubleVideo = doubleVideo;
@@ -67,7 +61,8 @@ public class NewTeamWidget extends VideoWidget {
         } else {
             setVisible(true);
             //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
-            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) && ready) {
+            if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) &&
+                    mainVideo.readyToShow()) {
                 //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 if (team == null) {
@@ -134,26 +129,31 @@ public class NewTeamWidget extends VideoWidget {
 
         updateVisibilityState();
 
+        mainVideo.updateState(g, false);
+        smallVideo.updateState(g, true);
+
         if (visibilityState == 0) {
             if (teamId != -1) {
                 teamId = -1;
-                stop();
-//                smallVideo.stop();
+                mainVideo.stop();
+                if (doubleVideo) {
+                    smallVideo.stop();
+                }
             }
             return;
         }
 
-        if (inChange) {
+        if (mainVideo.inChange) {
             team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
             currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
-            inChange = false;
+            mainVideo.inChange = false;
             if (doubleVideo) {
                 smallVideo.switchManually();
             }
         }
 
-        if (team == null || currentUrl == null) {
+        if (team == null || mainVideo.getCurrentURL() == null) {
             setVisibilityState(0);
             return;
         }
@@ -167,7 +167,7 @@ public class NewTeamWidget extends VideoWidget {
         if (newVolume != volume) {
             System.out.println("Set volume " + newVolume);
             volume = newVolume;
-            setVolume(volume);
+            mainVideo.setVolume(volume);
             if (doubleVideo) {
                 smallVideo.setVolume(volume);
             }
@@ -175,18 +175,18 @@ public class NewTeamWidget extends VideoWidget {
 
         {
             double x = visibilityState;
-            xVideo = this.x = (int) (BIG_X + width * (1 - 3 * x * x + 2 * x * x * x));
+            mainVideo.x = (int) (BIG_X + width * (1 - 3 * x * x + 2 * x * x * x));
         }
         if (doubleVideo && smallVideo != null && smallVideo.getCurrentURL() != null) {
             double x = visibilityState;
             smallVideo.x = (int) (SMALL_X - width * (1 - 3 * x * x + 2 * x * x * x));
-            smallVideo.paintImpl(g, width, height);
+            smallVideo.draw(g);
         }
 
-        g.drawImage(image, xVideo, yVideo, this.widthVideo, this.heightVideo);
+        mainVideo.draw(g);
 
         if (currentProblemId >= 0) {
-            drawReplay(g, x, y, this.width, this.height);
+            drawReplay(g, mainVideo.x, mainVideo.y, this.width, this.height);
         }
 
 //        g.setColor(Color.WHITE);
@@ -216,7 +216,7 @@ public class NewTeamWidget extends VideoWidget {
                 }
             }
 
-            drawTextInRect(g, "" + (char) ('A' + i), this.x + X, this.y + y,
+            drawTextInRect(g, "" + (char) ('A' + i), mainVideo.x + X, mainVideo.y + y,
                     PR_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, problemColor, 1);
 
             int x = X - GAP_X;
@@ -224,18 +224,18 @@ public class NewTeamWidget extends VideoWidget {
                 RunInfo run = runs[j];
                 PlateStyle color = run.getResult().equals("AC") ? TeamStylesheet.acProblem : run.getResult().equals("") ? TeamStylesheet.udProblem : TeamStylesheet.waProblem;
                 if (j == runs.length - 1 || run.getResult().equals("AC")) {
-                    drawTextInRect(g, format(run.getTime() / 1000), this.x + x - RUN_WIDTH, this.y + y,
+                    drawTextInRect(g, format(run.getTime() / 1000), mainVideo.x + x - RUN_WIDTH, mainVideo.y + y,
                             RUN_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, color,
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
                     //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
-                        drawStar(g, this.x + x - STAR_SIZE, (int) (this.y + y + STAR_SIZE), (int) STAR_SIZE);
+                        drawStar(g, mainVideo.x + x - STAR_SIZE, (int) (mainVideo.y + y + STAR_SIZE), (int) STAR_SIZE);
                     }
                     x -= RUN_WIDTH + GAP_X;
                     break;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
-                    drawTextInRect(g, "", this.x + x - RUN_SMALL_WIDTH, this.y + y,
+                    drawTextInRect(g, "", mainVideo.x + x - RUN_SMALL_WIDTH, mainVideo.y + y,
                             RUN_SMALL_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, color, 1);
                     x -= RUN_SMALL_WIDTH + GAP_X;
                 }
@@ -254,12 +254,12 @@ public class NewTeamWidget extends VideoWidget {
     }
 
     public void change(TeamInfo team, String infoType) {
-        change(TeamUrls.getUrl(team, infoType));
+        mainVideo.change(TeamUrls.getUrl(team, infoType));
         if (doubleVideo) {
-            if (!infoType.equals("camera")) {
-                smallVideo.changeManually(TeamUrls.getUrl(team, "camera"));
+            if (!infoType.equals(TeamUrls.types[0])) {
+                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[0]));
             } else {
-                smallVideo.changeManually(TeamUrls.getUrl(team, "screen"));
+                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[1]));
             }
         }
         nextProblemId = -1;
@@ -267,7 +267,7 @@ public class NewTeamWidget extends VideoWidget {
     }
 
     public void change(RunInfo run) {
-        change(TeamUrls.getUrl(run));
+        mainVideo.change(TeamUrls.getUrl(run));
         if (doubleVideo) {
             smallVideo.changeManually(null);
         }
