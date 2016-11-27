@@ -39,78 +39,8 @@ public class PlayerGL implements GLEventListener {
 //        System.load(directory + "avdevice-57.dll");
 //    }
 
-
-    static class MyGLMediaEventListener implements GLMediaPlayer.GLMediaEventListener {
-        void destroyWindow(final com.jogamp.newt.Window window) {
-            new InterruptSource.Thread() {
-                public void run() {
-                    window.destroy();
-                }
-            }.start();
-        }
-
-        @Override
-        public void newFrameAvailable(final GLMediaPlayer ts, final TextureSequence.TextureFrame newFrame, final long when) {
-        }
-
-        @Override
-        public void attributesChanged(final GLMediaPlayer mp, final int event_mask, final long when) {
-            System.err.println("MovieSimple AttributesChanges: events_mask 0x" + Integer.toHexString(event_mask) + ", when " + when);
-            System.err.println("MovieSimple State: " + mp);
-            final GLWindow window = (GLWindow) mp.getAttachedObject(MovieSimple.WINDOW_KEY);
-            final PlayerGL ms = (PlayerGL) mp.getAttachedObject(MovieSimple.PLAYER);
-            if (0 != (GLMediaPlayer.GLMediaEventListener.EVENT_CHANGE_SIZE & event_mask)) {
-                System.err.println("MovieSimple State: CHANGE_SIZE");
-            }
-            if (0 != (GLMediaPlayer.GLMediaEventListener.EVENT_CHANGE_INIT & event_mask)) {
-                System.err.println("MovieSimple State: INIT");
-                // Use GLEventListener in all cases [A+V, V, A]
-                window.addGLEventListener(ms);
-                final GLAnimatorControl anim = window.getAnimator();
-                anim.setUpdateFPSFrames(60, null);
-                anim.resetFPSCounter();
-            }
-            if (0 != (GLMediaPlayer.GLMediaEventListener.EVENT_CHANGE_PLAY & event_mask)) {
-                window.getAnimator().resetFPSCounter();
-            }
-
-            boolean destroy = false;
-            Throwable err = null;
-
-            if (0 != (GLMediaPlayer.GLMediaEventListener.EVENT_CHANGE_EOS & event_mask)) {
-                err = ms.player.getStreamException();
-                if (null != err) {
-                    System.err.println("MovieSimple State: EOS + Exception");
-                    destroy = true;
-                } else {
-                    System.err.println("MovieSimple State: EOS");
-                    destroy = true;
-                }
-            }
-            if (0 != (GLMediaPlayer.GLMediaEventListener.EVENT_CHANGE_ERR & event_mask)) {
-                err = ms.player.getStreamException();
-                if (null != err) {
-                    System.err.println("MovieSimple State: ERR + Exception");
-                } else {
-                    System.err.println("MovieSimple State: ERR");
-                }
-                destroy = true;
-            }
-            if (destroy) {
-                if (null != err) {
-                    err.printStackTrace();
-                }
-                destroyWindow(window);
-            }
-        }
-    }
-
-    public final static MyGLMediaEventListener myGLMediaEventListener = new MyGLMediaEventListener();
-
     public GLMediaPlayer player;
     public Texture textureToShow;
-
-    int cnt = 0;
 
     public void translateToProperFormat(GL2GL3 gl, Texture texture) {
         int width = texture.getWidth();
@@ -167,8 +97,7 @@ public class PlayerGL implements GLEventListener {
         player = GLMediaPlayerFactory.create(GLMediaPlayer.class.getClassLoader(), "jogamp.opengl.util.av.impl.FFMPEGMediaPlayer");
         try {
             player.initStream(
-//                    Uri.cast("http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4"),
-                    Uri.cast("pics/BigBuckBunny_320x180.mp4"),
+                    Uri.cast("http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4"),
                     GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.STREAM_ID_AUTO, 4);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -217,18 +146,6 @@ public class PlayerGL implements GLEventListener {
         translateToProperFormat(gl, texture);
 
         texture.disable(gl);
-
-//        cnt++;
-//        if (cnt % 20 == 1 && textureToShow != null) {
-//            try {
-//                TextureIO.write(textureToShow, new File(String.format("shots/picture-%d.jpg", cnt)));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        if (cnt == 100) {
-//            System.exit(0);
-//        }
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
