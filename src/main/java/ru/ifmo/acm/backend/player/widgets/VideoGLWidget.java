@@ -1,16 +1,19 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import com.jogamp.common.net.Uri;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.util.av.GLMediaPlayer;
 import com.jogamp.opengl.util.av.GLMediaPlayerFactory;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureData;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.opengl.GraphicsGL;
-import ru.ifmo.acm.backend.player.PlayerInImage;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
-import javax.swing.*;
+import java.nio.ByteBuffer;
 
 /**
  * @author: Aksenov239
@@ -122,12 +125,74 @@ public class VideoGLWidget extends PlayerWidget {
         draw(g);
     }
 
+    Texture currentTexture = null;
+
+    public Texture processTexture(Texture texture) {
+        GL2GL3 gl = this.gl;
+
+        texture.enable(gl);
+        texture.bind(gl);
+
+        int width = texture.getWidth();
+        int height = texture.getHeight();
+        ByteBuffer buffer = ByteBuffer.allocate(3 * width * height);
+        // To store previous picture, done for YUV, that is why 3
+        gl.glGetTexImage(GL.GL_TEXTURE_2D, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, buffer);
+        byte[] original = buffer.array();
+
+        texture.disable(gl);
+
+        int resWidth = player.getWidth();
+        int resHeight = player.getHeight();
+        byte[] convertedBuffer = new byte[3 * resWidth * resHeight];
+        // YUV420p
+        int p = 0;
+        for (int y = 0; y < resHeight; y++) {
+            for (int x = 0; x < resWidth; x++) {
+                int yc = y * width + x;
+                int uc = (y / 2) * width + (resWidth + x / 2);
+                int vc = (y / 2 + height / 2) * width + (resWidth + x / 2);
+
+                int yy = original[3 * yc] & 0xFF;
+                int u = original[3 * uc] & 0xFF;
+                int v = original[3 * vc] & 0xFF;
+
+                if (yy < 0 || yy > 255 || u < 0 || u > 255 || v < 0 || v > 255) {
+                    throw new AssertionError();
+                }
+
+                int r = (298 * (yy - 16) + 409 * (v - 128) + 128) >> 8;
+                int g = (298 * (yy - 16) - 100 * (u - 128) - 208 * (v - 128) + 128) >> 8;
+                int b = (298 * (yy - 16) + 516 * (u - 128) + 128) >> 8;
+
+                r = Math.max(Math.min(r, 255), 0);
+                g = Math.max(Math.min(g, 255), 0);
+                b = Math.max(Math.min(b, 255), 0);
+
+                convertedBuffer[p++] = (byte) r;
+                convertedBuffer[p++] = (byte) g;
+                convertedBuffer[p++] = (byte) b;
+            }
+        }
+
+        TextureData data = new TextureData(gl.getGLProfile(), GL.GL_RGB, resWidth, resHeight, 0,
+                GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
+                false, false, true, ByteBuffer.wrap(convertedBuffer), null);
+
+        if (currentTexture == null) {
+            currentTexture = new Texture(gl, data);
+        } else {
+            currentTexture.updateImage(gl, data);
+        }
+        return currentTexture;
+    }
+
     public void draw(Graphics g) {
-        g.drawTexture(player.getNextTexture(gl).getTexture(), x, y, this.width, this.height);
+        g.drawTexture(processTexture(player.getNextTexture(gl).getTexture()), x, y, this.width, this.height);
     }
 
     public void draw(Graphics g, int x, int y, int width, int height) {
-        g.drawTexture(player.getNextTexture(gl).getTexture(), x, y, width, height);
+        g.drawTexture(processTexture(player.getNextTexture(gl).getTexture()), x, y, width, height);
     }
 
     public void updateState(Graphics g, boolean manualSwitch) {

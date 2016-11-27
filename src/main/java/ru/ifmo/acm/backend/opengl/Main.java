@@ -35,6 +35,15 @@ public class Main {
 
         NativeLibrary.addSearchPath("libav", dir + "/libav/x64");
 
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/avutil-55.dll");
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/postproc-54.dll");
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/swscale-4.dll");
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/swresample-2.dll");
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/avcodec-57.dll");
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/avformat-57.dll");
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/avfilter-6.dll");
+//        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/avdevice-57.dll");
+
 //        System.setProperty("jogamp.debug", "true");
 
         Properties properties = readProperties();

@@ -298,16 +298,16 @@ public class GraphicsGL extends Graphics {
         y += y0;
         texture.enable(gl2);
         texture.bind(gl2);
-        TextureCoords coords = texture.getImageTexCoords();
+//        TextureCoords coords = texture.getImageTexCoords();
         gl2.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
         gl2.glBegin(GL2.GL_QUADS);
-        gl2.glTexCoord2f(coords.left(), coords.bottom());
+        gl2.glTexCoord2f(0, 1);
         gl2.glVertex2i(x, Widget.BASE_HEIGHT - y - height);
-        gl2.glTexCoord2f(coords.left(), coords.top());
+        gl2.glTexCoord2f(0, 0);
         gl2.glVertex2i(x, Widget.BASE_HEIGHT - y);
-        gl2.glTexCoord2f(coords.right(), coords.top());
+        gl2.glTexCoord2f(1, 0);
         gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y);
-        gl2.glTexCoord2f(coords.right(), coords.bottom());
+        gl2.glTexCoord2f(1, 1);
         gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y - height);
         gl2.glEnd();
 
