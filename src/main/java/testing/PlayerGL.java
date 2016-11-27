@@ -9,7 +9,6 @@ import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.av.GLMediaPlayer;
 import com.jogamp.opengl.util.av.GLMediaPlayerFactory;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureCoords;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureSequence;
 import testing.jogl.MovieSimple;
@@ -20,7 +19,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * Created by Aksenov239 on 23.11.2016.
@@ -112,6 +110,8 @@ public class PlayerGL implements GLEventListener {
     public GLMediaPlayer player;
     public Texture textureToShow;
 
+    int cnt = 0;
+
     public void translateToProperFormat(GL2GL3 gl, Texture texture) {
         int width = texture.getWidth();
         int height = texture.getHeight();
@@ -131,21 +131,22 @@ public class PlayerGL implements GLEventListener {
                 int uc = (y / 2) * width + (resWidth + x / 2);
                 int vc = (y / 2 + height / 2) * width + (resWidth + x / 2);
 
-                int yy = original[3 * yc];
-                int u = original[3 * uc];
-                int v = original[3 * vc];
-
-                yy = yy < 0 ? yy + 256 : yy; // get only r
-                u = u < 0 ? u + 256 : u;
-                v = v < 0 ? v + 256 : v;
+                int yy = original[3 * yc] & 0xFF;
+                int u = original[3 * uc] & 0xFF;
+                int v = original[3 * vc] & 0xFF;
 
                 if (yy < 0 || yy > 255 || u < 0 || u > 255 || v < 0 || v > 255) {
                     throw new AssertionError();
                 }
 
-                double r = 1.1643 * (yy - 16) + 1.5958 * (v - 128);
-                double g = 1.1643 * (yy - 16) - 0.8129 * (v - 128) - 0.39173 * (u - 128);
-                double b = 1.1643 * (yy - 16) + 2.017 * (u - 128);
+                int r = (298 * (yy - 16) + 409 * (v - 128) + 128) >> 8;
+                int g = (298 * (yy - 16) - 100 * (u - 128) - 208 * (v - 128) + 128) >> 8;
+                int b = (298 * (yy - 16) + 516 * (u - 128) + 128) >> 8;
+
+                r = Math.max(Math.min(r, 255), 0);
+                g = Math.max(Math.min(g, 255), 0);
+                b = Math.max(Math.min(b, 255), 0);
+
                 convertedBuffer[p++] = (byte) r;
                 convertedBuffer[p++] = (byte) g;
                 convertedBuffer[p++] = (byte) b;
@@ -217,19 +218,32 @@ public class PlayerGL implements GLEventListener {
 
         texture.disable(gl);
 
+//        cnt++;
+//        if (cnt % 20 == 1 && textureToShow != null) {
+//            try {
+//                TextureIO.write(textureToShow, new File(String.format("shots/picture-%d.jpg", cnt)));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        if (cnt == 100) {
+//            System.exit(0);
+//        }
+
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
         textureToShow.enable(gl);
         textureToShow.bind(gl);
 
-        TextureCoords coords = texture.getImageTexCoords();
-
         gl.glBegin(GL2.GL_QUADS);
-        gl.glTexCoord2d(coords.left(), coords.bottom());
+        gl.glNormal3f(0, 0, 1);
+        gl.glTexCoord2d(0, 1);
         gl.glVertex2d(0, 0);
-        gl.glTexCoord2d(coords.right(), coords.bottom());
+        gl.glTexCoord2d(1, 1);
         gl.glVertex2d(1, 0);
-        gl.glTexCoord2d(coords.right(), coords.top());
+        gl.glTexCoord2d(1, 0);
         gl.glVertex2d(1, 1);
-        gl.glTexCoord2d(0, coords.top());
+        gl.glTexCoord2d(0, 0);
         gl.glVertex2d(0, 1);
         gl.glEnd();
 
@@ -254,7 +268,7 @@ public class PlayerGL implements GLEventListener {
 
         canvas.addGLEventListener(new PlayerGL());
         canvas.setPreferredSize(new Dimension(320, 180));
-        final FPSAnimator animator = new FPSAnimator(canvas, 30, true);
+        final FPSAnimator animator = new FPSAnimator(canvas, 20, true);
         final JFrame frame = new JFrame();
         frame.getContentPane().add(canvas);
         frame.addWindowListener(new WindowAdapter() {
