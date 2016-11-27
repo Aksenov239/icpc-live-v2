@@ -16,7 +16,7 @@ no.color=main.color
 #team pane
 team.pane.rank.background=additional.color
 team.pane.rank.text=white.color
-team.pane.rank.zero.background=accent.color
+team.pane.rank.zero.background=additional.color
 team.pane.rank.zero.text=white.color
 team.pane.rank.gold.places=4
 team.pane.rank.gold.background=#D4AF37
@@ -56,6 +56,9 @@ big.standings.optimistic.heading.background=green.color
 big.standings.optimistic.heading.text=white.color
 big.standings.frozen.headings.background=yellow.color
 big.standings.frozen.headings.text=white.color
+big.standings.top.university.background=#08372D
+big.standings.top.university.text=white.color
+big.standings.finalists=15
 big.standings.star=star.color
 
 #breaking news

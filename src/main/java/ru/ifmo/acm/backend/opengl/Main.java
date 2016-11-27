@@ -74,10 +74,10 @@ public class Main {
 //        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
 //        manager.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
 //
-//        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
-//                1350, 39, updateWait, 20, true);
-//        bigStandingsWidget.alignBottom(994);
-//        manager.addWidget(bigStandingsWidget);
+        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
+                1350, 39, updateWait, 20, true);
+        bigStandingsWidget.alignBottom(994);
+        manager.addWidget(bigStandingsWidget);
 
 //        manager.addWidget(new StatisticsWidget(
 //                519, 200, 39, 1350, updateWait

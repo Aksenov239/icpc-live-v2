@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.HashSet;
 
 /**
  * @author: pashka
@@ -158,6 +159,7 @@ public class BigStandingsWidget extends Widget {
     }
 
     List<Point> stars = new ArrayList<>();
+    boolean[] topUniversity;
 
     @Override
     public void paintImpl(Graphics g, int width, int height) {
@@ -185,8 +187,20 @@ public class BigStandingsWidget extends Widget {
 
         if (contestData == null || standings == null) return;
 
-        RunInfo[] firstSolved = new RunInfo[contestData.problemNumber];
+        HashSet<String> appearedUniversity = new HashSet<>();
+        topUniversity = new boolean[contestData.getTeamsNumber() + 1];
+        RunInfo[] firstSolved = new RunInfo[contestData.getProblemsNumber()];
         for (TeamInfo team : standings) {
+            String universityName = team.getName();
+            boolean lastDigit = Character.isDigit(universityName.charAt(universityName.length() - 1));
+            if (lastDigit) {
+                universityName = universityName.substring(0, universityName.length() - 2);
+            }
+            if (!appearedUniversity.contains(universityName) &&
+                    appearedUniversity.size() < BigStandingsStylesheet.finalists) {
+                topUniversity[team.getId()] = true;
+                appearedUniversity.add(universityName);
+            }
             for (int p = 0; p < firstSolved.length; p++) {
                 for (RunInfo run : team.getRuns()[p]) {
                     if ("AC".equals(run.getResult()) &&
@@ -334,7 +348,8 @@ public class BigStandingsWidget extends Widget {
 
         x += rankWidth + spaceX;
 
-        PlateStyle nameStyle = BigStandingsStylesheet.name;
+        PlateStyle nameStyle = topUniversity[team.getId()] ? BigStandingsStylesheet.topUniversityTeam :
+                BigStandingsStylesheet.name;
         if (bright) {
             nameStyle = nameStyle.brighter();
         }
