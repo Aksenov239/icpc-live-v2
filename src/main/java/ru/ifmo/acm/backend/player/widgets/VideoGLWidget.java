@@ -8,11 +8,14 @@ import com.jogamp.opengl.util.av.GLMediaPlayer;
 import com.jogamp.opengl.util.av.GLMediaPlayerFactory;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
+import com.jogamp.opengl.util.texture.TextureIO;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.opengl.GraphicsGL;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
@@ -26,6 +29,9 @@ public class VideoGLWidget extends PlayerWidget {
 
     protected String currentUrl;
     protected String nextUrl;
+
+    protected Texture currentTexture;
+    protected Texture nextTexture;
 
     private GL2 gl;
 
@@ -54,6 +60,21 @@ public class VideoGLWidget extends PlayerWidget {
         return player;
     }
 
+    public Texture loadTexture(String url) {
+        if (url.endsWith(".png") || url.endsWith(".jpg")) {
+            System.err.println("Load by hand!");
+            try {
+                Texture result = TextureIO.newTexture(new File(url), false);
+                changeTimestamp = System.currentTimeMillis(); // to do the same as for normal video
+                ready = false;
+                return result;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public void changeManually(String url) {
         if (url == null) {
             nextUrl = null;
@@ -61,6 +82,7 @@ public class VideoGLWidget extends PlayerWidget {
         }
         nextPlayer = createPlayer(url);
         nextUrl = url;
+        nextTexture = loadTexture(url);
     }
 
     public void switchManually() {
@@ -71,8 +93,10 @@ public class VideoGLWidget extends PlayerWidget {
         stopCurrent();
         player = nextPlayer;
         currentUrl = nextUrl;
+        currentTexture = nextTexture;
         nextPlayer = null;
         nextUrl = null;
+        nextTexture = null;
     }
 
     public void change(String url) {
@@ -85,6 +109,7 @@ public class VideoGLWidget extends PlayerWidget {
         ready = false;
         nextPlayer = createPlayer(url);
         nextUrl = url;
+        nextTexture = loadTexture(url);
     }
 
     public void setVolume(int volume) {
@@ -97,6 +122,7 @@ public class VideoGLWidget extends PlayerWidget {
             player = null;
         }
         currentUrl = null;
+        currentTexture = null;
     }
 
     private void stopNext() {
@@ -105,6 +131,7 @@ public class VideoGLWidget extends PlayerWidget {
             nextPlayer = null;
         }
         nextUrl = null;
+        nextTexture = null;
     }
 
     public void stop() {
@@ -125,10 +152,14 @@ public class VideoGLWidget extends PlayerWidget {
         draw(g);
     }
 
-    Texture currentTexture = null;
+    public Texture processTexture() {
+        if (player.getState() != GLMediaPlayer.State.Playing) {
+            return currentTexture;
+        }
 
-    public Texture processTexture(Texture texture) {
         GL2GL3 gl = this.gl;
+
+        Texture texture = player.getNextTexture(gl).getTexture();
 
         texture.enable(gl);
         texture.bind(gl);
@@ -188,11 +219,15 @@ public class VideoGLWidget extends PlayerWidget {
     }
 
     public void draw(Graphics g) {
-        g.drawTexture(processTexture(player.getNextTexture(gl).getTexture()), x, y, this.width, this.height);
+        if (processTexture() == null)
+            return;
+        g.drawTexture(processTexture(), x, y, this.width, this.height);
     }
 
     public void draw(Graphics g, int x, int y, int width, int height) {
-        g.drawTexture(processTexture(player.getNextTexture(gl).getTexture()), x, y, width, height);
+        if (processTexture() == null)
+            return;
+        g.drawTexture(processTexture(), x, y, width, height);
     }
 
     public void updateState(Graphics g, boolean manualSwitch) {
@@ -204,20 +239,24 @@ public class VideoGLWidget extends PlayerWidget {
         }
         switch (nextPlayer.getState()) {
             case Initialized:
-                try {
-                    nextPlayer.initGL(gl);
-                } catch (GLMediaPlayer.StreamException e) {
-                    log.info("Could not initialise the stream " + nextUrl);
-                    nextPlayer.destroy(gl);
-                    nextPlayer = null;
-                    nextUrl = null;
+                if (nextTexture == null) { // The video is not a picture
+                    try {
+                        nextPlayer.initGL(gl);
+                    } catch (GLMediaPlayer.StreamException e) {
+                        log.info("Could not initialise the stream " + nextUrl);
+                        nextPlayer.destroy(gl);
+                        nextPlayer = null;
+                        nextUrl = null;
+                    }
+                    break;
                 }
-                break;
             case Paused:
-                nextPlayer.play();
-                changeTimestamp = System.currentTimeMillis();
-                ready = false;
-                break;
+                if (nextTexture == null) { // The video is not a picture
+                    nextPlayer.play();
+                    changeTimestamp = System.currentTimeMillis();
+                    ready = false;
+                    break;
+                }
             case Playing:
                 if (manualSwitch || System.currentTimeMillis() - changeTimestamp < sleepTime) {
                     break;

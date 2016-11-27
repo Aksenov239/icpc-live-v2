@@ -9,7 +9,6 @@ import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.math.geom.AABBox;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureCoords;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
@@ -300,16 +299,30 @@ public class GraphicsGL extends Graphics {
         texture.bind(gl2);
 //        TextureCoords coords = texture.getImageTexCoords();
         gl2.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
-        gl2.glBegin(GL2.GL_QUADS);
-        gl2.glTexCoord2f(0, 1);
-        gl2.glVertex2i(x, Widget.BASE_HEIGHT - y - height);
-        gl2.glTexCoord2f(0, 0);
-        gl2.glVertex2i(x, Widget.BASE_HEIGHT - y);
-        gl2.glTexCoord2f(1, 0);
-        gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y);
-        gl2.glTexCoord2f(1, 1);
-        gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y - height);
-        gl2.glEnd();
+        if (texture.getMustFlipVertically()) {
+            gl2.glBegin(GL2.GL_QUADS);
+            gl2.glTexCoord2f(0, 1);
+            gl2.glVertex2i(x, Widget.BASE_HEIGHT - y - height);
+            gl2.glTexCoord2f(0, 0);
+            gl2.glVertex2i(x, Widget.BASE_HEIGHT - y);
+            gl2.glTexCoord2f(1, 0);
+            gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y);
+            gl2.glTexCoord2f(1, 1);
+            gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y - height);
+            gl2.glEnd();
+        } else {
+            gl2.glBegin(GL2.GL_QUADS);
+            gl2.glTexCoord2f(0, 0);
+            gl2.glVertex2i(x, Widget.BASE_HEIGHT - y - height);
+            gl2.glTexCoord2f(0, 1);
+            gl2.glVertex2i(x, Widget.BASE_HEIGHT - y);
+            gl2.glTexCoord2f(1, 1);
+            gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y);
+            gl2.glTexCoord2f(1, 0);
+            gl2.glVertex2i(x + width, Widget.BASE_HEIGHT - y - height);
+            gl2.glEnd();
+
+        }
 
         texture.disable(gl2);
     }
