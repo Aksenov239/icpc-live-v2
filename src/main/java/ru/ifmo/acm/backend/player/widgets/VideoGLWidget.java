@@ -152,6 +152,10 @@ public class VideoGLWidget extends PlayerWidget {
         draw(g);
     }
 
+    private ByteBuffer currentBuffer;
+    private ByteBuffer convertedBuffer;
+    private TextureData currentTextureData;
+
     public Texture processTexture() {
         if (player.getState() != GLMediaPlayer.State.Playing) {
             return currentTexture;
@@ -166,18 +170,25 @@ public class VideoGLWidget extends PlayerWidget {
 
         int width = texture.getWidth();
         int height = texture.getHeight();
-        ByteBuffer buffer = ByteBuffer.allocate(3 * width * height);
+        if (currentBuffer == null || currentBuffer.capacity() != 3 * width * height) {
+            currentBuffer = ByteBuffer.allocate(3 * width * height);
+        } else {
+            currentBuffer.clear();
+        }
         // To store previous picture, done for YUV, that is why 3
-        gl.glGetTexImage(GL.GL_TEXTURE_2D, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, buffer);
-        byte[] original = buffer.array();
+        gl.glGetTexImage(GL.GL_TEXTURE_2D, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, currentBuffer);
+        byte[] original = currentBuffer.array();
 
         texture.disable(gl);
 
         int resWidth = player.getWidth();
         int resHeight = player.getHeight();
-        byte[] convertedBuffer = new byte[3 * resWidth * resHeight];
+        if (convertedBuffer == null || convertedBuffer.capacity() != 3 * resWidth * resHeight) {
+            convertedBuffer = ByteBuffer.allocate(3 * resWidth * resHeight);
+        } else {
+            convertedBuffer.clear();
+        }
         // YUV420p
-        int p = 0;
         for (int y = 0; y < resHeight; y++) {
             for (int x = 0; x < resWidth; x++) {
                 int yc = y * width + x;
@@ -200,20 +211,25 @@ public class VideoGLWidget extends PlayerWidget {
                 g = Math.max(Math.min(g, 255), 0);
                 b = Math.max(Math.min(b, 255), 0);
 
-                convertedBuffer[p++] = (byte) r;
-                convertedBuffer[p++] = (byte) g;
-                convertedBuffer[p++] = (byte) b;
+                convertedBuffer.put((byte) r);
+                convertedBuffer.put((byte) g);
+                convertedBuffer.put((byte) b);
             }
         }
-
-        TextureData data = new TextureData(gl.getGLProfile(), GL.GL_RGB, resWidth, resHeight, 0,
-                GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
-                false, false, true, ByteBuffer.wrap(convertedBuffer), null);
+        convertedBuffer.flip();
+        if (currentTextureData == null || currentTextureData.getWidth() != resWidth ||
+                currentTextureData.getHeight() != resHeight) {
+            currentTextureData = new TextureData(gl.getGLProfile(), GL.GL_RGB, resWidth, resHeight, 0,
+                    GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
+                    false, false, true, convertedBuffer, null);
+        } else {
+            currentTextureData.setBuffer(convertedBuffer);
+        }
 
         if (currentTexture == null) {
-            currentTexture = new Texture(gl, data);
+            currentTexture = new Texture(gl, currentTextureData);
         } else {
-            currentTexture.updateImage(gl, data);
+            currentTexture.updateImage(gl, currentTextureData);
         }
         return currentTexture;
     }
