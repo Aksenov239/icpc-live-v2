@@ -1,8 +1,6 @@
 package testing;
 
 import com.jogamp.common.net.Uri;
-import com.jogamp.common.util.InterruptSource;
-import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
@@ -10,7 +8,6 @@ import com.jogamp.opengl.util.av.GLMediaPlayer;
 import com.jogamp.opengl.util.av.GLMediaPlayerFactory;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
-import com.jogamp.opengl.util.texture.TextureSequence;
 import testing.jogl.MovieSimple;
 
 import javax.swing.*;
@@ -22,6 +19,23 @@ import java.nio.ByteBuffer;
 
 /**
  * Created by Aksenov239 on 23.11.2016.
+ * <p>
+ * (C) Copyright 2016
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * <p>
+ * Contributors:
+ * Vitaly Aksenov
  */
 public class PlayerGL implements GLEventListener {
 
@@ -39,31 +53,42 @@ public class PlayerGL implements GLEventListener {
 //        System.load(directory + "avdevice-57.dll");
 //    }
 
-    public GLMediaPlayer player;
-    public Texture textureToShow;
+    private GLMediaPlayer player;
+    private Texture textureToShow;
+
+    private ByteBuffer originalBuffer;
+    private ByteBuffer convertedBuffer;
+    private TextureData textureData;
 
     public void translateToProperFormat(GL2GL3 gl, Texture texture) {
         int width = texture.getWidth();
         int height = texture.getHeight();
-        ByteBuffer buffer = ByteBuffer.allocate(3 * width * height);
+        if (originalBuffer == null || originalBuffer.capacity() != 3 * width * height) {
+            originalBuffer = ByteBuffer.allocate(3 * width * height);
+        } else {
+            originalBuffer.clear();
+        }
         // To store previous picture, done for YUV, that is why 3
-        gl.glGetTexImage(GL.GL_TEXTURE_2D, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, buffer);
-        byte[] original = buffer.array();
+        gl.glGetTexImage(GL.GL_TEXTURE_2D, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, originalBuffer);
 
         int resWidth = player.getWidth();
         int resHeight = player.getHeight();
-        byte[] convertedBuffer = new byte[3 * resWidth * resHeight];
+        if (convertedBuffer == null || convertedBuffer.capacity() != 3 * resWidth * resHeight) {
+            convertedBuffer = ByteBuffer.allocate(3 * resWidth * resHeight);
+        } else {
+            convertedBuffer.clear();
+        }
+
         // YUV420p
-        int p = 0;
         for (int y = 0; y < resHeight; y++) {
             for (int x = 0; x < resWidth; x++) {
                 int yc = y * width + x;
                 int uc = (y / 2) * width + (resWidth + x / 2);
                 int vc = (y / 2 + height / 2) * width + (resWidth + x / 2);
 
-                int yy = original[3 * yc] & 0xFF;
-                int u = original[3 * uc] & 0xFF;
-                int v = original[3 * vc] & 0xFF;
+                int yy = originalBuffer.get(3 * yc) & 0xFF;
+                int u = originalBuffer.get(3 * uc) & 0xFF;
+                int v = originalBuffer.get(3 * vc) & 0xFF;
 
                 if (yy < 0 || yy > 255 || u < 0 || u > 255 || v < 0 || v > 255) {
                     throw new AssertionError();
@@ -77,19 +102,24 @@ public class PlayerGL implements GLEventListener {
                 g = Math.max(Math.min(g, 255), 0);
                 b = Math.max(Math.min(b, 255), 0);
 
-                convertedBuffer[p++] = (byte) r;
-                convertedBuffer[p++] = (byte) g;
-                convertedBuffer[p++] = (byte) b;
+                convertedBuffer.put((byte) r);
+                convertedBuffer.put((byte) g);
+                convertedBuffer.put((byte) b);
             }
         }
+        convertedBuffer.flip();
 
-        TextureData data = new TextureData(gl.getGLProfile(), GL.GL_RGB, resWidth, resHeight, 0,
-                GL.GL_RGB, GL.GL_UNSIGNED_BYTE
-                , false, false, true, ByteBuffer.wrap(convertedBuffer), null);
-        if (textureToShow == null) {
-            textureToShow = new Texture(gl, data);
+        if (textureData == null || textureData.getWidth() != resWidth || textureData.getHeight() != resHeight) {
+            textureData = new TextureData(gl.getGLProfile(), GL.GL_RGB, resWidth, resHeight, 0,
+                    GL.GL_RGB, GL.GL_UNSIGNED_BYTE
+                    , false, false, true, convertedBuffer, null);
         } else {
-            textureToShow.updateImage(gl, data);
+            textureData.setBuffer(convertedBuffer);
+        }
+        if (textureToShow == null) {
+            textureToShow = new Texture(gl, textureData);
+        } else {
+            textureToShow.updateImage(gl, textureData);
         }
     }
 
@@ -98,6 +128,7 @@ public class PlayerGL implements GLEventListener {
         try {
             player.initStream(
                     Uri.cast("http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4"),
+//                    Uri.cast("pics/team.jpg"),
                     GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.STREAM_ID_AUTO, 4);
         } catch (URISyntaxException e) {
             e.printStackTrace();
