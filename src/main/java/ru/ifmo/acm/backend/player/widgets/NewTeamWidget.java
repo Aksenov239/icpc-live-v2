@@ -16,13 +16,15 @@ import java.awt.*;
  * @author: pashka
  */
 public class NewTeamWidget extends Widget {
+    private static double standardAspect = 4. / 3;
+
     private static final int BIG_HEIGHT = 780;
-    private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
-    private static final int BIG_X = 493;
+    //    private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
+    private static final int BIG_X_RIGHT = 1880;//493;
     private static final int BIG_Y = 89;
 
     private static final int SMALL_HEIGHT = 230;
-    private static final int SMALL_WIDTH = SMALL_HEIGHT * 16 / 9;
+    //    private static final int SMALL_WIDTH = SMALL_HEIGHT * 16 / 9;
     private static final int SMALL_X = 35;
     private static final int SMALL_Y = 89;
 
@@ -42,14 +44,14 @@ public class NewTeamWidget extends Widget {
     private String currentInfoType;
 
     public NewTeamWidget(int sleepTime, boolean doubleVideo) {
-        this.width = BIG_WIDTH;
+        this.width = (int) (standardAspect * BIG_HEIGHT);
         this.height = BIG_HEIGHT;
-        mainVideo = PlayerWidget.getPlayerWidget(BIG_X, BIG_Y, BIG_WIDTH, BIG_HEIGHT, sleepTime, 0);
+        mainVideo = PlayerWidget.getPlayerWidget(BIG_X_RIGHT - width, BIG_Y, width, BIG_HEIGHT, sleepTime, 0);
         teamId = -1;
 
         this.doubleVideo = doubleVideo;
         if (doubleVideo) {
-            smallVideo = PlayerWidget.getPlayerWidget(SMALL_X, SMALL_Y, SMALL_WIDTH, SMALL_HEIGHT, sleepTime, 0);
+            smallVideo = PlayerWidget.getPlayerWidget(SMALL_X, SMALL_Y, (int) (standardAspect * SMALL_HEIGHT), SMALL_HEIGHT, sleepTime, 0);
         }
     }
 
@@ -174,10 +176,12 @@ public class NewTeamWidget extends Widget {
         }
 
         {
+            mainVideo.width = (int)Math.round(mainVideo.height * mainVideo.getAspectRatio());
             double x = visibilityState;
-            mainVideo.x = (int) (BIG_X + width * (1 - 3 * x * x + 2 * x * x * x));
+            mainVideo.x = (int) (BIG_X_RIGHT - mainVideo.width + width * (1 - 3 * x * x + 2 * x * x * x));
         }
         if (doubleVideo && smallVideo != null && smallVideo.getCurrentURL() != null) {
+            smallVideo.width = (int)Math.round(smallVideo.height * smallVideo.getAspectRatio());
             double x = visibilityState;
             smallVideo.x = (int) (SMALL_X - width * (1 - 3 * x * x + 2 * x * x * x));
             smallVideo.draw(g);

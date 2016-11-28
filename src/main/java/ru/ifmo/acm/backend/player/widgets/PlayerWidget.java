@@ -42,6 +42,8 @@ public abstract class PlayerWidget extends Widget {
 
     public abstract String getCurrentURL();
 
+    public abstract double getAspectRatio();
+
     public void updateState(Graphics g, boolean manualSwitch) {
     }
 }

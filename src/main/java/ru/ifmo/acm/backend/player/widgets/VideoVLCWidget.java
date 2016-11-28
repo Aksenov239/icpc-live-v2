@@ -110,6 +110,10 @@ public class VideoVLCWidget extends PlayerWidget {
         return currentUrl;
     }
 
+    public double getAspectRatio() {
+        return player.getPlayer().getAspectRatio().equals("16:9") ? 16. / 9 : 4. / 3;
+    }
+
     public void paintImpl(Graphics g, int width, int height) {
         draw(g);
     }

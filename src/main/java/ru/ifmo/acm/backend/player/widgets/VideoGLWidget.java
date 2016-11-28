@@ -148,6 +148,10 @@ public class VideoGLWidget extends PlayerWidget {
         return currentUrl;
     }
 
+    public double getAspectRatio() {
+        return 1. * player.getWidth() / player.getHeight();
+    }
+
     public void paintImpl(Graphics g, int width, int height) {
         draw(g);
     }
