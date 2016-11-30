@@ -54,9 +54,9 @@ big.standings.heading.background=accent.color
 big.standings.heading.text=white.color
 big.standings.optimistic.heading.background=green.color
 big.standings.optimistic.heading.text=white.color
-big.standings.frozen.headings.background=yellow.color
-big.standings.frozen.headings.text=white.color
-big.standings.top.university.background=#08372D
+big.standings.frozen.heading.background=yellow.color
+big.standings.frozen.heading.text=white.color
+big.standings.top.university.background=#08472D
 big.standings.top.university.text=white.color
 big.standings.finalists=15
 big.standings.star=star.color
@@ -74,6 +74,8 @@ caption.description.text=white.color
 #clock
 clock.background=#404047
 clock.text=white.color
+clock.freeze.background=#707027
+clock.freeze.text=white.color
 
 #creeping line
 creeping.line.main.background=main.color

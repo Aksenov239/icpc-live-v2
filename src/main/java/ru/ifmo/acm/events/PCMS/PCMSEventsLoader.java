@@ -27,6 +27,9 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.awt.Color;
 
+import ru.ifmo.acm.events.ContestInfo.Status;
+import static ru.ifmo.acm.events.ContestInfo.Status.*;
+
 public class PCMSEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(PCMSEventsLoader.class);
 
@@ -49,6 +52,9 @@ public class PCMSEventsLoader extends EventsLoader {
     public PCMSEventsLoader() throws IOException {
         properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("events.properties"));
+
+        ContestInfo.CONTEST_LENGTH = Integer.parseInt(properties.getProperty("contest.length", "" + 5 * 60 * 60 * 1000));
+        ContestInfo.FREEZE_TIME = Integer.parseInt(properties.getProperty("freeze.time", "" + 4 * 60 * 60 * 1000));
 
         int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
         PCMSContestInfo initial = new PCMSContestInfo(problemsNumber);
@@ -127,13 +133,31 @@ public class PCMSEventsLoader extends EventsLoader {
 
         long previousStartTime = contestInfo.get().getStartTime();
         long currentTime = Long.parseLong(element.attr("time"));
-        //log.debug("Time now " + currentTime);
-        if (previousStartTime == 0 && !"before".equals(element.attr("status"))) {
-            // if (previousStartTime < System.currentTimeMillis() - currentTime)
-            updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);
-        } else {
-            updatedContestInfo.setStartTime(previousStartTime);
+        Status previousStatus = contestInfo.get().status;
+
+        updatedContestInfo.setStatus(Status.valueOf(element.attr("status").toUpperCase()));
+
+        switch (updatedContestInfo.status) {
+            case BEFORE:
+                break;
+            case RUNNING:
+                if (previousStatus != RUNNING || previousStartTime == 0) {
+                    updatedContestInfo.setStartTime(System.currentTimeMillis() - currentTime);
+                } else {
+                    updatedContestInfo.setStartTime(previousStartTime);
+                }
+                break;
+            case PAUSED:
+                if (previousStatus != PAUSED) {
+                    updatedContestInfo.setStartTime(previousStartTime);
+                    updatedContestInfo.setStatus(RUNNING);
+                    updatedContestInfo.setStatus(PAUSED);
+                } else {
+                    updatedContestInfo.lastTime = contestInfo.get().lastTime;
+                }
+                break;
         }
+
         updatedContestInfo.frozen = "yes".equals(element.attr("frozen"));
 
         TeamInfo[] standings = contestInfo.get().getStandings();
@@ -177,6 +201,9 @@ public class PCMSEventsLoader extends EventsLoader {
 
     private ArrayList<PCMSRunInfo> parseProblemRuns(Element element, int problemId, int teamId) {
         ArrayList<PCMSRunInfo> runs = new ArrayList<>();
+        if (contestInfo.get().status == BEFORE) {
+            return runs;
+        }
         element.children().forEach(run -> {
             PCMSRunInfo runInfo = parseRunInfo(run, problemId, teamId);
             runs.add(runInfo);
@@ -187,10 +214,11 @@ public class PCMSEventsLoader extends EventsLoader {
 
     private PCMSRunInfo parseRunInfo(Element element, int problemId, int teamId) {
         long time = Long.parseLong(element.attr("time"));
-        boolean isFrozen = time >= 4 * 60 * 60 * 1000;
+        long timestamp = (contestInfo.get().getStartTime() + time) / 1000;
+        boolean isFrozen = time >= ContestInfo.FREEZE_TIME;
         String result = isFrozen ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "WA");
 
-        return new PCMSRunInfo(!isFrozen, result, problemId, time, teamId);
+        return new PCMSRunInfo(!isFrozen, result, problemId, time, timestamp, teamId);
     }
 
     public PCMSContestInfo getContestData() {

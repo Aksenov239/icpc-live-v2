@@ -5,9 +5,10 @@ package ru.ifmo.acm.backend.player.widgets.stylesheets;
  */
 public class ClockStylesheet extends Stylesheet {
     public static PlateStyle main;
+    public static PlateStyle freeze;
 
     static {
         main = new PlateStyle("clock");
-
+        freeze = new PlateStyle("clock.freeze");
     }
 }

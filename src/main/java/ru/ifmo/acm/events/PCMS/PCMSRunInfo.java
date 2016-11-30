@@ -8,12 +8,12 @@ public class PCMSRunInfo implements RunInfo {
         this.judged = true;
     }
 
-    PCMSRunInfo(boolean judged, String result, int problem, long time, int teamId) {
+    PCMSRunInfo(boolean judged, String result, int problem, long time, long timestamp, int teamId) {
         this.judged = judged;
         this.result = result;
         this.problem = problem;
         this.time = time;
-        this.timestamp = 1. * System.currentTimeMillis() / 1000;
+        this.timestamp = timestamp;
         this.lastUpdateTimestamp = System.currentTimeMillis();
         this.teamId = teamId;
     }
@@ -23,6 +23,9 @@ public class PCMSRunInfo implements RunInfo {
         this.result = run.getResult();
         this.problem = run.getProblemNumber();
         this.time = run.getTime();
+        this.timestamp = run.getTimestamp();
+        this.lastUpdateTimestamp = run.getLastUpdateTimestamp();
+        this.teamId = run.getTeamId();
     }
 
     public int getId() {

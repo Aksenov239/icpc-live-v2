@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <standings>
-    <contest name="RCC 2016 Final" time="17000000" length="18000000" status="running" frozen="yes">
+    <contest name="RCC 2016 Final" time="15905731" length="18000000" status="running" frozen="yes">
         <challenge>
             <problem alias="A" name="Closing ceremony"/>
             <problem alias="B" name="Cactusophobia"/>

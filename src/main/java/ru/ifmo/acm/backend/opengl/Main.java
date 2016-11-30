@@ -71,8 +71,8 @@ public class Main {
 //        standingsWidget.alignBottom(994);
 //        manager.addWidget(standingsWidget);
 //
-//        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
-//        manager.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
+        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
+        manager.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
 //
         BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
                 1350, 39, updateWait, 20, true);

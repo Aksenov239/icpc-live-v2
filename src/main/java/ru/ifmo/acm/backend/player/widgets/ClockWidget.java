@@ -6,6 +6,7 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import java.awt.*;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
+import ru.ifmo.acm.events.ContestInfo;
 
 /**
  * @author: pashka
@@ -79,8 +80,10 @@ public class ClockWidget extends Widget {
         long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
         String timeS = getTimeString(Math.abs(time));
 //        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
+
+        PlateStyle style = time < ContestInfo.FREEZE_TIME / 1000 ? ClockStylesheet.main : ClockStylesheet.freeze;
         drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Alignment.CENTER,
-                clockFont, ClockStylesheet.main, opacity, WidgetAnimation.VERTICAL_ANIMATED);
+                clockFont, style, opacity, WidgetAnimation.VERTICAL_ANIMATED);
 //        drawRect(g, x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, 1);
     }
 

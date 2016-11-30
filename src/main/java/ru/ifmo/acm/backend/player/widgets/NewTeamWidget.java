@@ -180,8 +180,7 @@ public class NewTeamWidget extends Widget {
             double x = visibilityState;
             mainVideo.x = (int) (BIG_X_RIGHT - mainVideo.width + width * (1 - 3 * x * x + 2 * x * x * x));
         }
-        if (doubleVideo && smallVideo != null && smallVideo.getCurrentURL() != null) {
-            smallVideo.width = (int)Math.round(smallVideo.height * smallVideo.getAspectRatio());
+        if (doubleVideo && smallVideo != null && smallVideo.getCurrentURL() != null) {            smallVideo.width = (int)Math.round(smallVideo.height * smallVideo.getAspectRatio());
             double x = visibilityState;
             smallVideo.x = (int) (SMALL_X - width * (1 - 3 * x * x + 2 * x * x * x));
             smallVideo.draw(g);

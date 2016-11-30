@@ -12,11 +12,18 @@ public abstract class ContestInfo {
     protected long startTime = 0;
     protected final long totalTime = 0;
     public static List<ProblemInfo> problems;
-    private long lastTime;
-    public boolean isPaused;
+    public long lastTime;
 
-    public static int CONTEST_LENGTH;
-    public static int FREEZE_TIME;
+    public enum Status {
+        BEFORE,
+        RUNNING,
+        PAUSED
+    }
+
+    public Status status = Status.BEFORE;
+
+    public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
+    public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
     public static final TreeSet<String> REGIONS = new TreeSet<>();
 
     protected ContestInfo() {
@@ -34,9 +41,9 @@ public abstract class ContestInfo {
         return problemNumber;
     }
 
-    public void setPaused(boolean paused) {
-        isPaused = paused;
+    public void setStatus(Status status) {
         lastTime = getCurrentTime();
+        this.status = status;
     }
 
     public long getStartTime() {
@@ -48,12 +55,20 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
-        return isPaused ? lastTime :
-                startTime == 0 ? 0 :
-                        (long) Math.min(
-                                ((System.currentTimeMillis() - startTime) * EventsLoader.EMULATION_SPEED),
-                                ContestInfo.CONTEST_LENGTH
-                        );
+        switch (status) {
+            case BEFORE:
+                return System.currentTimeMillis();
+            case PAUSED:
+                return lastTime;
+            case RUNNING:
+                return startTime == 0 ? 0 :
+                    (long) Math.min(
+                            ((System.currentTimeMillis() - startTime) * EventsLoader.EMULATION_SPEED),
+                            ContestInfo.CONTEST_LENGTH
+                    );
+            default:
+                return 0;
+        }
     }
 
     public boolean isFrozen() {

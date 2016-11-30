@@ -194,6 +194,10 @@ public class QueueWidget extends Widget {
             if (r == null)
                 continue;
 
+            if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
+                continue;
+            }
+
 //            System.err.println(r.getTime() + " " + System.currentTimeMillis() + " " + (System.currentTimeMillis() - info.getStartTime()) + " " +
 //                    info.getStartTime() + " " + (long)r.timestamp + " " + (r.timestamp * 1000 - info.getStartTime()));
             if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
@@ -216,6 +220,10 @@ public class QueueWidget extends Widget {
             for (RunInfo r : info.getRuns()) {
                 if (r == null)
                     continue;
+                if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
+                    continue;
+                }
+
                 if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
                     continue;
                 } else {
