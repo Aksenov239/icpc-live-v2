@@ -216,9 +216,10 @@ public class PCMSEventsLoader extends EventsLoader {
         long time = Long.parseLong(element.attr("time"));
         long timestamp = (contestInfo.get().getStartTime() + time) / 1000;
         boolean isFrozen = time >= ContestInfo.FREEZE_TIME;
-        String result = isFrozen ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "WA");
+        boolean isJudged = !isFrozen && !"undefined".equals(element.attr("accepted"));
+        String result = !isJudged ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "WA");
 
-        return new PCMSRunInfo(!isFrozen, result, problemId, time, timestamp, teamId);
+        return new PCMSRunInfo(isJudged, result, problemId, time, timestamp, teamId);
     }
 
     public PCMSContestInfo getContestData() {
