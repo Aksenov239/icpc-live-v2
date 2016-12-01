@@ -133,7 +133,7 @@ public class PCMSContestInfo extends ContestInfo {
 
         firstSolvedRuns = new PCMSRunInfo[problemNumber];
         for (RunInfo run : this.runs) {
-            if (firstSolvedRuns[run.getProblemNumber()] == null &&
+            if (firstSolvedRuns[run.getProblemNumber()] == null && run.isAccepted() &&
                     run.getTime() <= FREEZE_TIME) {
                 firstSolvedRuns[run.getProblemNumber()] = run;
             }

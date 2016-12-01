@@ -217,7 +217,7 @@ public class PCMSEventsLoader extends EventsLoader {
         put("undefined", "UD");
         put("fail", "FL");
         put("unknown", "");
-        put("accepted", "OK");
+        put("accepted", "AC");
         put("compilation-error", "CE");
         put("wrong-answer", "WA");
         put("presentation-error", "PE");
@@ -234,7 +234,7 @@ public class PCMSEventsLoader extends EventsLoader {
         long timestamp = (contestInfo.get().getStartTime() + time) / 1000;
         boolean isFrozen = time >= ContestInfo.FREEZE_TIME;
         boolean isJudged = !isFrozen && !"undefined".equals(element.attr("accepted"));
-        String result = !isJudged ? "" : outcomeMap.getOrDefault(element.attr("accepted"), "WA");
+        String result = !isJudged ? "" : outcomeMap.getOrDefault(element.attr("outcome"), "WA");
 
         return new PCMSRunInfo(isJudged, result, problemId, time, timestamp, teamId);
     }
