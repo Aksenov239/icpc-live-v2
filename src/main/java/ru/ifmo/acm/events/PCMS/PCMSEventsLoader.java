@@ -29,6 +29,7 @@ import java.awt.Color;
 
 import ru.ifmo.acm.events.ContestInfo.Status;
 import static ru.ifmo.acm.events.ContestInfo.Status.*;
+import java.util.HashMap;
 
 public class PCMSEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(PCMSEventsLoader.class);
@@ -212,12 +213,28 @@ public class PCMSEventsLoader extends EventsLoader {
         return runs;
     }
 
+    private static final HashMap<String, String> outcomeMap = new HashMap<String, String>() {{
+        put("undefined", "UD");
+        put("fail", "FL");
+        put("unknown", "");
+        put("accepted", "OK");
+        put("compilation-error", "CE");
+        put("wrong-answer", "WA");
+        put("presentation-error", "PE");
+        put("runtime-error", "RE");
+        put("time-limit-exceeded", "TL");
+        put("memory-limit-exceeded", "ML");
+        put("output-limit-exceeded", "OL");
+        put("idleness-limit-exceeded", "IL");
+        put("security-violation", "SV");
+    }};
+
     private PCMSRunInfo parseRunInfo(Element element, int problemId, int teamId) {
         long time = Long.parseLong(element.attr("time"));
         long timestamp = (contestInfo.get().getStartTime() + time) / 1000;
         boolean isFrozen = time >= ContestInfo.FREEZE_TIME;
         boolean isJudged = !isFrozen && !"undefined".equals(element.attr("accepted"));
-        String result = !isJudged ? "" : ("yes".equals(element.attr("accepted")) ? "AC" : "WA");
+        String result = !isJudged ? "" : outcomeMap.getOrDefault(element.attr("accepted"), "WA");
 
         return new PCMSRunInfo(isJudged, result, problemId, time, timestamp, teamId);
     }
