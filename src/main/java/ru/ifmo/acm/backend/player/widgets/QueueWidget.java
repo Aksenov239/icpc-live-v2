@@ -1,12 +1,15 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.QueueStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.events.WF.WFEventsLoader;
-import ru.ifmo.acm.events.WF.WFRunInfo;
+import ru.ifmo.acm.events.EventsLoader;
+import ru.ifmo.acm.events.RunInfo;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,8 +41,9 @@ public class QueueWidget extends Widget {
     ContestInfo info;
     double[] currentPositions;
     double[] desiredPositions;
+    boolean showVerdict;
 
-    public QueueWidget(int baseX, int baseY, int plateHeight, long updateWait) {
+    public QueueWidget(int baseX, int baseY, int plateHeight, long updateWait, boolean showVerdict) {
         super(updateWait);
 
         this.baseX = baseX;
@@ -58,6 +62,7 @@ public class QueueWidget extends Widget {
 
         currentPositions = new double[1000000];
         desiredPositions = new double[1000000];
+        this.showVerdict = showVerdict;
 
         setVisibilityState(1);
         setVisible(true);
@@ -72,18 +77,16 @@ public class QueueWidget extends Widget {
 
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 
         if (info == null) return;
 
         int dt = updateVisibilityState();
-        g = (Graphics2D) g.create();
-        g.translate(baseX, baseY);
-        g.clip(new Rectangle(-width, -height, 2 * width, height));
+        g.clip(baseX - width, baseY - height, 2 * width, height);
         g.setFont(font);
 
-        for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
+        for (RunInfo r : info.getRuns()) {
             if (r == null)
                 continue;
             int id = r.getId();
@@ -99,7 +102,7 @@ public class QueueWidget extends Widget {
                 }
             }
             if (currentPositions[id] < 0) {
-                drawRun(g, 0, (int) (currentPositions[id] * (plateHeight + spaceY)), r);
+                drawRun(g, baseX, baseY + (int) (currentPositions[id] * (plateHeight + spaceY)), r);
             }
         }
     }
@@ -109,71 +112,74 @@ public class QueueWidget extends Widget {
         return data.queueData;
     }
 
-    private void drawRun(Graphics2D g, int x, int y, WFRunInfo run) {
+    private void drawRun(Graphics g, int x, int y, RunInfo run) {
         TeamInfo team = info.getParticipant(run.getTeamId());
         String name = team.getShortName();
         String problem = info.problems.get(run.getProblemNumber()).letter;
         String result = run.getResult();
 
-        Color mainColor = MAIN_COLOR;
-        Color teamColor = MAIN_COLOR;
-        Color resultColor = MAIN_COLOR;
+        PlateStyle teamColor = QueueStylesheet.name;
+        PlateStyle resultColor = QueueStylesheet.udProblem;
 
         boolean inProgress = false;
         int progressWidth = 0;
 
-        if (run.judged) {
+        if (run.isJudged()) {
             if (run.isAccepted()) {
-                resultColor = teamColor = GREEN_COLOR;
+                resultColor = teamColor = QueueStylesheet.acProblem;
             } else {
-                resultColor = teamColor = RED_COLOR;
+                resultColor = teamColor = QueueStylesheet.waProblem;
             }
         } else {
             inProgress = true;
-            progressWidth = (int) Math.round(statusWidth * 1.0 * run.getPassedTestsNumber() / run.getTotalTestsNumber());
+            progressWidth = (int) Math.round(statusWidth * run.getPercentage());
         }
 
         if (desiredPositions[run.getId()] > 0) {
-            mainColor = mainColor.darker();
             teamColor = teamColor.darker();
             resultColor = resultColor.darker();
             return;
         }
 
-        Color color = getTeamRankColor(team);
+        PlateStyle color = getTeamRankColor(team);
 
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, POSITION_CENTER,
-                color, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                rankWidth, plateHeight, Graphics.Alignment.CENTER,
+                font, color, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += rankWidth + spaceX;
 
         drawTextInRect(g, name, x, y,
-                nameWidth, plateHeight, POSITION_LEFT,
-                teamColor, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                nameWidth, plateHeight, Graphics.Alignment.LEFT,
+                font, teamColor, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, POSITION_CENTER, teamColor, Color.white, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+                plateHeight, Graphics.Alignment.CENTER, font, teamColor, visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
 
-        x += problemWidth + spaceX;
+        if (showVerdict) {
+            x += problemWidth + spaceX;
 
-        if (run.getTime() > WFEventsLoader.FREEZE_TIME) {
-            result = "?";
-            resultColor = MAIN_COLOR;
-            inProgress = false;
-        }
+            if (run.getTime() > ContestInfo.FREEZE_TIME) {
+                result = "?";
+                resultColor = QueueStylesheet.frozenProblem;
+                inProgress = false;
+            }
 
-        drawTextInRect(g, result, x, y, statusWidth,
-                plateHeight, POSITION_CENTER, resultColor, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+            drawTextInRect(g, result, x, y, statusWidth,
+                    plateHeight, Graphics.Alignment.CENTER, font, resultColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
-        if (inProgress) {
-            drawRect(g, x, y, progressWidth, plateHeight, YELLOW_COLOR.brighter(), visibilityState);
-        }
-
-        if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
-            drawStar(g, x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+            if (inProgress) {
+                drawRect(g, x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState);
+            }
+            if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
+                g.drawStar(x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+            }
+        } else {
+            if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
+                g.drawStar(x + problemWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+            }
         }
 
     }
@@ -181,23 +187,27 @@ public class QueueWidget extends Widget {
     public void calculateQueue() {
         info = Preparation.eventsLoader.getContestData();
 
-        List<WFRunInfo> firstToSolves = new ArrayList<>();
-        List<WFRunInfo> queue = new ArrayList<>();
+        List<RunInfo> firstToSolves = new ArrayList<>();
+        List<RunInfo> queue = new ArrayList<>();
 
-        for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
+        for (RunInfo r : info.getRuns()) {
             if (r == null)
                 continue;
+
+            if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
+                continue;
+            }
 
 //            System.err.println(r.getTime() + " " + System.currentTimeMillis() + " " + (System.currentTimeMillis() - info.getStartTime()) + " " +
 //                    info.getStartTime() + " " + (long)r.timestamp + " " + (r.timestamp * 1000 - info.getStartTime()));
             if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
                 //if (r.timestamp * 1000 > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / WFEventsLoader.SPEED) {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / WFEventsLoader.SPEED) {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / EventsLoader.EMULATION_SPEED) {
                     firstToSolves.add(r);
                 }
             } else {
                 //if (r.timestamp * 1000 > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
+                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED) {
                     queue.add(r);
                 }
             }
@@ -207,14 +217,18 @@ public class QueueWidget extends Widget {
         if (extra > 0) {
             queue.clear();
 
-            for (WFRunInfo r : (WFRunInfo[]) info.getRuns()) {
+            for (RunInfo r : info.getRuns()) {
                 if (r == null)
                     continue;
+                if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
+                    continue;
+                }
+
                 if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
                     continue;
                 } else {
-                    if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
-                        if ((r.isJudged() || r.getTime() > WFEventsLoader.FREEZE_TIME) && extra > 0) {
+                    if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED) {
+                        if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
                             extra--;
                             continue;
 
@@ -227,14 +241,14 @@ public class QueueWidget extends Widget {
 
         Arrays.fill(desiredPositions, 1);
         double pos = -queue.size();
-        for (WFRunInfo r : queue) {
+        for (RunInfo r : queue) {
             desiredPositions[r.getId()] = pos - Y_SHIFT;
             pos += 1;
         }
 
         pos = -queue.size() - firstToSolves.size();
         if (queue.size() > 0) pos -= 0.5;
-        for (WFRunInfo r : firstToSolves) {
+        for (RunInfo r : firstToSolves) {
             desiredPositions[r.getId()] = pos - Y_SHIFT;
             pos += 1;
         }

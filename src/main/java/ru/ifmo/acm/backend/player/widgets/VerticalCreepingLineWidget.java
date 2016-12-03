@@ -2,7 +2,8 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import java.awt.*;
 
-
+import ru.ifmo.acm.backend.player.widgets.stylesheets.*;
+import ru.ifmo.acm.backend.graphics.Graphics;
 /**
  * @author: pashka
  */
@@ -88,22 +89,18 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     }
 
     @Override
-    public void paintImpl(Graphics2D gg, int width, int height) {
+    public void paintImpl(Graphics gg, int width, int height) {
         update();
-        Graphics2D g = (Graphics2D) gg.create(0, height - HEIGHT - MARGIN, width, HEIGHT);
+        Graphics g = gg.create(0, BASE_HEIGHT - HEIGHT - MARGIN, BASE_WIDTH, HEIGHT);
         g.setFont(messageFont);
-        g.setComposite(AlphaComposite.SrcOver.derive(1f));
-        g.setColor(ADDITIONAL_COLOR);
         iterateLogo();
 
-        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, logoVisible);
+        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, Graphics.Alignment.CENTER,
+                messageFont, CreepingLineStylesheet.logo, logoVisible);
 
-        g = (Graphics2D) g.create(LOGO_WIDTH, 0, width - LOGO_WIDTH, HEIGHT);
-        g.setColor(MAIN_COLOR);
-        g.fillRect(0, 0, width, HEIGHT);
-        g.setComposite(AlphaComposite.SrcOver.derive((float) (1)));
-        g.setFont(messageFont);
-        g.setColor(Color.white);
+        g = g.create(LOGO_WIDTH, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
+        g.clip();
+        g.drawRect(0, 0, BASE_WIDTH, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
         last = time;
@@ -111,26 +108,27 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         if (messagesQueue.size() > 0 && lastRotation + rotateTime < System.currentTimeMillis()) {
             messageNow = messageNext;
             if (messagesQueue.size() > 0) {
-
-                messageNext = new Message(messagesQueue.poll(), g);
+                messageNext = new Message(messagesQueue.poll(), g, messageFont);
             } else {
                 messageNext = new Message();
             }
             messageNext.position = HEIGHT;
             lastRotation = System.currentTimeMillis();
         }
-        FontMetrics wh = g.getFontMetrics();
 
         if (messageNow.position + messageNow.heigth < 0) {
             inQueue.remove(messageNow.message);
             messageNow = new Message();
         } else {
             messageNow.position -= V * dt;
-            drawTextToFit(g, messageNow.message, 0, messageNow.position, 0, 0, width - LOGO_WIDTH, HEIGHT);
+            drawTextToFit(g, messageNow.message, 0, messageNow.position, 0, 0, width - LOGO_WIDTH, HEIGHT,
+                    messageFont, CreepingLineStylesheet.main.text);
         }
         if (messageNext.position + messageNext.heigth / 2 > HEIGHT / 2) {
             messageNext.position -= V * dt;
         }
-        drawTextToFit(g, messageNext.message, 0, messageNext.position, 0, 0, width - LOGO_WIDTH, HEIGHT);
+        drawTextToFit(g, messageNext.message, 0, messageNext.position, 0, 0, width - LOGO_WIDTH, HEIGHT,
+                messageFont, CreepingLineStylesheet.main.text);
+        g.unclip();
     }
 }

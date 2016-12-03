@@ -1,29 +1,24 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import ru.ifmo.acm.datapassing.Data;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
+import ru.ifmo.acm.datapassing.Data;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
+
+import java.awt.*;
 
 /**
  * @author: pashka
  */
 public class GreenScreenWidget extends Widget {
-    private final Color color = new Color(255, 0, 255);
-
     public GreenScreenWidget(boolean isVisible) {
         setVisible(isVisible);
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         if (isVisible()) {
-            g.setColor(color);
-            g.fillRect(0, 0, width, height);
+            g.drawRect(0, 0, width, height, Color.decode(Stylesheet.styles.get("chromakey.color")), 1);
         }
     }
 

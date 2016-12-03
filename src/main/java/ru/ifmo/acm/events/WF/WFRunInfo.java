@@ -40,6 +40,7 @@ public class WFRunInfo implements RunInfo {
         this.lastUpdateTimestamp = another.getLastUpdateTimestamp();
     }
 
+    @Override
     public long getLastUpdateTimestamp() {
         return lastUpdateTimestamp;
     }
@@ -97,6 +98,11 @@ public class WFRunInfo implements RunInfo {
         return (long) (time * 1000);
     }
 
+    @Override
+    public double getTimestamp() {
+        return timestamp;
+    }
+
     public int getTeamId() {
         return teamId;
     }
@@ -108,6 +114,10 @@ public class WFRunInfo implements RunInfo {
 
     public boolean isReallyUnknown() {
         return reallyUnknown;
+    }
+
+    public double getPercentage() {
+        return 1.0 * this.getPassedTestsNumber() / this.getTotalTestsNumber();
     }
 
     @Override

@@ -6,9 +6,7 @@ import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
-import ru.ifmo.acm.events.PCMS.PCMSTeamInfo;
 import ru.ifmo.acm.events.TeamInfo;
-import ru.ifmo.acm.events.WF.WFTeamInfo;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,7 +40,8 @@ public class MainScreenProperties {
         try {
             topteamsids = new HashSet<>();
             // topteamsids = Files.lines(Paths.get(topteamsfilename)).mapToInt(Integer::parseInt).collect(Collectors.toSet());
-            Files.lines(Paths.get(topteamsfilename)).mapToInt(Integer::parseInt).forEach(x -> topteamsids.add(x - 1));
+            Files.lines(Paths.get(topteamsfilename)).
+                    forEach(topteamsids::add);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,15 +56,12 @@ public class MainScreenProperties {
 
         contestInfo = loader.getContestData();
 
+        String onsiteRegex = properties.getProperty("onsite.teams", ".*");
         teamInfos = contestInfo.getStandings();
         int l = 0;
         for (int i = 0; i < teamInfos.length; i++) {
-            if (teamInfos[i] instanceof PCMSTeamInfo) {
-                if (((PCMSTeamInfo) teamInfos[i]).getAlias().startsWith("S")) {
-                    teamInfos[l++] = teamInfos[i];
-                }
-            } else if (teamInfos[i] instanceof WFTeamInfo) {
-                l++;
+            if (teamInfos[i].getAlias().matches(onsiteRegex)) {
+                teamInfos[l++] = teamInfos[i];
             }
         }
         teamInfos = Arrays.copyOf(teamInfos, l);
@@ -109,7 +105,7 @@ public class MainScreenProperties {
     public final String automatedInfo;
     public final ContestInfo contestInfo;
     public TeamInfo[] teamInfos;
-    public static HashSet<Integer> topteamsids;
+    public static HashSet<String> topteamsids;
 
     // Camera
     public final int cameraNumber;

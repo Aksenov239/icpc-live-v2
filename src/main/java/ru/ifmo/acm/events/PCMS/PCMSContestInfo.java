@@ -5,11 +5,11 @@ import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Stream;
+import ru.ifmo.acm.datapassing.StandingsData;
 
 public class PCMSContestInfo extends ContestInfo {
     private BlockingQueue<AnalystMessage> messageQueue = new ArrayBlockingQueue<AnalystMessage>(1);
@@ -19,12 +19,82 @@ public class PCMSContestInfo extends ContestInfo {
         return standings.stream().toArray(TeamInfo[]::new);
     }
 
+    public TeamInfo[] getPossibleStandings(boolean optimistic) {
+        TeamInfo[] original = getStandings();
+
+        PCMSTeamInfo[] standings = new PCMSTeamInfo[original.length];
+        for (int i = 0; i < original.length; i++) {
+            standings[i] = (PCMSTeamInfo)original[i].copy();
+            List<RunInfo>[] runs = original[i].getRuns();
+            for (int j = 0; j < problemNumber; j++) {
+                int runIndex = 0;
+                for (RunInfo run : runs[j]) {
+                    PCMSRunInfo clonedRun = new PCMSRunInfo(run);
+
+                    if (clonedRun.getResult().length() == 0) {
+                        clonedRun.judged = true;
+                        String expectedResult = optimistic ? "AC" : "WA";
+                        clonedRun.result = runIndex == runs[j].size() - 1 ? expectedResult : "WA";
+                        clonedRun.reallyUnknown = true;
+                    }
+                    standings[i].addRun(clonedRun, j);
+                    runIndex++;
+                }
+            }
+        }
+        for (PCMSTeamInfo team : standings) {
+            team.solved = 0;
+            team.penalty = 0;
+            team.lastAccepted = 0;
+            List<RunInfo>[] runs = team.getRuns();
+            for (int j = 0; j < problemNumber; j++) {
+                int wrong = 0;
+                for (RunInfo run : runs[j]) {
+                    if ("AC".equals(run.getResult())) {
+                        team.solved++;
+                        int time = (int)(run.getTime() / 60 / 1000);
+                        team.penalty += wrong * 20 + time;
+                        team.lastAccepted = Math.max(team.lastAccepted, run.getTime());
+                        break;
+                    } else if (run.getResult().length() > 0 && !"CE".equals(run.getResult())) {
+                        wrong++;
+                    }
+                }
+            }
+        }
+
+        Arrays.sort(standings, TeamInfo.comparator);
+
+        for (int i = 0; i < standings.length; i++) {
+            if (i > 0 && TeamInfo.comparator.compare(standings[i - 1], standings[i]) == 0) {
+                standings[i].rank = standings[i - 1].rank;
+            } else {
+                standings[i].rank = i + 1;
+            }
+        }
+        return standings;
+    }
+
+    @Override
+    public TeamInfo[] getStandings(StandingsData.OptimismLevel optimismLevel) {
+        switch (optimismLevel) {
+            case NORMAL:
+                return getStandings();
+            case OPTIMISTIC:
+                return getPossibleStandings(true);
+            case PESSIMISTIC:
+                return getPossibleStandings(false);
+        }
+        return null;
+    }
+
     PCMSContestInfo(int problemNumber) {
         super(problemNumber);
         standings = new ArrayList<>();
         positions = new HashMap<>();
         timeFirstSolved = new long[problemNumber];
-        //currentTime = 0;
+
+        FREEZE_TIME = 4 * 60 * 60 * 1000;
     }
 
     public void fillTimeFirstSolved() {
@@ -51,6 +121,25 @@ public class PCMSContestInfo extends ContestInfo {
         }
     }
 
+    public void makeRuns() {
+        ArrayList<RunInfo> runs = new ArrayList<>();
+        for (TeamInfo team : standings) {
+            for (List<RunInfo> innerRuns : team.getRuns()) {
+                runs.addAll(innerRuns);
+            }
+        }
+        this.runs = runs.toArray(new PCMSRunInfo[0]);
+        Arrays.sort(this.runs);
+
+        firstSolvedRuns = new PCMSRunInfo[problemNumber];
+        for (RunInfo run : this.runs) {
+            if (firstSolvedRuns[run.getProblemNumber()] == null && run.isAccepted() &&
+                    run.getTime() <= FREEZE_TIME) {
+                firstSolvedRuns[run.getProblemNumber()] = run;
+            }
+        }
+    }
+
     void addTeamStandings(PCMSTeamInfo teamInfo) {
         standings.add(teamInfo);
         positions.put(teamInfo.getAlias(), standings.size() - 1);
@@ -61,11 +150,13 @@ public class PCMSContestInfo extends ContestInfo {
         return teamRank == null ? new PCMSTeamInfo(problemNumber) : standings.get(teamRank);
     }
 
+    @Override
     public PCMSTeamInfo getParticipant(String name) {
         Integer teamRank = getParticipantRankByName(name);
         return getParticipant(teamRank);
     }
 
+    @Override
     public PCMSTeamInfo getParticipant(int id) {
         for (PCMSTeamInfo team: standings) {
             if (team.getId() == id) {
@@ -85,35 +176,43 @@ public class PCMSContestInfo extends ContestInfo {
 
     @Override
     public RunInfo[] firstSolvedRun() {
-        return new RunInfo[problemNumber];
+        return firstSolvedRuns;
     }
 
+    @Override
     public PCMSTeamInfo getParticipantByHashTag(String hashTag) {
-        throw new AssertionError("There are no hashtags in PCMS");
-    }
-
-    public long getTotalTime() {
-        return totalTime;
+        for (PCMSTeamInfo teamInfo : standings) {
+            if (hashTag != null && hashTag.equalsIgnoreCase(teamInfo.getHashTag())) {
+                return teamInfo;
+            }
+        }
+        return null;
     }
 
     protected ArrayList<PCMSTeamInfo> standings;
-    protected int totalRuns;
-    protected int acceptedRuns;
     protected long[] timeFirstSolved;
 
-    //private Map<String, Integer> positions;
     public Map<String, Integer> positions;
     public boolean frozen;
-    
+
+    private RunInfo[] runs;
+    private RunInfo[] firstSolvedRuns;
+
+    public int lastRunId = 0;
     
 	@Override
 	public RunInfo[] getRuns() {
-		// TODO Auto-generated method stub
-		return null;
+		return runs;
 	}
 
+    @Override
     public RunInfo getRun(int id) {
         return null;
+    }
+
+    @Override
+    public int getLastRunId() {
+        return lastRunId;
     }
 
     @Override

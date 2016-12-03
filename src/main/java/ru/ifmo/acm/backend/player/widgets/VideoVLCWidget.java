@@ -1,32 +1,26 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.PlayerInImage;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
  * @author: pashka
  */
-public class VideoWidget extends Widget implements PlayerWidget {
+public class VideoVLCWidget extends PlayerWidget {
     private PlayerInImage player;
     protected BufferedImage image;
 
-    protected boolean inChange;
     protected boolean ready;
 
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
-    protected int sleepTime;
     protected String currentUrl;
 
-    public VideoWidget(int x, int y, int width, int height, int sleepTime, long updateWait) {
+    public VideoVLCWidget(int x, int y, int width, int height, int sleepTime, long updateWait) {
         super(updateWait);
         this.x = x;
         this.y = y;
@@ -112,13 +106,24 @@ public class VideoWidget extends Widget implements PlayerWidget {
         return ready;
     }
 
-    public MediaPlayer getPlayer() {
-        checkEDT();
-        return player.getPlayer();
+    public String getCurrentURL() {
+        return currentUrl;
     }
 
-    public void paintImpl(Graphics2D g, int width, int height) {
-        g.drawImage(player.getImage(), x, y, null);
+    public double getAspectRatio() {
+        return player.getPlayer().getAspectRatio().equals("16:9") ? 16. / 9 : 4. / 3;
+    }
+
+    public void paintImpl(Graphics g, int width, int height) {
+        draw(g);
+    }
+
+    public void draw(Graphics g) {
+        g.drawImage(player.getImage(), x, y, this.width, this.height);
+    }
+
+    public void draw(Graphics g, int x, int y, int width, int height) {
+        g.drawImage(player.getImage(), x, y, width, height);
     }
 
     @Override

@@ -12,6 +12,10 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     String getShortName();
 
+    String getAlias();
+
+    String getRegion();
+
     int getPenalty();
 
     int getSolvedProblemsNumber();
@@ -20,7 +24,11 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     List<RunInfo>[] getRuns();
 
+    void addRun(RunInfo run, int problem);
+
     String getHashTag();
+
+    TeamInfo copy();
 
     default public int compareTo(TeamInfo team) {
         return this.toString().compareTo(team.toString());
@@ -92,7 +100,10 @@ public interface TeamInfo extends Comparable<TeamInfo> {
             if (o1.getPenalty() != o2.getPenalty()) {
                 return Integer.compare(o1.getPenalty(), o2.getPenalty());
             }
-            return Long.compare(o1.getLastAccepted(), o2.getLastAccepted());
+            if (o1.getLastAccepted() != o2.getLastAccepted()) {
+               return Long.compare(o1.getLastAccepted(), o2.getLastAccepted());
+            }
+            return o1.getName().compareTo(o2.getName());
         }
     };
 

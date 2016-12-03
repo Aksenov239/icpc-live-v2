@@ -5,8 +5,6 @@ import ru.ifmo.acm.events.TeamInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class PCMSTeamInfo implements TeamInfo {
     String alias;
@@ -17,33 +15,45 @@ public class PCMSTeamInfo implements TeamInfo {
         this.rank = 1;
     }
 
-    public PCMSTeamInfo(int id, String alias, String name, String shortName, int problemsNumber) {
+    public PCMSTeamInfo(int id, String alias, String name, String shortName, String hashTag,
+                        String region, int problemsNumber) {
         this(problemsNumber);
+
         this.id = id;
         this.alias = alias;
         this.name = name;
         this.shortName = shortName;
+        this.region = region;
     }
 
     public PCMSTeamInfo(String name, int problemsNumber) {
-        this(-1, "", name, null, problemsNumber);
+        this(-1, "", name, null, null, null, problemsNumber);
     }
 
     public PCMSTeamInfo(PCMSTeamInfo pcmsTeamInfo) {
-        this(pcmsTeamInfo.id, pcmsTeamInfo.alias, pcmsTeamInfo.name, pcmsTeamInfo.shortName, pcmsTeamInfo.problemRuns.length);
+        this(pcmsTeamInfo.id, pcmsTeamInfo.alias, pcmsTeamInfo.name,
+                pcmsTeamInfo.shortName, pcmsTeamInfo.hashTag, pcmsTeamInfo.region, pcmsTeamInfo.problemRuns.length);
+
         for (int i = 0; i < pcmsTeamInfo.problemRuns.length; i++) {
             problemRuns[i].addAll(pcmsTeamInfo.problemRuns[i]);
         }
     }
 
-    public void addRun(PCMSRunInfo run, int problemId) {
+    @Override
+    public void addRun(RunInfo run, int problemId) {
         if (run != null) {
             problemRuns[problemId].add(run);
         }
     }
 
-    public void addRuns(ArrayList<PCMSRunInfo> runs, int problemId) {
-        problemRuns[problemId].addAll(runs);
+    public int mergeRuns(ArrayList<PCMSRunInfo> runs, int problemId, int lastRunId) {
+        for (int i = 0; i < runs.size(); i++) {
+            if (i >= problemRuns[problemId].size()) {
+                runs.get(i).id = lastRunId++;
+                problemRuns[problemId].add(runs.get(i));
+            }
+        }
+        return lastRunId;
     }
 
     public int getRunsNumber(int problemId) {
@@ -79,6 +89,11 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     @Override
+    public String getRegion() {
+        return region;
+    }
+
+    @Override
     public int getPenalty() {
         return penalty;
     }
@@ -93,11 +108,17 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     public long getLastAccepted() {
-        return 0;
+        return lastAccepted;
     }
 
     public String getHashTag() {
-        throw new AssertionError("there is no hashtags in PCMS");
+        return hashTag;
+    }
+
+    @Override
+    public PCMSTeamInfo copy() {
+        return new PCMSTeamInfo(this.id, this.alias, this.name, this.shortName, this.hashTag,
+                this.region, problemRuns.length);
     }
 
     public String toString() {
@@ -108,10 +129,13 @@ public class PCMSTeamInfo implements TeamInfo {
 
     public String name;
     public String shortName;
+    public String region;
+    public String hashTag;
 
     public int rank;
     public int solved;
     public int penalty;
+    public long lastAccepted;
 
     protected ArrayList<RunInfo>[] problemRuns;
 }

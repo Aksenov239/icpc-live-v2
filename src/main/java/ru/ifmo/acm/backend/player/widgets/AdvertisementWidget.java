@@ -1,9 +1,8 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
-
-import java.awt.*;
 
 /**
  * @author: pashka
@@ -11,7 +10,7 @@ import java.awt.*;
 public class AdvertisementWidget extends CaptionWidget {
 
     public AdvertisementWidget(long updateWait, long duration) {
-        super(POSITION_CENTER);
+        super(Graphics.Alignment.CENTER);
         this.duration = duration;
         setVisible(false);
     }
@@ -34,7 +33,7 @@ public class AdvertisementWidget extends CaptionWidget {
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
         super.paintImpl(g, width, height);
     }

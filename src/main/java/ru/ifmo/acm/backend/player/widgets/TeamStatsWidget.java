@@ -14,7 +14,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.CachedData;
 
@@ -303,7 +303,7 @@ public class TeamStatsWidget extends RotatableWidget {
 //                (double) height / image.getHeight(), x, y), null);
     }
 
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
         super.paintImpl(g, width, height);
     }

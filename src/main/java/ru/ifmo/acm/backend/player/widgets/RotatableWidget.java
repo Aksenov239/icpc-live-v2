@@ -2,7 +2,7 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
-
+import ru.ifmo.acm.backend.graphics.Graphics;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -73,26 +73,26 @@ public class RotatableWidget extends Widget {
     }
 
     @Override
-    protected void paintImpl(Graphics2D g, int width, int height) {
+    protected void paintImpl(Graphics g, int width, int height) {
         if (state == State.HIDDEN) {
             return;
         }
         prepare();
-        g.clip(new Rectangle(x, y, unmovable.getWidth(), movable.getHeight() + unmovable.getHeight() + margin));
+        g.clip(x, y, unmovable.getWidth(), movable.getHeight() + unmovable.getHeight() + margin);
         double opacity = opacity();
         drawImage(g, unmovable, x, y, opacity);
         drawImage(g, movable, x - currentShift, y + unmovable.getHeight() + margin, opacity);
     }
 
-    private void drawImage(Graphics2D g, BufferedImage image, int x, int y, double opacity) {
+    private void drawImage(Graphics g, BufferedImage image, int x, int y, double opacity) {
         if (opacity == 0) {
             return;
         }
         if (opacity == 1) {
-            g.drawImage(image, x, y, null);
+            g.drawImage(image, x, y, image.getWidth(), image.getHeight());
             return;
         }
-        g.drawImage(image, new AffineTransform(1, 0, 0, opacity, x, y + image.getHeight() / 2 * (1 - opacity)), null);
+        g.drawImage(image, x, (int)(y + image.getHeight() / 2 * (1 - opacity)), image.getWidth(), (int)(image.getHeight() * opacity));
     }
 
     @Override

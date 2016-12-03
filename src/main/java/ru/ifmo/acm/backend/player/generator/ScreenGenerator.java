@@ -1,7 +1,8 @@
 package ru.ifmo.acm.backend.player.generator;
 
 import ru.ifmo.acm.backend.Preparation;
-import ru.ifmo.acm.backend.player.TickPlayer;
+import ru.ifmo.acm.backend.graphics.GraphicsSWT;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.awt.*;
@@ -35,9 +36,17 @@ public class ScreenGenerator {
         Graphics2D g2 = (Graphics2D) image.getGraphics();
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);int width = this.width;
+        int height = this.height;
+        if (scale != 1) {
+            g2.scale(scale, scale);
+            width = (int) Math.round(width / scale);
+            height = (int) Math.round(height / scale);
+        }
+        Graphics g = new GraphicsSWT(g2);
+        g2.dispose();
         for (Widget widget : widgets) {
-            if (widget != null) widget.paint(g2, width, height, scale);
+            if (widget != null) widget.paint(g, width, height);
         }
         return image;
     }
