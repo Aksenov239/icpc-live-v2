@@ -4,10 +4,6 @@
  id = "neerc-2016"
  xmlai-process = "http://neerc.ifmo.ru/develop/pcms2/xmlai/default-rules.xml"
 >
-    <party id = 'jury' name = 'Jury'/>
-    <party id = 'guest' name = 'Guest'/>
-    <party id = 'expert' name = 'Expert'/>
-
 <party id = 'K101' shortname='American UCA 1' name = 'American University - Central Asia 1 (Derkenbaev, Kim, Kydyraliev)'/>
 <party id = 'K102' shortname='American UCA 2' name = 'American University - Central Asia 2 (Akramov, Khasanza, Talantbekov)'/>
 <party id = 'K162' shortname='Atyrau SU' name = 'Atyrau State University (Ergozhieva, Kabidenova, Zhanbolayev)'/>
@@ -185,7 +181,7 @@
 <party id = 'S809' shortname="ITMO 2" name = 'SPb ITMO University 2 (Budin, Putilin, Yakutov)'/>
 <party id = 'S209' shortname="ITMO 3" name = 'SPb ITMO University 3 (Latyshev, Naumov, Turaev)'/>
 <party id = 'S401' shortname="ITMO 4" name = 'SPb ITMO University 4 (Berinchik, Kisialiou, Korchagin)'/>
-<party id = 'S502' shortname="SPn SU 1" name = 'SPb State University 1 (Ershov, Pyshkin, Sayranov)'/>
+<party id = 'S502' shortname="SPb SU 1" name = 'SPb State University 1 (Ershov, Pyshkin, Sayranov)'/>
 <party id = 'S812' shortname="SPb SU 2" name = 'SPb State University 2 (Hulikau, Kulikov, Yuryev)'/>
 <party id = 'S708' shortname="SPb SU 3" name = 'SPb State University 3 (Makarov, Ryazanov, Savchenkov)'/>
 <party id = 'S217' shortname="SPb SU 4" name = 'SPb State University 4 (Alekseev, Novikov, Petrov)'/>
@@ -208,7 +204,7 @@
 <party id = 'S402' shortname="Vologda SU" name = 'Vologda State University (Gerkulesov, Kukushkin, Nazarov)'/>
 <party id = 'S717' shortname="Voronezh SU 1" name = 'Voronezh Stae University 1 (Nogikh, Skobaneva, Zemlyanuhin)'/>
 <party id = 'S110' shortname="Voronezh SU 2" name = 'Voronezh State University 2 (Kuznetsov, Minaev, Perunov)'/>
-<party id = 'S208' shortname="Vyatkas SU" name = 'Vyatka State University (Dehterev, Prozorova, Vorobyev)'/>
+<party id = 'S208' shortname="Vyatka SU" name = 'Vyatka State University (Dehterev, Prozorova, Vorobyev)'/>
 <party id = 'S101' shortname="Yaroslavl SU 1" name = 'Yaroslavl State University 1 (Akhremenko, Krainov, Toropova)'/>
 <party id = 'S714' shortname="Yaroslavl SU 2" name = 'Yaroslavl State University 2 (Fedulov, Lyutenkov, Maslenikov)'/>
 <party id = 'G148' shortname="Azer U" name = '* Azerbaijan University (Haciyev, Kerimli, Zakirli)'/>
