@@ -17,7 +17,8 @@ public abstract class ContestInfo {
     public enum Status {
         BEFORE,
         RUNNING,
-        PAUSED
+        PAUSED,
+        OVER
     }
 
     public Status status = Status.BEFORE;
@@ -66,6 +67,8 @@ public abstract class ContestInfo {
                             ((System.currentTimeMillis() - startTime) * EventsLoader.EMULATION_SPEED),
                             ContestInfo.CONTEST_LENGTH
                     );
+            case OVER:
+                return ContestInfo.CONTEST_LENGTH;
             default:
                 return 0;
         }
