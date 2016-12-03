@@ -8,7 +8,6 @@ import com.jogamp.opengl.util.av.GLMediaPlayer;
 import com.jogamp.opengl.util.av.GLMediaPlayerFactory;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
-import testing.jogl.MovieSimple;
 
 import javax.swing.*;
 import java.awt.*;
@@ -133,7 +132,6 @@ public class PlayerGL implements GLEventListener {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        player.attachObject(MovieSimple.PLAYER, this);
     }
 
     @Override
