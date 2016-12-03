@@ -1,0 +1,5 @@
+<challenge>
+    <problem alias="X" name="Xtrapolation" color="#7C0026" />
+    <problem alias="Y" name="Yield" color="#BD6B80" />
+    <problem alias="Z" name="Zero-comlexity Transposition" color="#9C8E00" />
+</challenge>
