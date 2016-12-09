@@ -71,7 +71,7 @@ public class PCMSEventsLoader extends EventsLoader {
             if (shortName == null || shortName.length() == 0) {
               int index = participantName.indexOf("(");
               shortName = participantName.substring(0, index - 1);
-              int index = shortName.indexOf(",");
+              index = shortName.indexOf(",");
               shortName = shortName.substring(index + 2);
             }
             String region = participant.attr("region");
