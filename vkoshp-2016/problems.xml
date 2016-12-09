@@ -1,0 +1,8 @@
+<challenge>
+    <problem-ref id = "U" problem-id = "aplusb" name = "Сумма двух чисел" color="#7C0026" />      
+    <problem-ref id = "V" problem-id = "sumsqr" name = "Сумма квадратов" color="#7C0026" /> 
+    <problem-ref id = "W" problem-id = "sumall" name = "Глобальная сумма" color="#7C0026" />      
+    <problem-ref id = "X" problem-id = "sqrt"   name = "Квадратный корень" color="#7C0026" /> 
+    <problem-ref id = "Y" problem-id = "sumi"   name = "Интерактивная сумма" color="#7C0026" />      
+    <problem-ref id = "Z" problem-id = "guess"  name = "Угадай число" color="#7C0026" />          
+</challenge>
