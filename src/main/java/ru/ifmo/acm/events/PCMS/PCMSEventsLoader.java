@@ -68,9 +68,13 @@ public class PCMSEventsLoader extends EventsLoader {
             String participantName = participant.attr("name");
             String alias = participant.attr("id");
             String shortName = participant.attr("shortname");
+            if (shortName == null || shortName.length() == 0) {
+              int index = participantName.indexOf("(");
+              shortName = participantName.substring(0, index - 1);
+            }
             String region = participant.attr("region");
             String hashTag = participant.attr("hashtag");
-            if (region != null) {
+            if (region != null || region.length() != 0) {
                 PCMSContestInfo.REGIONS.add(region);
             }
             PCMSTeamInfo team = new PCMSTeamInfo(
@@ -234,7 +238,9 @@ public class PCMSEventsLoader extends EventsLoader {
         long timestamp = (contestInfo.get().getStartTime() + time) / 1000;
         boolean isFrozen = time >= ContestInfo.FREEZE_TIME;
         boolean isJudged = !isFrozen && !"undefined".equals(element.attr("accepted"));
-        String result = !isJudged ? "" : outcomeMap.getOrDefault(element.attr("outcome"), "WA");
+        String result = "yes".equals(element.attr("accepted")) ? "AC" :
+                !isJudged ? "" :
+                outcomeMap.getOrDefault(element.attr("outcome"), "WA");
 
         return new PCMSRunInfo(isJudged, result, problemId, time, timestamp, teamId);
     }
