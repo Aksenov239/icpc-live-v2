@@ -73,6 +73,9 @@ public class PCMSEventsLoader extends EventsLoader {
               shortName = participantName.substring(0, index - 1);
               index = shortName.indexOf(",");
               shortName = shortName.substring(index + 2);
+              if (shortName.length() >= 25) {
+                shortName = shortName.substring(0, 22) + "...";
+              }
             }
             String region = participant.attr("region");
             String hashTag = participant.attr("hashtag");
