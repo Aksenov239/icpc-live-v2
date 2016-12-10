@@ -71,13 +71,17 @@ public class PCMSEventsLoader extends EventsLoader {
             if (shortName == null || shortName.length() == 0) {
               int index = participantName.indexOf("(");
               shortName = participantName.substring(0, index - 1);
-              index = shortName.indexOf(",");
+              index = -1;//shortName.indexOf(",");
               shortName = shortName.substring(index == -1 ? 0 : index + 2);
-              if (shortName.length() >= 25) {
-                shortName = shortName.substring(0, 22) + "...";
+              if (shortName.length() >= 30) {
+                shortName = shortName.substring(0, 27) + "...";
               }
             }
             String region = participant.attr("region");
+            if (region == null || region.length() == 0) {
+              int index = participantName.indexOf(",");
+              if (index != -1) region = participantName.substring(0, index);
+            }
             String hashTag = participant.attr("hashtag");
             if (region != null || region.length() != 0) {
                 PCMSContestInfo.REGIONS.add(region);
