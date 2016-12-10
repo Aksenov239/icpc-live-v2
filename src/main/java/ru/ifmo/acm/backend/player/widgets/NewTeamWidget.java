@@ -20,8 +20,11 @@ public class NewTeamWidget extends Widget {
 
     private static final int BIG_HEIGHT = 780;
     //    private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
-    private static final int BIG_X_RIGHT = 1880;//493;
+    private static final int BIG_X_RIGHT = 1920;//1880;//493;
     private static final int BIG_Y = 89;
+
+    private static final int BIG_Y_43 = 0;//10;
+    private static final int BIG_HEIGHT_43 = 1080;//885;
 
     private static final int SMALL_HEIGHT = 230;
     //    private static final int SMALL_WIDTH = SMALL_HEIGHT * 16 / 9;
@@ -61,7 +64,7 @@ public class NewTeamWidget extends Widget {
         if (!data.teamData.isVisible) {
             setVisible(false);
         } else {
-            setVisible(true);
+           setVisible(true);
             //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
             if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) &&
                     mainVideo.readyToShow()) {
@@ -132,7 +135,9 @@ public class NewTeamWidget extends Widget {
         updateVisibilityState();
 
         mainVideo.updateState(g, false);
-        smallVideo.updateState(g, true);
+        if (smallVideo != null) {
+            smallVideo.updateState(g, true);
+        }
 
         if (visibilityState == 0) {
             if (teamId != -1) {
@@ -176,6 +181,14 @@ public class NewTeamWidget extends Widget {
         }
 
         {
+            double ratio = mainVideo.getAspectRatio();
+            if (ratio * 3 < 4.0001) {
+                mainVideo.y = BIG_Y_43;
+                mainVideo.height = BIG_HEIGHT_43;
+            } else {
+                mainVideo.y = BIG_Y;
+                mainVideo.height = BIG_HEIGHT;
+            }
             mainVideo.width = (int)Math.round(mainVideo.height * mainVideo.getAspectRatio());
             double x = visibilityState;
             mainVideo.x = (int) (BIG_X_RIGHT - mainVideo.width + width * (1 - 3 * x * x + 2 * x * x * x));
@@ -219,6 +232,9 @@ public class NewTeamWidget extends Widget {
                 }
             }
 
+            mainVideo.x = (int) (BIG_X_RIGHT - BIG_HEIGHT * 16. / 9);
+            mainVideo.y = BIG_Y;
+
             drawTextInRect(g, "" + (char) ('A' + i), mainVideo.x + X, mainVideo.y + y,
                     PR_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, problemColor, 1);
 
@@ -257,6 +273,7 @@ public class NewTeamWidget extends Widget {
     }
 
     public void change(TeamInfo team, String infoType) {
+
         mainVideo.change(TeamUrls.getUrl(team, infoType));
         if (doubleVideo) {
             if (!infoType.equals(TeamUrls.types[0])) {
