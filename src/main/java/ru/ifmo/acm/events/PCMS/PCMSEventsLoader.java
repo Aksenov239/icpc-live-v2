@@ -72,7 +72,7 @@ public class PCMSEventsLoader extends EventsLoader {
               int index = participantName.indexOf("(");
               shortName = participantName.substring(0, index - 1);
               index = shortName.indexOf(",");
-              shortName = shortName.substring(index + 2);
+              shortName = shortName.substring(index == -1 ? 0 : index + 2);
               if (shortName.length() >= 25) {
                 shortName = shortName.substring(0, 22) + "...";
               }
