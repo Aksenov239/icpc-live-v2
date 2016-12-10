@@ -4,10 +4,6 @@
  id = "rt-2016"
  xmlai-process = "http://neerc.ifmo.ru/develop/pcms2/xmlai/default-rules.xml"
 >
-    <party id = 'jury' name = 'Jury'/>
-    <party id = 'guest' name = 'Guest'/>
-    <party id = 'expert' name = 'Expert' />
-
 <party id = 'S101' name = 'СПб, ФМЛ 239 + ФТШ + ЮМШ: Зелёные на форсах (Кириллов, Селиванов, Трилис)'/>
 <party id = 'S102' name = 'Витебск, Гимн. 1 + Гимн. 8 (Петуховский, Корнейчик, Кунцевич)'/>
 <party id = 'S104' name = 'Ярославль + Рыбинск: «Пони» (Александров, Новожилов, Пальченкова)'/>
