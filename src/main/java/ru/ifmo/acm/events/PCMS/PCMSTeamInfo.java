@@ -24,6 +24,7 @@ public class PCMSTeamInfo implements TeamInfo {
         this.name = name;
         this.shortName = shortName;
         this.region = region;
+        this.hashTag = hashTag;
     }
 
     public PCMSTeamInfo(String name, int problemsNumber) {

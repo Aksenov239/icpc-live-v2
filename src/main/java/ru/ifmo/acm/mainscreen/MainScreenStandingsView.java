@@ -10,7 +10,7 @@ import static ru.ifmo.acm.mainscreen.Utils.setPanelDefaults;
 import ru.ifmo.acm.events.ContestInfo;
 
 public class MainScreenStandingsView extends CustomComponent implements View {
-    public static String NAME = "mainscrean-standings";
+    public static String NAME = "mainscreen-standings";
 
     /* Clocks */
     final String[] clockStatuses = new String[]{"Clock is shown", "Clock isn't shown"};
@@ -307,7 +307,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         queueStatus.setValue(getQueueStatus());
         statisticsStatus.setValue(getStatisticsStatus());
 
-        mainScreenData.update();
+//        mainScreenData.update();
     }
 
     public MainScreenStandingsView() {

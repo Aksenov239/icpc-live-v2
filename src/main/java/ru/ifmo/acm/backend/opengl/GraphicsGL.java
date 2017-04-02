@@ -351,9 +351,11 @@ public class GraphicsGL extends Graphics {
 
     @Override
     public Rectangle2D getStringBounds(String message, Font font) {
-        com.jogamp.graph.font.Font joglFont = getFont(font);
-        AABBox bounds = joglFont.getMetricBounds(message, joglFont.getPixelSize(font.getSize(), dpiH));
-        return new Rectangle((int) bounds.getWidth(), (int) bounds.getHeight());
+        return getBounds(font, message);
+//        com.jogamp.graph.font.Font joglFont = getFont(font);
+//        System.err.println("Font: " + font + " " + joglFont);
+//        AABBox bounds = joglFont.getMetricBounds(message, joglFont.getPixelSize(font.getSize(), dpiH));
+//        return new Rectangle((int) bounds.getWidth(), (int) bounds.getHeight());
     }
 
     @Override
@@ -362,7 +364,7 @@ public class GraphicsGL extends Graphics {
         yS = y;
         widthS = width;
         heightS = height;
-        System.err.println(x + " " + y + " " + widthS + " " + heightS);
+//        System.err.println(x + " " + y + " " + widthS + " " + heightS);
 //        gl2.glScissor(xS, Widget.BASE_HEIGHT - yS, widthS, heightS);
 //        gl2.glEnable(GL2.GL_SCISSOR_TEST);
     }

@@ -57,28 +57,28 @@ public class Main {
 
         WidgetManager manager = new WidgetManager(properties);
 
-        manager.addWidget(new NewTeamWidget(
-                Integer.parseInt(properties.getProperty("sleep.time")),
-                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
+//        manager.addWidget(new NewTeamWidget(
+//                Integer.parseInt(properties.getProperty("sleep.time")),
+//                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
 
-//        manager.addWidget(new VerticalCreepingLineWidget(updateWait,
-//                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
-//                properties.getProperty("creeping.line.logo", "ICPC 2016"),
-//                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
-//                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
+        manager.addWidget(new VerticalCreepingLineWidget(updateWait,
+                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
+                properties.getProperty("creeping.line.logo", "ICPC 2016"),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
 
 //        StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
 //        standingsWidget.alignBottom(994);
 //        manager.addWidget(standingsWidget);
 //
-        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
-        manager.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
+//        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
+//        manager.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
 //
-        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
-                1350, 39, updateWait, 20, true);
-        bigStandingsWidget.alignBottom(994);
-        manager.addWidget(bigStandingsWidget);
-
+//        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
+//                1350, 39, updateWait, 20, true);
+//        bigStandingsWidget.alignBottom(994);
+//        manager.addWidget(bigStandingsWidget);
+//
 //        manager.addWidget(new StatisticsWidget(
 //                519, 200, 39, 1350, updateWait
 //        ));

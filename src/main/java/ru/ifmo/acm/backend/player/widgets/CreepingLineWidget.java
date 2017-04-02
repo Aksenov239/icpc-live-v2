@@ -19,7 +19,7 @@ import java.util.Set;
 public abstract class CreepingLineWidget extends Widget {
 
     protected double SEPARATOR = 75;
-    public int HEIGHT = 45;
+    public static final int HEIGHT = 45;
     public int MARGIN = 18;
 
     Queue<String> messagesQueue = new ArrayDeque<>(100);

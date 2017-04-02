@@ -89,6 +89,8 @@ public class MainScreenProperties {
         breakingNewsPatternsFilename = properties.getProperty("breakingnews.patterns.filename");
 
         overlayedDelay = Long.parseLong(properties.getProperty("overlayed.delay", "4000"));
+
+        pollTimeToShow = Integer.parseInt(properties.getProperty("poll.show.time", "20000"));
     }
 
     public long overlayedDelay;
@@ -123,4 +125,7 @@ public class MainScreenProperties {
     public final String backupBreakingNewsFilename;
 
     public final String breakingNewsPatternsFilename;
+
+    // Polls
+    public final int pollTimeToShow;
 }

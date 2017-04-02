@@ -71,25 +71,25 @@ public class WidgetManager implements GLEventListener {
 
         renderer = new TextRenderer(Font.decode("Open Sans 18"));
 
-        player = GLMediaPlayerFactory.create(GLMediaPlayer.class.getClassLoader(), "jogamp.opengl.util.av.impl.FFMPEGMediaPlayer");
-        try {
-            player.initStream(Uri.cast("C:/work/svn/icpc-live-v2/pics/BigBuckBunny_320x180.mp4"),
-                    GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.TEXTURE_COUNT_DEFAULT);
-        } catch (java.net.URISyntaxException e) {
-            e.printStackTrace();
-            return;
-        }
-        while (player.getState() != GLMediaPlayer.State.Initialized) {}
-        try {
-            player.initGL(gl);
-        } catch (GLMediaPlayer.StreamException e) {
-            e.printStackTrace();
-        }
-        while (player.getState() != GLMediaPlayer.State.Paused) {
-        }
-        player.play();
-        while (player.getState() != GLMediaPlayer.State.Playing) {
-        }
+//        player = GLMediaPlayerFactory.create(GLMediaPlayer.class.getClassLoader(), "jogamp.opengl.util.av.impl.FFMPEGMediaPlayer");
+//        try {
+//            player.initStream(Uri.cast("C:/work/svn/icpc-live-v2/pics/BigBuckBunny_320x180.mp4"),
+//                    GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.STREAM_ID_AUTO, GLMediaPlayer.TEXTURE_COUNT_DEFAULT);
+//        } catch (java.net.URISyntaxException e) {
+//            e.printStackTrace();
+//            return;
+//        }
+//        while (player.getState() != GLMediaPlayer.State.Initialized) {}
+//        try {
+//            player.initGL(gl);
+//        } catch (GLMediaPlayer.StreamException e) {
+//            e.printStackTrace();
+//        }
+//        while (player.getState() != GLMediaPlayer.State.Paused) {
+//        }
+//        player.play();
+//        while (player.getState() != GLMediaPlayer.State.Playing) {
+//        }
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {

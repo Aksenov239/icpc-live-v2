@@ -83,6 +83,7 @@ public class PCMSEventsLoader extends EventsLoader {
               if (index != -1) region = participantName.substring(0, index);
             }
             String hashTag = participant.attr("hashtag");
+
             if (region != null || region.length() != 0) {
                 PCMSContestInfo.REGIONS.add(region);
             }

@@ -8,6 +8,8 @@ import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.PCMS.PCMSEventsLoader;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Utils;
+import ru.ifmo.acm.mainscreen.loaders.TwitchLoader;
+import ru.ifmo.acm.mainscreen.loaders.TwitterLoader;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -47,6 +49,10 @@ public class ContextListener implements ServletContextListener {
         EventsLoader.getInstance();
 
         MessageData.getMessageData();
+
+        TwitchLoader.start();
+
+        TwitterLoader.start();
 
         threadsList.add(dataLoader);
     }
