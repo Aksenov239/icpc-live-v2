@@ -16,7 +16,7 @@ public class StandingsData extends CachedData {
         this.optimismLevel = data.optimismLevel;
         this.isBig = data.isBig;
         this.delay = data.delay;
-                
+        this.region = data.region;
         return this;
     }
 
@@ -30,7 +30,8 @@ public class StandingsData extends CachedData {
                 : (timestamp + getTotalTime(isBig, standingsType) - System.currentTimeMillis()) / 1000;
         return String.format(standingsType.label, time) + ". " +
                 optimismLevel.toString() +
-                (isBig() ? " big standings are shown" : " compact standings are shown");
+                (isBig() ? " big standings" : " compact standings") +
+                " of " + region + " region are shown";
     }
 
     public void recache() {
@@ -63,10 +64,10 @@ public class StandingsData extends CachedData {
     }
 
     public String getOverlayError() {
-        return "You need to turn standings first!";
+        return "You need to hide standings first!";
     }
 
-    public String setStandingsVisible(boolean visible, StandingsType type, boolean isBig, OptimismLevel level) {
+    public String setStandingsVisible(boolean visible, StandingsType type, boolean isBig, String region, OptimismLevel level) {
         delay = 0;
         if (visible) {
             String outcome = checkOverlays();
@@ -80,6 +81,11 @@ public class StandingsData extends CachedData {
             timestamp = System.currentTimeMillis();
             isVisible = visible;
             standingsType = type;
+            if (isBig) {
+                this.region = region;
+            } else {
+                this.region = ALL_REGIONS;
+            }
             optimismLevel = level;
             this.isBig = isBig;
         }
@@ -133,8 +139,11 @@ public class StandingsData extends CachedData {
     public StandingsType standingsType = StandingsType.HIDE;
     public boolean isBig;
     public OptimismLevel optimismLevel = OptimismLevel.NORMAL;
+    public String region = ALL_REGIONS;
 
     final private Object standingsLock = new Object();
+
+    public static final String ALL_REGIONS = "all";
 
     public enum StandingsType {
         ONE_PAGE("Top 1 page is shown for %d seconds"),

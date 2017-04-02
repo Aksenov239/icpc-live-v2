@@ -23,6 +23,8 @@ public class DataLoader {
     public static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataDeserializer())
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataSerializer())
+            .registerTypeAdapter(PollData.class, new PollData.PollDataDeserializer())
+            .registerTypeAdapter(PollData.class, new PollData.PollDataSerializer())
             .create();
 
     private AtomicReference<Data> data;

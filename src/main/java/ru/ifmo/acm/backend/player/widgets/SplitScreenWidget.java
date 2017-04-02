@@ -6,10 +6,11 @@ import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
-
+import ru.ifmo.acm.backend.graphics.Graphics;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
+
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.events.WF.WFRunInfo;
 
@@ -103,17 +104,23 @@ public class SplitScreenWidget extends Widget {
         RunInfo replayRun = null;
         // TODO: when frozen always switch onto teamId screen
         System.err.println("Choosing replay");
-        while (currentRunId <= contestInfo.getMaxRunId() && replayRun == null) {
+        while (currentRunId <= contestInfo.getLastRunId() && replayRun == null) {
             WFRunInfo run = contestInfo.getRun(currentRunId);
+            if (run != null)
+                System.err.println((long)(1000 * run.timestamp) + " " + System.currentTimeMillis() + " " +
+                        (long)(System.currentTimeMillis() - 1000 * run.timestamp)+ " " + run + " " +
+                    run.isAccepted());
             if (run != null &&
-                    contestInfo.getRun(currentRunId).timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
+                    run.timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
 //                    run.getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&
                     run.isAccepted()) {
                 replayRun = run;
             }
             currentRunId++;
         }
+
         log.info("Found replay " + replayRun);
+        System.err.println("Found replay " + replayRun);
         if (replayRun != null) {
             teamInfoWidgets[widget].change(replayRun);
             lastSwitch[widget] = System.currentTimeMillis() - switchTime + replayTime;
@@ -184,9 +191,9 @@ public class SplitScreenWidget extends Widget {
                 automatic[i] = false;
                 if ((data.splitScreenData.getTeamId(i) != teamInfoWidgets[i].getTeamId()
                         && !data.splitScreenData.infoStatus(i).equals(currentInfoType[i])) &&
-                        teamInfoWidgets[i].readyToShow()) {
+                        teamInfoWidgets[i].mainVideo.readyToShow()) {
                     teamInfoWidgets[i].setTeamId(data.splitScreenData.getTeamId(i));
-                    teamInfoWidgets[i].change(
+                    teamInfoWidgets[i].mainVideo.change(
                             TeamUrls.getUrl(
                                     Preparation.eventsLoader.getContestData().getParticipant(data.splitScreenData.getTeamId(i)),
                                     data.splitScreenData.controllerDatas[i].infoType
@@ -198,7 +205,7 @@ public class SplitScreenWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
         for (int i = 0; i < teamInfoWidgets.length; i++) {
             teamInfoWidgets[i].paintImpl(g, width, height);
@@ -206,7 +213,7 @@ public class SplitScreenWidget extends Widget {
     }
 
     @Override
-    public CachedData getCorrespondingData(Data data){
+    public CachedData getCorrespondingData(Data data) {
         return data.splitScreenData;
     }
 

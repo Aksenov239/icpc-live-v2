@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.datapassing.StandingsData;
@@ -119,14 +120,19 @@ public class StandingsWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 //        standings = StandingsLoader.getLoaded();
+
         contestData = Preparation.eventsLoader.getContestData();
         if (contestData == null || contestData.getStandings() == null) return;
         if (LENGTH == 0)
             LENGTH = contestData.getTeamsNumber();
         int dt = updateVisibilityState();
+
+//        if (!isVisible()) {
+//            setState(StandingsData.StandingsType.ONE_PAGE);
+//        }
 
         if (visibilityState > 0) {
             if (isVisible()) {
@@ -166,7 +172,7 @@ public class StandingsWidget extends Widget {
         return data.standingsData;
     }
 
-    private void drawStandings(Graphics2D g, int x, int y, ContestInfo contestData, int start) {
+    private void drawStandings(Graphics g, int x, int y, ContestInfo contestData, int start) {
         for (int i = 0; i < TEAMS_ON_PAGE; i++) {
             if (start + i >= LENGTH)
                 break;

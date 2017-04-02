@@ -1,6 +1,6 @@
 package ru.ifmo.acm.events;
 
-public interface RunInfo {
+public interface RunInfo extends Comparable<RunInfo> {
     int getId();
     boolean isAccepted();
     boolean isJudged();
@@ -10,4 +10,11 @@ public interface RunInfo {
     int getTeamId();
     SmallTeamInfo getTeamInfoBefore();
     boolean isReallyUnknown();
+    double getPercentage();
+    long getLastUpdateTimestamp();
+    double getTimestamp();
+
+    default public int compareTo(RunInfo runInfo) {
+        return Long.compare(getTime(), runInfo.getTime());
+    }
 }

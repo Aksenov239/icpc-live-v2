@@ -152,8 +152,10 @@ public class TwitterBasedQueue extends Thread {
                 );
                 System.err.println("Read request for team " + request.teamId + " " + request.type);
                 int total = votesForTeam.getOrDefault(request, 0) + 1;
+                System.err.println("It gets " + total + "votes.");
                 lastRequest.put(request, status.getId());
                 if (total == currentThreshold()) {
+                    System.err.println(request.teamId + " is in the queue.");
                     enqueue(request);
                     total = 0;
                 }
@@ -204,7 +206,7 @@ public class TwitterBasedQueue extends Thread {
         try {
             String statusText =
                     "Added to automatic queue " + request.type + " for team " + contestInfo.getParticipant(request.teamId).getName()
-                    + ". See at http://icpclive.com/2. #ICPC2016";
+                    + ". See at http://icpclive.com. #ICPC2016";
             StatusUpdate status = new StatusUpdate(statusText);
             status.setInReplyToStatusId(lastRequest.get(request));
             twitter.updateStatus(status);

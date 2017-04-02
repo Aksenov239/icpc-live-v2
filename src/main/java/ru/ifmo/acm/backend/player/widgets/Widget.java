@@ -1,18 +1,20 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import com.jogamp.opengl.GLAutoDrawable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.TeamPaneStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.TeamInfo;
+import ru.ifmo.acm.backend.graphics.Graphics;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
-import static java.lang.Math.scalb;
 
 /**
  * @author: pashka
@@ -98,18 +100,25 @@ public abstract class Widget {
         this.updateWait = updateWait;
     }
 
-    protected abstract void paintImpl(Graphics2D g, int width, int height);
+    protected abstract void paintImpl(Graphics g, int width, int height);
 
-    public void paint(Graphics2D g, int width, int height, double scale) {
+    public void paint(Graphics g, int width, int height, double scale) {
         if (Preparation.eventsLoader.getContestData() == null) return;
-        if (scale != 1) {
-            g = (Graphics2D) g.create();
-            g.scale(scale, scale);
-            width = (int) round(width / scale);
-            height = (int) round(height / scale);
-        }
         try {
             paintImpl(g, width, height);
+        } catch (Exception e) {
+            log.error("Failed to paint " + this.getClass().toString(), e);
+        }
+    }
+
+    protected void paintImpl(GLAutoDrawable drawable, int width, int height) {
+
+    }
+
+    public void paint(Graphics drawable, int width, int height) {
+        if (Preparation.eventsLoader.getContestData() == null) return;
+        try {
+            paintImpl(drawable, width, height);
         } catch (Exception e) {
             log.error("Failed to paint " + this.getClass().toString(), e);
         }
@@ -160,14 +169,10 @@ public abstract class Widget {
         return visible;
     }
 
-    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
-        g.setComposite(AlphaComposite.SrcOver.derive(1f));
-        g.setColor(color);
-
+    void drawRect(Graphics g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
         int hh = (int) (height * opacity);
         y += (height - hh) / 2;
         height = hh;
-
 
         int[] xx = new int[POINTS_IN_ROUND * 4];
         int[] yy = new int[POINTS_IN_ROUND * 4];
@@ -187,10 +192,10 @@ public abstract class Widget {
                 yy[t] = (int) round(ty);
             }
         }
-        g.fill(new Polygon(xx, yy, xx.length));
+        g.fillPolygon(xx, yy, x, y, color, opacity);
     }
 
-    void drawRect(Graphics2D g, int x, int y, int width, int height, Color color, double opacity) {
+    void drawRect(Graphics g, int x, int y, int width, int height, Color color, double opacity) {
         drawRect(g, x, y, width, height, color, opacity, false);
     }
 
@@ -202,54 +207,33 @@ public abstract class Widget {
     private long lastBlinkingOpacityUpdate = 0;
     private double blinkingValue = 0.20;
 
-    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState) {
-        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true);
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height,
+                        Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                        double visibilityState) {
+        drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true);
     }
 
-    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, WidgetAnimation widgetAnimation) {
-        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, false, true, widgetAnimation, false);
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height,
+                        Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                        double visibilityState, WidgetAnimation widgetAnimation) {
+        drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true, widgetAnimation, false);
     }
 
-    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor, double visibilityState, boolean italic, boolean scale) {
-        drawTextInRect(gg, text, x, y, width, height, position, color, textColor, visibilityState, italic, scale, WidgetAnimation.NOT_ANIMATED, false);
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height,
+                        Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                        double visibilityState, boolean scale) {
+        drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, scale, WidgetAnimation.NOT_ANIMATED, false);
     }
 
-    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position, Color color, Color textColor,
-                        double visibilityState, boolean isBlinking) {
-        drawTextInRect(gg, text, x, y, width, height, position,
-                color, textColor, visibilityState, false, true,
-                WidgetAnimation.NOT_ANIMATED, isBlinking);
-    }
-
-
-    void drawTextInRect(Graphics2D gg, String text, int x, int y, int width, int height, int position,
-                        Color color, Color textColor,
-                        double visibilityState, boolean italic, boolean scale,
+    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Alignment alignment,
+                        Font font, PlateStyle plateStyle,
+                        double visibilityState, boolean scale,
                         WidgetAnimation widgetAnimation, boolean isBlinking) {
-        Graphics2D g = (Graphics2D) gg.create();
+        Graphics g = gg.create();
         double opacity = getOpacity(visibilityState);
         double textOpacity = getTextOpacity(visibilityState);
         if (text == null) {
             text = "NULL";
-        }
-
-        int textWidth = g.getFontMetrics().stringWidth(text);
-        double textScale = 1;
-
-        double margin = height * MARGIN;
-
-        if (width == -1) {
-            width = (int) (textWidth + 2 * margin);
-            if (position == POSITION_CENTER) {
-                x -= width / 2;
-            } else if (position == POSITION_RIGHT) {
-                x -= width;
-            }
-        } else if (scale) {
-            int maxTextWidth = (int) (width - 2 * margin);
-            if (textWidth > maxTextWidth) {
-                textScale = 1.0 * maxTextWidth / textWidth;
-            }
         }
 
         if (opacity == 0) return;
@@ -265,8 +249,6 @@ public abstract class Widget {
             opacity = 1;
         }
 
-        drawRect(g, x, y, width, height, color, opacity, italic);
-
         if (isBlinking) {
             if (System.currentTimeMillis() - lastBlinkingOpacityUpdate > 10) {
                 lastBlinkingOpacity += blinkingValue;
@@ -275,85 +257,39 @@ public abstract class Widget {
                 }
                 lastBlinkingOpacityUpdate = System.currentTimeMillis();
             }
-
             textOpacity = lastBlinkingOpacity;
         }
 
-        g.setComposite(AlphaComposite.SrcOver.derive((float) (textOpacity)));
-        g.setColor(textColor);
-
-        FontMetrics wh = g.getFontMetrics();
-
-//        if (wh.getStringBounds(text, g).getWidth() > width * 0.95) {
-//        Font adjustedFont = adjustFont(g, text, width, height, 0.95);
-//        g.setFont(adjustedFont);
-//        wh = g.getFontMetrics();
-//        }
-
-        float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
-                - 0.03f * height;
-        float xx;
-        if (position == POSITION_LEFT) {
-            xx = (float) (x + margin);
-        } else if (position == POSITION_CENTER) {
-            xx = (float) (x + (width - textWidth * textScale) / 2);
-        } else {
-            xx = (float) (x + width - textWidth * textScale - margin);
-        }
-        AffineTransform transform = g.getTransform();
-        transform.concatenate(AffineTransform.getTranslateInstance(xx, yy));
-        transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
-        g.setTransform(transform);
-//        g.translate(xx, yy);
-//        g.getTransform().concatenate();
-        g.drawString(text, 0, 0);
-        g.dispose();
+        g.drawRectWithText(text, x, y, width, height, alignment, font, plateStyle,
+                opacity, textOpacity, MARGIN, scale);
     }
 
-    void drawTextToFit(Graphics2D gg, String text, double X, double Y, int x, int y, int width, int height) {
-        Graphics2D g = (Graphics2D) gg.create(x, y, width, height);
-        FontMetrics wh = g.getFontMetrics();
-        int textWidth = g.getFontMetrics().stringWidth(text);
-        double textScale = 1;
-
-        double margin = height * MARGIN;
-
-        int maxTextWidth = (int) (width - 2 * margin);
-        if (textWidth > maxTextWidth) {
-            textScale = 1. * maxTextWidth / textWidth;
-        }
-
-        float yy = (float) Y + wh.getAscent() - 0.03f * height;
-        float xx = (float) (X + margin);
-
-        AffineTransform transform = g.getTransform();
-        transform.concatenate(AffineTransform.getTranslateInstance(xx, yy));
-        transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
-        g.setTransform(transform);
-        g.drawString(text, 0, 0);
+    void drawTextToFit(Graphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
+        Graphics gg = g.create(x, y, width, height);
+        gg.drawTextThatFits(text, (int)(X - x), (int)(Y - y), width, height, font, color, MARGIN);
     }
 
-    void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state,
+    void drawTeamPane(Graphics g, TeamInfo team, int x, int y, int height, double state,
                       double rank_width, double name_width, double total_width, double penalty_width) {
 
-        Color color = getTeamRankColor(team);
-        if (team.getSolvedProblemsNumber() == 0) color = ACCENT_COLOR;
-        g.setFont(Font.decode("Open Sans " + (int) round(height * 0.7)));
+        PlateStyle color = getTeamRankColor(team);
+        if (team.getSolvedProblemsNumber() == 0) color = TeamPaneStylesheet.zero;
+        Font font = Font.decode("Open Sans " + (int) round(height * 0.7));
         int rankWidth = (int) round(height * rank_width);
         int nameWidth = (int) round(height * name_width);
         int totalWidth = (int) round(height * total_width);
         int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, POSITION_CENTER, color, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, Graphics.Alignment.CENTER, font, color, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + spaceX;
-        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, POSITION_LEFT, MAIN_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, Graphics.Alignment.LEFT, font, TeamPaneStylesheet.name, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += nameWidth + spaceX;
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, Graphics.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, state);
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, Graphics.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
-    void drawTeamPane(Graphics2D g, TeamInfo team, int x, int y, int height, double state) {
+    void drawTeamPane(Graphics g, TeamInfo team, int x, int y, int height, double state) {
         drawTeamPane(g, team, x, y, height, state, RANK_WIDTH, NAME_WIDTH, TOTAL_WIDTH, PENALTY_WIDTH);
     }
 
@@ -393,17 +329,19 @@ public abstract class Widget {
     protected void updateImpl(Data data) {
     }
 
-    protected Color getTeamRankColor(TeamInfo team) {
-        Color color = ADDITIONAL_COLOR;
-        if (team.getSolvedProblemsNumber() > 0 && team.getRank() <= 12) {
-            color = team.getRank() <= 4 ? GOLD_COLOR :
-                    team.getRank() <= 8 ? SILVER_COLOR : BRONZE_COLOR;
+    protected PlateStyle getTeamRankColor(TeamInfo team) {
+        PlateStyle color = TeamPaneStylesheet.none;
+        if (team.getSolvedProblemsNumber() > 0 &&
+                team.getRank() <= TeamPaneStylesheet.goldPlaces + TeamPaneStylesheet.silverPlaces +
+                        TeamPaneStylesheet.bronzePlaces) {
+            color = team.getRank() <= TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.gold :
+                    team.getRank() <= TeamPaneStylesheet.silverPlaces + TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.silver :
+                            TeamPaneStylesheet.bronze;
         }
         return color;
     }
 
-    protected void drawStar(Graphics2D g, int x, int y, int size) {
-        g.setColor(STAR_COLOR);
+    protected void drawStar(Graphics g, int x, int y, int size) {
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};
@@ -411,6 +349,6 @@ public abstract class Widget {
             xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
             yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
         }
-        g.fillPolygon(new Polygon(xx, yy, 10));
+        g.fillPolygon(xx, yy, STAR_COLOR);
     }
 }

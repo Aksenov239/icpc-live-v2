@@ -32,6 +32,14 @@ public class SmallTeamInfo implements TeamInfo {
         return shortName;
     }
 
+    public String getAlias() {
+        return null;
+    }
+
+    public String getRegion() {
+        return null;
+    }
+
     public int getSolvedProblemsNumber() {
         return solved;
     }
@@ -49,4 +57,10 @@ public class SmallTeamInfo implements TeamInfo {
     }
 
     public String getHashTag() { return null; }
+
+    public void addRun(RunInfo run, int problem) {
+    }
+    public TeamInfo copy() {
+        return new SmallTeamInfo(this);
+    }
 }

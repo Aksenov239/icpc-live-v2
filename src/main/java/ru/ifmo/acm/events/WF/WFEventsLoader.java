@@ -24,11 +24,7 @@ import java.util.List;
 public class WFEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(WFEventsLoader.class);
 
-    public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
-    public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
     private static WFContestInfo contestInfo;
-
-    public static double SPEED = 20;
 
     private String url;
     private String teamsInfoURL;
@@ -54,7 +50,7 @@ public class WFEventsLoader extends EventsLoader {
             if (!(url.startsWith("http") || url.startsWith("https"))) {
                 emulation = true;
             } else {
-                SPEED = 1;
+                EMULATION_SPEED = 1;
             }
 
             problemsInfoURL = properties.getProperty("problems.url");
@@ -327,6 +323,9 @@ public class WFEventsLoader extends EventsLoader {
                         break;
                     case "region":
                         team.region = xmlEventReader.getElementText();
+                        if (team.region != null) {
+                            WFContestInfo.REGIONS.add(team.region);
+                        }
                         break;
                 }
             }
@@ -413,7 +412,7 @@ public class WFEventsLoader extends EventsLoader {
                                 WFRunInfo run = readRun(xmlEventReader);
                                 if (emulation) {
                                     try {
-                                        long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / SPEED);
+                                        long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / EMULATION_SPEED);
                                         if (dt > 0)
                                             Thread.sleep(dt);
                                         total++;
@@ -422,7 +421,7 @@ public class WFEventsLoader extends EventsLoader {
                                     }
                                 }
                                 log.info("New run: " + run);
-                                if (run.getTime() <= FREEZE_TIME || run.getResult().length() == 0) {
+                                if (run.getTime() <= ContestInfo.FREEZE_TIME || run.getResult().length() == 0) {
                                     if (contestInfo.runExists(run.getId())) {
                                         run.setTeamInfoBefore(contestInfo.getParticipant(run.getTeamId()).getSmallTeamInfo());
                                     }
@@ -441,7 +440,7 @@ public class WFEventsLoader extends EventsLoader {
                                 WFTestCaseInfo test = readTest(xmlEventReader);
                                 if (emulation) {
                                     try {
-                                        long dt = (long) ((test.time - contestInfo.getCurrentTime()) / SPEED);
+                                        long dt = (long) ((test.time - contestInfo.getCurrentTime()) / EMULATION_SPEED);
                                         if (dt > 0) Thread.sleep(dt);
                                     } catch (InterruptedException e) {
                                         log.error("error", e);
@@ -466,10 +465,10 @@ public class WFEventsLoader extends EventsLoader {
                             case "starttime":
                                 String starttime = xmlEventReader.getElementText();
                                 if ("undefined".equals(starttime)) {
-                                    contestInfo.setPaused(true);
+                                    contestInfo.setStatus(ContestInfo.Status.PAUSED);
                                     throw new Exception("The start time is undefined");
                                 } else {
-                                    contestInfo.setPaused(false);
+                                    contestInfo.setStatus(ContestInfo.Status.RUNNING);
                                 }
                                 contestInfo.setStartTime(
                                         (long) (Double.parseDouble(starttime.replace(",", "."))
@@ -483,7 +482,7 @@ public class WFEventsLoader extends EventsLoader {
                                 int hh = Integer.parseInt(s.substring(0, 2));
                                 int mm = Integer.parseInt(s.substring(3, 5));
                                 int ss = Integer.parseInt(s.substring(6, 8));
-                                CONTEST_LENGTH = ((hh * 60 + mm) * 60 + ss) * 1000;
+                                ContestInfo.CONTEST_LENGTH = ((hh * 60 + mm) * 60 + ss) * 1000;
                                 break;
                             }
                             case "scoreboard-freeze-length": {
@@ -491,14 +490,14 @@ public class WFEventsLoader extends EventsLoader {
                                 int hh = Integer.parseInt(s.substring(0, 2));
                                 int mm = Integer.parseInt(s.substring(3, 5));
                                 int ss = Integer.parseInt(s.substring(6, 8));
-                                FREEZE_TIME = CONTEST_LENGTH - ((hh * 60 + mm) * 60 + ss) * 1000;
+                                ContestInfo.FREEZE_TIME = ContestInfo.CONTEST_LENGTH - ((hh * 60 + mm) * 60 + ss) * 1000;
                                 break;
                             }
                             case "analystmsg": {
                                 WFAnalystMessage message = readMessage(xmlEventReader);
                                 if (emulation) {
                                     try {
-                                        long dt = (long) ((message.getTime() - contestInfo.getCurrentTime()) / SPEED);
+                                        long dt = (long) ((message.getTime() - contestInfo.getCurrentTime()) / EMULATION_SPEED);
                                         if (dt > 0)
                                             Thread.sleep(dt);
                                         total++;

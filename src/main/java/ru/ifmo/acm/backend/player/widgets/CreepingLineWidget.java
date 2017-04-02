@@ -1,15 +1,17 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.mainscreen.Advertisement;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  * @author: pashka
@@ -17,7 +19,7 @@ import java.util.Queue;
 public abstract class CreepingLineWidget extends Widget {
 
     protected double SEPARATOR = 75;
-    public int HEIGHT = 45;
+    public static final int HEIGHT = 45;
     public int MARGIN = 18;
 
     Queue<String> messagesQueue = new ArrayDeque<>(100);
@@ -41,11 +43,11 @@ public abstract class CreepingLineWidget extends Widget {
     }
 
     protected void updateImpl(Data data) {
-        for (ru.ifmo.acm.creepingline.Message message: Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
+        for (ru.ifmo.acm.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
             addMessage(message.getMessage(), messagesQueue, inQueue);
         }
 
-        for (Advertisement logo: Preparation.dataLoader.getDataBackend().creepingLineData.logos) {
+        for (Advertisement logo : Preparation.dataLoader.getDataBackend().creepingLineData.logos) {
             addMessage(logo.getAdvertisement(), logoQueue, inLogoQueue);
         }
 
@@ -90,11 +92,15 @@ public abstract class CreepingLineWidget extends Widget {
             position = 0;
         }
 
-        public Message(String message, Graphics2D g) {
+        public Message(String message, Graphics g, Font font) {
             this.message = message;
-            Rectangle2D wh = g.getFontMetrics().getStringBounds(message, g);
-            width = (int)Math.ceil(wh.getWidth());
-            heigth = (int)Math.ceil(wh.getHeight());
+            Rectangle2D wh = g.getStringBounds(message, font);
+            width = (int) Math.ceil(wh.getWidth());
+            heigth = (int) Math.ceil(wh.getHeight());
+        }
+
+        public String toString() {
+            return message + " " + position;
         }
     }
 

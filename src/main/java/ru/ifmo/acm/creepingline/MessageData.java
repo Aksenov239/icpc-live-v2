@@ -13,6 +13,7 @@ import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.WF.WFAnalystMessage;
 import ru.ifmo.acm.mainscreen.Advertisement;
+import ru.ifmo.acm.mainscreen.Polls.Poll;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 

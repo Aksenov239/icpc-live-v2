@@ -1,7 +1,9 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.BreakingNewsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.events.RunInfo;
@@ -12,26 +14,25 @@ import java.awt.*;
 /**
  * @author: pashka
  */
-public class BreakingNewsWidget extends VideoWidget {
+public class BreakingNewsWidget extends Widget {
     private int x;
     private int y;
+    private int width;
+    private int height;
     private int duration;
-    private int wVideo;
-    private int hVideo;
+    private PlayerWidget video;
     private final int PLATE_WIDTH;
     private final int PLATE_HEIGHT;
     private final int GAP;
 
     public BreakingNewsWidget(long updateWait, int x, int y, int width, int height, double aspectRatio, int sleepTime, int duration) {
-        super(x, y, width, (int) (height / aspectRatio), sleepTime, 0);
+        video = PlayerWidget.getPlayerWidget(x, y, width, (int) (height / aspectRatio), sleepTime, 0);
         this.updateWait = updateWait;
-        wVideo = width;
-        hVideo = (int) (width / aspectRatio);
 
-        PLATE_HEIGHT = (int) (0.1 * hVideo);
+        PLATE_HEIGHT = (int) (0.1 * video.height);
         double total_factor = Widget.RANK_WIDTH + Widget.NAME_WIDTH + Widget.TOTAL_WIDTH + Widget.PENALTY_WIDTH + 3 * Widget.SPACE_X;
         PLATE_WIDTH = (int) (PLATE_HEIGHT * total_factor);
-        GAP = (int) (0.02 * hVideo);
+        GAP = (int) (0.02 * video.height);
 
         this.x = x;
         this.y = y;
@@ -97,7 +98,7 @@ public class BreakingNewsWidget extends VideoWidget {
 
             log.info("Change to " + url);
 
-            change(url);
+            video.change(url);
             isLive = data.breakingNewsData.isLive;
 
             if (run != null) {
@@ -147,17 +148,19 @@ public class BreakingNewsWidget extends VideoWidget {
     private int rankState;
 
     @Override
-    public void paintImpl(Graphics2D g, int width, int height) {
+    public void paintImpl(Graphics g, int width, int height) {
         update();
 
         int dt = updateVisibilityState();
 
+        video.updateState(g, false);
+
         if (visibilityState == 0 && !isVisible()) {
-            stop();
+            video.stop();
             return;
         }
 
-        if (!ready) {
+        if (!video.readyToShow()) {
             visibilityState = 0;
             return;
         }
@@ -189,16 +192,17 @@ public class BreakingNewsWidget extends VideoWidget {
 
 //        log.debug(visibilityState + " " + opacity);
 
-        if (run == null || currentUrl != null) {
-            int hh = (int) (hVideo * opacity);
-            g.drawImage(image, x, y + (hVideo - hh) / 2, wVideo, hh, null);
+        if (run == null || video.getCurrentURL() != null) {
+            int hh = (int) (video.height * opacity);
+            video.draw(g, x, y + (video.height - hh) / 2, video.width, hh);
         }
 
-        int y = this.y + hVideo + GAP;
-        int x = this.x + (int) (1.1 * wVideo - PLATE_WIDTH);
+        int y = this.y + video.height + GAP;
+        int x = this.x + (int) (1.1 * video.width - PLATE_WIDTH);
         drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
+        Font font = Font.decode("Open Sans " + (int) Math.round(PLATE_HEIGHT * 0.7));
         drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
-                POSITION_RIGHT, ACCENT_COLOR, Color.white, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                Graphics.Alignment.RIGHT, font, BreakingNewsStylesheet.caption, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     @Override

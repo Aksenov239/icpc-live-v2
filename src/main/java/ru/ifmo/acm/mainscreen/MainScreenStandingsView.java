@@ -7,17 +7,16 @@ import ru.ifmo.acm.datapassing.StandingsData;
 
 import static ru.ifmo.acm.mainscreen.Utils.createGroupLayout;
 import static ru.ifmo.acm.mainscreen.Utils.setPanelDefaults;
+import ru.ifmo.acm.events.ContestInfo;
 
 public class MainScreenStandingsView extends CustomComponent implements View {
-    public static String NAME = "mainscrean-standings";
+    public static String NAME = "mainscreen-standings";
 
     /* Clocks */
     final String[] clockStatuses = new String[]{"Clock is shown", "Clock isn't shown"};
     Label clockStatus;
     Button clockButtonOn;
     Button clockButtonOff;
-
-    OptionGroup standingsOptimismLevel;
 
     public Component getClockController() {
         clockStatus = new Label(getClockStatus());
@@ -127,6 +126,8 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     Button standingsShowTop1Big;
     Button standingsShowTop2Big;
     Button standingsShowAllBig;
+    OptionGroup standingsRegion;
+    OptionGroup standingsOptimismLevel;
 
     public Component getStandingsController() {
         standingsStatus = new Label(getStandingsStatus());
@@ -140,6 +141,24 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         standingsShowAllBig = createStandingsControllerButton("Show all pages. Big standings", true, StandingsData.StandingsType.ALL_PAGES, true);
 
         CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig, standingsHide);
+
+        standingsRegion = new OptionGroup();
+        standingsRegion.addItem(StandingsData.ALL_REGIONS);
+        for (String region : ContestInfo.REGIONS) {
+            standingsRegion.addItem(region);
+        }
+        standingsRegion.setValue(StandingsData.ALL_REGIONS);
+
+        standingsRegion.addValueChangeListener(e -> {
+            if (mainScreenData.standingsData.isVisible) {
+                Notification.show("To update the standings should be hide");
+                return;
+            }
+            if (!mainScreenData.standingsData.isBig()) {
+                Notification.show("Compact standings could not have region filter");
+            }
+        });
+
         standingsOptimismLevel = new OptionGroup();
         for (StandingsData.OptimismLevel type : StandingsData.OptimismLevel.values()) {
             standingsOptimismLevel.addItem(type);
@@ -151,6 +170,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
                     mainScreenData.standingsData.isVisible,
                     mainScreenData.standingsData.standingsType,
                     mainScreenData.standingsData.isBig,
+                    mainScreenData.standingsData.region,
                     StandingsData.OptimismLevel.valueOf(standingsOptimismLevel.getValue().toString().toUpperCase())
             );
             if (outcome != null) {
@@ -162,6 +182,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         VerticalLayout panel = new VerticalLayout(
                 standingsStatus,
+                standingsRegion,
                 standingsOptimismLevel,
                 group
         );
@@ -176,9 +197,11 @@ public class MainScreenStandingsView extends CustomComponent implements View {
                 Notification.show("You should hide standings first", Notification.Type.WARNING_MESSAGE);
                 return;
             }
+            String region = standingsRegion.getValue().toString();
             String optimismLevel = standingsOptimismLevel.getValue().toString();
 
-            String outcome = mainScreenData.standingsData.setStandingsVisible(visible, type, isBig, StandingsData.OptimismLevel.valueOf(optimismLevel.toUpperCase()));
+            String outcome = mainScreenData.standingsData.setStandingsVisible(visible, type, isBig,
+                    region, StandingsData.OptimismLevel.valueOf(optimismLevel.toUpperCase()));
             if (outcome != null) {
                 Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
                 return;
@@ -284,7 +307,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         queueStatus.setValue(getQueueStatus());
         statisticsStatus.setValue(getStatisticsStatus());
 
-        mainScreenData.update();
+//        mainScreenData.update();
     }
 
     public MainScreenStandingsView() {

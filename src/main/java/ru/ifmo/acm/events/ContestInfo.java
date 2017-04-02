@@ -1,18 +1,31 @@
 package ru.ifmo.acm.events;
 
-import ru.ifmo.acm.events.WF.WFEventsLoader;
-
+import java.util.stream.Stream;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
+import ru.ifmo.acm.datapassing.StandingsData;
 
 public abstract class ContestInfo {
     public int teamNumber;
     public int problemNumber = 0;
     protected long startTime = 0;
     protected final long totalTime = 0;
-    public List<ProblemInfo> problems;
-    private long lastTime;
-    public boolean isPaused;
+    public static List<ProblemInfo> problems;
+    public long lastTime;
+
+    public enum Status {
+        BEFORE,
+        RUNNING,
+        PAUSED,
+        OVER
+    }
+
+    public Status status = Status.BEFORE;
+
+    public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
+    public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
+    public static final TreeSet<String> REGIONS = new TreeSet<>();
 
     protected ContestInfo() {
     }
@@ -29,9 +42,9 @@ public abstract class ContestInfo {
         return problemNumber;
     }
 
-    public void setPaused(boolean paused) {
-        isPaused = paused;
+    public void setStatus(Status status) {
         lastTime = getCurrentTime();
+        this.status = status;
     }
 
     public long getStartTime() {
@@ -43,12 +56,22 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
-        return isPaused ? lastTime :
-                startTime == 0 ? 0 :
-                        (long) Math.min(
-                                ((System.currentTimeMillis() - startTime) * WFEventsLoader.SPEED),
-                                WFEventsLoader.CONTEST_LENGTH
-                        );
+        switch (status) {
+            case BEFORE:
+                return System.currentTimeMillis();
+            case PAUSED:
+                return lastTime;
+            case RUNNING:
+                return startTime == 0 ? 0 :
+                    (long) Math.min(
+                            ((System.currentTimeMillis() - startTime) * EventsLoader.EMULATION_SPEED),
+                            ContestInfo.CONTEST_LENGTH
+                    );
+            case OVER:
+                return ContestInfo.CONTEST_LENGTH;
+            default:
+                return 0;
+        }
     }
 
     public boolean isFrozen() {
@@ -63,6 +86,20 @@ public abstract class ContestInfo {
 
     public abstract TeamInfo[] getStandings();
 
+    public abstract TeamInfo[] getStandings(StandingsData.OptimismLevel optimismLevel);
+
+    public TeamInfo[] getStandings(String region, StandingsData.OptimismLevel optimismLevel) {
+        if (StandingsData.ALL_REGIONS.equals(region)) {
+            return getStandings(optimismLevel);
+        }
+        TeamInfo[] infos = getStandings(optimismLevel);
+        System.err.println(infos.length);
+        for (TeamInfo team : infos) {
+            System.err.println(team.getId() + " " + team.getRegion() + " " + region);
+        }
+        return Stream.of(infos).filter(x -> region.equals(x.getRegion())).toArray(TeamInfo[]::new);
+    }
+
     public abstract long[] firstTimeSolved();
 
     public abstract RunInfo[] firstSolvedRun();
@@ -72,4 +109,6 @@ public abstract class ContestInfo {
     public abstract RunInfo getRun(int id);
 
     public abstract BlockingQueue<AnalystMessage> getAnalystMessages();
+
+    public abstract int getLastRunId();
 }

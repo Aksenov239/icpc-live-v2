@@ -1,7 +1,14 @@
 package ru.ifmo.acm.backend.player.widgets;
 
-import java.awt.*;
+import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.CreepingLineStylesheet;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.TeamPaneStylesheet;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
+import ru.ifmo.acm.events.ContestInfo;
+import ru.ifmo.acm.events.TeamInfo;
 
+import java.awt.*;
 
 /**
  * @author: pashka
@@ -87,50 +94,129 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         }
     }
 
+    int nextStandingsPosition = 0;
+    TeamInfo[] standings;
+    private final String STANDINGS_MESSAGE = "#Standings#";
+    private final int STANDINGS_SIZE = 12;
+    private final int STANDINGS_PAGE = 4;
+
+
+    private final double SPACE_WIDTH = 0.02;
+    private final double RANK_WIDTH = 0.1;
+    private final double SMALL_PLATE_DY = 5.5;
+    private final int SMALL_PLATE_HEIGHT = (int)(0.85 * HEIGHT);
+    private final double NAME_WIDTH = 0.50;
+    private final double TOTAL_WIDTH = 0.1;
+    private final double PENALTY_WIDTH = 0.2;
+
+    private void drawSmallTeamPane(Graphics g, TeamInfo team, int width, int height, int x, int y) {
+        int spaceWidth = (int) (SPACE_WIDTH * width);
+        int rankWidth = (int) (RANK_WIDTH * width);
+        int nameWidth = (int) (NAME_WIDTH * width);
+        int totalWidth = (int) (TOTAL_WIDTH * width);
+        int penaltyWidth = (int) (PENALTY_WIDTH * width);
+
+        // small rectangle with rank
+        PlateStyle color = getTeamRankColor(team);
+
+        x += spaceWidth;
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, (int)(y + SMALL_PLATE_DY), rankWidth, SMALL_PLATE_HEIGHT,
+                Graphics.Alignment.CENTER, messageFont, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        x += rankWidth + spaceWidth;
+
+        // team name
+        drawTextInRect(g, team.getShortName(), x, (int) (y + SMALL_PLATE_DY), nameWidth, SMALL_PLATE_HEIGHT,
+                Graphics.Alignment.LEFT, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
+
+        x += nameWidth + spaceWidth;
+
+        // total
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, (int) (y + SMALL_PLATE_DY), totalWidth, SMALL_PLATE_HEIGHT,
+                Graphics.Alignment.CENTER, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        x += totalWidth + spaceWidth;
+
+        // penalty
+        drawTextInRect(g, "" + team.getPenalty(), x, (int) (y + SMALL_PLATE_DY), penaltyWidth, SMALL_PLATE_HEIGHT,
+                Graphics.Alignment.CENTER, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
+    }
+
+    private void drawInfo(Graphics g, Message message, boolean next, int width, int height) {
+        if (!STANDINGS_MESSAGE.equals(message.message)) {
+            drawTextToFit(g, message.message, 0, message.position, 0, 0, width, height,
+                    messageFont, CreepingLineStylesheet.main.text);
+            return;
+        }
+        int dx = width / STANDINGS_PAGE;
+        int start = next ? nextStandingsPosition : nextStandingsPosition - STANDINGS_PAGE;
+        for (int i = 0; i < STANDINGS_PAGE && start + i < standings.length; i++) {
+            drawSmallTeamPane(g, standings[start + i], dx, height, dx * i, (int)message.position);
+        }
+    }
+
     @Override
-    public void paintImpl(Graphics2D gg, int width, int height) {
+    public void paintImpl(Graphics gg, int width, int height) {
         update();
-        Graphics2D g = (Graphics2D) gg.create(0, height - HEIGHT - MARGIN, width, HEIGHT);
+        Graphics g = gg.create(0, BASE_HEIGHT - HEIGHT - MARGIN, BASE_WIDTH, HEIGHT);
         g.setFont(messageFont);
-        g.setComposite(AlphaComposite.SrcOver.derive(1f));
-        g.setColor(ADDITIONAL_COLOR);
         iterateLogo();
 
-        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, POSITION_CENTER, ADDITIONAL_COLOR, Color.WHITE, logoVisible);
+        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, Graphics.Alignment.CENTER,
+                messageFont, CreepingLineStylesheet.logo, logoVisible);
 
-        g = (Graphics2D) g.create(LOGO_WIDTH, 0, width - LOGO_WIDTH, HEIGHT);
-        g.setColor(MAIN_COLOR);
-        g.fillRect(0, 0, width, HEIGHT);
-        g.setComposite(AlphaComposite.SrcOver.derive((float) (1)));
-        g.setFont(messageFont);
-        g.setColor(Color.white);
+        g = g.create(LOGO_WIDTH, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
+        g.clip();
+        g.drawRect(0, 0, BASE_WIDTH, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
         last = time;
 
         if (messagesQueue.size() > 0 && lastRotation + rotateTime < System.currentTimeMillis()) {
+//        if (lastRotation + rotateTime < System.currentTimeMillis()) {
             messageNow = messageNext;
-            if (messagesQueue.size() > 0) {
-
-                messageNext = new Message(messagesQueue.poll(), g);
+            nextStandingsPosition += STANDINGS_PAGE;
+            if (STANDINGS_MESSAGE.equals(messageNow.message) &&
+                    nextStandingsPosition < Math.min(STANDINGS_SIZE, standings == null ? STANDINGS_SIZE : standings.length)) {
+                messageNext = new Message(STANDINGS_MESSAGE, g, messageFont); // next message is still standings
             } else {
-                messageNext = new Message();
+                if (messagesQueue.size() > 0) {
+                    messageNext = new Message(messagesQueue.poll(), g, messageFont);
+                    if (STANDINGS_MESSAGE.equals(messageNext.message)) {
+                        nextStandingsPosition = 0;
+                        standings = Preparation.eventsLoader.getContestData().getStandings();
+                    }
+                } else {
+                    messageNext = new Message();
+                }
+//                if (STANDINGS_MESSAGE.equals(messageNext.message)) {
+//                    messageNext = new Message("H!", g, messageFont);
+//                } else {
+//                    messageNext = new Message(STANDINGS_MESSAGE, g, messageFont);
+//                }
+                if (STANDINGS_MESSAGE.equals(messageNext.message)) {
+//                    nextStandingsPosition = 0;
+//                    standings = Preparation.eventsLoader.getContestData().getStandings();
+                }
             }
             messageNext.position = HEIGHT;
             lastRotation = System.currentTimeMillis();
         }
-        FontMetrics wh = g.getFontMetrics();
 
         if (messageNow.position + messageNow.heigth < 0) {
             inQueue.remove(messageNow.message);
             messageNow = new Message();
         } else {
             messageNow.position -= V * dt;
-            drawTextToFit(g, messageNow.message, 0, messageNow.position, 0, 0, width - LOGO_WIDTH, HEIGHT);
+            drawInfo(g, messageNow, false, width - LOGO_WIDTH, HEIGHT);
+//            drawTextToFit(g, messageNow.message, 0, messageNow.position, 0, 0, width - LOGO_WIDTH, HEIGHT,
+//                    messageFont, CreepingLineStylesheet.main.text);
         }
         if (messageNext.position + messageNext.heigth / 2 > HEIGHT / 2) {
             messageNext.position -= V * dt;
         }
-        drawTextToFit(g, messageNext.message, 0, messageNext.position, 0, 0, width - LOGO_WIDTH, HEIGHT);
+        drawInfo(g, messageNext, true, width - LOGO_WIDTH, HEIGHT);
+
+//        drawTextToFit(g, messageNext.message, 0, messageNext.position, 0, 0, width - LOGO_WIDTH, HEIGHT,
+//                messageFont, CreepingLineStylesheet.main.text);
+        g.unclip();
     }
 }
