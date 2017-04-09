@@ -161,6 +161,9 @@ public class VideoGLWidget extends PlayerWidget {
     private TextureData currentTextureData;
 
     public Texture processTexture() {
+        if (player == null) {
+            return null;
+        }
         if (player.getState() != GLMediaPlayer.State.Playing) {
             return currentTexture;
         }

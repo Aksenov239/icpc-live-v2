@@ -53,6 +53,17 @@ public class TeamUrls {
         return null;
     }
 
+    public static String getUrl(int teamId, String contest, String infoType) {
+        if (contest.equals("PCMS")) {
+            int hall = teamId / 100;
+            int place = teamId % 100;
+            return String.format(urlTemplates.get(infoType), hall, place);
+        } else if (contest.equals("WF")) {
+            return String.format(urlTemplates.get(infoType), teamId);
+        }
+        return null;
+    }
+
     public static String getUrl(RunInfo run) {
         return String.format(urlTemplates.get("record"), run.getId());
     }

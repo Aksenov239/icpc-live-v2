@@ -100,7 +100,7 @@ public class Main {
                 50,
                 1000,
                 200,
-                70
+                80
         ));
 
 //        new Timer().schedule(new TimerTask() {
