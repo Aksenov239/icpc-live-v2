@@ -135,6 +135,9 @@ public class TeamWidget extends Widget {
         g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1);
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
+
+        g.setFont(FONT2);
+
         int problemsNumber = team.getRuns().length;
 
         int dx = (isFull) ? (int) (this.width - X - HEIGHT * (RANK_WIDTH * 0.9 + NAME_WIDTH + TOTAL_WIDTH * 0.9 + PENALTY_WIDTH * 0.9))
