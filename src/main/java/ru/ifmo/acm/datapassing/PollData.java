@@ -93,16 +93,16 @@ public class PollData extends CachedData {
 
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
             String question = jsonObject.get("PollQuestion").getAsString();
-            if (question.equals("null")) {
+            if (!question.equals("null")) {
                 String hashtag = jsonObject.get("PollHashtag").getAsString();
-                Poll poll = new Poll(question, hashtag);
+                Poll poll = new Poll(question, hashtag, false);
                 poll.setTeamOptions(jsonObject.get("teamOptions").getAsBoolean());
                 JsonArray pollOptions = jsonObject.get("PollData").getAsJsonArray();
                 for (int i = 0; i < pollOptions.size(); i++) {
                     JsonObject jsonOption = pollOptions.get(i).getAsJsonObject();
-                    Poll.Option option = new Poll.Option(jsonObject.get("id").getAsInt(),
+                    Poll.Option option = new Poll.Option(jsonOption.get("id").getAsInt(),
                             jsonOption.get("option").getAsString(),
-                            jsonObject.get("votes").getAsInt());
+                            jsonOption.get("votes").getAsInt());
                     poll.options.put(option.option, option);
                 }
                 pollData.poll = poll;

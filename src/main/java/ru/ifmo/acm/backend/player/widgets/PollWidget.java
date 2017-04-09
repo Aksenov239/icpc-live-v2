@@ -1,6 +1,7 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.PollStylesheet;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.StatisticsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
@@ -17,17 +18,21 @@ public class PollWidget extends Widget {
     private long lastVisibleChange;
     private int topTeams;
 
+    private int DX;
     private int plateHeight;
     private int questionWidth;
     private int optionWidth;
     private int spaceY;
     private int spaceX;
     private Font font;
+    private int minimalVoteWidth;
 
-    public PollWidget(long duration, int topTeams, int plateHeight,
-                      int questionWidth, int optionWidth) {
+    public PollWidget(long updateWait, long duration, int topTeams, int DX, int plateHeight,
+                      int questionWidth, int optionWidth, int minimalVoteWidth) {
+        super(updateWait);
         this.duration = duration;
         this.topTeams = topTeams;
+        this.DX = DX;
         this.questionWidth = questionWidth;
         this.plateHeight = plateHeight;
         this.optionWidth = optionWidth;
@@ -36,6 +41,8 @@ public class PollWidget extends Widget {
 
         spaceY = (int) (SPACE_Y * plateHeight);
         spaceX = (int) (SPACE_X * plateHeight);
+
+        this.minimalVoteWidth = minimalVoteWidth;
 
         setVisibilityState(0);
         setVisible(false);
@@ -57,15 +64,20 @@ public class PollWidget extends Widget {
     @Override
     protected void paintImpl(Graphics g, int width, int height) {
         update();
+        updateVisibilityState();
+
+        if (pollToShow == null || visibilityState < 0.00001) {
+            return;
+        }
 
         Poll.Option[] options = pollToShow.getData();
 
         int total = options.length;
         if (pollToShow.getTeamOptions()) { // Then this seems to be the team poll
             Arrays.sort(options, (o1, o2) ->
-                o1.votes == o2.votes ? o1.option.compareTo(o2.option) : o1.votes - o2.votes
+                o1.votes == o2.votes ? o1.option.compareTo(o2.option) : o2.votes - o1.votes
             );
-            for (total = 0; total < topTeams && options[total].votes > 0; total++) { }
+            for (total = 0; total < topTeams && options[total].votes >= 0; total++) { }
         } else {
             Arrays.sort(options, (o1, o2) -> o1.id - o2.id);
         }
@@ -76,37 +88,40 @@ public class PollWidget extends Widget {
             sum += option.votes;
         }
         for (int i = 0; i < total; i++) {
-            percent[i] = 1. * options[total].votes / sum;
+            percent[i] = sum == 0 ? 0 : 1. * options[i].votes / sum;
         }
 
-        int baseY = Widget.BASE_HEIGHT - CreepingLineWidget.HEIGHT - (total + 2) * (plateHeight + spaceY);
-        int baseX = Widget.BASE_WIDTH / 2 - questionWidth / 2;
+        int baseY = Widget.BASE_HEIGHT - 2 * CreepingLineWidget.HEIGHT - (total + 2) * (plateHeight + spaceY);
+        int baseX = (Widget.BASE_WIDTH - DX) / 2 - questionWidth / 2;
 
         g = g.create();
-        g.translate(baseX, baseY);
+        g.translate(baseX + DX, baseY);
         drawTextInRect(g, pollToShow.getQuestion(), 0, 0, questionWidth, plateHeight,
-                Graphics.Alignment.CENTER, font, StatisticsStylesheet.problemAlias,
+                Graphics.Alignment.CENTER, font, PollStylesheet.question,
                 visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         int y = plateHeight + spaceY;
-        drawTextInRect(g, pollToShow.getHashtag(), Widget.BASE_WIDTH / 2, y, -1, plateHeight,
-                Graphics.Alignment.CENTER, font, StatisticsStylesheet.problemAlias,
+        drawTextInRect(g, pollToShow.getHashtag(), questionWidth / 2, y, -1, plateHeight,
+                Graphics.Alignment.CENTER, font, PollStylesheet.hashtag,
                 visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         y += plateHeight + spaceY;
 
         int total_percent = 100;
+        double visibilityOption = 1. * optionWidth / questionWidth;
         for (int i = 0; i < total; i++) {
             drawTextInRect(g, options[i].option, 0, y, optionWidth, plateHeight,
-                    Graphics.Alignment.CENTER, font, StatisticsStylesheet.problemAlias,
-                    visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
-            int left = (int) ((questionWidth - optionWidth - spaceX) * percent[i]);
+                    Graphics.Alignment.CENTER, font, PollStylesheet.option,
+                    Math.min(1, visibilityState / visibilityOption), WidgetAnimation.HORIZONTAL_ANIMATED);
+            int voteWidth = (int) ((questionWidth - optionWidth - spaceX - minimalVoteWidth) * percent[i]);
             int now_percent = (int)Math.round(percent[i] * 100);
             total_percent -= now_percent;
-            if (i == total - 1) {
+            if (i == total - 1 && percent[i] != 0) {
                 now_percent = total_percent;
             }
-            drawTextInRect(g, now_percent + "%", 0, y, optionWidth + spaceX + left, plateHeight,
-                    Graphics.Alignment.CENTER, font, StatisticsStylesheet.udProblem,
-                    visibilityState, WidgetAnimation.HORIZONTAL_ANIMATED);
+            drawTextInRect(g, now_percent + "%", optionWidth + spaceX, y,
+                    minimalVoteWidth + voteWidth, plateHeight,
+                    Graphics.Alignment.CENTER, font, PollStylesheet.votes,
+                    (visibilityState - visibilityOption) / (1 - visibilityOption),
+                    WidgetAnimation.HORIZONTAL_ANIMATED);
             y += plateHeight + spaceY;
         }
     }

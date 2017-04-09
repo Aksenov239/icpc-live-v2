@@ -1,5 +1,8 @@
 package ru.ifmo.acm.mainscreen.Polls;
 
+import ru.ifmo.acm.events.ContestInfo;
+import ru.ifmo.acm.events.EventsLoader;
+
 import java.util.*;
 
 /**
@@ -35,11 +38,21 @@ public class Poll {
     int totalOptions = 0;
 
     // Take team hashtags
-    public Poll(String question, String hashtag) {
-        this(question, hashtag, PollsData.getInstance().teamHashtags);
-        teamOptions = true;
+    public Poll(String question, String hashtag, boolean teamOptions) {
+        this.question = question;
+        this.hashtag = hashtag;
         options = new TreeMap<>();
         usersVoted = new HashSet<>();
+        if (teamOptions) {
+            ContestInfo contestInfo = null;
+            while (contestInfo == null) {
+                contestInfo = EventsLoader.getInstance().getContestData();
+            }
+            this.teamOptions = true;
+            for (String option : contestInfo.getHashTags()) {
+                this.options.put(option, new Option(totalOptions++, option, 0));
+            }
+        }
     }
 
     public Poll(String question, String hashtag, String[] options) {
@@ -49,7 +62,7 @@ public class Poll {
         this.usersVoted = new HashSet<>();
         totalOptions = 0;
         for (String option : options) {
-            this.options.put(option, new Option(totalOptions, option, 0));
+            this.options.put(option, new Option(totalOptions++, option, 0));
         }
     }
 

@@ -3,7 +3,10 @@ package ru.ifmo.acm.backend;
 import com.sun.jna.NativeLibrary;
 import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
-import ru.ifmo.acm.backend.player.widgets.*;
+import ru.ifmo.acm.backend.player.widgets.ClockWidget;
+import ru.ifmo.acm.backend.player.widgets.GreenScreenWidget;
+import ru.ifmo.acm.backend.player.widgets.PollWidget;
+import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,6 +92,16 @@ public class Main {
 
 //        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
 //        generator.addWidget(widget);
+
+        generator.addWidget(new PollWidget(updateWait,
+                Integer.parseInt(properties.getProperty("poll.show.time", "20000")),
+                Integer.parseInt(properties.getProperty("poll.top.teams", "5")),
+                519,
+                50,
+                1000,
+                200,
+                70
+        ));
 
 //        new Timer().schedule(new TimerTask() {
 //            int id = 1;

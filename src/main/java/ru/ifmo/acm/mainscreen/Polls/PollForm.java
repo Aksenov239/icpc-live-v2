@@ -5,6 +5,7 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ifmo.acm.datapassing.PollData;
+import ru.ifmo.acm.events.EventsLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class PollForm extends FormLayout {
             if (pollOnEdit == null) {
                 Poll poll;
                 if (teamOptions.getValue()) {
-                    poll = new Poll(question.getValue(), hashtag.getValue());
+                    poll = new Poll(question.getValue(), hashtag.getValue(), true);
                 } else {
                     ArrayList<String> optionsHashtags = new ArrayList<>();
 
@@ -74,7 +75,7 @@ public class PollForm extends FormLayout {
                     pollBean.getItemProperty("hashtag").setValue(hashtag.getValue());
                     if (teamOptions.getValue()) {
                         if (!pollOnEdit.teamOptions) {
-                            pollOnEdit.setOptions(PollsData.getInstance().teamHashtags);
+                            pollOnEdit.setOptions(EventsLoader.getInstance().getContestData().getHashTags());
                         }
                     } else {
                         ArrayList<String> optionsHashtags = new ArrayList<>();

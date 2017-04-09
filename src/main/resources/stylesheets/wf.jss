@@ -6,6 +6,7 @@ yellow.color=#a59e0c
 red.color=#881f1b
 white.color=#FFFFFF
 chromakey.color = #FF00FF
+black.color=#000000
 
 #problem colors
 ac.color=green.color
@@ -121,3 +122,13 @@ statistics.wa.background=wa.color
 statistics.wa.text=white.color
 statistics.ud.background=ud.color
 statistics.ud.text=white.color
+
+#polls
+polls.question.background=main.color
+polls.question.text=white.color
+polls.hashtag.background=additional.color
+polls.hashtag.text=white.color
+polls.option.background=additional.color
+polls.option.text=white.color
+polls.votes.background=#DDDDDD
+polls.votes.text=black.color

@@ -29,7 +29,6 @@ public class PollsData {
     public final BackUp<Poll> pollList;
     private String backUpFile;
     private static ConcurrentHashMap<String, Poll> pollsByHashtag;
-    public final String[] teamHashtags;
 
     public PollsData() {
         Properties properties = new Properties();
@@ -45,12 +44,6 @@ public class PollsData {
         for (Poll poll : pollList.getData()) {
             pollsByHashtag.put(poll.getHashtag(), poll);
         }
-
-        ArrayList<String> hashtags = new ArrayList<>();
-        for (TeamInfo teamInfo : EventsLoader.getInstance().getContestData().getStandings()) {
-            hashtags.add(teamInfo.getHashTag());
-        }
-        teamHashtags = hashtags.toArray(new String[0]);
     }
 
     public void addPoll(Poll poll) {
@@ -80,6 +73,7 @@ public class PollsData {
         if (pollToUpdate == null) {
             return;
         }
+        System.err.println("Vote for " + message);
         for (int i = 0; i < tokens.length; i++) {
             if (pollToUpdate.updateIfOption(user, tokens[i])) {
                 return;
