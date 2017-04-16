@@ -297,6 +297,28 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return button;
     }
 
+    /* Memes statistics */
+    Label memesStatus;
+    Button memesShow;
+
+    public Component getMemesController() {
+        memesStatus = new Label(getMemesStatus());
+
+        memesShow = new Button("Show memes statistics");
+        memesShow.addClickListener(event -> {
+            memesStatus.setValue(getMemesStatus());
+        });
+
+        VerticalLayout verticalLayout = new VerticalLayout(memesStatus, memesShow);
+        setPanelDefaults(verticalLayout);
+        return verticalLayout;
+    }
+
+    public String getMemesStatus() {
+        return null;
+    }
+
+
     /* mainscreen */
     MainScreenData mainScreenData;
 
@@ -306,6 +328,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 //            breakingNewsStatus.setValue(getBreakingNewsStatus());
         queueStatus.setValue(getQueueStatus());
         statisticsStatus.setValue(getStatisticsStatus());
+        memesStatus.setValue(getMemesStatus());
 
 //        mainScreenData.update();
     }
@@ -318,9 +341,12 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         //Component breakingNewsController = getBreakingNewsController();
         Component queueStatus = getQueueController();
         Component statisticsController = getStatisticsController();
+        Component memesController = getMemesController();
 
         VerticalLayout mainPanel = new VerticalLayout(
-                clockController, standingsController, statisticsController, queueStatus);
+                clockController, standingsController,
+                statisticsController, queueStatus,
+                memesController);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }

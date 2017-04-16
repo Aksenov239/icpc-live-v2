@@ -11,9 +11,7 @@ import ru.ifmo.acm.events.TeamInfo;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Properties;
+import java.util.*;
 
 public class MainScreenProperties {
     private static final Logger log = LogManager.getLogger(MainScreenProperties.class);
@@ -91,6 +89,19 @@ public class MainScreenProperties {
         overlayedDelay = Long.parseLong(properties.getProperty("overlayed.delay", "4000"));
 
         pollTimeToShow = Integer.parseInt(properties.getProperty("poll.show.time", "20000"));
+
+        oneMemeTimeToShow = Integer.parseInt(properties.getProperty("one.meme.show.time", "5000"));
+        String[] memesNames = properties.getProperty("memes", "goose").split(";");
+        memes = new ArrayList<>();
+        memesContent = new HashMap<>();
+        for (String meme : memesNames) {
+            ArrayList<String> variations = new ArrayList<>();
+            for (String content : properties.getProperty("memes." + meme, "(*)>").split(";")) {
+                variations.add(content);
+            }
+            memes.add(meme);
+            memesContent.put(meme, variations);
+        }
     }
 
     public long overlayedDelay;
@@ -128,4 +139,9 @@ public class MainScreenProperties {
 
     // Polls
     public final int pollTimeToShow;
+
+    // Memes
+    public final int oneMemeTimeToShow;
+    public ArrayList<String> memes;
+    public HashMap<String, ArrayList<String>> memesContent;
 }

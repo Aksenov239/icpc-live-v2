@@ -145,7 +145,7 @@ public class PollForm extends FormLayout {
             optionsTable.setValue(false);
         });
 
-        HorizontalLayout actions = new HorizontalLayout(savePoll, deletePoll, cancelPoll);
+        HorizontalLayout actions = new HorizontalLayout(newPoll, savePoll, deletePoll, cancelPoll);
         actions.setSpacing(true);
 
         HorizontalLayout optionsActions = new HorizontalLayout(addOption, removeOption);

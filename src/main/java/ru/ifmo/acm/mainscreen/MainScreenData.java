@@ -20,7 +20,7 @@ public class MainScreenData {
             //Start update
             Utils.StoppedThread updater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
                 public void run() {
-                    while (true) {
+                    while (!stop) {
                         mainScreenData.update();
                         try {
                             Thread.sleep(1000);
@@ -53,6 +53,7 @@ public class MainScreenData {
         statisticsData = new StatisticsData();
         teamStatsData = new TeamStatsData();
         pollData = new PollData();
+        memesData = new MemesData();
     }
 
     public void update() {
@@ -62,6 +63,7 @@ public class MainScreenData {
         breakingNewsData.update();
         teamData.update();
         pollData.update();
+        memesData.update();
     }
 
     private static MainScreenData mainScreenData;
@@ -82,6 +84,7 @@ public class MainScreenData {
     public StatisticsData statisticsData;
     public TeamStatsData teamStatsData;
     public PollData pollData;
+    public MemesData memesData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }
