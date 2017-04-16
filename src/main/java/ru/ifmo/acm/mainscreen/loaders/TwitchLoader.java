@@ -1,8 +1,10 @@
 package ru.ifmo.acm.mainscreen.loaders;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pircbotx.Configuration;
+import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -23,6 +25,7 @@ public class TwitchLoader extends Utils.StoppedRunnable {
     private static TwitchLoader instance;
 
     private PircBotX bot;
+    private MultiBotManager manager;
 
     private static PollsData pollsData;
 
@@ -41,53 +44,47 @@ public class TwitchLoader extends Utils.StoppedRunnable {
         String url = null;
         String username = null;
         String password = null;
-        String channel = null;
+        String channels = null;
         try {
             properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
             url = properties.getProperty("twitch.chat.server", "irc.chat.twitch.tv");
             username = properties.getProperty("twitch.chat.username");
             password = properties.getProperty("twitch.chat.password");
-            channel = properties.getProperty("twitch.chat.channel", "#" + username);
+            channels = properties.getProperty("twitch.chat.channel", "#" + username);
         } catch (IOException e) {
             logger.error("error", e);
         }
-        Configuration configuration = new Configuration.Builder()
+        Configuration.Builder configuration = new Configuration.Builder()
                 .setAutoNickChange(false)
                 .setOnJoinWhoEnabled(false)
                 .setCapEnabled(true)
                 .setName(username)
                 .setServerPassword(password)
                 .addServer(url)
-                .addAutoJoinChannel(channel)
                 .addListener(new ListenerAdapter() {
                     @Override
                     public void onMessage(MessageEvent event) throws Exception {
-//                        System.err.println("Read message: " + event.getUser() + " " + event.getMessage());
+                        logger.log(Level.INFO, "Message: " + event.getUser() + " " + event.getMessage());
+//                        System.err.println("Message: " + event.getUser() + " " + event.getMessage());
                         PollsData.vote("Twitch#" + event.getUser().getLogin(), event.getMessage());
                     }
-                })
-                .buildConfiguration();
-        bot = new PircBotX(configuration);
+                });
+        manager = new MultiBotManager();
+        for (String channel : channels.split(";")) {
+            System.err.println(channel);
+            manager.addBot(configuration.addAutoJoinChannel(channel).buildConfiguration());
+        }
     }
 
     public void run() {
-        try {
-            bot.startBot();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IrcException e) {
-            e.printStackTrace();
-        }
+        manager.start();
         while (!stop) {
             try {
-                if (!bot.isConnected()) {
-                    bot.stopBotReconnect();
-                }
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        bot.close();
+        manager.stop();
     }
 }
