@@ -4,14 +4,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
+import ru.ifmo.acm.datapassing.MemesData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.TeamInfo;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainScreenProperties {
     private static final Logger log = LogManager.getLogger(MainScreenProperties.class);
@@ -19,7 +25,11 @@ public class MainScreenProperties {
     public MainScreenProperties() {
         Properties properties = new Properties();
         try {
-            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+//            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+//            FileInputStream fileInputStream = new FileInputStream(
+//                    new File("src/resources/mainscreen.properties"));
+            properties.load(new InputStreamReader(getClass().getResourceAsStream("/mainscreen.properties"),
+                    Charset.forName("UTF-8")));
         } catch (IOException e) {
             log.error("error", e);
         }
@@ -101,6 +111,10 @@ public class MainScreenProperties {
             }
             memes.add(meme);
             memesContent.put(meme, variations);
+        }
+        MemesData.memesCount = new AtomicInteger[memes.size()];
+        for (int i = 0; i < memes.size(); i++) {
+            MemesData.memesCount[i] = new AtomicInteger();
         }
     }
 

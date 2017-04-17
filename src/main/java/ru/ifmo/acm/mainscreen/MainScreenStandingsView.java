@@ -306,6 +306,10 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         memesShow = new Button("Show memes statistics");
         memesShow.addClickListener(event -> {
+            String outcome = mainScreenData.memesData.setMemesVisible();
+            if (outcome != null) {
+                Notification.show(outcome, Notification.Type.TRAY_NOTIFICATION);
+            }
             memesStatus.setValue(getMemesStatus());
         });
 
@@ -315,7 +319,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     }
 
     public String getMemesStatus() {
-        return null;
+        return mainScreenData.memesData.toString();
     }
 
 
