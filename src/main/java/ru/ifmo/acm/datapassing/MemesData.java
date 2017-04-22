@@ -70,10 +70,10 @@ public class MemesData extends CachedData {
         }
     }
 
-    private boolean isVisible;
+    public boolean isVisible;
     private long timestamp;
-    private String currentMeme;
-    private int count;
+    public String currentMeme;
+    public int count;
     private int currentMemeId;
     public static AtomicInteger[] memesCount;
 }

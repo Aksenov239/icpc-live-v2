@@ -66,19 +66,19 @@ public class    MyUI extends UI {
 
         getNavigator().addView(MainScreenSplitScreenView.NAME, MainScreenSplitScreenView.class);
 
-        menu.addItem("Main screen", selectedItem -> {
+        menu.addItem("Captions", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
         });
 
-        menu.addItem("Standings view", selectedItem -> {
+        menu.addItem("Statistics", selectedItem -> {
             getNavigator().navigateTo(MainScreenStandingsView.NAME);
         });
 
-        menu.addItem("Breaking news view", selectedItem -> {
+        menu.addItem("Breaking news", selectedItem -> {
             getNavigator().navigateTo(MainScreenBreakingNews.NAME);
         });
 
-        menu.addItem("Team view (MS)", selectedItem -> {
+        menu.addItem("Team views", selectedItem -> {
             getNavigator().navigateTo(MainScreenTeamView.NAME);
         });
 

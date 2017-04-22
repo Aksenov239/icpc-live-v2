@@ -26,6 +26,7 @@ public class Data extends CachedData {
     public StatisticsData statisticsData;
     public TeamStatsData teamStatsData;
     public PollData pollData;
+    public MemesData memesData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -52,6 +53,7 @@ public class Data extends CachedData {
             statisticsData = (StatisticsData) cache.get(StatisticsData.class);
             teamStatsData = (TeamStatsData) cache.get(TeamStatsData.class);
             pollData = (PollData) cache.get(PollData.class);
+            memesData = (MemesData) cache.get(MemesData.class);
             //cameraData = (CameraData) cache.get(CameraData.class);
             //log.debug(teamData);
         } catch (Exception e) {
