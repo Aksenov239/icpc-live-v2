@@ -132,3 +132,7 @@ polls.option.background=additional.color
 polls.option.text=white.color
 polls.votes.background=#DDDDDD
 polls.votes.text=black.color
+
+#memes
+meme.background=main.color
+meme.text=white.color

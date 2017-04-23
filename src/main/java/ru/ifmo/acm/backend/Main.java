@@ -3,10 +3,7 @@ package ru.ifmo.acm.backend;
 import com.sun.jna.NativeLibrary;
 import ru.ifmo.acm.backend.player.TickPlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
-import ru.ifmo.acm.backend.player.widgets.ClockWidget;
-import ru.ifmo.acm.backend.player.widgets.GreenScreenWidget;
-import ru.ifmo.acm.backend.player.widgets.PollWidget;
-import ru.ifmo.acm.backend.player.widgets.Widget;
+import ru.ifmo.acm.backend.player.widgets.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,6 +98,13 @@ public class Main {
                 1000,
                 200,
                 80
+        ));
+
+        generator.addWidget(new MemesWidget(updateWait,
+                Integer.parseInt(properties.getProperty("memes.flicker.time", "2000")),
+                600,
+                400,
+                250
         ));
 
 //        new Timer().schedule(new TimerTask() {

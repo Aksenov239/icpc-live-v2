@@ -318,7 +318,7 @@ public abstract class Widget {
 
             if (lastChangeTimestamp + correspondingData.delay < System.currentTimeMillis()) {
                 currentData = data;
-            }
+            };
             updateImpl(currentData);
             lastUpdate = System.currentTimeMillis();
         }

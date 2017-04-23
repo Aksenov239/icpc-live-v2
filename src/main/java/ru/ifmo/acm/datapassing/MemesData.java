@@ -1,8 +1,10 @@
 package ru.ifmo.acm.datapassing;
 
+import com.google.gson.*;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.MainScreenProperties;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,6 +16,7 @@ public class MemesData extends CachedData {
         MemesData memesData = MainScreenData.getMainScreenData().memesData;
         currentMeme = memesData.currentMeme;
         count = memesData.count;
+        isVisible = memesData.isVisible;
         return memesData;
     }
 
@@ -48,7 +51,7 @@ public class MemesData extends CachedData {
     public String toString() {
         return isVisible ? "Showing memes statistics for " + Math.max(0, timestamp +
                 MainScreenData.getProperties().oneMemeTimeToShow * MainScreenData.getProperties().memes.size() -
-                System.currentTimeMillis()) + " more seconds" : "Memes statistics is not shown";
+                System.currentTimeMillis()) / 1000 + " more seconds" : "Memes statistics is not shown";
     }
 
     public void recache() {
@@ -71,9 +74,32 @@ public class MemesData extends CachedData {
     }
 
     public boolean isVisible;
-    private long timestamp;
     public String currentMeme;
     public int count;
     private int currentMemeId;
     public static AtomicInteger[] memesCount;
+
+    public static class MemesDataSerializer implements JsonSerializer<MemesData> {
+        @Override
+        public JsonElement serialize(MemesData memesData, Type type, JsonSerializationContext jsonSerializationContext) {
+            final JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("isVisible", memesData.isVisible);
+            jsonObject.addProperty("currentMeme", memesData.currentMeme);
+            jsonObject.addProperty("count", memesData.count);
+            return jsonObject;
+        }
+    }
+
+    public static class MemesDataDeserializer implements JsonDeserializer<MemesData> {
+        @Override
+        public MemesData deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
+            MemesData memesData = new MemesData();
+            final JsonObject jsonObject = jsonElement.getAsJsonObject();
+            memesData.isVisible = jsonObject.get("isVisible").getAsBoolean();
+            memesData.currentMeme = jsonObject.get("currentMeme") == null ? null :
+                    jsonObject.get("currentMeme").getAsString();
+            memesData.count = jsonObject.get("count").getAsInt();
+            return memesData;
+        }
+    }
 }

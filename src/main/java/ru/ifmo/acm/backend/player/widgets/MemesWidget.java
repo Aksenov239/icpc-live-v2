@@ -1,8 +1,11 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.MemesStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
+
+import java.awt.*;
 
 /**
  * Created by Meepo on 4/22/2017.
@@ -18,6 +21,14 @@ public class MemesWidget extends Widget {
     double visibilityRectangle;
     double visibilityText;
 
+    int widthR;
+    int heightR;
+    int Y;
+    int DX;
+    int IMAGE_WIDTH;
+
+    Font font;
+
     int flickerTime;
     MemeStatus status;
 
@@ -29,21 +40,28 @@ public class MemesWidget extends Widget {
         CLOSE
     }
 
-    public MemesWidget(int updateWait, int flickerTime) {
+    public MemesWidget(long updateWait, int flickerTime, int Y, int widthR, int heightR) {
         super(updateWait);
+        this.flickerTime = flickerTime;
         V = 2. / flickerTime;
+        this.widthR = widthR;
+        IMAGE_WIDTH = (int) (this.widthR * 0.5);
+        this.DX = (int) (0.05 * widthR);
+        this.heightR = heightR;
+        this.Y = Y;
+        font = new Font("Open Sans", Font.BOLD, 40);
     }
 
     @Override
     public void updateImpl(Data data) {
         if (data.memesData.isVisible) {
             if (!visible) {
-                previous = null;
+                previous = data.memesData.currentMeme;
                 meme = data.memesData.currentMeme;
                 count = data.memesData.count;
                 status = MemeStatus.OPEN;
             } else {
-                if (!previous.equals(data.memesData.currentMeme)) {
+                if (!data.memesData.currentMeme.equals(meme)) {
                     previous = meme;
                     previousCount = count;
                     meme = data.memesData.currentMeme;
@@ -83,9 +101,16 @@ public class MemesWidget extends Widget {
 
     @Override
     public void paintImpl(Graphics g, int width, int height) {
+        update();
+        updateVisibility();
         if (visibilityRectangle == 0) {
             return;
         }
+        int X = Widget.BASE_WIDTH - (int) ((widthR + DX) * visibilityRectangle);
+        g.drawRect(X, Y, widthR, heightR, MemesStylesheet.meme.background, 1);
+
+        g.drawString(" X " + count, X + IMAGE_WIDTH, Y + heightR / 2,
+                font, MemesStylesheet.meme.text, visibilityText);
     }
 
     @Override
