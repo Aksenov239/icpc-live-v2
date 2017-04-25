@@ -135,6 +135,11 @@ public class GraphicsGL extends Graphics {
         return g;
     }
 
+    @Override
+    public void clear(int width, int height) {
+        gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+    }
+
     private void drawString(String text, float x, float y, float scaleX, float scaleY,
 //                            com.jogamp.graph.font.Font joglFont, int fontSize,
                             Font font,

@@ -44,7 +44,7 @@ public class Main {
 //        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/avfilter-6.dll");
 //        System.loadLibrary("C:/work/svn/icpc-live-v2/libav/x64/avdevice-57.dll");
 
-//        System.setProperty("jogamp.debug", "true");
+        System.setProperty("jogamp.debug", "true");
 
         Properties properties = readProperties();
         int width = Integer.parseInt(properties.getProperty("width", "1280"));
@@ -57,20 +57,20 @@ public class Main {
 
         WidgetManager manager = new WidgetManager(properties);
 
-        manager.addWidget(new NewTeamWidget(
+/*        manager.addWidget(new NewTeamWidget(
                 Integer.parseInt(properties.getProperty("sleep.time")),
                 Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
 
-//        manager.addWidget(new VerticalCreepingLineWidget(updateWait,
-//                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
-//                properties.getProperty("creeping.line.logo", "ICPC 2016"),
-//                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
-//                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
+        manager.addWidget(new VerticalCreepingLineWidget(updateWait,
+                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
+                properties.getProperty("creeping.line.logo", "ICPC 2016"),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
 
-//        StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
-//        standingsWidget.alignBottom(994);
-//        manager.addWidget(standingsWidget);
-//
+        StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
+        standingsWidget.alignBottom(994);
+        manager.addWidget(standingsWidget);
+
         boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
         manager.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
 //
@@ -79,13 +79,13 @@ public class Main {
         bigStandingsWidget.alignBottom(994);
         manager.addWidget(bigStandingsWidget);
 
-//        manager.addWidget(new StatisticsWidget(
-//                519, 200, 39, 1350, updateWait
-//        ));
-//
-//        manager.addWidget(new DoublePersonWidget(updateWait, timePerson));
-//        manager.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
+        manager.addWidget(new StatisticsWidget(
+                519, 200, 39, 1350, updateWait
+        ));
 
+        manager.addWidget(new DoublePersonWidget(updateWait, timePerson));
+        manager.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
+  */
         manager.addWidget(new ClockWidget(updateWait));
 
         GLCanvas canvas = new GLCanvas();
