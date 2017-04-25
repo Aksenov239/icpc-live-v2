@@ -15,9 +15,9 @@
         </Rollingfile>
     </Appenders>
     <Loggers>
-        <Root level="DEBUG">
+<!--        <Root level="DEBUG">
             <AppenderRef ref="file"/>
             <AppenderRef ref="console"/>
-        </Root>
+        </Root>-->
     </Loggers>
 </Configuration>
