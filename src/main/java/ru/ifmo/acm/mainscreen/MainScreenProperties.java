@@ -37,14 +37,14 @@ public class MainScreenProperties {
         EventsLoader loader = EventsLoader.getInstance();
 
         String topteamsfilename = properties.getProperty("top.teams.file");
-        try {
             topteamsids = new HashSet<>();
+        //try {
             // topteamsids = Files.lines(Paths.get(topteamsfilename)).mapToInt(Integer::parseInt).collect(Collectors.toSet());
-            Files.lines(Paths.get(topteamsfilename)).
-                    forEach(topteamsids::add);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+  //          Files.lines(Paths.get(topteamsfilename)).
+    //                forEach(topteamsids::add);
+      //  } catch (IOException e) {
+       //     e.printStackTrace();
+       // }
 
         Utils.StoppedThread loaderThread = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             public void run() {

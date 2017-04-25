@@ -191,13 +191,14 @@ public class BigStandingsWidget extends Widget {
         topUniversity = new boolean[contestData.getTeamsNumber() + 1];
         RunInfo[] firstSolved = new RunInfo[contestData.getProblemsNumber()];
         for (TeamInfo team : standings) {
-            String universityName = team.getName();
+            String universityName = team.getShortName();
             boolean lastDigit = Character.isDigit(universityName.charAt(universityName.length() - 1));
             if (lastDigit) {
                 universityName = universityName.substring(0, universityName.length() - 2);
             }
             if (!appearedUniversity.contains(universityName) &&
-                    appearedUniversity.size() < BigStandingsStylesheet.finalists) {
+                    appearedUniversity.size() < BigStandingsStylesheet.finalists &&
+                    StandingsData.ALL_REGIONS.equals(region)) {
                 topUniversity[team.getId()] = true;
                 appearedUniversity.add(universityName);
             }

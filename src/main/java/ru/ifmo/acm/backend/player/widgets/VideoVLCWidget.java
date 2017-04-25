@@ -111,6 +111,9 @@ public class VideoVLCWidget extends PlayerWidget {
     }
 
     public double getAspectRatio() {
+        if (currentUrl.startsWith("http")) {
+            return 4. / 3;
+        }
         return player.getPlayer().getAspectRatio().equals("16:9") ? 16. / 9 : 4. / 3;
     }
 

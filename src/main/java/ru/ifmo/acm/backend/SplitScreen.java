@@ -1,8 +1,7 @@
 package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
-import org.apache.logging.log4j.Logger;
-import ru.ifmo.acm.backend.player.TickPlayer;
+import ru.ifmo.acm.backend.player.FramePlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import ru.ifmo.acm.backend.player.widgets.*;
 
@@ -51,7 +50,7 @@ public class SplitScreen {
         ));
         generator.addWidget(new ClockWidget(updateWait));
 //        generator.addWidget(new QueueWidget(100));
-        new TickPlayer("Split screen", generator, frameRate).frame.setLocation(0, 0);
+        new FramePlayer("Split screen", generator, frameRate).frame.setLocation(0, 0);
     }
 
     private Properties readProperties() {

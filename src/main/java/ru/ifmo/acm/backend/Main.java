@@ -1,7 +1,8 @@
 package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
-import ru.ifmo.acm.backend.player.TickPlayer;
+import ru.ifmo.acm.backend.player.FramePlayer;
+import ru.ifmo.acm.backend.player.MemoryFilePlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import ru.ifmo.acm.backend.player.widgets.*;
 
@@ -103,7 +104,8 @@ public class Main {
 //            }
 //        }, 1000, 32000);
 //
-        new TickPlayer("Main screen", generator, frameRate).frame.setLocation(0, 0);
+        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
+        new MemoryFilePlayer(filename, generator, frameRate);
     }
 
     private Properties readProperties() {

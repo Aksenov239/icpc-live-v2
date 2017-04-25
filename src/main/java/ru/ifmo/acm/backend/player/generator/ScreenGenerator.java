@@ -6,7 +6,8 @@ import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.color.ColorSpace;
+import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -15,6 +16,7 @@ import java.util.Properties;
  * Created by aksenov on 14.04.2015.
  */
 public class ScreenGenerator {
+    private final WritableRaster raster;
     protected List<Widget> widgets = new ArrayList<>();
     private BufferedImage image;
     protected int width;
@@ -25,18 +27,35 @@ public class ScreenGenerator {
         this.width = width;
         this.height = height;
         this.scale = scale;
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+        int[] nBits = {8, 8, 8, 8};
+        int[] bOffs = {3, 2, 1, 0};
+        ComponentColorModel colorModel = new ComponentColorModel(cs, nBits, true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+        raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, width, height, width*4, 4, bOffs, null);
+        image = new BufferedImage(colorModel, raster, false, null);
 
         Preparation.prepareEventsLoader();
         Preparation.prepareDataLoader();
         Preparation.prepareNetwork(properties.getProperty("login", null), properties.getProperty("password", null));
     }
 
+    public final DataBufferByte getBuffer() {
+        draw();
+        return (DataBufferByte) raster.getDataBuffer();
+    }
+
     public final BufferedImage getScreen() {
+        draw();
+        return image;
+    }
+
+    private void draw() {
         Graphics2D g2 = (Graphics2D) image.getGraphics();
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);int width = this.width;
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        int width = this.width;
         int height = this.height;
         if (scale != 1) {
             g2.scale(scale, scale);
@@ -48,7 +67,6 @@ public class ScreenGenerator {
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }
-        return image;
     }
 
     public int getWidth() {

@@ -20,8 +20,8 @@ public abstract class PlayerWidget extends Widget {
     public static PlayerWidget getPlayerWidget(int x, int y,
                                                int width, int height,
                                                int sleepTime, int updateWait) {
-        return new VideoGLWidget(x, y, width, height, sleepTime, updateWait);
-//        return new VideoVLCWidget(x, y, width, height, sleepTime, updateWait);
+//        return new VideoGLWidget(x, y, width, height, sleepTime, updateWait);
+        return new VideoVLCWidget(x, y, width, height, sleepTime, updateWait);
     }
 
     public abstract void draw(Graphics g);

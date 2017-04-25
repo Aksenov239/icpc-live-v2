@@ -58,7 +58,7 @@ public abstract class ContestInfo {
     public long getCurrentTime() {
         switch (status) {
             case BEFORE:
-                return System.currentTimeMillis();
+                return 0;
             case PAUSED:
                 return lastTime;
             case RUNNING:
@@ -75,7 +75,7 @@ public abstract class ContestInfo {
     }
 
     public boolean isFrozen() {
-        return getCurrentTime() >= 4 * 60 * 60;
+        return getCurrentTime() >= ContestInfo.FREEZE_TIME;
     }
 
     public abstract TeamInfo getParticipant(String name);
@@ -93,10 +93,7 @@ public abstract class ContestInfo {
             return getStandings(optimismLevel);
         }
         TeamInfo[] infos = getStandings(optimismLevel);
-        System.err.println(infos.length);
-        for (TeamInfo team : infos) {
-            System.err.println(team.getId() + " " + team.getRegion() + " " + region);
-        }
+        
         return Stream.of(infos).filter(x -> region.equals(x.getRegion())).toArray(TeamInfo[]::new);
     }
 
