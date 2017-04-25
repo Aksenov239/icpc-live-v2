@@ -35,6 +35,12 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
+    public void clear(int width, int height) {
+        g.setBackground(new Color(0, 0, 0, 0));
+        g.clearRect(0, 0, width, height);
+    }
+
+    @Override
     public void drawString(String text, int x, int y, Font font, Color color, double opacity) {
         g.setFont(font);
         setColor(color, opacity);

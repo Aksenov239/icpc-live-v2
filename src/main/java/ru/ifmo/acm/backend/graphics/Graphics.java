@@ -20,8 +20,8 @@ public abstract class Graphics {
 
     public abstract Graphics create(int x, int y, int width, int height);
 
-    private final int POINTS_IN_ROUND = 3;
-    private final int ROUND_RADIUS = 4;
+    private final int POINTS_IN_ROUND = 1;
+    private final int ROUND_RADIUS = 0;
 
     public enum RectangleType {
         SOLID_ROUNDED,
@@ -33,10 +33,40 @@ public abstract class Graphics {
         if (opacity < 0.1) {
             return;
         }
-        int hh = (int) (height * opacity);
-        y += (height - hh) / 2;
-        height = hh;
-
+        opacity *= .9;
+//        int hh = (int) (height * opacity);
+//        y += (height - hh) / 2;
+//        height = hh;
+//
+//        int[] xx, yy;
+//        if (rectangleType == RectangleType.SOLID) {
+//            xx = new int[4];
+//            yy = new int[4];
+//            for (int i = 0; i < 4; i++) {
+//                xx[i] = x + (i == 0 || i == 3 ? 0 : width);
+//                yy[i] = y + (i == 2 || i == 3 ? 0 : height);
+//            }
+//        } else {
+//            xx = new int[POINTS_IN_ROUND * 4];
+//            yy = new int[POINTS_IN_ROUND * 4];
+//            for (int i = 0; i < 4; i++) {
+//                for (int j = 0; j < POINTS_IN_ROUND; j++) {
+//                    int t = i * POINTS_IN_ROUND + j;
+//                    double a = Math.PI / 2 * j / (POINTS_IN_ROUND - 1);
+//                    int dx = new int[]{0, 1, 0, -1}[i];
+//                    int dy = new int[]{1, 0, -1, 0}[i];
+//                    double baseX = (i == 0 || i == 3 ? x + ROUND_RADIUS : x + width - ROUND_RADIUS);
+//                    double baseY = (i == 2 || i == 3 ? y + ROUND_RADIUS : y + height - ROUND_RADIUS);
+//
+//                    double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
+//                    double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
+//                    if (rectangleType == RectangleType.ITALIC) tx -= (ty - (y + height / 2)) * 0.2;
+//                    xx[t] = (int) (i == 0 || i == 3 ? Math.ceil(tx) : Math.floor(tx));//(int) Math.round(tx);
+//                    yy[t] = (int) (i == 2 || i == 3 ? Math.ceil(ty) : Math.floor(ty));//(int) Math.round(ty);
+//                }
+//            }
+//        }
+//        fillPolygon(xx, yy, x + width / 2, y + height / 2, color, opacity);
         int[] xx, yy;
         if (rectangleType == RectangleType.SOLID) {
             xx = new int[4];
@@ -51,7 +81,7 @@ public abstract class Graphics {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < POINTS_IN_ROUND; j++) {
                     int t = i * POINTS_IN_ROUND + j;
-                    double a = Math.PI / 2 * j / (POINTS_IN_ROUND - 1);
+                    double a = Math.PI / 2 * j / (POINTS_IN_ROUND);
                     int dx = new int[]{0, 1, 0, -1}[i];
                     int dy = new int[]{1, 0, -1, 0}[i];
                     double baseX = (i == 0 || i == 3 ? x + ROUND_RADIUS : x + width - ROUND_RADIUS);
@@ -66,11 +96,14 @@ public abstract class Graphics {
             }
         }
         fillPolygon(xx, yy, x + width / 2, y + height / 2, color, opacity);
+
     }
 
     public void drawRect(int x, int y, int width, int height, Color color, double opacity) {
         drawRect(x, y, width, height, color, opacity, RectangleType.SOLID_ROUNDED);
     }
+
+    public abstract void clear(int width, int height);
 
     public enum Alignment {
         LEFT,
