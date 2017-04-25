@@ -10,7 +10,7 @@ import static ru.ifmo.acm.mainscreen.Utils.setPanelDefaults;
 import ru.ifmo.acm.events.ContestInfo;
 
 public class MainScreenStandingsView extends CustomComponent implements View {
-    public static String NAME = "mainscrean-standings";
+    public static String NAME = "mainscreen-standings";
 
     /* Clocks */
     final String[] clockStatuses = new String[]{"Clock is shown", "Clock isn't shown"};
@@ -297,6 +297,32 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         return button;
     }
 
+    /* Memes statistics */
+    Label memesStatus;
+    Button memesShow;
+
+    public Component getMemesController() {
+        memesStatus = new Label(getMemesStatus());
+
+        memesShow = new Button("Show memes statistics");
+        memesShow.addClickListener(event -> {
+            String outcome = mainScreenData.memesData.setMemesVisible();
+            if (outcome != null) {
+                Notification.show(outcome, Notification.Type.TRAY_NOTIFICATION);
+            }
+            memesStatus.setValue(getMemesStatus());
+        });
+
+        VerticalLayout verticalLayout = new VerticalLayout(memesStatus, memesShow);
+        setPanelDefaults(verticalLayout);
+        return verticalLayout;
+    }
+
+    public String getMemesStatus() {
+        return mainScreenData.memesData.toString();
+    }
+
+
     /* mainscreen */
     MainScreenData mainScreenData;
 
@@ -306,8 +332,9 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 //            breakingNewsStatus.setValue(getBreakingNewsStatus());
         queueStatus.setValue(getQueueStatus());
         statisticsStatus.setValue(getStatisticsStatus());
+        memesStatus.setValue(getMemesStatus());
 
-        mainScreenData.update();
+//        mainScreenData.update();
     }
 
     public MainScreenStandingsView() {
@@ -318,9 +345,12 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         //Component breakingNewsController = getBreakingNewsController();
         Component queueStatus = getQueueController();
         Component statisticsController = getStatisticsController();
+        Component memesController = getMemesController();
 
         VerticalLayout mainPanel = new VerticalLayout(
-                clockController, standingsController, statisticsController, queueStatus);
+                clockController, standingsController,
+                statisticsController, queueStatus,
+                memesController);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }

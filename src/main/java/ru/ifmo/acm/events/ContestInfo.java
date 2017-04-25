@@ -1,5 +1,6 @@
 package ru.ifmo.acm.events;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 import java.util.List;
 import java.util.TreeSet;
@@ -13,6 +14,7 @@ public abstract class ContestInfo {
     protected final long totalTime = 0;
     public static List<ProblemInfo> problems;
     public long lastTime;
+    private static String[] hashtags;
 
     public enum Status {
         BEFORE,
@@ -93,8 +95,23 @@ public abstract class ContestInfo {
             return getStandings(optimismLevel);
         }
         TeamInfo[] infos = getStandings(optimismLevel);
-        
+//        System.err.println(infos.length);
+//        for (TeamInfo team : infos) {
+//            System.err.println(team.getId() + " " + team.getRegion() + " " + region);
+//        }
         return Stream.of(infos).filter(x -> region.equals(x.getRegion())).toArray(TeamInfo[]::new);
+    }
+
+    public String[] getHashTags() {
+        if (hashtags != null) {
+            return hashtags;
+        }
+        ArrayList<String> hashtags = new ArrayList<>();
+        TeamInfo[] infos = getStandings();
+        for (TeamInfo teamInfo : infos) {
+            hashtags.add(teamInfo.getHashTag());
+        }
+        return hashtags.toArray(new String[0]);
     }
 
     public abstract long[] firstTimeSolved();

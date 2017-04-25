@@ -63,7 +63,7 @@ public class WFContestInfo extends ContestInfo {
                             firstSolvedRun[j] = wfrun;
                         }
                         break;
-                    } else if (wfrun.getResult().length() > 0 && !"CE".equals(run.getResult())) {
+                    } else if (wfrun.getResult().length() > 0 && !"CE".equals(wfrun.getResult())) {
                         wrong++;
                     }
                 }

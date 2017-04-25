@@ -10,6 +10,7 @@ import ru.ifmo.acm.backend.graphics.Graphics;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
+
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.events.WF.WFRunInfo;
 
@@ -105,15 +106,21 @@ public class SplitScreenWidget extends Widget {
         System.err.println("Choosing replay");
         while (currentRunId <= contestInfo.getLastRunId() && replayRun == null) {
             WFRunInfo run = contestInfo.getRun(currentRunId);
+            if (run != null)
+                System.err.println((long)(1000 * run.timestamp) + " " + System.currentTimeMillis() + " " +
+                        (long)(System.currentTimeMillis() - 1000 * run.timestamp)+ " " + run + " " +
+                    run.isAccepted());
             if (run != null &&
-                    contestInfo.getRun(currentRunId).timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
+                    run.timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
 //                    run.getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&
                     run.isAccepted()) {
                 replayRun = run;
             }
             currentRunId++;
         }
+
         log.info("Found replay " + replayRun);
+        System.err.println("Found replay " + replayRun);
         if (replayRun != null) {
             teamInfoWidgets[widget].change(replayRun);
             lastSwitch[widget] = System.currentTimeMillis() - switchTime + replayTime;
@@ -206,7 +213,7 @@ public class SplitScreenWidget extends Widget {
     }
 
     @Override
-    public CachedData getCorrespondingData(Data data){
+    public CachedData getCorrespondingData(Data data) {
         return data.splitScreenData;
     }
 

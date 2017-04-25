@@ -86,18 +86,18 @@ public class CreepingLineView extends CustomComponent implements View {
         }
 //        HorizontalLayout actions = new HorizontalLayout(newMessage);
 
-        TwitterStreamQueryForm twitterQueryForm = new TwitterStreamQueryForm(TwitterLoader.getInstance().getTwitterQueryString());
-        TwitterSearchForm twitterSearchForm = new TwitterSearchForm();
-        VerticalLayout left = new VerticalLayout(messageList, twitterQueryForm, twitterSearchForm, messageFlow);
+//        TwitterStreamQueryForm twitterQueryForm = new TwitterStreamQueryForm(TwitterLoader.getInstance().getTwitterQueryString());
+//        TwitterSearchForm twitterSearchForm = new TwitterSearchForm();
+        VerticalLayout left = new VerticalLayout(messageList, /*twitterQueryForm, twitterSearchForm,*/ messageFlow);
         left.setSizeFull();
         messageList.setSizeFull();
         messageFlow.setSizeFull();
-        twitterQueryForm.setSizeFull();
-        twitterSearchForm.setSizeFull();
+//        twitterQueryForm.setSizeFull();
+//        twitterSearchForm.setSizeFull();
         left.setExpandRatio(messageList, 1);
         left.setExpandRatio(messageFlow, 1);
-        left.setExpandRatio(twitterQueryForm, 1);
-        left.setExpandRatio(twitterSearchForm, 1);
+//        left.setExpandRatio(twitterQueryForm, 1);
+//        left.setExpandRatio(twitterSearchForm, 1);
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, messageForm);
         mainLayout.setSizeFull();

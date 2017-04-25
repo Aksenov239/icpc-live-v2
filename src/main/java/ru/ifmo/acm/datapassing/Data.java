@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.ifmo.acm.mainscreen.Polls.Poll;
 
 /**
  * Created by Aksenov239 on 21.11.2015.
@@ -24,6 +25,8 @@ public class Data extends CachedData {
     public QueueData queueData;
     public StatisticsData statisticsData;
     public TeamStatsData teamStatsData;
+    public PollData pollData;
+    public MemesData memesData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -49,6 +52,8 @@ public class Data extends CachedData {
             queueData = (QueueData) cache.get(QueueData.class);
             statisticsData = (StatisticsData) cache.get(StatisticsData.class);
             teamStatsData = (TeamStatsData) cache.get(TeamStatsData.class);
+            pollData = (PollData) cache.get(PollData.class);
+            memesData = (MemesData) cache.get(MemesData.class);
             //cameraData = (CameraData) cache.get(CameraData.class);
             //log.debug(teamData);
         } catch (Exception e) {

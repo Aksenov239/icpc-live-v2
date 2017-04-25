@@ -265,8 +265,8 @@ public abstract class Widget {
     }
 
     void drawTextToFit(Graphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
-//        Graphics g = gg.create(x, y, width, height);
-        g.drawTextThatFits(text, (int)(X - x), (int)(Y - y), width, height, font, color, MARGIN);
+        Graphics gg = g.create(x, y, width, height);
+        gg.drawTextThatFits(text, (int)(X - x), (int)(Y - y), width, height, font, color, MARGIN);
     }
 
     void drawTeamPane(Graphics g, TeamInfo team, int x, int y, int height, double state,
@@ -318,7 +318,7 @@ public abstract class Widget {
 
             if (lastChangeTimestamp + correspondingData.delay < System.currentTimeMillis()) {
                 currentData = data;
-            }
+            };
             updateImpl(currentData);
             lastUpdate = System.currentTimeMillis();
         }

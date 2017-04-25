@@ -17,6 +17,7 @@ import ru.ifmo.acm.datapassing.DataRequestHandler;
 import ru.ifmo.acm.login.LoginView;
 import ru.ifmo.acm.mainscreen.BreakingNews.MainScreenBreakingNews;
 import ru.ifmo.acm.mainscreen.*;
+import ru.ifmo.acm.mainscreen.Polls.MainScreenPollView;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -25,7 +26,7 @@ import javax.servlet.annotation.WebServlet;
  */
 @Theme("mytheme")
 @Widgetset("ru.ifmo.acm.MyAppWidgetset")
-public class MyUI extends UI {
+public class    MyUI extends UI {
     View currentView;
 
     @Override
@@ -61,23 +62,23 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenBreakingNews.NAME, MainScreenBreakingNews.class);
 
-        getNavigator().addView(MainScreenCameraView.NAME, MainScreenCameraView.class);
+        getNavigator().addView(MainScreenPollView.NAME, MainScreenPollView.class);
 
         getNavigator().addView(MainScreenSplitScreenView.NAME, MainScreenSplitScreenView.class);
 
-        menu.addItem("Main screen", selectedItem -> {
+        menu.addItem("Captions", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
         });
 
-        menu.addItem("Standings view", selectedItem -> {
+        menu.addItem("Statistics", selectedItem -> {
             getNavigator().navigateTo(MainScreenStandingsView.NAME);
         });
 
-        menu.addItem("Breaking news view", selectedItem -> {
+        menu.addItem("Breaking news", selectedItem -> {
             getNavigator().navigateTo(MainScreenBreakingNews.NAME);
         });
 
-        menu.addItem("Team view (MS)", selectedItem -> {
+        menu.addItem("Team views", selectedItem -> {
             getNavigator().navigateTo(MainScreenTeamView.NAME);
         });
 
@@ -85,8 +86,8 @@ public class MyUI extends UI {
             getNavigator().navigateTo(MainScreenSplitScreenView.NAME);
         });
 
-        menu.addItem("Cameras (MS)", selectedItem -> {
-           getNavigator().navigateTo(MainScreenCameraView.NAME);
+        menu.addItem("Polls", selectedItem -> {
+           getNavigator().navigateTo(MainScreenPollView.NAME);
         });
 
         menu.addItem("Creeping Line", selectedItem -> {
@@ -113,8 +114,8 @@ public class MyUI extends UI {
             if (currentView instanceof MainScreenTeamView) {
                 ((MainScreenTeamView) currentView).refresh();
             }
-            if (currentView instanceof MainScreenCameraView) {
-                ((MainScreenCameraView) currentView).refresh();
+            if (currentView instanceof MainScreenPollView) {
+                ((MainScreenPollView) currentView).refresh();
             }
             if (currentView instanceof MainScreenBreakingNews) {
                 ((MainScreenBreakingNews) currentView).refresh();

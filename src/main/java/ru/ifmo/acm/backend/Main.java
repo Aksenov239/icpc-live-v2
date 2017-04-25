@@ -91,6 +91,23 @@ public class Main {
 //        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
 //        generator.addWidget(widget);
 
+        generator.addWidget(new PollWidget(updateWait,
+                Integer.parseInt(properties.getProperty("poll.show.time", "20000")),
+                Integer.parseInt(properties.getProperty("poll.top.teams", "5")),
+                519,
+                50,
+                1000,
+                200,
+                80
+        ));
+
+        generator.addWidget(new MemesWidget(updateWait,
+                Integer.parseInt(properties.getProperty("memes.flicker.time", "2000")),
+                600,
+                400,
+                250
+        ));
+
 //        new Timer().schedule(new TimerTask() {
 //            int id = 1;
 //

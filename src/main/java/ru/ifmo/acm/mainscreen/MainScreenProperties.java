@@ -4,16 +4,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
+import ru.ifmo.acm.datapassing.MemesData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.TeamInfo;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainScreenProperties {
     private static final Logger log = LogManager.getLogger(MainScreenProperties.class);
@@ -21,7 +25,11 @@ public class MainScreenProperties {
     public MainScreenProperties() {
         Properties properties = new Properties();
         try {
-            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+//            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+//            FileInputStream fileInputStream = new FileInputStream(
+//                    new File("src/resources/mainscreen.properties"));
+            properties.load(new InputStreamReader(getClass().getResourceAsStream("/mainscreen.properties"),
+                    Charset.forName("UTF-8")));
         } catch (IOException e) {
             log.error("error", e);
         }
@@ -89,6 +97,25 @@ public class MainScreenProperties {
         breakingNewsPatternsFilename = properties.getProperty("breakingnews.patterns.filename");
 
         overlayedDelay = Long.parseLong(properties.getProperty("overlayed.delay", "4000"));
+
+        pollTimeToShow = Integer.parseInt(properties.getProperty("poll.show.time", "20000"));
+
+        oneMemeTimeToShow = Integer.parseInt(properties.getProperty("one.meme.show.time", "5000"));
+        String[] memesNames = properties.getProperty("memes", "goose").split(";");
+        memes = new ArrayList<>();
+        memesContent = new HashMap<>();
+        for (String meme : memesNames) {
+            ArrayList<String> variations = new ArrayList<>();
+            for (String content : properties.getProperty("memes." + meme, "(*)>").split(";")) {
+                variations.add(content);
+            }
+            memes.add(meme);
+            memesContent.put(meme, variations);
+        }
+        MemesData.memesCount = new AtomicInteger[memes.size()];
+        for (int i = 0; i < memes.size(); i++) {
+            MemesData.memesCount[i] = new AtomicInteger();
+        }
     }
 
     public long overlayedDelay;
@@ -123,4 +150,12 @@ public class MainScreenProperties {
     public final String backupBreakingNewsFilename;
 
     public final String breakingNewsPatternsFilename;
+
+    // Polls
+    public final int pollTimeToShow;
+
+    // Memes
+    public final int oneMemeTimeToShow;
+    public ArrayList<String> memes;
+    public HashMap<String, ArrayList<String>> memesContent;
 }
