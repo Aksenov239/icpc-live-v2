@@ -45,31 +45,31 @@ public class Main {
 
         generator.addWidget(new GreenScreenWidget(true));
 
-//        generator.addWidget(new NewTeamWidget(
-//                Integer.parseInt(properties.getProperty("sleep.time")),
-//                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
-//
-//        generator.addWidget(new VerticalCreepingLineWidget(updateWait,
-//                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
-//                properties.getProperty("creeping.line.logo", "ICPC 2016"),
-//                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
-//                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
-//
-//        StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
-//        standingsWidget.alignBottom(994);
-//        generator.addWidget(standingsWidget);
-//
-//        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
-//        generator.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
-//
-//        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
-//                1350, 39, updateWait, 20, true);
-//        bigStandingsWidget.alignBottom(994);
-//        generator.addWidget(bigStandingsWidget);
-//
-//        generator.addWidget(new StatisticsWidget(
-//                519, 200, 39, 1350, updateWait
-//        ));
+        generator.addWidget(new NewTeamWidget(
+                Integer.parseInt(properties.getProperty("sleep.time")),
+                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
+
+        generator.addWidget(new VerticalCreepingLineWidget(updateWait,
+                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
+                properties.getProperty("creeping.line.logo", "ICPC 2016"),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
+
+        StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
+        standingsWidget.alignBottom(994);
+        generator.addWidget(standingsWidget);
+
+        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
+        generator.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
+
+        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
+                1350, 39, updateWait, 20, true);
+        bigStandingsWidget.alignBottom(994);
+        generator.addWidget(bigStandingsWidget);
+
+        generator.addWidget(new StatisticsWidget(
+                519, 200, 39, 1350, updateWait
+        ));
 
 //        generator.addWidget(new BreakingNewsWidget(
 //                updateWait,
@@ -82,8 +82,8 @@ public class Main {
 //                Integer.parseInt(properties.getProperty("breakingnews.time"))
 //        ));
 
-//        generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
-//        generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
+        generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
+        generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
         generator.addWidget(new ClockWidget(updateWait));
 
