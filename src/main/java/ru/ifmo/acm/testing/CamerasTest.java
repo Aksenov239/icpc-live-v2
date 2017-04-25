@@ -1,7 +1,7 @@
 package ru.ifmo.acm.testing;
 
 import com.sun.jna.NativeLibrary;
-import ru.ifmo.acm.backend.player.TickPlayer;
+import ru.ifmo.acm.backend.player.FramePlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
@@ -64,7 +64,7 @@ public class CamerasTest {
 
         widget.createForm();
 
-        new TickPlayer("Cameras test", generator, frameRate).frame.setLocation(0, 0);
+        new FramePlayer("Cameras test", generator, frameRate).frame.setLocation(0, 0);
     }
 
     private Properties readProperties() {
