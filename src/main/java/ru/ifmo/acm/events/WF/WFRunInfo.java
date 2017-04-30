@@ -24,6 +24,7 @@ public class WFRunInfo implements RunInfo {
     public boolean reallyUnknown;
 
     public WFRunInfo() {
+        lastUpdateTimestamp = System.currentTimeMillis();
     }
 
     public WFRunInfo(WFRunInfo another) {
