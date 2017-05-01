@@ -6,7 +6,6 @@ import com.jogamp.graph.curve.opengl.TextRegionUtil;
 import com.jogamp.graph.font.FontFactory;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.math.geom.AABBox;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;

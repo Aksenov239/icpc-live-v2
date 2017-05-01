@@ -121,8 +121,9 @@ public class Main {
 //            }
 //        }, 1000, 32000);
 //
-        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
-        new MemoryFilePlayer(filename, generator, frameRate);
+//        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
+//        new MemoryFilePlayer(filename, generator, frameRate);
+        new FramePlayer("Main", generator, frameRate);
     }
 
     private Properties readProperties() {

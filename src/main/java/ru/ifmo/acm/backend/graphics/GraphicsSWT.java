@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 
 /**
  * Created by Aksenov239 on 04.09.2016.
@@ -149,6 +150,11 @@ public class GraphicsSWT extends Graphics {
     @Override
     public void drawImage(BufferedImage image, int x, int y, int width, int height) {
         g.drawImage(image, x0 + x, y0 + y, width, height, null);
+    }
+
+    public void drawImage(BufferedImage image, int x, int y, double opacity) {
+        RescaleOp rop = new RescaleOp(new float[] { 1f, 1f, 1f, (float)opacity}, new float[4], null);
+        g.drawImage(image, rop, x, y);
     }
 
     @Override

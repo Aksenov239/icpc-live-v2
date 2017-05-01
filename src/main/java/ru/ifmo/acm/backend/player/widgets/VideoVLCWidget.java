@@ -4,7 +4,6 @@ import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.PlayerInImage;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
-import uk.co.caprica.vlcj.player.MediaPlayer;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
