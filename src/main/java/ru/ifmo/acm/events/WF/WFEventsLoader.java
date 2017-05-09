@@ -1,5 +1,7 @@
 package ru.ifmo.acm.events.WF;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.Preparation;
@@ -29,7 +31,6 @@ public class WFEventsLoader extends EventsLoader {
     private String url;
     private String teamsInfoURL;
     private String problemsInfoURL;
-    private String hashTagsURL;
     private String login;
     private String password;
 
@@ -55,7 +56,6 @@ public class WFEventsLoader extends EventsLoader {
 
             problemsInfoURL = properties.getProperty("problems.url");
             teamsInfoURL = properties.getProperty("teams.url");
-            hashTagsURL = properties.getProperty("hashtags.url");
 
             initialize();
         } catch (IOException e) {
@@ -68,33 +68,25 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     private List<ProblemInfo> problemsInfoRead() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(Preparation.openAuthorizedStream(problemsInfoURL, login, password)));
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(Preparation.openAuthorizedStream(problemsInfoURL, login, password)));
         String line;
         List<ProblemInfo> problems = new ArrayList<>();
         ProblemInfo problem = null;
         while ((line = br.readLine()) != null) {
             line = line.trim();
-            if (line.startsWith("-")) {
-                problem = new ProblemInfo();
-                problems.add(problem);
-                line = line.substring(1).trim();
-            }
-            if (line.contains(":")) {
-                String parameter = line.substring(0, line.indexOf(":"));
-                String val = line.substring(line.indexOf(":") + 1).trim();
-                switch (parameter) {
-                    case "letter":
-                        problem.letter = val;
-                        break;
-                    case "short-name":
-                        problem.name = val;
-                        break;
-                    case "rgb":
-                        val = val.substring(1, val.length() - 1);
-                        problem.color = Color.decode(val);
-                        break;
-                }
-            }
+
+            problem = new ProblemInfo();
+            problems.add(problem);
+
+
+
+            JsonObject jsonObject = new Gson().fromJson(line, JsonObject.class);
+            JsonObject problemObject = jsonObject.get("problem").getAsJsonObject();
+
+            problem.letter = problemObject.get("label").getAsString();
+            problem.name = problemObject.get("name").getAsString();
+            problem.color = Color.decode(problemObject.get("rgb").getAsString());
         }
         return problems;
     }
@@ -105,28 +97,17 @@ public class WFEventsLoader extends EventsLoader {
         ArrayList<WFTeamInfo> infos = new ArrayList<WFTeamInfo>();
         String line;
         while ((line = br.readLine()) != null) {
-            String[] z = line.split("\\t");
-            if (z.length < 6) {
-                continue;
-            }
-            WFTeamInfo team = new WFTeamInfo(problemsNumber);
-            team.id = Integer.parseInt(z[0]) - 1;
-            team.name = z[4];
-            team.shortName = z[5];
-            infos.add(team);
-        }
+            line = line.trim();
 
-        br = new BufferedReader(
-                new InputStreamReader(Preparation.openAuthorizedStream(hashTagsURL, login, password), "utf8"));
-        while ((line = br.readLine()) != null) {
-            String[] z = line.split("\\t");
-            String shortName = z[3];
-            String hashTag = z[6];
-            for (WFTeamInfo info : infos) {
-                if (info.shortName.equals(shortName)) {
-                    info.hashTag = hashTag.substring(1);
-                }
-            }
+            JsonObject jsonObject = new Gson().fromJson(line, JsonObject.class);
+            JsonObject teamObject = jsonObject.get("team").getAsJsonObject();
+
+            WFTeamInfo team = new WFTeamInfo(problemsNumber);
+            team.id = teamObject.get("id").getAsInt() - 1;
+            team.name = teamObject.get("affiliation").getAsString();
+            team.shortName = teamObject.get("affiliation-short-name").getAsString();
+            team.hashTag = teamObject.get("hashtag") == null ? "#None" : teamObject.get("hashtag").getAsString();
+            infos.add(team);
         }
 
         return infos.toArray(new WFTeamInfo[0]);
@@ -409,6 +390,7 @@ public class WFEventsLoader extends EventsLoader {
                         StartElement startElement = xmlEvent.asStartElement();
                         switch (startElement.getName().getLocalPart()) {
                             case "run":
+
                                 WFRunInfo run = readRun(xmlEventReader);
                                 if (emulation) {
                                     try {
@@ -446,7 +428,9 @@ public class WFEventsLoader extends EventsLoader {
                                         log.error("error", e);
                                     }
                                 }
-                                contestInfo.addTest(test);
+                                if (test.time <= ContestInfo.FREEZE_TIME) { // Update the tests results only if not frozen
+                                    contestInfo.addTest(test);
+                                }
                                 break;
                             case "language":
                                 readLanguage(xmlEventReader);
@@ -466,30 +450,34 @@ public class WFEventsLoader extends EventsLoader {
                                 String starttime = xmlEventReader.getElementText();
                                 if ("undefined".equals(starttime)) {
                                     contestInfo.setStatus(ContestInfo.Status.PAUSED);
-                                    throw new Exception("The start time is undefined");
+//                                    Now we wait while the starttime is not set
+//                                    throw new Exception("The start time is undefined");
+                                    contestInfo.setStartTime(System.currentTimeMillis());
                                 } else {
                                     contestInfo.setStatus(ContestInfo.Status.RUNNING);
+                                    contestInfo.setStartTime(
+                                            (long) (Double.parseDouble(starttime.replace(",", "."))
+                                                    * 1000));
                                 }
-                                contestInfo.setStartTime(
-                                        (long) (Double.parseDouble(starttime.replace(",", "."))
-                                                * 1000));
                                 if (emulation) {
                                     contestInfo.setStartTime(System.currentTimeMillis());
                                 }
                                 break;
                             case "length": {
                                 String s = xmlEventReader.getElementText();
-                                int hh = Integer.parseInt(s.substring(0, 2));
-                                int mm = Integer.parseInt(s.substring(3, 5));
-                                int ss = Integer.parseInt(s.substring(6, 8));
+                                String[] time = s.split(":");
+                                int hh = Integer.parseInt(time[0]);
+                                int mm = Integer.parseInt(time[1]);
+                                int ss = Integer.parseInt(time[2]);
                                 ContestInfo.CONTEST_LENGTH = ((hh * 60 + mm) * 60 + ss) * 1000;
                                 break;
                             }
                             case "scoreboard-freeze-length": {
                                 String s = xmlEventReader.getElementText();
-                                int hh = Integer.parseInt(s.substring(0, 2));
-                                int mm = Integer.parseInt(s.substring(3, 5));
-                                int ss = Integer.parseInt(s.substring(6, 8));
+                                String[] time = s.split(":");
+                                int hh = Integer.parseInt(time[0]);
+                                int mm = Integer.parseInt(time[1]);
+                                int ss = Integer.parseInt(time[2]);
                                 ContestInfo.FREEZE_TIME = ContestInfo.CONTEST_LENGTH - ((hh * 60 + mm) * 60 + ss) * 1000;
                                 break;
                             }

@@ -3,11 +3,8 @@ package ru.ifmo.acm.backend.player.widgets;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.backend.graphics.Graphics;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
+
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-import java.util.List;
 
 /**
  * @author egor@egork.net

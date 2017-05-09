@@ -1,11 +1,20 @@
 package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.graphics.GraphicsSWT;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.MemesStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * Created by Meepo on 4/22/2017.
@@ -40,6 +49,8 @@ public class MemesWidget extends Widget {
         CLOSE
     }
 
+    HashMap<String, BufferedImage> memesImages;
+
     public MemesWidget(long updateWait, int flickerTime, int Y, int widthR, int heightR) {
         super(updateWait);
         this.flickerTime = flickerTime;
@@ -50,6 +61,28 @@ public class MemesWidget extends Widget {
         this.heightR = heightR;
         this.Y = Y;
         font = new Font("Open Sans", Font.BOLD, 40);
+
+        Properties properties = new Properties();
+        try {
+            properties.load(MemesWidget.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String[] memes = properties.getProperty("memes", "goose").split(";");
+        memesImages = new HashMap<>();
+        for (String meme : memes) {
+            try {
+                BufferedImage image = ImageIO.read(new File(properties.getProperty("memes.image." + meme)));
+                AffineTransform at = new AffineTransform();
+                at.scale(1. * (IMAGE_WIDTH - 2 * DX) / image.getWidth(), 1. * (heightR - 2 * DX) / image.getHeight());
+                AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+                BufferedImage after = new BufferedImage(IMAGE_WIDTH - 2 * DX, heightR - 2 * DX, BufferedImage.TYPE_INT_ARGB);
+                scaleOp.filter(image, after);
+                memesImages.put(meme, image);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -108,6 +141,15 @@ public class MemesWidget extends Widget {
         }
         int X = Widget.BASE_WIDTH - (int) ((widthR + DX) * visibilityRectangle);
         g.drawRect(X, Y, widthR, heightR, MemesStylesheet.meme.background, 1, Graphics.RectangleType.SOLID);
+
+        if (g instanceof GraphicsSWT) {
+            ((GraphicsSWT) g).drawImage(memesImages.get(meme), 10, 10, visibilityText);
+        } else {
+            int w = IMAGE_WIDTH - 20;
+            int h = heightR - 20;
+            g.drawImage(memesImages.get(meme),
+                    10, (int)((h + 10) - h * textOpacity), IMAGE_WIDTH - 20, (int) (h * textOpacity));
+        }
 
         g.drawString(" X " + count, X + IMAGE_WIDTH, Y + heightR / 2,
                 font, MemesStylesheet.meme.text, visibilityText);
