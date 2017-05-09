@@ -171,7 +171,7 @@ public class QueueWidget extends Widget {
                     plateHeight, Graphics.Alignment.CENTER, font, resultColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
             if (inProgress) {
-                drawRect(g, x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState);
+                g.drawRect(x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState, Graphics.RectangleType.SOLID);
             }
             if (run == info.firstSolvedRun()[run.getProblemNumber()]) {
                 g.drawStar(x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);

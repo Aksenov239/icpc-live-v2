@@ -136,6 +136,11 @@ public class GraphicsGL extends Graphics {
     }
 
     @Override
+    public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
+
+    }
+
+    @Override
     public void clear(int width, int height) {
         gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     }
@@ -363,16 +368,13 @@ public class GraphicsGL extends Graphics {
 //        return new Rectangle((int) bounds.getWidth(), (int) bounds.getHeight());
     }
 
-    @Override
-    public void clip() {
-        xS = x;
-        yS = y;
-        widthS = width;
-        heightS = height;
-//        System.err.println(x + " " + y + " " + widthS + " " + heightS);
-//        gl2.glScissor(xS, Widget.BASE_HEIGHT - yS, widthS, heightS);
-//        gl2.glEnable(GL2.GL_SCISSOR_TEST);
-    }
+//    @Override
+//    public void clip() {
+//        xS = x;
+//        yS = y;
+//        widthS = width;
+//        heightS = height;
+//    }
 
     @Override
     public void clip(int x, int y, int width, int height) {
@@ -382,11 +384,6 @@ public class GraphicsGL extends Graphics {
         heightS = height;
 //        gl2.glScissor(xS, Widget.BASE_HEIGHT - yS, widthS, heightS);
 //        gl2.glEnable(GL2.GL_SCISSOR_TEST);
-    }
-
-    @Override
-    public void unclip() {
-//        gl2.glDisable(GL2.GL_SCISSOR_TEST);
     }
 
     @Override

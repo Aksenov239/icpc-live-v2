@@ -22,14 +22,14 @@ import static java.lang.Math.round;
 public abstract class Widget {
     protected final Logger log = LogManager.getLogger(getClass());
 
-    public final static double OPACITY = 1;
-
     public static final int BASE_WIDTH = 1920;
     public static final int BASE_HEIGHT = 1080;
 
     public static final double MARGIN = 0.3;
-    protected static final double SPACE_Y = 0.1;
-    protected static final double SPACE_X = 0.05;
+//    protected static final double SPACE_Y = 0.1;
+    protected static final double SPACE_Y = 0;
+//    protected static final double SPACE_X = 0.05;
+    protected static final double SPACE_X = 0;
     protected static final double NAME_WIDTH = 6;
     protected static final double RANK_WIDTH = 1.6;
     protected static final double TOTAL_WIDTH = 1.3;
@@ -42,13 +42,8 @@ public abstract class Widget {
     private boolean visible;
 
     // Colors used in graphics
-    public final static Color MAIN_COLOR = new Color(0x193C5B);
-    //    public final static Color ADDITIONAL_COLOR = new Color(0x4C83C3);
-    public final static Color ADDITIONAL_COLOR = new Color(0x3C6373);
-    public final static Color ACCENT_COLOR = new Color(0x881F1B);
 
     public static final Color GREEN_COLOR = new Color(0x1b8041);
-    //    public static final Color YELLOW_COLOR = new Color(0xD4AF37);
     public static final Color YELLOW_COLOR = new Color(0xa59e0c);
     public static final Color RED_COLOR = new Color(0x881f1b);
 
@@ -80,8 +75,8 @@ public abstract class Widget {
 //    public final static Color BRONZE_COLOR2 = new Color(194, 150, 146);
 
     // Rectangles rounding
-    private static final int POINTS_IN_ROUND = 3;
-    private static final double ROUND_RADIUS = 4;
+    private static final int POINTS_IN_ROUND = 1;
+    private static final double ROUND_RADIUS = 0;
 
     long last = 0;
     double opacity = 0;
@@ -102,23 +97,21 @@ public abstract class Widget {
 
     protected abstract void paintImpl(Graphics g, int width, int height);
 
-    public void paint(Graphics g, int width, int height, double scale) {
-        if (Preparation.eventsLoader.getContestData() == null) return;
-        try {
-            paintImpl(g, width, height);
-        } catch (Exception e) {
-            log.error("Failed to paint " + this.getClass().toString(), e);
-        }
-    }
 
     protected void paintImpl(GLAutoDrawable drawable, int width, int height) {
 
     }
 
-    public void paint(Graphics drawable, int width, int height) {
+    public void paint(Graphics g, int width, int height) {
+        paint(g, width, height, 1);
+    }
+
+    public void paint(Graphics g, int width, int height, double scale) {
         if (Preparation.eventsLoader.getContestData() == null) return;
         try {
-            paintImpl(drawable, width, height);
+            g.reset();
+            g.clip(0, 0, width, height);
+            paintImpl(g, width, height);
         } catch (Exception e) {
             log.error("Failed to paint " + this.getClass().toString(), e);
         }
@@ -167,36 +160,6 @@ public abstract class Widget {
 
     public boolean isVisible() {
         return visible;
-    }
-
-    void drawRect(Graphics g, int x, int y, int width, int height, Color color, double opacity, boolean italic) {
-        int hh = (int) (height * opacity);
-        y += (height - hh) / 2;
-        height = hh;
-
-        int[] xx = new int[POINTS_IN_ROUND * 4];
-        int[] yy = new int[POINTS_IN_ROUND * 4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < POINTS_IN_ROUND; j++) {
-                int t = i * POINTS_IN_ROUND + j;
-                double a = Math.PI / 2 * j / (POINTS_IN_ROUND - 1);
-                int dx = new int[]{0, 1, 0, -1}[i];
-                int dy = new int[]{1, 0, -1, 0}[i];
-                double baseX = (i == 0 || i == 3 ? x + ROUND_RADIUS : x + width - ROUND_RADIUS);
-                double baseY = (i == 2 || i == 3 ? y + ROUND_RADIUS : y + height - ROUND_RADIUS);
-
-                double tx = baseX + ROUND_RADIUS * (dx * Math.sin(a) - dy * Math.cos(a));
-                double ty = baseY + ROUND_RADIUS * (dx * Math.cos(a) + dy * Math.sin(a));
-                if (italic) tx -= (ty - (y + height / 2)) * 0.2;
-                xx[t] = (int) round(tx);
-                yy[t] = (int) round(ty);
-            }
-        }
-        g.fillPolygon(xx, yy, x, y, color, opacity);
-    }
-
-    void drawRect(Graphics g, int x, int y, int width, int height, Color color, double opacity) {
-        drawRect(g, x, y, width, height, color, opacity, false);
     }
 
     static final int POSITION_LEFT = 0;
@@ -265,8 +228,8 @@ public abstract class Widget {
     }
 
     void drawTextToFit(Graphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
-        Graphics gg = g.create(x, y, width, height);
-        gg.drawTextThatFits(text, (int)(X - x), (int)(Y - y), width, height, font, color, MARGIN);
+       // Graphics gg = g.create(x, y, width, height);
+        g.drawTextThatFits(text, (int) X, (int) Y, width, height, font, color, MARGIN);
     }
 
     void drawTeamPane(Graphics g, TeamInfo team, int x, int y, int height, double state,

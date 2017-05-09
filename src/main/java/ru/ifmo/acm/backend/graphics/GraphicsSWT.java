@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
  * Created by Aksenov239 on 04.09.2016.
  */
 public class GraphicsSWT extends Graphics {
+
     public Graphics2D g;
 
     public GraphicsSWT(Graphics2D g) {
@@ -102,6 +103,13 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
+    public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
+        setColor(color, opacity * .9);
+        g.fillRect(x + x0, y + y0, width, height);
+        //super.drawRect(x, y, width, height, color, opacity, rectangleType);
+    }
+
+    @Override
     public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double margin) {
         Graphics2D saved = g;
         x += x0;
@@ -175,17 +183,8 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void clip() {
-        g.clipRect(0, 0, this.width, this.height);
-    }
-
-    @Override
     public void clip(int x, int y, int width, int height) {
         g.clipRect(x + x0, y + y0, width, height);
-    }
-
-    @Override
-    public void unclip() {
     }
 
     @Override
@@ -195,8 +194,9 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public void setColor(Color color, double opacity) {
+        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (opacity * 255));
         g.setColor(color);
-        g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
+//        g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
     }
 
     @Override

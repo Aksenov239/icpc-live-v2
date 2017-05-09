@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
@@ -15,19 +16,32 @@ import java.util.TimerTask;
 
 public class MemoryFilePlayer extends Player {
 
+    private final int width;
+    private final int height;
+    private final int length;
+
     public MemoryFilePlayer(String filename, ScreenGenerator generator, int frameRate) throws InterruptedException, InvocationTargetException {
         super(generator);
-        int width = generator.getWidth();
-        int height = generator.getHeight();
+        width = generator.getWidth();
+        height = generator.getHeight();
 
-        int length = width * height * 4;
+        length = width * height * 4;
         try {
             out = new RandomAccessFile(filename, "rw")
-                    .getChannel().map(FileChannel.MapMode.READ_WRITE, 0, length);
+                    .getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2 * length + 4);
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    repaint();
+//                }
+//            }
+//        }.start();
 
         new java.util.Timer().scheduleAtFixedRate(
                 new TimerTask() {
@@ -36,15 +50,23 @@ public class MemoryFilePlayer extends Player {
                     }
                 }, 0L, 1000 / frameRate);
 
+
     }
 
     private MappedByteBuffer out = null;
 
+    public static int reverseBytes(int i) {
+        return ((i >>> 24) |
+                (i << 8));
+    }
+
     private void repaint() {
-        DataBufferByte buf = generator.getBuffer();
-        byte[] bytes = buf.getData();
+        DataBufferInt buf = generator.getBuffer();
+        int[] bytes = buf.getData();
         out.rewind();
-        out.put(bytes);
+        for (int i = 0; i < bytes.length; i++) {
+            out.putInt(reverseBytes(bytes[i]));
+        }
     }
 
 }

@@ -1,14 +1,19 @@
 package ru.ifmo.acm.backend.player.generator;
 
 import ru.ifmo.acm.backend.Preparation;
+import ru.ifmo.acm.backend.graphics.FastGraphics;
 import ru.ifmo.acm.backend.graphics.GraphicsSWT;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -28,11 +33,9 @@ public class ScreenGenerator {
         this.height = height;
         this.scale = scale;
 
-        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-        int[] nBits = {8, 8, 8, 8};
-        int[] bOffs = {3, 2, 1, 0};
-        ComponentColorModel colorModel = new ComponentColorModel(cs, nBits, true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
-        raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, width, height, width*4, 4, bOffs, null);
+        ColorModel colorModel = ColorModel.getRGBdefault();
+
+        raster = colorModel.createCompatibleWritableRaster(width, height);
         image = new BufferedImage(colorModel, raster, false, null);
 
         Preparation.prepareEventsLoader();
@@ -40,9 +43,9 @@ public class ScreenGenerator {
         Preparation.prepareNetwork(properties.getProperty("login", null), properties.getProperty("password", null));
     }
 
-    public final DataBufferByte getBuffer() {
+    public final DataBufferInt getBuffer() {
         draw();
-        return (DataBufferByte) raster.getDataBuffer();
+        return (DataBufferInt) raster.getDataBuffer();
     }
 
     public final BufferedImage getScreen() {
@@ -51,6 +54,9 @@ public class ScreenGenerator {
     }
 
     private void draw() {
+
+        Arrays.fill(((DataBufferInt)raster.getDataBuffer()).getData(), 0);
+
         Graphics2D g2 = (Graphics2D) image.getGraphics();
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -62,11 +68,13 @@ public class ScreenGenerator {
             width = (int) Math.round(width / scale);
             height = (int) Math.round(height / scale);
         }
-        Graphics g = new GraphicsSWT(g2);
-        g2.dispose();
+//        Graphics g = new GraphicsSWT(g2);
+        Graphics g = new FastGraphics(g2, ((DataBufferInt)raster.getDataBuffer()).getData(), width);
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }
+
+        g2.dispose();
     }
 
     public int getWidth() {

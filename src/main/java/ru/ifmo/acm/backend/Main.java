@@ -44,7 +44,7 @@ public class Main {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-        generator.addWidget(new GreenScreenWidget(true));
+//        generator.addWidget(new GreenScreenWidget(true));
 
         generator.addWidget(new NewTeamWidget(
                 Integer.parseInt(properties.getProperty("sleep.time")),
@@ -64,7 +64,7 @@ public class Main {
         generator.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
 
         BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
-                1350, 39, updateWait, 20, true);
+                1350, 39, updateWait, 22, true);
         bigStandingsWidget.alignBottom(994);
         generator.addWidget(bigStandingsWidget);
 
@@ -121,6 +121,7 @@ public class Main {
 //            }
 //        }, 1000, 32000);
 //
+        generator.addWidget(new TestFramesWidget());
         String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
         new MemoryFilePlayer(filename, generator, frameRate);
     }

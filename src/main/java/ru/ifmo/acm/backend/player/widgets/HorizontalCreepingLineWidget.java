@@ -23,7 +23,7 @@ public class HorizontalCreepingLineWidget extends CreepingLineWidget {
 //            g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
         update();
-        g.drawRect(0, height - HEIGHT - MARGIN, width, HEIGHT, CreepingLineStylesheet.main.background, 1);
+        g.drawRect(0, height - HEIGHT - MARGIN, width, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
         g.setFont(messageFont);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);

@@ -132,7 +132,7 @@ public class TeamWidget extends Widget {
         }
 
         // TODO: fill rect
-        g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1);
+        g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1, Graphics.RectangleType.SOLID);
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
 

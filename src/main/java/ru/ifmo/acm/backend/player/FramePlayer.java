@@ -95,7 +95,6 @@ public class FramePlayer extends Player {
                     }
                 }, 0L, 1000 / frameRate);
 
-        int length = width * height * 4;
     }
 
     @SuppressWarnings("serial")

@@ -107,7 +107,7 @@ public class MemesWidget extends Widget {
             return;
         }
         int X = Widget.BASE_WIDTH - (int) ((widthR + DX) * visibilityRectangle);
-        g.drawRect(X, Y, widthR, heightR, MemesStylesheet.meme.background, 1);
+        g.drawRect(X, Y, widthR, heightR, MemesStylesheet.meme.background, 1, Graphics.RectangleType.SOLID);
 
         g.drawString(" X " + count, X + IMAGE_WIDTH, Y + heightR / 2,
                 font, MemesStylesheet.meme.text, visibilityText);

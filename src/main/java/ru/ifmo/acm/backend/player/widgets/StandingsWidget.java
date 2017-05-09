@@ -122,17 +122,12 @@ public class StandingsWidget extends Widget {
     @Override
     public void paintImpl(Graphics g, int width, int height) {
         update();
-//        standings = StandingsLoader.getLoaded();
 
         contestData = Preparation.eventsLoader.getContestData();
         if (contestData == null || contestData.getStandings() == null) return;
         if (LENGTH == 0)
             LENGTH = contestData.getTeamsNumber();
         int dt = updateVisibilityState();
-
-//        if (!isVisible()) {
-//            setState(StandingsData.StandingsType.ONE_PAGE);
-//        }
 
         if (visibilityState > 0) {
             if (isVisible()) {

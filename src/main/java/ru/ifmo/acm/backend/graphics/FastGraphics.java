@@ -7,29 +7,39 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 /**
- * Created by Aksenov239 on 04.09.2016.
+ * @author pashka
  */
 public class FastGraphics extends Graphics {
 
-    public Graphics2D g;
+    private Graphics2D g;
+    private int[] buffer;
+    private int pitch;
 
-    public FastGraphics(Graphics2D g) {
-        this.g = (Graphics2D) g.create();
+    public FastGraphics(Graphics2D g, int[] buffer, int pitch) {
+        this.g = g;
+        this.buffer = buffer;
+        this.pitch = pitch;
+    }
+
+    public FastGraphics(Graphics2D g, int x0, int y0, int[] buffer, int pitch) {
+        this(g, buffer, pitch);
+        this.x0 = x0;
+        this.y0 = y0;
     }
 
     @Override
     public Graphics create() {
-        FastGraphics newG = new FastGraphics(g);
-        newG.x0 = x0;
-        newG.y0 = y0;
-        return newG;
+        return new FastGraphics((Graphics2D) g.create(), x0, y0, buffer, pitch);
     }
 
     @Override
     public Graphics create(int x, int y, int width, int height) {
-        FastGraphics g2 = new FastGraphics((Graphics2D) g.create(x + x0, y + y0, width, height));
+        Graphics2D gg = (Graphics2D) g.create();
+        FastGraphics g2 = new FastGraphics(gg, x + x0, y + y0, buffer, pitch);
+        gg.clipRect(x + x0, y + y0, width, height);
         g2.width = width;
         g2.height = height;
         return g2;
@@ -52,6 +62,9 @@ public class FastGraphics extends Graphics {
     public void drawRectWithText(String text, int x, int y, int width, int height, Alignment alignment, Font font,
                                  PlateStyle plateStyle, double opacity, double textOpacity, double margin,
                                  boolean scale) {
+
+        drawRect(x, y, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
+
         Graphics2D saved = g;
         x += x0;
         y += y0;
@@ -75,8 +88,6 @@ public class FastGraphics extends Graphics {
                 textScale = 1.0 * maxTextWidth / textWidth;
             }
         }
-
-        drawRect(x - x0, y - y0, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
 
         setColor(plateStyle.text, textOpacity);
 
@@ -102,11 +113,40 @@ public class FastGraphics extends Graphics {
         g = saved;
     }
 
+    static Rectangle clip = new Rectangle();
+
     @Override
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
-        setColor(color, opacity * .9);
-        g.fillRect(x + x0, y + y0, width, height);
-        //super.drawRect(x, y, width, height, color, opacity, rectangleType);
+//        setColor(color, opacity * .9);
+//        g.fillRect(x + x0, y + y0, width, height);
+
+        int c = color.getRGB() & 0xffffff | ((int)(opacity * 230) << 24);
+        x += x0;
+        y += y0;
+        clip.x = -1000000;
+        clip.y = -1000000;
+        clip.width = 2000000;
+        clip.height = 2000000;
+        g.getClipBounds(clip);
+        if (clip.x > x) {
+            width -= clip.x - x;
+            x = clip.x;
+        }
+        if (clip.y > y) {
+            height -= clip.y - y;
+            y = clip.y;
+        }
+        if (x + width > clip.x + clip.width) {
+            width = clip.x + clip.width - x;
+        }
+        if (y + height > clip.y + clip.height) {
+            height = clip.y + clip.height - y;
+        }
+        if (width <= 0 || height <= 0) return;
+        for (int i= 0; i < height; i++) {
+            int q = (y + i) * pitch + x;
+            Arrays.fill(buffer, q, q + width, c);
+        }
     }
 
     @Override
@@ -183,17 +223,9 @@ public class FastGraphics extends Graphics {
     }
 
     @Override
-    public void clip() {
-        g.clipRect(0, 0, this.width, this.height);
-    }
-
-    @Override
-    public void clip(int x, int y, int width, int height) {
+    public void clip(int x, int y, int width, int height)
+    {
         g.clipRect(x + x0, y + y0, width, height);
-    }
-
-    @Override
-    public void unclip() {
     }
 
     @Override
@@ -205,6 +237,12 @@ public class FastGraphics extends Graphics {
     public void setColor(Color color, double opacity) {
         g.setColor(color);
         g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        g.setClip(null);
     }
 
     @Override
