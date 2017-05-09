@@ -122,7 +122,7 @@ public class FastGraphics extends Graphics {
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
 //        setColor(color, opacity * .9);
 //        g.fillRect(x + x0, y + y0, width, height);
-        int c = color.getRGB() & 0xffffff | ((int)(opacity * 230) << 24);
+        int c = color.getRGB() & 0xffffff | ((int) (opacity * 230) << 24);
         x += x0;
         y += y0;
 
@@ -148,16 +148,47 @@ public class FastGraphics extends Graphics {
         if (width <= 0 || height <= 0) return;
 
         if (scale != 1) {
-            width = (int)((x + width) * scale) - (int)(x * scale);
-            height = (int)((y + height) * scale) - (int)(y * scale);
+            width = (int) ((x + width) * scale) - (int) (x * scale);
+            height = (int) ((y + height) * scale) - (int) (y * scale);
             x *= scale;
             y *= scale;
         }
 
-        for (int i= 0; i < height; i++) {
+        for (int i = 0; i < height; i++) {
             int q = (y + i) * pitch + x;
-            Arrays.fill(buffer, q, q + width, c);
+            for (int j = 0; j < width; j++) {
+                if (buffer[q + j] == 0) {
+                    buffer[q + j] = c;
+                } else {
+                    buffer[q + j] = mergeColors(buffer[q + j], c);
+                }
+            }
         }
+    }
+
+    public static int mergeColors(int backgroundColor, int foregroundColor) {
+        final byte ALPHA_CHANNEL = 24;
+        final byte RED_CHANNEL   = 16;
+        final byte GREEN_CHANNEL =  8;
+        final byte BLUE_CHANNEL  =  0;
+
+        final double ap1 = (double)(backgroundColor >>> ALPHA_CHANNEL) / 255d;
+        final double ap2 = (double)(foregroundColor >>> ALPHA_CHANNEL) / 255d;
+        final double ap = ap2 + (ap1 * (1 - ap2));
+
+        final double amount1 = (ap1 * (1 - ap2)) / ap;
+        final double amount2 = ap2 / ap;
+
+        int a = ((int)(ap * 255d)) & 0xff;
+
+        int r = ((int)(((float)(backgroundColor >> RED_CHANNEL & 0xff )*amount1) +
+                ((float)(foregroundColor >> RED_CHANNEL & 0xff )*amount2))) & 0xff;
+        int g = ((int)(((float)(backgroundColor >> GREEN_CHANNEL & 0xff )*amount1) +
+                ((float)(foregroundColor >> GREEN_CHANNEL & 0xff )*amount2))) & 0xff;
+        int b = ((int)(((float)(backgroundColor & 0xff )*amount1) +
+                ((float)(foregroundColor & 0xff )*amount2))) & 0xff;
+
+        return a << ALPHA_CHANNEL | r << RED_CHANNEL | g << GREEN_CHANNEL | b << BLUE_CHANNEL;
     }
 
     @Override
@@ -234,8 +265,7 @@ public class FastGraphics extends Graphics {
     }
 
     @Override
-    public void clip(int x, int y, int width, int height)
-    {
+    public void clip(int x, int y, int width, int height) {
         g.clipRect(x + x0, y + y0, width, height);
     }
 
