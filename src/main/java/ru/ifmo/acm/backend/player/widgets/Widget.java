@@ -188,11 +188,10 @@ public abstract class Widget {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, scale, WidgetAnimation.NOT_ANIMATED, false);
     }
 
-    void drawTextInRect(Graphics gg, String text, int x, int y, int width, int height, Graphics.Alignment alignment,
+    void drawTextInRect(Graphics g, String text, int x, int y, int width, int height, Graphics.Alignment alignment,
                         Font font, PlateStyle plateStyle,
                         double visibilityState, boolean scale,
                         WidgetAnimation widgetAnimation, boolean isBlinking) {
-        Graphics g = gg.create();
         double opacity = getOpacity(visibilityState);
         double textOpacity = getTextOpacity(visibilityState);
         if (text == null) {

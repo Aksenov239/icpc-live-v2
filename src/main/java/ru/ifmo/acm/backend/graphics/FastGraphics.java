@@ -66,8 +66,6 @@ public class FastGraphics extends Graphics {
                                  PlateStyle plateStyle, double opacity, double textOpacity, double margin,
                                  boolean scale) {
 
-        drawRect(x, y, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
-
         Graphics2D saved = g;
         x += x0;
         y += y0;
@@ -91,6 +89,8 @@ public class FastGraphics extends Graphics {
                 textScale = 1.0 * maxTextWidth / textWidth;
             }
         }
+
+        drawRect(x - x0, y - y0, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
 
         setColor(plateStyle.text, textOpacity);
 
@@ -116,7 +116,7 @@ public class FastGraphics extends Graphics {
         g = saved;
     }
 
-    static Rectangle clip = new Rectangle();
+    static final Rectangle clip = new Rectangle();
 
     @Override
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
@@ -167,28 +167,23 @@ public class FastGraphics extends Graphics {
     }
 
     public static int mergeColors(int backgroundColor, int foregroundColor) {
-        final byte ALPHA_CHANNEL = 24;
-        final byte RED_CHANNEL   = 16;
-        final byte GREEN_CHANNEL =  8;
-        final byte BLUE_CHANNEL  =  0;
+        final int ap1 = backgroundColor >>> 24;
+        final int ap2 = foregroundColor >>> 24;
+        final int ap = ap2 + (ap1 * (255 - ap2)) / 255;
 
-        final double ap1 = (double)(backgroundColor >>> ALPHA_CHANNEL) / 255d;
-        final double ap2 = (double)(foregroundColor >>> ALPHA_CHANNEL) / 255d;
-        final double ap = ap2 + (ap1 * (1 - ap2));
+        if (ap == 0) return 0;
 
-        final double amount1 = (ap1 * (1 - ap2)) / ap;
-        final double amount2 = ap2 / ap;
+        final int amount1 = (ap1 * (255 - ap2)) / ap;
+        final int amount2 = 255 - amount1;
 
-        int a = ((int)(ap * 255d)) & 0xff;
+        final int r = (((backgroundColor >> 16 & 0xff) * amount1) +
+                ((foregroundColor >> 16 & 0xff) * amount2)) / 255;
+        final int g = (((backgroundColor >> 8 & 0xff) * amount1) +
+                ((foregroundColor >> 8 & 0xff) * amount2)) / 255;
+        final int b = (((backgroundColor & 0xff) * amount1) +
+                ((foregroundColor & 0xff) * amount2)) / 255;
 
-        int r = ((int)(((float)(backgroundColor >> RED_CHANNEL & 0xff )*amount1) +
-                ((float)(foregroundColor >> RED_CHANNEL & 0xff )*amount2))) & 0xff;
-        int g = ((int)(((float)(backgroundColor >> GREEN_CHANNEL & 0xff )*amount1) +
-                ((float)(foregroundColor >> GREEN_CHANNEL & 0xff )*amount2))) & 0xff;
-        int b = ((int)(((float)(backgroundColor & 0xff )*amount1) +
-                ((float)(foregroundColor & 0xff )*amount2))) & 0xff;
-
-        return a << ALPHA_CHANNEL | r << RED_CHANNEL | g << GREEN_CHANNEL | b << BLUE_CHANNEL;
+        return ap << 24 | r << 16 | g << 8 | b;
     }
 
     @Override
