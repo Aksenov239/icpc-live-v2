@@ -1,4 +1,6 @@
-main.color=#193C5B
+#main.color=#193C5B
+main.color=#333344
+#additional.color=#3C6373
 additional.color=#3C6373
 accent.color=#881F1B
 green.color=#1b8041
