@@ -69,7 +69,8 @@ public class ScreenGenerator {
             height = (int) Math.round(height / scale);
         }
 //        Graphics g = new GraphicsSWT(g2);
-        Graphics g = new FastGraphics(g2, ((DataBufferInt)raster.getDataBuffer()).getData(), width);
+        Graphics g = new FastGraphics(g2, ((DataBufferInt)raster.getDataBuffer()).getData(), this.width);
+        g.setScale(scale);
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }

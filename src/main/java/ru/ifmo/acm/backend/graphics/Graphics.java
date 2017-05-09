@@ -16,6 +16,7 @@ public abstract class Graphics {
     protected int x, y;
     protected Font font;
     protected Color color;
+    protected double scale = 1;
 
     public abstract Graphics create();
 
@@ -25,6 +26,10 @@ public abstract class Graphics {
     private final int ROUND_RADIUS = 0;
 
     public abstract void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType);
+
+    public void setScale(double scale) {
+        this.scale = scale;
+    }
 
     public enum RectangleType {
         SOLID_ROUNDED,

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.slf4j.Marker;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
@@ -79,11 +80,8 @@ public class WFEventsLoader extends EventsLoader {
             problem = new ProblemInfo();
             problems.add(problem);
 
-
-
             JsonObject jsonObject = new Gson().fromJson(line, JsonObject.class);
             JsonObject problemObject = jsonObject.get("problem").getAsJsonObject();
-
             problem.letter = problemObject.get("label").getAsString();
             problem.name = problemObject.get("name").getAsString();
             problem.color = Color.decode(problemObject.get("rgb").getAsString());

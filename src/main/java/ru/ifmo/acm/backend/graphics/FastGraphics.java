@@ -32,7 +32,9 @@ public class FastGraphics extends Graphics {
 
     @Override
     public Graphics create() {
-        return new FastGraphics((Graphics2D) g.create(), x0, y0, buffer, pitch);
+        Graphics g2 = new FastGraphics((Graphics2D) g.create(), x0, y0, buffer, pitch);
+        g2.setScale(scale);
+        return g2;
     }
 
     @Override
@@ -42,6 +44,7 @@ public class FastGraphics extends Graphics {
         gg.clipRect(x + x0, y + y0, width, height);
         g2.width = width;
         g2.height = height;
+        g2.setScale(scale);
         return g2;
     }
 
@@ -119,10 +122,10 @@ public class FastGraphics extends Graphics {
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
 //        setColor(color, opacity * .9);
 //        g.fillRect(x + x0, y + y0, width, height);
-
         int c = color.getRGB() & 0xffffff | ((int)(opacity * 230) << 24);
         x += x0;
         y += y0;
+
         clip.x = -1000000;
         clip.y = -1000000;
         clip.width = 2000000;
@@ -143,6 +146,14 @@ public class FastGraphics extends Graphics {
             height = clip.y + clip.height - y;
         }
         if (width <= 0 || height <= 0) return;
+
+        if (scale != 1) {
+            width = (int)((x + width) * scale) - (int)(x * scale);
+            height = (int)((y + height) * scale) - (int)(y * scale);
+            x *= scale;
+            y *= scale;
+        }
+
         for (int i= 0; i < height; i++) {
             int q = (y + i) * pitch + x;
             Arrays.fill(buffer, q, q + width, c);
