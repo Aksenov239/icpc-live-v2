@@ -101,7 +101,18 @@ public interface TeamInfo extends Comparable<TeamInfo> {
                 return Integer.compare(o1.getPenalty(), o2.getPenalty());
             }
             if (o1.getLastAccepted() != o2.getLastAccepted()) {
-               return Long.compare(o1.getLastAccepted(), o2.getLastAccepted());
+                return Long.compare(o1.getLastAccepted(), o2.getLastAccepted());
+            }
+            return 0;
+        }
+    };
+
+    static Comparator<TeamInfo> strictComparator = new Comparator<TeamInfo>() {
+        @Override
+        public int compare(TeamInfo o1, TeamInfo o2) {
+            int res = comparator.compare(o1, o2);
+            if (res != 0) {
+                return res;
             }
             return o1.getName().compareTo(o2.getName());
         }

@@ -55,7 +55,7 @@ public class WFContestInfo extends ContestInfo {
                     WFRunInfo wfrun = (WFRunInfo) run;
                     if ("AC".equals(run.getResult())) {
                         team.solved++;
-                        int time = (int) (wfrun.getTime() / 60 / 1000);
+                        int time = (int) (wfrun.getTime() / 60000);
                         team.penalty += wrong * 20 + time;
                         team.lastAccepted = Math.max(team.lastAccepted, wfrun.getTime());
                         if (wfrun.getTime() < timeFirstSolved[j]) {
@@ -71,7 +71,7 @@ public class WFContestInfo extends ContestInfo {
             standings[n++] = team;
         }
 
-        Arrays.sort(standings, 0, n, TeamInfo.comparator);
+        Arrays.sort(standings, 0, n, TeamInfo.strictComparator);
 
         for (int i = 0; i < n; i++) {
             if (i > 0 && TeamInfo.comparator.compare(standings[i], standings[i - 1]) == 0) {
@@ -94,7 +94,7 @@ public class WFContestInfo extends ContestInfo {
                 for (RunInfo run : runs) {
                     if ("AC".equals(run.getResult())) {
                         team.solved++;
-                        int time = (int) (run.getTime() / 60 / 1000);
+                        int time = (int) (run.getTime() / 60000);
                         team.penalty += wrong * 20 + time;
                         team.lastAccepted = Math.max(team.lastAccepted, run.getTime());
                         break;
@@ -105,7 +105,7 @@ public class WFContestInfo extends ContestInfo {
             }
         }
 
-        Arrays.sort(standings, 0, standings.length, TeamInfo.comparator);
+        Arrays.sort(standings, 0, standings.length, TeamInfo.strictComparator);
 
         for (int i = 0; i < standings.length; i++) {
             if (i > 0 && TeamInfo.comparator.compare(standings[i], standings[i - 1]) == 0) {
