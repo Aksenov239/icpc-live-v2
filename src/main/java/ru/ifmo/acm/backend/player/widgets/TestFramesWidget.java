@@ -16,7 +16,6 @@ import java.awt.*;
 public class TestFramesWidget extends Widget {
 
     Font font = Font.decode("Open Sans 30");
-    PlateStyle style = new PlateStyle(Color.WHITE, Color.BLACK, Graphics.RectangleType.SOLID, Graphics.Alignment.CENTER);
 
     public TestFramesWidget() {
         super(100);
@@ -27,17 +26,19 @@ public class TestFramesWidget extends Widget {
         super.updateImpl(data);
     }
 
-    long[] times = new long[20];
+    long[] times = new long[25];
     int frame;
+    String message = "";
 
     @Override
     public void paintImpl(Graphics g, int width, int height) {
+        frame = (frame + 1) % times.length;
+        if (frame == 0) {
+            long dt = times[times.length - 1] - times[0];
+            message = (dt > 0 ? String.format("%.2f", (times.length - 1) * 1000.0 / dt) + " fps" : "");
+        }
         times[frame] = System.currentTimeMillis();
-        int newFrame = (frame + 1) % times.length;
-        long dt = times[frame] - times[newFrame];
-        frame = newFrame;
-        String s = (dt > 0 ? String.format("%.2f", (times.length - 1) * 1000.0 / dt) + " fps" : "");
-        g.drawString(s, 50, 50, font, Color.WHITE);
+        g.drawString(message, 50, 50, font, Color.WHITE);
     }
 
     @Override
