@@ -36,6 +36,8 @@ public class TestFramesWidget extends Widget {
         if (frame == 0) {
             long dt = times[times.length - 1] - times[0];
             message = (dt > 0 ? String.format("%.2f", (times.length - 1) * 1000.0 / dt) + " fps" : "");
+            System.out.println(message);
+//            System.exit(0);
         }
         times[frame] = System.currentTimeMillis();
         g.drawString(message, 50, 50, font, Color.WHITE);
