@@ -17,7 +17,7 @@ import java.util.List;
 
 public class QueueWidget extends Widget {
 
-    private static final double V = 0.01;
+    private static final double V = 0.005;
 
     public static final int WAIT_TIME = 60000;
     public static final int FIRST_TO_SOLVE_WAIT_TIME = 120000;
@@ -119,9 +119,9 @@ public class QueueWidget extends Widget {
 
             }
             if (plate.visible) {
-                plate.visibilityState = Math.min(plate.visibilityState + dt * 0.002, 1);
+                plate.visibilityState = Math.min(plate.visibilityState + dt * 0.001, 1);
             } else {
-                plate.visibilityState = Math.max(plate.visibilityState - dt * 0.002, 0);
+                plate.visibilityState = Math.max(plate.visibilityState - dt * 0.001, 0);
             }
             if (plate.visibilityState == 0) {
                 plates.remove(plate.runInfo.getId());
@@ -271,6 +271,7 @@ public class QueueWidget extends Widget {
 
         for (RunPlate plate : plates.values()) {
             plate.visible = false;
+            plate.desiredPosition = 0;
         }
         double pos = -queue.size();
         for (RunPlate plate : queue) {
