@@ -136,5 +136,5 @@ polls.votes.background=#DDDDDD
 polls.votes.text=black.color
 
 #memes
-meme.background=main.color
-meme.text=white.color
+word.statistics.word.background=main.color
+word.statistics.word.text=white.color

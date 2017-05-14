@@ -18,6 +18,7 @@ import ru.ifmo.acm.login.LoginView;
 import ru.ifmo.acm.mainscreen.BreakingNews.MainScreenBreakingNews;
 import ru.ifmo.acm.mainscreen.*;
 import ru.ifmo.acm.mainscreen.Polls.MainScreenPollView;
+import ru.ifmo.acm.mainscreen.Words.MainScreenStatisticsView;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -60,18 +61,26 @@ public class    MyUI extends UI {
 
         getNavigator().addView(MainScreenStandingsView.NAME, MainScreenStandingsView.class);
 
+        getNavigator().addView(MainScreenStatisticsView.NAME, MainScreenStatisticsView.class);
+
         getNavigator().addView(MainScreenBreakingNews.NAME, MainScreenBreakingNews.class);
 
         getNavigator().addView(MainScreenPollView.NAME, MainScreenPollView.class);
 
         getNavigator().addView(MainScreenSplitScreenView.NAME, MainScreenSplitScreenView.class);
 
+
+
         menu.addItem("Captions", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
         });
 
-        menu.addItem("Statistics", selectedItem -> {
+        menu.addItem("Standings", selectedItem -> {
             getNavigator().navigateTo(MainScreenStandingsView.NAME);
+        });
+
+        menu.addItem("Statistics", selectedItem -> {
+            getNavigator().navigateTo(MainScreenStatisticsView.NAME);
         });
 
         menu.addItem("Breaking news", selectedItem -> {
@@ -110,6 +119,9 @@ public class    MyUI extends UI {
             }
             if (currentView instanceof MainScreenStandingsView) {
                 ((MainScreenStandingsView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenStatisticsView) {
+                ((MainScreenStatisticsView) currentView).refresh();
             }
             if (currentView instanceof MainScreenTeamView) {
                 ((MainScreenTeamView) currentView).refresh();

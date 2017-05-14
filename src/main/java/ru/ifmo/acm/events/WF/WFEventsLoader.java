@@ -1,6 +1,7 @@
 package ru.ifmo.acm.events.WF;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +36,8 @@ public class WFEventsLoader extends EventsLoader {
     private String login;
     private String password;
 
+    private HashMap<String, String> regionsMapping;
+
     private boolean emulation;
 
     public WFEventsLoader() {
@@ -57,6 +60,14 @@ public class WFEventsLoader extends EventsLoader {
 
             problemsInfoURL = properties.getProperty("problems.url");
             teamsInfoURL = properties.getProperty("teams.url");
+
+            String mapping = properties.getProperty("regions.mapping");
+
+            JsonObject jsonObject = new Gson().fromJson(mapping, JsonObject.class);
+            regionsMapping = new HashMap<>();
+            for (Map.Entry<String, JsonElement> elementEntry : jsonObject.entrySet()) {
+                regionsMapping.put(elementEntry.getKey(), elementEntry.getValue().getAsString());
+            }
 
             initialize();
         } catch (IOException e) {
@@ -104,7 +115,11 @@ public class WFEventsLoader extends EventsLoader {
             team.id = teamObject.get("id").getAsInt() - 1;
             team.name = teamObject.get("affiliation").getAsString();
             team.shortName = teamObject.get("affiliation-short-name").getAsString();
-            team.hashTag = teamObject.get("hashtag") == null ? "#None" : teamObject.get("hashtag").getAsString();
+            team.region = regionsMapping.get(teamObject.get("group-id").getAsString());
+            WFContestInfo.REGIONS.add(team.region);
+            team.hashTag = teamObject.get("hashtag") == null ? "#None" :
+                    teamObject.get("hashtag").getAsString();
+            team.hashTag = team.hashTag.toLowerCase();
             infos.add(team);
         }
 

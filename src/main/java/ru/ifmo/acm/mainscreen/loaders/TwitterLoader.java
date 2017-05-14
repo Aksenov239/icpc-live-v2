@@ -3,8 +3,11 @@ package ru.ifmo.acm.mainscreen.loaders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
+import ru.ifmo.acm.creepingline.MessageData;
+import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Polls.PollsData;
 import ru.ifmo.acm.mainscreen.Utils;
+import ru.ifmo.acm.mainscreen.Words.WordStatisticsData;
 import twitter4j.*;
 
 import java.io.IOException;
@@ -24,14 +27,18 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 
     private String mainHashTag;
 
+    public static TwitterLoader getInstance() {
+        return instance;
+    }
+
     public static void start() {
         if (instance == null) {
             pollsData = PollsData.getInstance();
             twitter = TwitterFactory.getSingleton();
             instance = new TwitterLoader();
-            Utils.StoppedThread twitchThread = new Utils.StoppedThread(instance);
-            twitchThread.start();
-            ContextListener.addThread(twitchThread);
+            Utils.StoppedThread twitterThread = new Utils.StoppedThread(instance);
+            twitterThread.start();
+            ContextListener.addThread(twitterThread);
         }
     }
 
@@ -45,9 +52,23 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         }
     }
 
+    public synchronized void postMessage(String text) {
+        try {
+            twitter.updateStatus(text);
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void doOnStatus(Status status) {
+        System.err.println(status.getUser().getId() + " " + status.getText());
+        WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + status.getText());
 //        System.err.println(status.getUser().getId() + " " + status.getText());
-        PollsData.vote("Twitter#" + status.getUser().getId(), status.getText());
+        if (status.getText().startsWith(mainHashTag + " ")) {
+            PollsData.vote("Twitter#" + status.getUser().getId(),
+                    status.getText().substring(mainHashTag.length() + 1));
+        }
+        MessageData.processTwitterMessage(status);
     }
 
     private TwitterStream twitterStream;

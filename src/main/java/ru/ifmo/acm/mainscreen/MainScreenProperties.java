@@ -4,18 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
 import ru.ifmo.acm.backup.BackUp;
-import ru.ifmo.acm.datapassing.MemesData;
+import ru.ifmo.acm.datapassing.WordStatisticsData;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.events.EventsLoader;
 import ru.ifmo.acm.events.TeamInfo;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -100,22 +96,7 @@ public class MainScreenProperties {
 
         pollTimeToShow = Integer.parseInt(properties.getProperty("poll.show.time", "20000"));
 
-        oneMemeTimeToShow = Integer.parseInt(properties.getProperty("one.meme.show.time", "5000"));
-        String[] memesNames = properties.getProperty("memes", "goose").split(";");
-        memes = new ArrayList<>();
-        memesContent = new HashMap<>();
-        for (String meme : memesNames) {
-            ArrayList<String> variations = new ArrayList<>();
-            for (String content : properties.getProperty("memes." + meme, "(*)>").split(";")) {
-                variations.add(content);
-            }
-            memes.add(meme);
-            memesContent.put(meme, variations);
-        }
-        MemesData.memesCount = new AtomicInteger[memes.size()];
-        for (int i = 0; i < memes.size(); i++) {
-            MemesData.memesCount[i] = new AtomicInteger();
-        }
+        wordTimeToShow = Integer.parseInt(properties.getProperty("word.statistics.word.show.time", "5000"));
     }
 
     public long overlayedDelay;
@@ -155,7 +136,5 @@ public class MainScreenProperties {
     public final int pollTimeToShow;
 
     // Memes
-    public final int oneMemeTimeToShow;
-    public ArrayList<String> memes;
-    public HashMap<String, ArrayList<String>> memesContent;
+    public final int wordTimeToShow;
 }
