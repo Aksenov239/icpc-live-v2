@@ -9,7 +9,7 @@ public class WordStatistics {
     private long count;
 
     public WordStatistics(String word, String picture) {
-        this.word = word.toLowerCase();
+        this.word = word;
         this.picture = picture;
     }
 

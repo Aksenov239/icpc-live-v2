@@ -16,7 +16,8 @@ public class WordStatisticsData extends CachedData {
     public WordStatisticsData initialize() {
         WordStatisticsData wordStatisticsData = MainScreenData.getMainScreenData().wordStatisticsData;
         isVisible = wordStatisticsData.isVisible;
-        return wordStatisticsData;
+        word = wordStatisticsData.word;
+        return this;
     }
 
     public synchronized String setWordVisible(WordStatistics word) {
