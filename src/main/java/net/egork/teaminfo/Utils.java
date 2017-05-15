@@ -130,6 +130,9 @@ public class Utils {
         boolean first = true;
         for (String year : years) {
             int y = Integer.parseInt(year);
+            if (end == y) {
+                continue;
+            }
             if (end + 1 != y) {
                 if (start != -1) {
                     if (first) {

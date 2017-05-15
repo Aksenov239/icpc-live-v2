@@ -1,5 +1,6 @@
 package net.egork.teaminfo.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public class Team {
     private String name;
-    private List<String> regionals;
+    private List<String> regionals = new ArrayList<>();
     private int openCupPlace = -1;
     private int openCupTimes = 0;
 
@@ -21,7 +22,7 @@ public class Team {
         this.name = name;
     }
 
-    public List<String> getRegionals() {
+    public Collection<String> getRegionals() {
         return Collections.unmodifiableList(regionals);
     }
 
