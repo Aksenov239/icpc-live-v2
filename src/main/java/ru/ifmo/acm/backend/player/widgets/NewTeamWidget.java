@@ -16,7 +16,7 @@ import java.awt.*;
  * @author: pashka
  */
 public class NewTeamWidget extends Widget {
-    private static double standardAspect = 4. / 3;
+    private static double standardAspect = 16. / 9;
 
     private static final int BIG_HEIGHT = 780;
     //    private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
