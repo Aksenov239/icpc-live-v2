@@ -9,6 +9,7 @@ public class University {
     private String region;
     private String hashTag;
     private String url;
+    private String myIcpcId;
     private int appearances = -1;
     private int wins = -1;
     private int gold = -1;
@@ -104,6 +105,14 @@ public class University {
         this.regionalChampionships = regionalChampionships;
     }
 
+    public String getMyIcpcId() {
+        return myIcpcId;
+    }
+
+    public void setMyIcpcId(String myIcpcId) {
+        this.myIcpcId = myIcpcId;
+    }
+
     public void updateFrom(University university) {
         if (university.fullName != null) {
             fullName = university.fullName;
@@ -137,6 +146,9 @@ public class University {
         }
         if (university.regionalChampionships != -1) {
             regionalChampionships = university.regionalChampionships;
+        }
+        if (university.myIcpcId != null) {
+            myIcpcId = university.myIcpcId;
         }
     }
 }
