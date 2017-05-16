@@ -95,6 +95,9 @@ public abstract class Widget {
         this.updateWait = updateWait;
     }
 
+    protected void move(int width, int height, int dt) {
+    }
+
     protected abstract void paintImpl(Graphics g, int width, int height);
 
 
@@ -131,7 +134,7 @@ public abstract class Widget {
         } else {
             setVisibilityState(Math.max(visibilityState - dt * V, 0));
         }
-        return dt;
+        return 40;//dt;
     }
 
     public void setVisibilityState(double visibilityState) {
@@ -207,9 +210,9 @@ public abstract class Widget {
             height = (int) round(height * visibilityState);
         }
 
-        if (widgetAnimation != WidgetAnimation.UNFOLD_ANIMATED) {
-            opacity = 1;
-        }
+//        if (widgetAnimation != WidgetAnimation.UNFOLD_ANIMATED) {
+//            opacity = 1;
+//        }
 
         if (isBlinking) {
             if (System.currentTimeMillis() - lastBlinkingOpacityUpdate > 10) {

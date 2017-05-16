@@ -20,7 +20,7 @@ public class NewTeamWidget extends Widget {
 
     private static final int BIG_HEIGHT = 780;
     //    private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
-    private static final int BIG_X_RIGHT = 1920;//1880;//493;
+    private static final int BIG_X_RIGHT = 1880;//493;
     private static final int BIG_Y = 89;
 
     private static final int BIG_Y_43 = 0;//10;

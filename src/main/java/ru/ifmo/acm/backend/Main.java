@@ -71,24 +71,24 @@ public class Main {
                 519, 200, 39, 1350, updateWait
         ));
 
-//        generator.addWidget(new BreakingNewsWidget(
-//                updateWait,
-//                (int)(Widget.BASE_WIDTH * 0.65),
-//                (int)(Widget.BASE_HEIGHT * 0.6),
-//                (int)(Widget.BASE_WIDTH * 0.3),
-//                (int)(Widget.BASE_HEIGHT * 0.2),
-//                16. / 9,
-//                Integer.parseInt(properties.getProperty("sleep.time")),
-//                Integer.parseInt(properties.getProperty("breakingnews.time"))
-//        ));
+        generator.addWidget(new BreakingNewsWidget(
+                updateWait,
+                (int)(Widget.BASE_WIDTH * 0.65),
+                (int)(Widget.BASE_HEIGHT * 0.6),
+                (int)(Widget.BASE_WIDTH * 0.3),
+                (int)(Widget.BASE_HEIGHT * 0.2),
+                16. / 9,
+                Integer.parseInt(properties.getProperty("sleep.time")),
+                Integer.parseInt(properties.getProperty("breakingnews.time"))
+        ));
 
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
         generator.addWidget(new ClockWidget(updateWait));
 
-//        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
-//        generator.addWidget(widget);
+        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
+        generator.addWidget(widget);
 
         generator.addWidget(new PollWidget(updateWait,
                 Integer.parseInt(properties.getProperty("poll.show.time", "20000")),
@@ -119,8 +119,6 @@ public class Main {
 //            }
 //        }, 1000, 32000);
 //
-//        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
-//        new MemoryFilePlayer(filename, generator, frameRate);
 
         generator.addWidget(new TestFramesWidget());
 

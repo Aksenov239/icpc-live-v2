@@ -101,7 +101,7 @@ public class FramePlayer extends Player {
     private final class ImagePane extends JPanel {
         @Override
         public void paint(Graphics g) {
-            g.drawImage(Scalr.resize(generator.getScreen(), this.getWidth(), this.getHeight()), 0, 0, null);
+            g.drawImage(Scalr.resize((BufferedImage)generator.getScreen(), this.getWidth(), this.getHeight()), 0, 0, null);
         }
     }
 

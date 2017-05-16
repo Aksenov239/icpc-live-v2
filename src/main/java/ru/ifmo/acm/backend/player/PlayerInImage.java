@@ -46,7 +46,7 @@ public class PlayerInImage {
     }
 
     public void stop() {
-        checkEDT();
+//        checkEDT();
         if (stopped)
             return;
         stopped = true;
