@@ -1,6 +1,8 @@
 package ru.ifmo.acm.creepingline;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
@@ -23,6 +25,7 @@ public class CreepingLineView extends CustomComponent implements View {
     Table messageList;
     Table messageFlow;
     ContestInfo contestInfo;
+
 //    Button newMessage;
 
     public CreepingLineView() {
@@ -86,9 +89,30 @@ public class CreepingLineView extends CustomComponent implements View {
         }
 //        HorizontalLayout actions = new HorizontalLayout(newMessage);
 
+        TextField sourceFilter = new TextField("Filter source");
+        sourceFilter.addTextChangeListener(e -> {
+            messageFlowContainer.removeAllContainerFilters();
+            messageFlowContainer.addContainerFilter("source", e.getText(), true, true);
+        });
+//        Button applySourceFilter = new Button("Apply filter");
+//        Button withdrawSourceFilter = new Button("Withdraw filter");
+//
+//        applySourceFilter.addClickListener(e -> {
+//            messageFlowContainer.removeAllContainerFilters();
+//            messageFlowContainer.addContainerFilter("source", sourceFilter.getValue(), true, true);
+//        });
+
+//        withdrawSourceFilter.addClickListener(e -> {
+//            messageFlowContainer.removeAllContainerFilters();
+//        });
+
+//        CssLayout sourceController =
+
 //        TwitterStreamQueryForm twitterQueryForm = new TwitterStreamQueryForm(TwitterLoader.getInstance().getTwitterQueryString());
 //        TwitterSearchForm twitterSearchForm = new TwitterSearchForm();
-        VerticalLayout left = new VerticalLayout(messageList, /*twitterQueryForm, twitterSearchForm,*/ messageFlow);
+        VerticalLayout left = new VerticalLayout(messageList,
+                sourceFilter,
+        /*twitterQueryForm, twitterSearchForm,*/ messageFlow);
         left.setSizeFull();
         messageList.setSizeFull();
         messageFlow.setSizeFull();

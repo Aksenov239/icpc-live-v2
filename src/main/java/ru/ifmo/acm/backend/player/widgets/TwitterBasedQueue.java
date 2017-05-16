@@ -166,7 +166,7 @@ public class TwitterBasedQueue extends Thread {
                 }
             }
 
-            String hashTag = parts[parts.length - 1];
+            String hashTag = parts[parts.length - 1].toLowerCase();
             TeamInfo teamInfo = contestInfo.getParticipantByHashTag(hashTag);
             if (teamInfo != null && !inQueueHashtags.contains(hashTag)) {
                 Request request = new Request(teamInfo.getId(),

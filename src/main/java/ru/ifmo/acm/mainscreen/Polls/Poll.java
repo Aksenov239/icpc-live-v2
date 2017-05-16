@@ -57,12 +57,12 @@ public class Poll {
 
     public Poll(String question, String hashtag, String[] options) {
         this.question = question;
-        this.hashtag = hashtag;
+        this.hashtag = hashtag.toLowerCase();
         this.options = new TreeMap<>();
         this.usersVoted = new HashSet<>();
         totalOptions = 0;
         for (String option : options) {
-            this.options.put(option, new Option(totalOptions++, option, 0));
+            this.options.put(option.toLowerCase(), new Option(totalOptions++, option.toLowerCase(), 0));
         }
     }
 
@@ -79,10 +79,14 @@ public class Poll {
     }
 
     public void setHashtag(String hashtag) {
-        this.hashtag = hashtag;
+        this.hashtag = hashtag.toLowerCase();
     }
 
     public synchronized void setOptions(String[] hashtags) {
+        for (int i = 0; i < hashtags.length; i++) {
+            hashtags[i] = hashtags[i].toLowerCase();
+        }
+
         HashSet<String> currentOptions = new HashSet<>();
         for (String hashtag : hashtags) {
             currentOptions.add(hashtag);

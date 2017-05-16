@@ -256,73 +256,6 @@ public class MainScreenStandingsView extends CustomComponent implements View {
     }
 
 
-    /* Statistics */
-
-    final String[] statisticsStatuses = new String[]{"Statistics is shown", "Statistics isn't shown"};
-    Label statisticsStatus;
-    Button statisticsShow;
-    Button statisticsHide;
-
-    public Component getStatisticsController() {
-        statisticsStatus = new Label(getStatisticsStatus());
-        statisticsStatus.addStyleName("large");
-
-        statisticsShow = createStatisticsButton("Show statistics", true, 0);
-        statisticsHide = createStatisticsButton("Hide statistics", false, 1);
-
-        CssLayout group = createGroupLayout(statisticsShow, statisticsHide);
-
-        VerticalLayout panel = new VerticalLayout(statisticsStatus, group);
-        setPanelDefaults(panel);
-        return panel;
-    }
-
-    public String getStatisticsStatus() {
-        boolean status = mainScreenData.statisticsData.isVisible();
-        return status ? statisticsStatuses[0] : statisticsStatuses[1];
-    }
-
-    private Button createStatisticsButton(String name, boolean visibility, int status) {
-        Button button = new Button(name);
-        button.addClickListener(event -> {
-            String outcome = mainScreenData.statisticsData.setVisible(visibility);
-            if (outcome != null) {
-                Notification.show(outcome, Notification.Type.WARNING_MESSAGE);
-                return;
-            }
-            
-            statisticsStatus.setValue(statisticsStatuses[status]);
-        });
-
-        return button;
-    }
-
-    /* Memes statistics */
-    Label memesStatus;
-    Button memesShow;
-
-    public Component getMemesController() {
-        memesStatus = new Label(getMemesStatus());
-
-        memesShow = new Button("Show memes statistics");
-        memesShow.addClickListener(event -> {
-            String outcome = mainScreenData.memesData.setMemesVisible();
-            if (outcome != null) {
-                Notification.show(outcome, Notification.Type.TRAY_NOTIFICATION);
-            }
-            memesStatus.setValue(getMemesStatus());
-        });
-
-        VerticalLayout verticalLayout = new VerticalLayout(memesStatus, memesShow);
-        setPanelDefaults(verticalLayout);
-        return verticalLayout;
-    }
-
-    public String getMemesStatus() {
-        return mainScreenData.memesData.toString();
-    }
-
-
     /* mainscreen */
     MainScreenData mainScreenData;
 
@@ -331,9 +264,6 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         standingsStatus.setValue(getStandingsStatus());
 //            breakingNewsStatus.setValue(getBreakingNewsStatus());
         queueStatus.setValue(getQueueStatus());
-        statisticsStatus.setValue(getStatisticsStatus());
-        memesStatus.setValue(getMemesStatus());
-
 //        mainScreenData.update();
     }
 
@@ -344,13 +274,10 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         Component standingsController = getStandingsController();
         //Component breakingNewsController = getBreakingNewsController();
         Component queueStatus = getQueueController();
-        Component statisticsController = getStatisticsController();
-        Component memesController = getMemesController();
 
         VerticalLayout mainPanel = new VerticalLayout(
                 clockController, standingsController,
-                statisticsController, queueStatus,
-                memesController);
+                queueStatus);
         mainPanel.setSizeFull();
         setCompositionRoot(mainPanel);
     }

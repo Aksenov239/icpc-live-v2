@@ -23,3 +23,6 @@ buildNumber.properties
 *.jar
 *.war
 *.ear
+
+# VLC Plugin
+libvlc/x64/plugins/plugins.dat

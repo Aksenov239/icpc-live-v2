@@ -20,28 +20,28 @@ import java.util.Properties;
  * Created by Meepo on 4/22/2017.
  */
 public class MemesWidget extends Widget {
-    String previous;
-    int previousCount;
-    String meme;
-    int count;
-    boolean visible;
-    long lastChange;
+    private String next;
+    private int nextCount;
+    private String meme;
+    private int count;
+    private boolean visible;
+    private long lastChange;
 
-    double visibilityRectangle;
-    double visibilityText;
+    private double visibilityRectangle;
+    private double visibilityText;
 
-    int widthR;
-    int heightR;
-    int Y;
-    int DX;
-    int IMAGE_WIDTH;
+    private int widthR;
+    private int heightR;
+    private int Y;
+    private int DX;
+    private int IMAGE_WIDTH;
 
-    Font font;
+    private Font font;
 
-    int flickerTime;
-    MemeStatus status;
+    private int flickerTime;
+    private MemeStatus status = MemeStatus.CLOSE;
 
-    double V = 0;
+    private double V = 0;
 
     private enum MemeStatus {
         OPEN,
@@ -78,7 +78,7 @@ public class MemesWidget extends Widget {
                 AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
                 BufferedImage after = new BufferedImage(IMAGE_WIDTH - 2 * DX, heightR - 2 * DX, BufferedImage.TYPE_INT_ARGB);
                 scaleOp.filter(image, after);
-                memesImages.put(meme, image);
+                memesImages.put(meme, after);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -88,17 +88,18 @@ public class MemesWidget extends Widget {
     @Override
     public void updateImpl(Data data) {
         if (data.memesData.isVisible) {
+            if (data.memesData.currentMeme == null) {
+                return;
+            }
             if (!visible) {
-                previous = data.memesData.currentMeme;
+                next = data.memesData.currentMeme;
                 meme = data.memesData.currentMeme;
                 count = data.memesData.count;
                 status = MemeStatus.OPEN;
             } else {
-                if (!data.memesData.currentMeme.equals(meme)) {
-                    previous = meme;
-                    previousCount = count;
-                    meme = data.memesData.currentMeme;
-                    count = data.memesData.count;
+                if (!data.memesData.currentMeme.equals(next)) {
+                    next = data.memesData.currentMeme;
+                    nextCount = data.memesData.count;
                     lastChange = System.currentTimeMillis();
                     status = MemeStatus.FLICKER;
                 }
@@ -120,16 +121,20 @@ public class MemesWidget extends Widget {
         last = time;
         if (status == MemeStatus.OPEN) {
             visibilityRectangle = Math.min(visibilityRectangle + V * dt, 1);
-        } if (status == MemeStatus.CLOSE) {
+            visibilityText = 1;
+        } else if (status == MemeStatus.CLOSE) {
             visibilityRectangle = Math.max(visibilityRectangle - V * dt, 0);
         } else {
             if (time - lastChange < flickerTime / 2) {
                 visibilityText = Math.max(visibilityText - V * dt, 0);
             } else {
+                if (!meme.equals(next)) {
+                    meme = next;
+                    count = nextCount;
+                }
                 visibilityText = Math.min(visibilityText + V * dt, 1);
             }
         }
-        return;
     }
 
     @Override
@@ -143,15 +148,16 @@ public class MemesWidget extends Widget {
         g.drawRect(X, Y, widthR, heightR, MemesStylesheet.meme.background, 1, Graphics.RectangleType.SOLID);
 
         if (g instanceof GraphicsSWT) {
-            ((GraphicsSWT) g).drawImage(memesImages.get(meme), 10, 10, visibilityText);
+            ((GraphicsSWT) g).drawImage(memesImages.get(meme), X + 10, Y + 10, visibilityText);
         } else {
             int w = IMAGE_WIDTH - 20;
             int h = heightR - 20;
             g.drawImage(memesImages.get(meme),
-                    10, (int)((h + 10) - h * textOpacity), IMAGE_WIDTH - 20, (int) (h * textOpacity));
+                    X + 10, Y + 10 + (int) (h / 2 - h / 2 * visibilityText),
+                    w, (int) (h * visibilityText));
         }
 
-        g.drawString(" X " + count, X + IMAGE_WIDTH, Y + heightR / 2,
+        g.drawString(" X " + count, X + IMAGE_WIDTH, Y + heightR / 2 + (int) (heightR * 0.07),
                 font, MemesStylesheet.meme.text, visibilityText);
     }
 

@@ -61,24 +61,28 @@ public class PollsData {
         pollsByHashtag.put(hashtag, poll);
     }
 
+    // Type is vote %poll% %option%
     public static void vote(String user, String message) {
         String[] tokens = message.split(" ");
-        Poll pollToUpdate = null;
+
         for (int i = 0; i < tokens.length; i++) {
-            if (pollsByHashtag.containsKey(tokens[i])) {
-                pollToUpdate = pollsByHashtag.get(tokens[i]);
-                break;
-            }
+            tokens[i] = tokens[i].toLowerCase();
         }
+
+        if (tokens.length == 0) {
+            return;
+        }
+
+        if (!tokens[0].equals("vote") || tokens.length > 3) {
+            return;
+        }
+
+        Poll pollToUpdate = pollsByHashtag.get(tokens[1].startsWith("#") ? tokens[1] : "#" + tokens[1]);
         if (pollToUpdate == null) {
             return;
         }
         System.err.println("Vote for " + message);
-        for (int i = 0; i < tokens.length; i++) {
-            if (pollToUpdate.updateIfOption(user, tokens[i])) {
-                return;
-            }
-        }
+        pollToUpdate.updateIfOption(user, tokens[2].startsWith("#") ? tokens[2] : "#" + tokens[2]);
     }
 
 }

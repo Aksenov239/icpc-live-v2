@@ -16,6 +16,7 @@ import ru.ifmo.acm.mainscreen.Advertisement;
 import ru.ifmo.acm.mainscreen.Polls.Poll;
 import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
+import twitter4j.Status;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,73 +75,41 @@ public class MessageData {
         ContextListener.addThread(update);
         messageFlow = new SynchronizedBeanItemContainer<>(Message.class);
         EventsLoader eventsLoader = EventsLoader.getInstance();
-        new Thread(() -> {
-            while (true) {
-                final BlockingQueue<AnalystMessage> q = eventsLoader.getContestData().getAnalystMessages();
-                try {
-                    AnalystMessage e = q.poll(5000, TimeUnit.MILLISECONDS);
-                    if (e == null) continue;
-                    if (e.getCategory() == WFAnalystMessage.WFAnalystMessageCategory.HUMAN || e.getPriority() <= 1) {
-                        addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "Analytics"));
-                    }
-                } catch (InterruptedException e1) {
+        Utils.StoppedThread analytics = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    final BlockingQueue<AnalystMessage> q = eventsLoader.getContestData().getAnalystMessages();
                     try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        break;
+                        AnalystMessage e = q.poll(5000, TimeUnit.MILLISECONDS);
+                        if (e == null) continue;
+                        if (e.getCategory() == WFAnalystMessage.WFAnalystMessageCategory.HUMAN || e.getPriority() <= 1) {
+                            addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "Analytics"));
+                        }
+                    } catch (InterruptedException e1) {
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
                     }
                 }
             }
-        }).start();
+        });
+        analytics.start();
+        ContextListener.addThread(analytics);
+    }
+
+    public static void processTwitterMessage(Status status) {
+        Message message = new Message(
+                status.getText(),
+                System.currentTimeMillis(), 0, false, "@" + status.getUser().getScreenName());
+        addMessageToFlow(message);
     }
 
     final BackUp<Message> messageList;
-    final BeanItemContainer<Message> messageFlow;
+    static BeanItemContainer<Message> messageFlow;
 
-    //    public void reload() {
-//        synchronized (messageList) {
-//            messageList.removeAllItems();
-//            File file = new File(backup);
-//            if (file.exists()) {
-//                try {
-//                    Scanner sc = new Scanner(file);//getClass().getResourceAsStream("/" + backup));
-//                    while (sc.hasNextLine()) {
-//                        long start = Long.parseLong(sc.nextLine());
-//                        long end = Long.parseLong(sc.nextLine());
-//                        String msg = sc.nextLine();
-//                        boolean isAd = Boolean.parseBoolean(sc.nextLine());
-//                        messageList.addBean(new Message(msg, start, end - start, isAd));
-//                    }
-//                    sc.close();
-//                } catch (IOException e) {
-//                    log.error("error", e);
-//                }
-//            }
-//        }
-//    }
-//
-//    public void backup() {
-//        try {
-//            String path = backup;//getClass().getResource(backup).getPath();
-//
-//            String tmpFile = path + ".tmp";
-//
-//            PrintWriter out = new PrintWriter(path + ".tmp");
-//            synchronized (messageList) {
-//                for (Message message : messageList.getItemIds()) {
-//                    out.println(message.getCreationTime());
-//                    out.println(message.getEndTime());
-//                    out.println(message.getMessage());
-//                    out.println(message.getIsAdvertisement());
-//                }
-//            }
-//            out.close();
-//
-//            Files.move(new File(tmpFile).toPath(), new File(backup).toPath(), StandardCopyOption.REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            log.error("error", e);
-//        }
-//    }
     public final BackUp<Advertisement> logosList;
 
     private void recache() {
@@ -173,7 +142,7 @@ public class MessageData {
         recache();
     }
 
-    public void addMessageToFlow(Message message) {
+    public static void addMessageToFlow(Message message) {
         // messageList.addBean(message);
         synchronized (messageFlow) {
             messageFlow.addItemAt(0, message);
@@ -184,7 +153,7 @@ public class MessageData {
                 }
             }
         }
-        recache();
+//        recache();
     }
 
     public List<Message> getMessages() {

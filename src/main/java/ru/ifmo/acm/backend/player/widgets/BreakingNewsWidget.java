@@ -26,7 +26,7 @@ public class BreakingNewsWidget extends Widget {
     private final int GAP;
 
     public BreakingNewsWidget(long updateWait, int x, int y, int width, int height, double aspectRatio, int sleepTime, int duration) {
-        video = PlayerWidget.getPlayerWidget(x, y, width, (int) (height / aspectRatio), sleepTime, 0);
+        video = PlayerWidget.getPlayerWidget(x, y, width, (int) (width / aspectRatio), sleepTime, 0);
         this.updateWait = updateWait;
 
         PLATE_HEIGHT = (int) (0.1 * video.height);

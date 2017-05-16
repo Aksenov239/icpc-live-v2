@@ -15,6 +15,7 @@ public class Person {
     private int tcRating = -1;
     private String cfHandle;
     private int cfRating = -1;
+    private String twitterHandle;
     private List<Achievement> achievements = new ArrayList<>();
 
     public String getName() {
@@ -154,6 +155,14 @@ public class Person {
         this.tcId = tcId;
     }
 
+    public String getTwitterHandle() {
+        return twitterHandle;
+    }
+
+    public void setTwitterHandle(String twitterHandle) {
+        this.twitterHandle = twitterHandle;
+    }
+
     public boolean isCompatible(Person other) {
         return Utils.compatible(tcHandle, other.tcHandle) && (Utils.compatible(cfHandle, other.cfHandle) || cfHandle
                 .equalsIgnoreCase(other.cfHandle)) && Utils.compatible(tcId, other.tcId);
@@ -184,6 +193,9 @@ public class Person {
         }
         if (other.cfRating != -1) {
             cfRating = other.cfRating;
+        }
+        if (other.twitterHandle != null) {
+            twitterHandle = other.twitterHandle;
         }
         achievements.addAll(other.achievements);
         Collections.sort(achievements);

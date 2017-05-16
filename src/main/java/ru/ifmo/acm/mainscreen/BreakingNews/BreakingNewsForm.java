@@ -144,14 +144,14 @@ public class BreakingNewsForm extends FormLayout {
 //                int problemId = problem.getValue().charAt(0) - 'A';
                 updateMessageField();
 
-                boolean isSet = parent.mainScreenData.breakingNewsData.setNewsVisible(
+                String outcome = parent.mainScreenData.breakingNewsData.setNewsVisible(
                         true, (String) types.getValue(), isLive.getValue(), messageToShow.getValue(),
                         teamId, problemId, currentRunId
                 );
 
-                if (!isSet) {
+                if (outcome != null) {
                     Notification.show(
-                            "You need to wait while current breaking news is shown",
+                            outcome,
                             Notification.Type.WARNING_MESSAGE
                     );
                 } else {
@@ -171,7 +171,14 @@ public class BreakingNewsForm extends FormLayout {
 
         hide = new Button("Hide");
         hide.addClickListener(event -> {
-            parent.mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), "", -1, -1, -1);
+            String outcome =
+                parent.mainScreenData.breakingNewsData.setNewsVisible(false, null, isLive.getValue(), "", -1, -1, -1);
+            if (outcome != null) {
+                Notification.show(
+                        outcome,
+                        Notification.Type.WARNING_MESSAGE
+                );
+            }
             breakingNewsStatus.setValue(getBreakingNewsStatus());
         });
 

@@ -6,13 +6,12 @@ import org.apache.logging.log4j.Logger;
 import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import ru.ifmo.acm.ContextListener;
-import ru.ifmo.acm.datapassing.MemesData;
 import ru.ifmo.acm.mainscreen.Polls.PollsData;
 import ru.ifmo.acm.mainscreen.Utils;
+import ru.ifmo.acm.mainscreen.Words.WordStatisticsData;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -68,7 +67,7 @@ public class TwitchLoader extends Utils.StoppedRunnable {
                         logger.log(Level.INFO, "Message: " + event.getUser() + " " + event.getMessage());
 //                        System.err.println("Message: " + event.getUser() + " " + event.getMessage());
                         PollsData.vote("Twitch#" + event.getUser().getLogin(), event.getMessage());
-                        MemesData.processMessage(event.getMessage());
+                        WordStatisticsData.vote(event.getMessage());
                     }
                 });
         manager = new MultiBotManager();

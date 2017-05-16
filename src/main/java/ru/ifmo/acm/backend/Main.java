@@ -2,7 +2,6 @@ package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
 import ru.ifmo.acm.backend.player.FramePlayer;
-import ru.ifmo.acm.backend.player.MemoryFilePlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import ru.ifmo.acm.backend.player.widgets.*;
 
@@ -101,11 +100,10 @@ public class Main {
                 80
         ));
 
-        generator.addWidget(new MemesWidget(updateWait,
-                Integer.parseInt(properties.getProperty("memes.flicker.time", "2000")),
+        generator.addWidget(new WordStatisticsWidget(updateWait,
                 600,
                 400,
-                250
+                200
         ));
 
 //        new Timer().schedule(new TimerTask() {
@@ -124,9 +122,9 @@ public class Main {
 
         generator.addWidget(new TestFramesWidget());
 
-//        new FramePlayer("Main", generator, frameRate);
-        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
-        new MemoryFilePlayer(filename, generator, frameRate);
+        new FramePlayer("Main", generator, frameRate);
+//        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
+//        new MemoryFilePlayer(filename, generator, frameRate);
     }
 
     private Properties readProperties() {

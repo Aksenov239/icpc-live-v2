@@ -111,13 +111,13 @@ public class MessageForm extends FormLayout {
         });
 
         Button post = new Button("Tweet", event -> {
-            TwitterLoader.getInstance().postMessage(message.getValue());
+            ru.ifmo.acm.mainscreen.loaders.TwitterLoader.getInstance().postMessage(message.getValue());
             message.clear();
             form.setVisible(false);
 
             parent.messageList.setValue(null);
 
-            Notification.show("Tweeted new message", Type.TRAY_NOTIFICATION);
+            Notification.show("Tweeted message", Type.TRAY_NOTIFICATION);
         });
 
         HorizontalLayout actions = new HorizontalLayout(save, delete, cancel, post);

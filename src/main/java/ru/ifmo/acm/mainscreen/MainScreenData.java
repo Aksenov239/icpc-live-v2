@@ -53,7 +53,7 @@ public class MainScreenData {
         statisticsData = new StatisticsData();
         teamStatsData = new TeamStatsData();
         pollData = new PollData();
-        memesData = new MemesData();
+        wordStatisticsData = new WordStatisticsData();
     }
 
     public void update() {
@@ -63,7 +63,7 @@ public class MainScreenData {
         breakingNewsData.update();
         teamData.update();
         pollData.update();
-        memesData.update();
+        wordStatisticsData.update();
     }
 
     private static MainScreenData mainScreenData;
@@ -84,7 +84,7 @@ public class MainScreenData {
     public StatisticsData statisticsData;
     public TeamStatsData teamStatsData;
     public PollData pollData;
-    public MemesData memesData;
+    public WordStatisticsData wordStatisticsData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

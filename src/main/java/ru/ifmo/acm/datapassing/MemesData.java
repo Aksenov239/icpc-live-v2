@@ -24,9 +24,11 @@ public class MemesData extends CachedData {
         if (isVisible) {
             return "The memes statistics is currently visible";
         }
-        isVisible = true;
+        MainScreenProperties properties = MainScreenData.getProperties();
+        currentMemeId = 0;
+        currentMeme = properties.memes.get(0);
         timestamp = System.currentTimeMillis();
-        currentMemeId = -1;
+        isVisible = true;
         return null;
     }
 
