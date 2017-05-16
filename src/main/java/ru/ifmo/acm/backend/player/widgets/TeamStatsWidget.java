@@ -127,6 +127,7 @@ public class TeamStatsWidget extends RotatableWidget {
     public void showTeam(int id) {
         try {
             Record record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
+            System.out.println("teamData/" + id + ".json");
             BufferedImage logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
             BufferedImage unmovable = prepareTopPlaque(record, logo);
             BufferedImage movable = prepareBottomPlaque(record);
@@ -232,7 +233,7 @@ public class TeamStatsWidget extends RotatableWidget {
             return new Color(0xEDD221);
         }
         if (tcRating >= 1200) {
-            return new Color(0x5169B1);
+            return new Color(0x7777ff);
         }
         if (tcRating >= 900) {
             return new Color(0x148A43);
@@ -248,10 +249,10 @@ public class TeamStatsWidget extends RotatableWidget {
             return new Color(0xF79A3B);
         }
         if (tcRating >= 1900) {
-            return new Color(0x7B59A5);
+            return new Color(0xcc59ff);
         }
         if (tcRating >= 1600) {
-            return new Color(0x5169B1);
+            return new Color(0x7777ff);
         }
         if (tcRating >= 1400) {
             return new Color(0x63C29E);
