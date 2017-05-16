@@ -19,6 +19,23 @@ public class PollData extends CachedData {
         return data;
     }
 
+    public String getOverlayError() {
+        return "You have to wait while poll information is shown";
+    }
+
+    public String checkOverlays() {
+        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+            return MainScreenData.getMainScreenData().teamData.getOverlayError();
+        }
+        if (MainScreenData.getMainScreenData().statisticsData.isVisible()) {
+            return MainScreenData.getMainScreenData().standingsData.getOverlayError();
+        }
+        if (MainScreenData.getMainScreenData().standingsData.isVisible) {
+            return MainScreenData.getMainScreenData().standingsData.getOverlayError();
+        }
+        return null;
+    }
+
     public void update() {
 //        System.err.println("Update: " + System.currentTimeMillis() + " " + timestamp + " " + MainScreenData.getProperties().pollTimeToShow);
         synchronized (pollLock) {
@@ -29,10 +46,21 @@ public class PollData extends CachedData {
         }
     }
 
+    public void hide() {
+        synchronized (pollLock) {
+            isVisible = false;
+            recache();
+        }
+    }
+
     public String setPollVisible(Poll poll) {
         synchronized (pollLock) {
+            String error = checkOverlays();
+            if (error != null) {
+                return error;
+            }
             if (isVisible) {
-                return "Poll " + poll.getHashtag() + " is showing now";
+                return "Poll " + poll.getHashtag() + " is showed now";
             }
             timestamp = System.currentTimeMillis();
             this.poll = poll;

@@ -42,6 +42,11 @@ public class WordStatisticsData extends CachedData {
         return null;
     }
 
+    public void hide() {
+        isVisible = false;
+        recache();
+    }
+
     public synchronized void update() {
         if (!isVisible) {
             return;

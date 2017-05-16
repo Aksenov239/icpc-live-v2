@@ -45,6 +45,12 @@ public class TeamData extends CachedData {
         if (MainScreenData.getMainScreenData().statisticsData.isVisible()) {
             MainScreenData.getMainScreenData().statisticsData.hide();
         }
+        if (MainScreenData.getMainScreenData().wordStatisticsData.isVisible) {
+            MainScreenData.getMainScreenData().wordStatisticsData.hide();
+        }
+        if (MainScreenData.getMainScreenData().pollData.isVisible) {
+            MainScreenData.getMainScreenData().pollData.hide();
+        }
     }
 
     public String getOverlayError() {
