@@ -7,16 +7,15 @@ import net.egork.teaminfo.data.Person;
 import net.egork.teaminfo.data.Record;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.datapassing.CachedData;
+import ru.ifmo.acm.datapassing.Data;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import ru.ifmo.acm.backend.graphics.Graphics;
-import ru.ifmo.acm.datapassing.Data;
-import ru.ifmo.acm.datapassing.CachedData;
 
 /**
  * @author egor@egork.net
@@ -292,7 +291,8 @@ public class TeamStatsWidget extends RotatableWidget {
         g.drawString(record.university.getFullName(), UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
         g.setFont(TEAM_INFO);
         g.drawString(
-                record.team.getName() + " | " + record.team.getRegionals().get(0) + " | " + record.university.getHashTag(),
+                record.team.getName() + " | " + record.team.getRegionals().iterator().next() + " | " +
+                        record.university.getHashTag(),
                 TEAM_INFO_X, TEAM_INFO_Y
         );
         return image;

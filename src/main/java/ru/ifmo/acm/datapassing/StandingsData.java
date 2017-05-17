@@ -51,6 +51,10 @@ public class StandingsData extends CachedData {
                 delay = MainScreenData.getProperties().overlayedDelay;
                 MainScreenData.getMainScreenData().statisticsData.hide();
             }
+            if (MainScreenData.getMainScreenData().pollData.isVisible) {
+                delay = MainScreenData.getProperties().overlayedDelay;
+                MainScreenData.getMainScreenData().pollData.hide();
+            }
         }
     }
 
