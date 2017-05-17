@@ -25,9 +25,34 @@ public class BreakingNewsData extends CachedData {
         Data.cache.refresh(BreakingNewsData.class);
     }
 
-    public synchronized boolean setNewsVisible(boolean visible, String type, boolean isLive, String newsMessage, int teamId, int problemId, int runId) {
+    public String checkOverlays() {
+        if (MainScreenData.getMainScreenData().teamData.isVisible) {
+            return MainScreenData.getMainScreenData().teamData.getOverlayError();
+        }
+        if (MainScreenData.getMainScreenData().teamStatsData.isVisible()) {
+            return MainScreenData.getMainScreenData().teamStatsData.getOverlayError();
+        }
+        if (MainScreenData.getMainScreenData().wordStatisticsData.isVisible) {
+            return MainScreenData.getMainScreenData().wordStatisticsData.getOverlayError();
+        }
+        if (MainScreenData.getMainScreenData().standingsData.isVisible &&
+                !MainScreenData.getMainScreenData().standingsData.isBig) {
+            return MainScreenData.getMainScreenData().standingsData.getOverlayError();
+        }
+        return null;
+    }
+
+    public synchronized String setNewsVisible(boolean visible, String type, boolean isLive, String newsMessage, int teamId, int problemId, int runId) {
+        String check = checkOverlays();
+        if (check != null) {
+            return check;
+        }
+
+        if (!visible && !isVisible) {
+            return "You cannot hide breaking news, it is not shown";
+        }
         if (visible && isVisible) {
-            return false;
+            return "You need to wait while current breaking news is shown";
         }
 
         this.isVisible = visible;
@@ -47,7 +72,7 @@ public class BreakingNewsData extends CachedData {
         this.timestamp = System.currentTimeMillis();
         recache();
 
-        return true;
+        return null;
     }
 
     public void update() {
@@ -83,6 +108,10 @@ public class BreakingNewsData extends CachedData {
             return "Breaking news aren't shown";
         }
 
+    }
+
+    public String getOverlayError() {
+        return "You need to wait while breaking news finishes";
     }
 
     public boolean isVisible;

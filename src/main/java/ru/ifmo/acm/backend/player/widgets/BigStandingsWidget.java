@@ -255,9 +255,9 @@ public class BigStandingsWidget extends Widget {
 
             int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
             g.clip(-plateHeight,
-                    initY - STAR_SIZE * 2,
+                    initY,
                     this.width + 2 * plateHeight,
-                    (spaceY + plateHeight) * teamsOnPage + STAR_SIZE * 2);
+                    (spaceY + plateHeight) * teamsOnPage);
 
             int lastProblems = -1;
             boolean bright = true;
@@ -341,6 +341,7 @@ public class BigStandingsWidget extends Widget {
     }
 
     private void drawFullTeamPane(Graphics g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
+        stars.clear();
         Font font = this.font;
         PlateStyle color = getTeamRankColor(team);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
@@ -394,7 +395,8 @@ public class BigStandingsWidget extends Widget {
 
             RunInfo firstSolvedRun = firstSolved[i];
             if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId() && visibilityState >= 0.5) {
-                stars.add(new Point(x + problemWidth - STAR_SIZE, y + STAR_SIZE));
+                stars.add(new Point(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE));
+//                g.drawStar(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
             x += problemWidth + spaceX;
         }
@@ -415,6 +417,10 @@ public class BigStandingsWidget extends Widget {
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
                 plateHeight, Graphics.Alignment.CENTER,
                 font, penaltyColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+
+        for (Point star : stars) {
+            g.drawStar(star.x, star.y, STAR_SIZE);
+        }
     }
 
     private int problemWidth(int problemsNumber) {

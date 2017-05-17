@@ -35,18 +35,18 @@ public class VideoVLCWidget extends PlayerWidget {
     private String manualTempURL;
 
     public void changeManually(String url) {
-        SwingUtilities.invokeLater(() -> {
+//        SwingUtilities.invokeLater(() -> {
             if (url == null) {
                 manualTempURL = null;
                 return;
             }
             manualTempPlayer = new PlayerInImage(width, height, null, url);
             manualTempURL = url;
-        });
+//        });
     }
 
     public void switchManually() {
-        checkEDT();
+//        checkEDT();
         if (manualTempURL == null) {
             stop();
             return;
@@ -62,7 +62,7 @@ public class VideoVLCWidget extends PlayerWidget {
 
     public void change(String url) {
         log.info("Change to " + url);
-        SwingUtilities.invokeLater(() -> {
+//        SwingUtilities.invokeLater(() -> {
             if (url == null) {
                 currentUrl = null;
                 stop();
@@ -83,25 +83,25 @@ public class VideoVLCWidget extends PlayerWidget {
             });
             timer.setRepeats(false);
             timer.start();
-        });
+//        });
     }
 
     public void setVolume(int volume) {
-        checkEDT();
+//        checkEDT();
         player.setVolume(volume);
     }
 
     public void stop() {
-        SwingUtilities.invokeLater(() -> {
+//        SwingUtilities.invokeLater(() -> {
             if (player != null) {
                 player.stop();
             }
             currentUrl = null;
-        });
+//        });
     }
 
     public boolean readyToShow() {
-        checkEDT();
+//        checkEDT();
         return ready;
     }
 
@@ -111,7 +111,7 @@ public class VideoVLCWidget extends PlayerWidget {
 
     public double getAspectRatio() {
         if (currentUrl.startsWith("http")) {
-            return 4. / 3;
+            return 16. / 9;
         }
         return player.getPlayer().getAspectRatio().equals("16:9") ? 16. / 9 : 4. / 3;
     }

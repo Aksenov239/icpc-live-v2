@@ -2,11 +2,6 @@ package ru.ifmo.acm.backend.player;
 
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
@@ -61,12 +56,12 @@ public class MemoryFilePlayer extends Player {
     }
 
     private void repaint() {
-        DataBufferInt buf = generator.getBuffer();
-        int[] bytes = buf.getData();
-        out.rewind();
-        for (int i = 0; i < bytes.length; i++) {
-            out.putInt(reverseBytes(bytes[i]));
-        }
+//        DataBufferInt buf = generator.getBuffer();
+//        int[] bytes = buf.getData();
+//        out.rewind();
+//        for (int i = 0; i < bytes.length; i++) {
+//            out.putInt(reverseBytes(bytes[i]));
+//        }
+        generator.drawToBuffer(out);
     }
-
 }

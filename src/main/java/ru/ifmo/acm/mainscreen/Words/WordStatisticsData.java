@@ -65,7 +65,7 @@ public class WordStatisticsData {
     public static void vote(String text) {
         text = text.toLowerCase();
         for (WordStatistics word : wordsList.getData()) {
-            if (text.contains(word.getWord())) {
+            if (text.contains(word.getWord().toLowerCase())) {
                 wordsList.getItem(word).getItemProperty("count").setValue(word.getCount() + 1);
             }
         }

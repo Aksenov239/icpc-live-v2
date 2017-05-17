@@ -16,10 +16,23 @@ public class WordStatisticsData extends CachedData {
     public WordStatisticsData initialize() {
         WordStatisticsData wordStatisticsData = MainScreenData.getMainScreenData().wordStatisticsData;
         isVisible = wordStatisticsData.isVisible;
-        return wordStatisticsData;
+        word = wordStatisticsData.word;
+        return this;
+    }
+
+    public String checkOverlays() {
+        if (MainScreenData.getMainScreenData().breakingNewsData.isVisible) {
+            return MainScreenData.getMainScreenData().breakingNewsData.getOverlayError();
+        }
+        return null;
     }
 
     public synchronized String setWordVisible(WordStatistics word) {
+        String check = checkOverlays();
+        if (check != null) {
+            return check;
+        }
+
         if (isVisible) {
             return "The word statistics is currently visible";
         }
@@ -27,6 +40,11 @@ public class WordStatisticsData extends CachedData {
         timestamp = System.currentTimeMillis();
         isVisible = true;
         return null;
+    }
+
+    public void hide() {
+        isVisible = false;
+        recache();
     }
 
     public synchronized void update() {
@@ -47,6 +65,10 @@ public class WordStatisticsData extends CachedData {
                 " for " + Math.max(0, timestamp +
                 MainScreenData.getProperties().wordTimeToShow -
                 System.currentTimeMillis()) / 1000 + " more seconds" : "Word statistics is not shown";
+    }
+
+    public String getOverlayError() {
+        return "You have to wait while word statistics is shown";
     }
 
     public void recache() {

@@ -40,6 +40,9 @@ public class StatisticsData extends CachedData {
         if (MainScreenData.getMainScreenData().teamData.isVisible) {
             return MainScreenData.getMainScreenData().teamData.getOverlayError();
         }
+        if (MainScreenData.getMainScreenData().pollData.isVisible) {
+            return MainScreenData.getMainScreenData().pollData.getOverlayError();
+        }
         return null;
     }
 
