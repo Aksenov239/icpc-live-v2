@@ -28,6 +28,8 @@ public abstract class PlayerWidget extends Widget {
 
     public abstract void draw(Graphics g, int x, int y, int width, int height);
 
+    public abstract void draw(Graphics g, int x, int y, int width, int height, double opacity);
+
     public abstract void change(String url);
 
     public abstract void setVolume(int volume);

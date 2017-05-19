@@ -253,6 +253,11 @@ public class VideoGLWidget extends PlayerWidget {
         g.drawTexture(processTexture(), x, y, width, height);
     }
 
+    @Override
+    public void draw(Graphics g, int x, int y, int width, int height, double opacity) {
+
+    }
+
     public void updateState(Graphics g, boolean manualSwitch) {
         if (gl == null) {
             gl = ((GraphicsGL) g).getGL();

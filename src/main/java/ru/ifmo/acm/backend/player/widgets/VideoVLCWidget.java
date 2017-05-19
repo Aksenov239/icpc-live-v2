@@ -128,6 +128,10 @@ public class VideoVLCWidget extends PlayerWidget {
         g.drawImage(player.getImage(), x, y, width, height);
     }
 
+    public void draw(Graphics g, int x, int y, int width, int height, double opacity) {
+        g.drawImage(player.getImage(), x, y, width, height, opacity);
+    }
+
     @Override
     protected CachedData getCorrespondingData(Data data) {
         return null;

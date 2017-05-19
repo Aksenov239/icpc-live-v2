@@ -37,8 +37,14 @@ public class QueueWidget extends Widget {
     private final int statusWidth;
     private final Font font;
 
+    private final int videoWidth;
+    private final int videoHeight;
+
     ContestInfo info;
     boolean showVerdict;
+
+    NewBreakingNewsWidget breakingNews;
+    private RunPlate breaking;
 
     class RunPlate {
         double currentPosition;
@@ -73,16 +79,20 @@ public class QueueWidget extends Widget {
 
         this.showVerdict = showVerdict;
 
+        videoWidth = problemWidth + nameWidth + rankWidth + statusWidth;
+        videoHeight = videoWidth * 9 / 16;
+
+        breakingNews = new NewBreakingNewsWidget(updateWait, videoWidth, videoHeight);
+
         setVisibilityState(1);
         setVisible(true);
     }
 
     @Override
-    protected void updateImpl(Data data) {
-        setVisible(data.queueData.isQueueVisible());
-        lastUpdate = System.currentTimeMillis();
+    public void paint(Graphics g, int width, int height, double scale) {
+        super.paint(g, width, height, scale);
+        breakingNews.paint(g, width, height, scale);
     }
-
 
     @Override
     public void paintImpl(Graphics g, int width, int height) {
@@ -93,6 +103,9 @@ public class QueueWidget extends Widget {
         Collections.sort(list, (o1, o2) -> -Double.compare(o1.desiredPosition, o2.desiredPosition));
         for (RunPlate plate : list) {
             drawRun(g, baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), plate);
+        }
+        if (breaking != null) {
+            breakingNews.setPosition(baseX, baseY + (int) (breaking.currentPosition * (plateHeight + spaceY)) - videoHeight);
         }
     }
 
@@ -127,6 +140,7 @@ public class QueueWidget extends Widget {
                 plates.remove(plate.runInfo.getId());
             }
         }
+
     }
 
     private RunPlate getRunPlate(RunInfo r) {
@@ -136,11 +150,6 @@ public class QueueWidget extends Widget {
             plates.put(r.getId(), plate);
         }
         return plate;
-    }
-
-    @Override
-    protected CachedData getCorrespondingData(Data data) {
-        return data.queueData;
     }
 
     private void drawRun(Graphics g, int x, int y, RunPlate plate) {
@@ -204,11 +213,11 @@ public class QueueWidget extends Widget {
                 g.drawRect(x, y, progressWidth, plateHeight, QueueStylesheet.udTests, visibilityState * plate.visibilityState, Graphics.RectangleType.SOLID);
             }
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
-                g.drawStar(x + statusWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+                g.drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         } else {
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
-                g.drawStar(x + problemWidth - STAR_SIZE, y + STAR_SIZE, STAR_SIZE);
+                g.drawStar(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         }
 
@@ -217,12 +226,20 @@ public class QueueWidget extends Widget {
     private void calculateQueue() {
         info = Preparation.eventsLoader.getContestData();
 
+        RunPlate breaking = null;
+        if (breakingNews.isVisible()) {
+            RunInfo run = breakingNews.getRun();
+            breaking = this.breaking = getRunPlate(run);
+        }
         List<RunPlate> firstToSolves = new ArrayList<>();
         List<RunPlate> queue = new ArrayList<>();
 
         for (RunInfo r : info.getRuns()) {
             if (r == null)
                 continue;
+            if (breaking != null && breaking.runInfo == r) {
+                continue;
+            }
 
             if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
                 continue;
@@ -251,6 +268,9 @@ public class QueueWidget extends Widget {
                 if (r == null)
                     continue;
                 if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
+                    continue;
+                }
+                if (breaking != null && breaking.runInfo == r) {
                     continue;
                 }
 
@@ -287,7 +307,32 @@ public class QueueWidget extends Widget {
             plate.visible = true;
             pos += 1;
         }
+
+        pos -= firstToSolves.size() + 1;
+        if (firstToSolves.size() > 0) pos -= 0.5;
+        if (breaking != null) {
+            breaking.desiredPosition = pos - Y_SHIFT;
+            breaking.visible = true;
+        }
+
         Y_SHIFT = 0;
+    }
+
+    @Override
+    protected void update() {
+        super.update();
+        breakingNews.update();
+    }
+
+    @Override
+    protected void updateImpl(Data data) {
+        setVisible(data.queueData.isQueueVisible());
+        lastUpdate = System.currentTimeMillis();
+    }
+
+    @Override
+    protected CachedData getCorrespondingData(Data data) {
+        return data.queueData;
     }
 
 }
