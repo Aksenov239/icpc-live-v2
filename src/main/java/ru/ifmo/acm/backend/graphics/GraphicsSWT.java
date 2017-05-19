@@ -156,8 +156,15 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void drawImage(BufferedImage image, int x, int y, int width, int height) {
+    public void drawImage(Image image, int x, int y, int width, int height) {
         g.drawImage(image, x0 + x, y0 + y, width, height, null);
+    }
+
+    @Override
+    public void drawImage(Image image, int x, int y, int width, int height, double opacity) {
+        g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
+        g.drawImage(image, x0 + x, y0 + y, width, height, null);
+        g.setComposite(AlphaComposite.SrcOver.derive(1f));
     }
 
     public void drawImage(BufferedImage image, int x, int y, double opacity) {
