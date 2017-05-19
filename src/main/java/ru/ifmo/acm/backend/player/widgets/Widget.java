@@ -46,7 +46,7 @@ public abstract class Widget {
     public static final Color GREEN_COLOR = new Color(0x1b8041);
     public static final Color YELLOW_COLOR = new Color(0xa59e0c);
     public static final Color RED_COLOR = new Color(0x881f1b);
-
+    private long BLINKING_PERIOD = 1000;
 
     private static Color mergeColors(Color first, Color second) {
         int rgb = 0;
@@ -215,14 +215,9 @@ public abstract class Widget {
 //        }
 
         if (isBlinking) {
-            if (System.currentTimeMillis() - lastBlinkingOpacityUpdate > 10) {
-                lastBlinkingOpacity += blinkingValue;
-                if (abs(lastBlinkingOpacity - 1) < 1e-9 || lastBlinkingOpacity < 1e-9) {
-                    blinkingValue *= -1;
-                }
-                lastBlinkingOpacityUpdate = System.currentTimeMillis();
-            }
-            textOpacity = lastBlinkingOpacity;
+            double v = (System.currentTimeMillis() % BLINKING_PERIOD) * 1.0 / BLINKING_PERIOD;
+            v = Math.abs(v * 2 - 1);
+            textOpacity *= v;
         }
 
         g.drawRectWithText(text, x, y, width, height, alignment, font, plateStyle,
