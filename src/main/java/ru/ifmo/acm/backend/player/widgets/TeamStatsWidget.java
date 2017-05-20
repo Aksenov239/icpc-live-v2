@@ -114,7 +114,7 @@ public class TeamStatsWidget extends RotatableWidget {
             }
         }
         if (isVisible() && lastUpdateLocalTimestamp + sleepTime < System.currentTimeMillis()) {
-            showTeam(data.teamData.getTeamId() + 1);
+            showTeam(data.teamStatsData.getTeamId() + 1);
             if (previousVisible) {
                 setFaded();
             }
