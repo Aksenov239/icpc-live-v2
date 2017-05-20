@@ -174,7 +174,8 @@ public class StandingsWidget extends Widget {
             TeamInfo team = contestData.getStandings()[start + i];
             g.setFont(font);
             if (team != null)
-                drawTeamPane(g, team, x + dx * (i / 4), y + dy * (i % 4), plateHeight, visibilityState);
+                drawTeamPane(g, team, x + dx * (i / 4), y + dy * (i % 4), plateHeight,
+                        visibilityState);
         }
     }
 
