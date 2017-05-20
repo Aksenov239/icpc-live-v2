@@ -10,6 +10,8 @@ import ru.ifmo.acm.events.TeamInfo;
 
 import java.awt.*;
 
+import static ru.ifmo.acm.backend.player.widgets.ClockWidget.getTimeString;
+
 /**
  * @author: pashka
  */
@@ -153,6 +155,16 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         }
     }
 
+    public void drawLogo(Graphics g, String currentLogo) {
+        if (currentLogo.equals("#Clock#")) {
+            long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
+            currentLogo = getTimeString(Math.abs(time));
+        }
+
+        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, Graphics.Alignment.CENTER,
+                messageFont, CreepingLineStylesheet.logo, logoVisible);
+    }
+
     @Override
     public void paintImpl(Graphics gg, int width, int height) {
         update();
@@ -160,8 +172,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         g.setFont(messageFont);
         iterateLogo();
 
-        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, Graphics.Alignment.CENTER,
-                messageFont, CreepingLineStylesheet.logo, logoVisible);
+        drawLogo(g, currentLogo);
 
         g = g.create(LOGO_WIDTH, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
         //g.clip();
