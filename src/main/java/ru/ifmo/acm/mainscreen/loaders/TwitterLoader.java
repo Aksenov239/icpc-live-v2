@@ -3,6 +3,7 @@ package ru.ifmo.acm.mainscreen.loaders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
+import ru.ifmo.acm.creepingline.Message;
 import ru.ifmo.acm.creepingline.MessageData;
 import ru.ifmo.acm.mainscreen.MainScreenData;
 import ru.ifmo.acm.mainscreen.Polls.PollsData;
@@ -26,6 +27,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
     private static PollsData pollsData;
 
     private String mainHashTag;
+    private String pollHashTag;
 
     public static TwitterLoader getInstance() {
         return instance;
@@ -47,6 +49,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         try {
             properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
             mainHashTag = properties.getProperty("twitter.hashtag");
+            pollHashTag = properties.getProperty("poll.hashtag");
         } catch (IOException e) {
             logger.error("error", e);
         }
@@ -62,14 +65,16 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 
     public void doOnStatus(Status status) {
         System.err.println(status.getUser().getId() + " " + status.getText());
-        WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + " " + status.getText());
+        if (status.getText().startsWith(mainHashTag)) {
+            WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + " " + status.getText());
+            MessageData.processTwitterMessage(status);
+        }
 
 //        System.err.println(status.getUser().getId() + " " + status.getText());
-        if (status.getText().startsWith(mainHashTag + " ")) {
+        if (status.getText().startsWith(pollHashTag + " ")) {
             PollsData.vote("Twitter#" + status.getUser().getId(),
-                    status.getText().substring(mainHashTag.length() + 1));
+                    status.getText().substring(pollHashTag.length() + 1));
         }
-        MessageData.processTwitterMessage(status);
     }
 
     private TwitterStream twitterStream;
@@ -110,7 +115,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
                     }
                 };
                 FilterQuery filterQuery = new FilterQuery();
-                filterQuery.track(mainHashTag);
+                filterQuery.track(mainHashTag, pollHashTag);
 
                 twitterStream.addListener(statusListener);
                 twitterStream.filter(filterQuery);

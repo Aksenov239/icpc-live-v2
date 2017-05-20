@@ -79,7 +79,7 @@ public class PollsData {
 
         Poll pollToUpdate = pollsByHashtag.get(
                 tokens[1].startsWith("#") ? tokens[1] : "#" + tokens[1]);
-        System.err.println(pollToUpdate);
+        
         if (pollToUpdate == null) {
             return;
         }
