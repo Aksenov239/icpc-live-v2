@@ -9,12 +9,14 @@ import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.graphics.GraphicsSWT;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 import sun.awt.image.SunVolatileImage;
+import sun.java2d.Surface;
 import sun.java2d.opengl.OGLRenderQueue;
 import sun.java2d.opengl.WGLSurfaceData;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.VolatileImage;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ public class ScreenGenerator {
     private double scale;
 
     private VolatileImage image;
-    private WGLSurfaceData surface;
+    private Surface surface;
 
     public ScreenGenerator(int width, int height, Properties properties, double scale) {
         this.width = width;
@@ -40,7 +42,7 @@ public class ScreenGenerator {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
         image = gc.createCompatibleVolatileImage(width, height, VolatileImage.TRANSLUCENT);
-        surface = (WGLSurfaceData) ((SunVolatileImage)image).getDestSurface();
+        surface = ((SunVolatileImage)image).getDestSurface();
 
         System.out.println("LWJGL Version " + Version.getVersion() + " is working.");
         OGLRenderQueue.getInstance().flushAndInvokeNow(() -> {
@@ -50,7 +52,7 @@ public class ScreenGenerator {
                 return;
             }
             GL.createCapabilities();
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, surface.getTextureID());
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, getTextureID());
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
             System.out.println("GLWF Initalized");
         });
@@ -62,6 +64,14 @@ public class ScreenGenerator {
         Preparation.prepareEventsLoader();
         Preparation.prepareDataLoader();
         Preparation.prepareNetwork(properties.getProperty("login", null), properties.getProperty("password", null));
+    }
+
+    private int getTextureID() {
+        try {
+            return ((Integer) surface.getClass().getMethod("getTextureID").invoke(surface));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 //    public final DataBufferInt getBuffer() {
@@ -77,7 +87,7 @@ public class ScreenGenerator {
     public final void drawToBuffer(ByteBuffer buf) {
         draw();
         OGLRenderQueue.getInstance().flushAndInvokeNow(() -> {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, surface.getTextureID());
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, getTextureID());
             GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         });
