@@ -62,7 +62,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 
     public void doOnStatus(Status status) {
         System.err.println(status.getUser().getId() + " " + status.getText());
-        WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + status.getText());
+        WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + " " + status.getText());
 //        System.err.println(status.getUser().getId() + " " + status.getText());
         if (status.getText().startsWith(mainHashTag + " ")) {
             PollsData.vote("Twitter#" + status.getUser().getId(),

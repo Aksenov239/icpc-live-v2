@@ -25,7 +25,7 @@ public class WordStatisticsData {
     public static BackUp<WordStatistics> wordsList;
     private String backUpFile;
 
-    public final static String TWEET_KEYWORD = "$tweet$";
+    public final static String TWEET_KEYWORD = "$tweets$";
 
     public WordStatisticsData() {
         Properties properties = new Properties();
@@ -42,10 +42,8 @@ public class WordStatisticsData {
             for (String word : words) {
                 String picture = properties.getProperty("word.statistics." + word + ".picture");
                 String realWord = properties.getProperty("word.statistics." + word + ".text");
-                if (realWord.equals("tweets")) {
-                    realWord = TWEET_KEYWORD;
-                }
-                wordsList.addItem(new WordStatistics(realWord, picture));
+
+                wordsList.addItem(new WordStatistics(word, realWord, picture));
             }
         }
     }

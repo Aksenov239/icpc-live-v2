@@ -32,6 +32,7 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
     Button showWord;
 
     TextField wordText;
+    TextField wordName;
     TextField wordPicture;
 
     WordStatistics chosenWord;
@@ -61,7 +62,7 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
 
         words = new Table();
         words.setContainerDataSource(wordStatisticsData.wordsList.getContainer());
-        words.setVisibleColumns(new Object[] { "word", "picture", "count" });
+        words.setVisibleColumns(new Object[] { "wordName", "word", "picture", "count" });
 
         words.addValueChangeListener(e -> {
             setWord((WordStatistics) words.getValue());
@@ -70,11 +71,12 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
         saveWord = new Button("Save word");
         saveWord.addClickListener(e -> {
             if (chosenWord != null) {
+                wordStatisticsData.setValue(chosenWord, "wordName", wordName.getValue());
                 wordStatisticsData.setValue(chosenWord, "word", wordText.getValue());
                 wordStatisticsData.setValue(chosenWord, "picture", wordPicture.getValue());
             } else {
                 WordStatisticsData.getInstance().addWord(
-                        new WordStatistics(wordText.getValue(), wordPicture.getValue()));
+                        new WordStatistics(wordName.getValue(), wordText.getValue(), wordPicture.getValue()));
             }
             words.setValue(null);
             setWord(null);
@@ -98,13 +100,13 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
             setWord(null);
         });
 
+        wordName = new TextField("Name");
         wordText = new TextField("Text");
         wordPicture = new TextField("Picture");
 
-
         CssLayout actions = createGroupLayout(saveWord, removeWord, cancelWord);
 
-        VerticalLayout form = new VerticalLayout(wordText, wordPicture);
+        VerticalLayout form = new VerticalLayout(wordName, wordText, wordPicture);
 
         VerticalLayout controller = new VerticalLayout(wordStatus, showWord, actions, form, words);
         controller.setSpacing(true);
@@ -116,9 +118,11 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
     public void setWord(WordStatistics word) {
         chosenWord = word;
         if (word == null) {
+            wordName.setValue("");
             wordText.setValue("");
             wordPicture.setValue("");
         } else {
+            wordName.setValue(word.getWordName());
             wordText.setValue(word.getWord());
             wordPicture.setValue(word.getPicture());
         }
