@@ -6,8 +6,6 @@ import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 /**
  * @author pashka
@@ -232,8 +230,13 @@ public class FastGraphics extends Graphics {
     }
 
     @Override
-    public void drawImage(BufferedImage image, int x, int y, int width, int height) {
+    public void drawImage(Image image, int x, int y, int width, int height) {
         g.drawImage(image, x0 + x, y0 + y, width, height, null);
+    }
+
+    @Override
+    public void drawImage(Image image, int x, int y, int width, int height, double opacity) {
+
     }
 
     @Override
