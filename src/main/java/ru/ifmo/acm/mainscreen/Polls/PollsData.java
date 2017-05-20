@@ -61,7 +61,7 @@ public class PollsData {
         pollsByHashtag.put(hashtag, poll);
     }
 
-    // Type is vote %poll% %option%
+    // Type is #ICPC2017 vote %poll% %option%
     public static void vote(String user, String message) {
         String[] tokens = message.split(" ");
 
@@ -73,16 +73,17 @@ public class PollsData {
             return;
         }
 
-        if (!tokens[0].equals("vote") || tokens.length > 3) {
+        if (!tokens[1].equals("vote") || tokens.length > 4) {
             return;
         }
 
-        Poll pollToUpdate = pollsByHashtag.get(tokens[1].startsWith("#") ? tokens[1] : "#" + tokens[1]);
+        Poll pollToUpdate = pollsByHashtag.get(
+                tokens[2].startsWith("#") ? tokens[2] : "#" + tokens[2]);
         if (pollToUpdate == null) {
             return;
         }
         System.err.println("Vote for " + message);
-        pollToUpdate.updateIfOption(user, tokens[2].startsWith("#") ? tokens[2] : "#" + tokens[2]);
+        pollToUpdate.updateIfOption(user, tokens[3].startsWith("#") ? tokens[3] : "#" + tokens[3]);
     }
 
 }
