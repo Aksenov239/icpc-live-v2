@@ -293,12 +293,17 @@ public class GraphicsGL extends Graphics {
     }
 
     @Override
-    public void drawImage(BufferedImage image, int x, int y, int width, int height) {
-        TextureData textureData = AWTTextureIO.newTextureData(gl2.getGLProfile(), image, false);
-        Texture texture = TextureIO.newTexture(textureData);
+    public void drawImage(Image image, int x, int y, int width, int height) {
+//        TextureData textureData = AWTTextureIO.newTextureData(gl2.getGLProfile(), image   , false);
+//        Texture texture = TextureIO.newTexture(textureData);
+//
+//        drawTexture(texture, x, y, width, height);
+//        texture.destroy(gl2);
+    }
 
-        drawTexture(texture, x, y, width, height);
-        texture.destroy(gl2);
+    @Override
+    public void drawImage(Image image, int x, int y, int width, int height, double opacity) {
+
     }
 
     public void drawTexture(Texture texture, int x, int y, int width, int height) {
