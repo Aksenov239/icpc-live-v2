@@ -14,6 +14,7 @@ import ru.ifmo.acm.datapassing.Data;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -128,8 +129,8 @@ public class TeamStatsWidget extends RotatableWidget {
             Record record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
             System.out.println("teamData/" + id + ".json");
             BufferedImage logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-            BufferedImage unmovable = prepareTopPlaque(record, logo);
-            BufferedImage movable = prepareBottomPlaque(record);
+            VolatileImage unmovable = prepareTopPlaque(record, logo);
+            VolatileImage movable = prepareBottomPlaque(record);
             setUnmovable(unmovable);
             setMovable(movable);
             start();
@@ -138,8 +139,8 @@ public class TeamStatsWidget extends RotatableWidget {
         }
     }
 
-    private BufferedImage prepareBottomPlaque(Record record) {
-        BufferedImage image = new BufferedImage(BOTTOM_WIDTH, BOTTOM_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
+    private VolatileImage prepareBottomPlaque(Record record) {
+        VolatileImage image = createVolatileImage(BOTTOM_WIDTH, BOTTOM_HEIGHT);
         Graphics2D g = (Graphics2D) image.getGraphics();
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -276,8 +277,8 @@ public class TeamStatsWidget extends RotatableWidget {
         g.drawString(caption, x - width / 2, y);
     }
 
-    private BufferedImage prepareTopPlaque(Record record, BufferedImage logo) {
-        BufferedImage image = new BufferedImage(WIDTH, TOP_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
+    private VolatileImage prepareTopPlaque(Record record, BufferedImage logo) {
+        VolatileImage image = createVolatileImage(WIDTH, TOP_HEIGHT);
         Graphics2D g = (Graphics2D) image.getGraphics();
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -296,6 +297,12 @@ public class TeamStatsWidget extends RotatableWidget {
                 TEAM_INFO_X, TEAM_INFO_Y
         );
         return image;
+    }
+
+    private VolatileImage createVolatileImage(int width, int height) {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
+        return gc.createCompatibleVolatileImage(width, height);
     }
 
     private void drawScaledImage(Graphics2D g, BufferedImage image, int x, int y, int width, int height) {

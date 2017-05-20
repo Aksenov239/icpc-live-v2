@@ -1,10 +1,10 @@
 package ru.ifmo.acm.backend.player.widgets;
 
+import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
-import ru.ifmo.acm.backend.graphics.Graphics;
 
-import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 /**
  * @author egor@egork.net
@@ -12,8 +12,8 @@ import java.awt.image.BufferedImage;
 public class RotatableWidget extends Widget {
     private int x;
     private int y;
-    private BufferedImage unmovable;
-    private BufferedImage movable;
+    private VolatileImage unmovable;
+    private VolatileImage movable;
     private int margin;
     private int[] shifts;
     private int showTime;
@@ -81,7 +81,7 @@ public class RotatableWidget extends Widget {
         drawImage(g, movable, x - currentShift, y + unmovable.getHeight() + margin, opacity);
     }
 
-    private void drawImage(Graphics g, BufferedImage image, int x, int y, double opacity) {
+    private void drawImage(Graphics g, VolatileImage image, int x, int y, double opacity) {
         if (opacity == 0) {
             return;
         }
@@ -157,19 +157,19 @@ public class RotatableWidget extends Widget {
         lastDraw = System.currentTimeMillis();
     }
 
-    public BufferedImage getUnmovable() {
+    public VolatileImage getUnmovable() {
         return unmovable;
     }
 
-    public void setUnmovable(BufferedImage unmovable) {
+    public void setUnmovable(VolatileImage unmovable) {
         this.unmovable = unmovable;
     }
 
-    public BufferedImage getMovable() {
+    public VolatileImage getMovable() {
         return movable;
     }
 
-    public void setMovable(BufferedImage movable) {
+    public void setMovable(VolatileImage movable) {
         this.movable = movable;
     }
 
