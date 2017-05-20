@@ -101,46 +101,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     private final String STANDINGS_MESSAGE = "#Standings#";
     private final int STANDINGS_SIZE = 12;
     private final int STANDINGS_PAGE = 4;
-
-
-    private final double SPACE_WIDTH = 0.02;
-    private final double RANK_WIDTH = 0.1;
-    private final double SMALL_PLATE_DY = 5.5;
-    private final int SMALL_PLATE_HEIGHT = (int)(0.85 * HEIGHT);
-    private final double NAME_WIDTH = 0.50;
-    private final double TOTAL_WIDTH = 0.1;
-    private final double PENALTY_WIDTH = 0.2;
-
-    private void drawSmallTeamPane(Graphics g, TeamInfo team, int width, int height, int x, int y) {
-        int spaceWidth = (int) (SPACE_WIDTH * width);
-        int rankWidth = (int) (RANK_WIDTH * width);
-        int nameWidth = (int) (NAME_WIDTH * width);
-        int totalWidth = (int) (TOTAL_WIDTH * width);
-        int penaltyWidth = (int) (PENALTY_WIDTH * width);
-
-        // small rectangle with rank
-        PlateStyle color = getTeamRankColor(team);
-
-        x += spaceWidth;
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, (int)(y + SMALL_PLATE_DY), rankWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.CENTER, messageFont, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += rankWidth + spaceWidth;
-
-        // team name
-        drawTextInRect(g, team.getShortName(), x, (int) (y + SMALL_PLATE_DY), nameWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.LEFT, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
-
-        x += nameWidth + spaceWidth;
-
-        // total
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, (int) (y + SMALL_PLATE_DY), totalWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.CENTER, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += totalWidth + spaceWidth;
-
-        // penalty
-        drawTextInRect(g, "" + team.getPenalty(), x, (int) (y + SMALL_PLATE_DY), penaltyWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.CENTER, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
-    }
+    private final double percent = 0.87;
 
     private void drawInfo(Graphics g, Message message, boolean next, int width, int height) {
         if (!STANDINGS_MESSAGE.equals(message.message)) {
@@ -151,7 +112,8 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         int dx = width / STANDINGS_PAGE;
         int start = next ? nextStandingsPosition : nextStandingsPosition - STANDINGS_PAGE;
         for (int i = 0; i < STANDINGS_PAGE && start + i < standings.length; i++) {
-            drawSmallTeamPane(g, standings[start + i], dx, height, dx * i, (int)message.position);
+            drawTeamPane(g, standings[start + i], dx * i + 5, (int) message.position + 5,
+                    (int) (percent * height), 1);
         }
     }
 
