@@ -55,7 +55,6 @@ public class WordStatisticsData extends CachedData {
         long now = System.currentTimeMillis();
         if (now - timestamp >= properties.wordTimeToShow) {
             isVisible = false;
-            return;
         }
         recache();
     }

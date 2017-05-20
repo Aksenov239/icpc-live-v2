@@ -61,7 +61,7 @@ public class WordStatisticsWidget extends Widget {
 
             WordStatistics wordStatistics = data.wordStatisticsData.word;
             word = wordStatistics.getWordName();
-            word = word.substring(0, 1).toUpperCase() + " " + word.substring(1);
+            word = word.substring(0, 1).toUpperCase() + word.substring(1);
 
             count = wordStatistics.getCount();
 
