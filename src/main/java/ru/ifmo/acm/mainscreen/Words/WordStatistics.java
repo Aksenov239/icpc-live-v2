@@ -5,11 +5,13 @@ package ru.ifmo.acm.mainscreen.Words;
  */
 public class WordStatistics {
     private String word;
+    private String wordName;
     private String picture;
     private long count;
 
-    public WordStatistics(String word, String picture) {
+    public WordStatistics(String wordName, String word, String picture) {
         this.word = word;
+        this.wordName = wordName;
         this.picture = picture;
     }
 
@@ -19,6 +21,14 @@ public class WordStatistics {
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public String getWordName() {
+        return wordName;
+    }
+
+    public void setWordName(String wordName) {
+        this.wordName = wordName;
     }
 
     public String getPicture() {
