@@ -6,6 +6,7 @@ import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
@@ -101,7 +102,10 @@ public class FramePlayer extends Player {
     private final class ImagePane extends JPanel {
         @Override
         public void paint(Graphics g) {
-            g.drawImage(Scalr.resize((BufferedImage)generator.getScreen(), this.getWidth(), this.getHeight()), 0, 0, null);
+            AffineTransform transform = AffineTransform.getTranslateInstance(0, generator.getHeight());
+            transform.concatenate(AffineTransform.getScaleInstance(1, -1));
+            ((Graphics2D)g).setTransform(transform);
+            g.drawImage(generator.getScreen(), 0, 0, null);
         }
     }
 
