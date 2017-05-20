@@ -42,13 +42,13 @@ public class PollsData {
         pollList = new BackUp<>(Poll.class, backUpFile);
         pollsByHashtag = new ConcurrentHashMap<>();
         for (Poll poll : pollList.getData()) {
-            pollsByHashtag.put(poll.getHashtag(), poll);
+            pollsByHashtag.put(poll.getHashtag().toLowerCase(), poll);
         }
     }
 
     public void addPoll(Poll poll) {
         pollList.addItem(poll);
-        pollsByHashtag.put(poll.getHashtag(), poll);
+        pollsByHashtag.put(poll.getHashtag().toLowerCase(), poll);
     }
 
     public void removePoll(Poll poll) {
@@ -73,17 +73,18 @@ public class PollsData {
             return;
         }
 
-        if (!tokens[1].equals("vote") || tokens.length > 4) {
+        if (!tokens[0].equals("vote") || tokens.length > 3) {
             return;
         }
 
         Poll pollToUpdate = pollsByHashtag.get(
-                tokens[2].startsWith("#") ? tokens[2] : "#" + tokens[2]);
+                tokens[1].startsWith("#") ? tokens[1] : "#" + tokens[1]);
+        System.err.println(pollToUpdate);
         if (pollToUpdate == null) {
             return;
         }
         System.err.println("Vote for " + message);
-        pollToUpdate.updateIfOption(user, tokens[3].startsWith("#") ? tokens[3] : "#" + tokens[3]);
+        pollToUpdate.updateIfOption(user, tokens[2].startsWith("#") ? tokens[2] : "#" + tokens[2]);
     }
 
 }

@@ -18,7 +18,7 @@ import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainScreenBreakingNews extends CustomComponent implements View {
+public class    MainScreenBreakingNews extends CustomComponent implements View {
     private static final Logger log = LogManager.getLogger(MainScreenBreakingNews.class);
 
     public final static String NAME = "mainscreen-breaking-news";
