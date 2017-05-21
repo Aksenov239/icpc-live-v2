@@ -1,22 +1,17 @@
 package ru.ifmo.acm.backend.player;
 
-import org.imgscalr.Scalr;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
+import ru.ifmo.acm.backend.player.generator.ScreenGeneratorGL;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.TimerTask;
 
 public class FramePlayer extends Player {
+    private final JLabel label;
     ImagePane imagePane;
     private Point initialClick;
     private int screenNumber = -1;
@@ -28,23 +23,19 @@ public class FramePlayer extends Player {
         int width = generator.getWidth();
         int height = generator.getHeight();
 
-        imagePane = new ImagePane();
-        imagePane.setSize(width, height);
-        imagePane.setMinimumSize(new Dimension(width, height));
-        imagePane.setPreferredSize(new Dimension(width, height));
+        label = new JLabel(new ImageIcon(generator.getScreen()));
 
         frame = new JFrame(name);
         frame.setUndecorated(true);
-        frame.getContentPane().setLayout(new BorderLayout());
 
-        frame.getContentPane().add(imagePane, BorderLayout.CENTER);
+        frame.add(label);
 
         frame.pack();
         frame.setVisible(true);
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        imagePane.addMouseListener(new MouseAdapter() {
+        label.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 initialClick = e.getPoint();
             }
@@ -69,7 +60,7 @@ public class FramePlayer extends Player {
             }
         });
 
-        imagePane.addMouseMotionListener(new MouseMotionAdapter() {
+        label.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
 
@@ -92,19 +83,23 @@ public class FramePlayer extends Player {
         new java.util.Timer().scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
-                        imagePane.repaint();
+                        repaint();
                     }
                 }, 0L, 1000 / frameRate);
 
+    }
+
+    private void repaint() {
+        label.setIcon(new ImageIcon(generator.getScreen()));
     }
 
     @SuppressWarnings("serial")
     private final class ImagePane extends JPanel {
         @Override
         public void paint(Graphics g) {
-            AffineTransform transform = AffineTransform.getTranslateInstance(0, generator.getHeight());
-            transform.concatenate(AffineTransform.getScaleInstance(1, -1));
-            ((Graphics2D)g).setTransform(transform);
+//            AffineTransform transform = AffineTransform.getTranslateInstance(0, generator.getHeight());
+//            transform.concatenate(AffineTransform.getScaleInstance(1, -1));
+//            ((Graphics2D)g).setTransform(transform);
             g.drawImage(generator.getScreen(), 0, 0, null);
         }
     }

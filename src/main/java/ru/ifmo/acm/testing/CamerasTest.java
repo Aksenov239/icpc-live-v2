@@ -2,7 +2,7 @@ package ru.ifmo.acm.testing;
 
 import com.sun.jna.NativeLibrary;
 import ru.ifmo.acm.backend.player.FramePlayer;
-import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
+import ru.ifmo.acm.backend.player.generator.ScreenGeneratorGL;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 
 import java.io.File;
@@ -56,7 +56,7 @@ public class CamerasTest {
         String contest = properties.getProperty("contest.type", "WF");
         String videoType = properties.getProperty("video.type", "camera");
 
-        ScreenGenerator generator = new ScreenGenerator(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        ScreenGeneratorGL generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
 
         CamerasTestWidget widget = new CamerasTestWidget(sleepTime, teams, rows, columns, aspectRatio, contest, videoType);
 
@@ -70,7 +70,7 @@ public class CamerasTest {
     private Properties readProperties() {
         Properties properties = new Properties();
         try {
-            properties.load(ScreenGenerator.class.getClassLoader().getResourceAsStream("camerastest.properties"));
+            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("camerastest.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
