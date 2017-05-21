@@ -31,7 +31,7 @@ public class WFContestInfo extends ContestInfo {
         teamNumber = teamsNumber;
         teamInfos = new WFTeamInfo[teamsNumber];
         timeFirstSolved = new long[problemsNumber];
-        languages = new String[4];
+        languages = new String[100];
         runs = new WFRunInfo[1000000];
         firstSolvedRun = new WFRunInfo[problemsNumber];
     }
