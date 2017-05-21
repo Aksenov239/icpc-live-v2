@@ -13,10 +13,7 @@ import ru.ifmo.acm.mainscreen.Words.WordStatisticsData;
 import twitter4j.*;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by Aksenov239 on 26.03.2017.
@@ -69,7 +66,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 
     public void doOnStatus(Status status) {
         System.err.println(status.getUser().getId() + " " + status.getText());
-        if (status.getText().startsWith(mainHashTag)) {
+        if (Arrays.stream(status.getHashtagEntities()).anyMatch(e -> ("#" + e.getText()).equals(mainHashTag))) {
             WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + " " + status.getText());
             MessageData.processTwitterMessage(status);
         }
