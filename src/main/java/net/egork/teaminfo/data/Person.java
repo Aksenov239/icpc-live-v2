@@ -16,6 +16,7 @@ public class Person {
     private String cfHandle;
     private int cfRating = -1;
     private String twitterHandle;
+    private String ioiID;
     private List<Achievement> achievements = new ArrayList<>();
 
     public String getName() {
@@ -40,6 +41,14 @@ public class Person {
 
     public int getCfRating() {
         return cfRating;
+    }
+
+    public String getIoiID() {
+        return ioiID;
+    }
+
+    public void setIoiID(String ioiID) {
+        this.ioiID = ioiID;
     }
 
     public List<Achievement> getAchievements() {
@@ -78,6 +87,12 @@ public class Person {
             }
             if (name.contains("Yuri")) {
                 addAltName(name.replace("Yuri", "Yury"));
+            }
+            if (name.contains("Valerii")) {
+                addAltName(name.replace("Valerii", "Valeriy"));
+            }
+            if (name.contains("Valeriy")) {
+                addAltName(name.replace("Valeriy", "Valerii"));
             }
             String noUmlauts = Utils.replaceUmlauts(name);
             if (!noUmlauts.equals(name)) {
@@ -179,23 +194,26 @@ public class Person {
         for (String altName : other.altNames) {
             addAltName(altName);
         }
-        if (other.tcHandle != null) {
+        if (tcHandle == null) {
             tcHandle = other.tcHandle;
         }
-        if (other.tcId != null) {
+        if (tcId == null) {
             tcId = other.tcId;
         }
-        if (other.tcRating != -1) {
+        if (tcRating == -1) {
             tcRating = other.tcRating;
         }
-        if (other.cfHandle != null) {
+        if (cfHandle == null) {
             cfHandle = other.cfHandle;
         }
-        if (other.cfRating != -1) {
+        if (cfRating == -1) {
             cfRating = other.cfRating;
         }
-        if (other.twitterHandle != null) {
+        if (twitterHandle == null) {
             twitterHandle = other.twitterHandle;
+        }
+        if (ioiID == null) {
+            ioiID = other.ioiID;
         }
         achievements.addAll(other.achievements);
         Collections.sort(achievements);
