@@ -2,7 +2,6 @@ package ru.ifmo.acm.backend.player.widgets;
 
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.PollStylesheet;
-import ru.ifmo.acm.backend.player.widgets.stylesheets.StatisticsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 import ru.ifmo.acm.mainscreen.Polls.Poll;
@@ -14,33 +13,37 @@ import java.util.Arrays;
  * Created by Aksenov239 on 28.03.2017.
  */
 public class PollWidget extends Widget {
+
+    private final int leftX;
+    private final int bottomY;
+
     private long duration;
     private long lastVisibleChange;
     private int topTeams;
 
-    private int DX;
     private int plateHeight;
-    private int questionWidth;
+    private int width;
     private int optionWidth;
-    private int spaceY;
-    private int spaceX;
+
     private Font font;
     private int minimalVoteWidth;
+    private int total;
+    private Poll.Option[] options;
+    private double[] percent;
 
     public PollWidget(long updateWait, long duration, int topTeams, int DX, int plateHeight,
-                      int questionWidth, int optionWidth, int minimalVoteWidth) {
+                      int width, int optionWidth, int minimalVoteWidth, int leftX, int bottomY) {
         super(updateWait);
         this.duration = duration;
         this.topTeams = topTeams;
-        this.DX = DX;
-        this.questionWidth = questionWidth;
+        this.width = width;
         this.plateHeight = plateHeight;
         this.optionWidth = optionWidth;
 
-        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
+        this.leftX = leftX;
+        this.bottomY = bottomY;
 
-        spaceY = (int) (SPACE_Y * plateHeight);
-        spaceX = (int) (SPACE_X * plateHeight);
+        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
 
         this.minimalVoteWidth = minimalVoteWidth;
 
@@ -62,67 +65,78 @@ public class PollWidget extends Widget {
     }
 
     @Override
-    protected void paintImpl(Graphics g, int width, int height) {
+    protected void paintImpl(Graphics g, int screenWidth, int screenHeight) {
         update();
         updateVisibilityState();
 
+        if (visibilityState == 0) return;
+
+        calcPoll();
+
+        int baseY = bottomY - (total + 1) * plateHeight;
+        int baseX = leftX;
+
+        g = g.create();
+        g.translate(baseX, baseY);
+
+        int y = 0;
+        drawTextInRect(g, "Vote with hashtag " + pollToShow.getHashtag(), 0, y, width, plateHeight,
+                Graphics.Alignment.RIGHT, font, PollStylesheet.hashtag,
+                visibilityState, WidgetAnimation.NOT_ANIMATED);
+
+        drawTextInRect(g, pollToShow.getQuestion(), 0, 0, -1, plateHeight, Graphics.Alignment.LEFT,
+                font, PollStylesheet.question, visibilityState, WidgetAnimation.NOT_ANIMATED);
+
+        y += plateHeight;
+
+        int total_percent = 100;
+        double visibilityOption = 1. * optionWidth / this.width;
+        for (int i = 0; i < total; i++) {
+            drawTextInRect(g, options[i].option, 0, y, optionWidth, plateHeight,
+                    Graphics.Alignment.CENTER, font, PollStylesheet.option,
+                    Math.min(1, visibilityState / visibilityOption), WidgetAnimation.HORIZONTAL_ANIMATED);
+            int voteWidth = (int) ((this.width - optionWidth - minimalVoteWidth) * percent[i]);
+            int now_percent = (int)Math.round(percent[i] * 100);
+            total_percent -= now_percent;
+            if (i == total - 1 && percent[i] != 0) {
+                now_percent = total_percent;
+            }
+            int ww = (int)((minimalVoteWidth + voteWidth) * visibilityState);
+            drawTextInRect(g, "" + options[i].votes, optionWidth, y,
+                    minimalVoteWidth + voteWidth, plateHeight,
+                    Graphics.Alignment.CENTER, font, PollStylesheet.votes,
+                    visibilityState,
+                    WidgetAnimation.NOT_ANIMATED);
+            g.drawRect(optionWidth + ww, y, this.width - (optionWidth + ww),
+                    plateHeight, PollStylesheet.background, this.visibilityState, Graphics.RectangleType.SOLID);
+            y += plateHeight;
+        }
+    }
+
+    private void calcPoll() {
         if (pollToShow == null || visibilityState < 0.00001) {
             return;
         }
 
-        Poll.Option[] options = pollToShow.getData();
+        options = pollToShow.getData();
 
-        int total = options.length;
+        total = options.length;
         if (pollToShow.getTeamOptions()) { // Then this seems to be the team poll
             Arrays.sort(options, (o1, o2) ->
-                o1.votes == o2.votes ? o1.option.compareTo(o2.option) : o2.votes - o1.votes
+                    o1.votes == o2.votes ? o1.option.compareTo(o2.option) : o2.votes - o1.votes
             );
             for (total = 0; total < topTeams && options[total].votes >= 0; total++) { }
         } else {
             Arrays.sort(options, (o1, o2) -> o1.id - o2.id);
         }
 
-        double[] percent = new double[total];
+        percent = new double[total];
         int sum = 0;
         for (Poll.Option option : options) {
             sum += option.votes;
         }
         for (int i = 0; i < total; i++) {
             percent[i] = sum == 0 ? 0 : 1. * options[i].votes / sum;
-        }
-
-        int baseY = Widget.BASE_HEIGHT - 2 * CreepingLineWidget.HEIGHT - (total + 2) * (plateHeight + spaceY);
-        int baseX = (Widget.BASE_WIDTH - DX) / 2 - questionWidth / 2;
-
-        g = g.create();
-        g.translate(baseX + DX, baseY);
-        drawTextInRect(g, pollToShow.getQuestion(), 0, 0, questionWidth, plateHeight,
-                Graphics.Alignment.CENTER, font, PollStylesheet.question,
-                visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
-        int y = plateHeight + spaceY;
-        drawTextInRect(g, pollToShow.getHashtag(), questionWidth / 2, y, -1, plateHeight,
-                Graphics.Alignment.CENTER, font, PollStylesheet.hashtag,
-                visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
-        y += plateHeight + spaceY;
-
-        int total_percent = 100;
-        double visibilityOption = 1. * optionWidth / questionWidth;
-        for (int i = 0; i < total; i++) {
-            drawTextInRect(g, options[i].option, 0, y, optionWidth, plateHeight,
-                    Graphics.Alignment.CENTER, font, PollStylesheet.option,
-                    Math.min(1, visibilityState / visibilityOption), WidgetAnimation.HORIZONTAL_ANIMATED);
-            int voteWidth = (int) ((questionWidth - optionWidth - spaceX - minimalVoteWidth) * percent[i]);
-            int now_percent = (int)Math.round(percent[i] * 100);
-            total_percent -= now_percent;
-            if (i == total - 1 && percent[i] != 0) {
-                now_percent = total_percent;
-            }
-            drawTextInRect(g, now_percent + "%", optionWidth + spaceX, y,
-                    minimalVoteWidth + voteWidth, plateHeight,
-                    Graphics.Alignment.CENTER, font, PollStylesheet.votes,
-                    (visibilityState - visibilityOption) / (1 - visibilityOption),
-                    WidgetAnimation.HORIZONTAL_ANIMATED);
-            y += plateHeight + spaceY;
         }
     }
 
