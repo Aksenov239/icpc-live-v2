@@ -134,7 +134,7 @@ public class CreepingLineView extends CustomComponent implements View {
 
         VerticalLayout left = new VerticalLayout(messageList,
                 sourceFilter,
-                new HorizontalLayout(load, loadButton),
+                Utils.createGroupLayout(load, loadButton),
         /*twitterQueryForm, twitterSearchForm,*/ messageFlow);
         left.setSizeFull();
         messageList.setSizeFull();
