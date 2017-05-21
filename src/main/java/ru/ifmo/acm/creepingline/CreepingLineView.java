@@ -11,6 +11,12 @@ import com.vaadin.ui.*;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.events.ContestInfo;
 import ru.ifmo.acm.mainscreen.Utils;
+import ru.ifmo.acm.mainscreen.loaders.TwitterLoader;
+import twitter4j.TwitterException;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -94,6 +100,24 @@ public class CreepingLineView extends CustomComponent implements View {
             messageFlowContainer.removeAllContainerFilters();
             messageFlowContainer.addContainerFilter("source", e.getText(), true, true);
         });
+
+        TextField load = new TextField("Load field");
+        Button loadButton = new Button("Load");
+        loadButton.addClickListener(e -> {
+            String text = load.getValue();
+            Arrays.stream(text.split(","))
+                    .flatMap(q -> {
+                                try {
+                                    return TwitterLoader.getInstance().loadByQuery(q).stream();
+                                } catch (TwitterException exception) {
+                                    Notification.show("TwitterException: " + exception.getMessage(), Notification.Type.TRAY_NOTIFICATION);
+                                    return Stream.empty();
+                                }
+                            }
+                    )
+                    .forEach(MessageData::processTwitterMessage);
+        });
+
 //        Button applySourceFilter = new Button("Apply filter");
 //        Button withdrawSourceFilter = new Button("Withdraw filter");
 //
@@ -108,20 +132,15 @@ public class CreepingLineView extends CustomComponent implements View {
 
 //        CssLayout sourceController =
 
-//        TwitterStreamQueryForm twitterQueryForm = new TwitterStreamQueryForm(TwitterLoader.getInstance().getTwitterQueryString());
-//        TwitterSearchForm twitterSearchForm = new TwitterSearchForm();
         VerticalLayout left = new VerticalLayout(messageList,
                 sourceFilter,
+                Utils.createGroupLayout(load, loadButton),
         /*twitterQueryForm, twitterSearchForm,*/ messageFlow);
         left.setSizeFull();
         messageList.setSizeFull();
         messageFlow.setSizeFull();
-//        twitterQueryForm.setSizeFull();
-//        twitterSearchForm.setSizeFull();
         left.setExpandRatio(messageList, 1);
         left.setExpandRatio(messageFlow, 1);
-//        left.setExpandRatio(twitterQueryForm, 1);
-//        left.setExpandRatio(twitterSearchForm, 1);
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, messageForm);
         mainLayout.setSizeFull();
@@ -138,64 +157,5 @@ public class CreepingLineView extends CustomComponent implements View {
 
     public void enter(ViewChangeEvent event) {
 
-    }
-
-    class TwitterStreamQueryForm extends FormLayout {
-        private final TextField field;
-
-        public TwitterStreamQueryForm(String query) {
-            field = new TextField("Query", query);
-//            field.add(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
-//                @Override
-//                public void handleAction(Object sender, Object target) {
-//                    changeQuery();
-//                }
-//            });
-            Button apply = new Button("Apply", event -> {
-                changeQuery();
-            });
-            CssLayout layout = Utils.createGroupLayout(field, apply);
-//            layout.setExpandRatio(field, 4);
-//            layout.setExpandRatio(apply, 1);
-            field.setSizeFull();
-//            field.set
-            addComponent(layout);
-            layout.setSizeFull();
-        }
-
-        private void changeQuery() {
-            synchronized (field) {
-                TwitterLoader.changeStreamInInstance(field.getValue());
-            }
-        }
-    }
-    class TwitterSearchForm extends FormLayout {
-        private final TextField field;
-
-        public TwitterSearchForm() {
-            field = new TextField("Search", "");
-//            field.addShortcutListener(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
-//                @Override
-//                public void handleAction(Object sender, Object target) {
-//                    searchQuery();
-//                }
-//            });
-            Button apply = new Button("Apply", event -> {
-                searchQuery();
-            });
-            CssLayout layout = Utils.createGroupLayout(field, apply);
-//            layout.setExpandRatio(field, 4);
-//            layout.setExpandRatio(apply, 1);
-            field.setSizeFull();
-//            field.set
-            addComponent(layout);
-            layout.setSizeFull();
-        }
-
-        private void searchQuery() {
-            synchronized (field) {
-                TwitterLoader.getInstance().addSearch(field.getValue());
-            }
-        }
     }
 }

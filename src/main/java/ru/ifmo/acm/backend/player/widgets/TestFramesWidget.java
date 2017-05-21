@@ -23,7 +23,7 @@ public class TestFramesWidget extends Widget {
 
     @Override
     protected void updateImpl(Data data) {
-        super.updateImpl(data);
+        setVisible(data.frameRateData.isVisible);
     }
 
     long[] times = new long[25];
@@ -32,6 +32,10 @@ public class TestFramesWidget extends Widget {
 
     @Override
     public void paintImpl(Graphics g, int width, int height) {
+        update();
+        if (!isVisible()) {
+            return;
+        }
         frame = (frame + 1) % times.length;
         if (frame == 0) {
             long dt = times[times.length - 1] - times[0];
@@ -45,7 +49,7 @@ public class TestFramesWidget extends Widget {
 
     @Override
     protected CachedData getCorrespondingData(Data data) {
-        return null;
+        return data.frameRateData;
     }
 
 }

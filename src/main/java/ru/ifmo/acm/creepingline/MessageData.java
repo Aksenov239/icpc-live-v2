@@ -15,6 +15,7 @@ import ru.ifmo.acm.events.WF.WFAnalystMessage;
 import ru.ifmo.acm.mainscreen.Advertisement;
 import ru.ifmo.acm.mainscreen.Polls.Poll;
 import ru.ifmo.acm.mainscreen.Utils;
+import ru.ifmo.acm.mainscreen.loaders.TwitterLoader;
 import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 import twitter4j.Status;
 
@@ -37,9 +38,6 @@ public class MessageData {
     public static MessageData getMessageData() {
         if (messageData == null) {
             messageData = new MessageData();
-            Utils.StoppedThread twitterThread = new Utils.StoppedThread(TwitterLoader.getInstance());
-            twitterThread.start();
-            ContextListener.addThread(twitterThread);
         }
         return messageData;
     }
