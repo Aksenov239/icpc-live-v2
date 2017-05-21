@@ -84,6 +84,11 @@ public class ScreenGeneratorGL implements ScreenGenerator {
         return image;
     }
 
+    @Override
+    public void draw(Graphics2D g2) {
+        throw new UnsupportedOperationException();
+    }
+
     public final void drawToBuffer(ByteBuffer buf) {
         draw();
         OGLRenderQueue.getInstance().flushAndInvokeNow(() -> {

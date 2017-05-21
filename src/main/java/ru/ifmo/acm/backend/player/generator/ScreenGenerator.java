@@ -9,4 +9,5 @@ public interface ScreenGenerator {
     public int getWidth();
     public int getHeight();
     public Image getScreen();
+    void draw(Graphics2D g2);
 }

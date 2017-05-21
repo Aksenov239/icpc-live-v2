@@ -1,23 +1,12 @@
 package ru.ifmo.acm.backend.player.generator;
 
-import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
 import ru.ifmo.acm.backend.Preparation;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.graphics.GraphicsSWT;
 import ru.ifmo.acm.backend.player.widgets.Widget;
-import sun.awt.image.SunVolatileImage;
-import sun.java2d.Surface;
-import sun.java2d.opengl.OGLRenderQueue;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -41,8 +30,6 @@ public class ScreenGeneratorSWT implements ScreenGenerator {
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        System.out.println("LWJGL Version " + Version.getVersion() + " is working.");
-
         Preparation.prepareEventsLoader();
         Preparation.prepareDataLoader();
         Preparation.prepareNetwork(properties.getProperty("login", null), properties.getProperty("password", null));
@@ -54,10 +41,12 @@ public class ScreenGeneratorSWT implements ScreenGenerator {
     }
 
     private void draw() {
-
 //        Arrays.fill(((DataBufferInt)raster.getDataBuffer()).getData(), 0);
+        draw((Graphics2D) image.getGraphics());
+    }
 
-        Graphics2D g2 = (Graphics2D) image.getGraphics();
+    @Override
+    public void draw(Graphics2D g2) {
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
