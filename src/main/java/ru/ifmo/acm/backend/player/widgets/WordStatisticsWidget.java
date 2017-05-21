@@ -74,6 +74,13 @@ public class WordStatisticsWidget extends Widget {
                 picture = null;
             }
 
+            BufferedImage bi = new BufferedImage(
+                    picture.getWidth(), picture.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
+            Graphics2D g = bi.createGraphics();
+            g.drawImage(picture, 0, 0, null);
+            g.dispose();
+            picture = bi;
+
             setVisible(true);
         } else {
             setVisible(false);

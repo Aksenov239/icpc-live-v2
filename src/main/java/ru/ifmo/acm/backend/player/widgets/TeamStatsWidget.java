@@ -302,7 +302,7 @@ public class TeamStatsWidget extends RotatableWidget {
     private VolatileImage createVolatileImage(int width, int height) {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
-        return gc.createCompatibleVolatileImage(width, height);
+        return gc.createCompatibleVolatileImage(width, height, Transparency.TRANSLUCENT);
     }
 
     private void drawScaledImage(Graphics2D g, BufferedImage image, int x, int y, int width, int height) {
