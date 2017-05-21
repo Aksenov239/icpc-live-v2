@@ -13,15 +13,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public class TwitterLoader extends Utils.StoppedRunnable {
-    private static final Logger log = LogManager.getLogger(TwitterLoader.class);
+public class TwitterLoaderOld extends Utils.StoppedRunnable {
+    private static final Logger log = LogManager.getLogger(TwitterLoaderOld.class);
 
     TwitterStream twitterUserStream, twitterKeywordStream;
     String twitterQueryString = "";
 
-    public static TwitterLoader getInstance() {
+    public static TwitterLoaderOld getInstance() {
         if (instance == null) {
-            instance = new TwitterLoader();
+            instance = new TwitterLoaderOld();
         }
         return instance;
     }
@@ -35,7 +35,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         this.twitterQueryString = twitterQueryString;
     }
 
-    private TwitterLoader() {
+    private TwitterLoaderOld() {
         Properties properties = new Properties();
         twitter = new TwitterFactory().getSingleton();
         try {
@@ -138,7 +138,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
     private long lastId;
     private final Twitter twitter;
     private long duration;
-    private static TwitterLoader instance;
+    private static TwitterLoaderOld instance;
 
     public void addSearch(String query) {
         if (query.startsWith("@")) {
