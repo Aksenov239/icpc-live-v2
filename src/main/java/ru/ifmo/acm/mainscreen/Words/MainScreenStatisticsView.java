@@ -171,6 +171,39 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
         return button;
     }
 
+    /* Frame rate controller */
+
+    private Label frameRateStatus;
+    private Button showFrameRate;
+    private Button hideFrameRate;
+
+    public Component getFrameRateController() {
+        frameRateStatus = new Label();
+        frameRateStatus.addStyleName("large");
+        frameRateStatus.setValue(getFrameRateStatus());
+
+        showFrameRate = new Button("Show Frame Rate");
+        showFrameRate.addClickListener(e -> {
+            mainScreenData.frameRateData.setFrameRateVisible(true);
+        });
+
+        hideFrameRate = new Button("Hide Frame Rate");
+        hideFrameRate.addClickListener(e -> {
+            mainScreenData.frameRateData.setFrameRateVisible(false);
+        });
+
+        VerticalLayout controller = new VerticalLayout(
+                frameRateStatus,
+                createGroupLayout(showFrameRate, hideFrameRate)
+        );
+        setPanelDefaults(controller);
+        return controller;
+    }
+
+    public String getFrameRateStatus() {
+        return mainScreenData.frameRateData.getStatus();
+    }
+
     MainScreenData mainScreenData;
 
     public MainScreenStatisticsView() {
@@ -180,7 +213,12 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
 
         Component statisticsController = getStatisticsController();
 
-        VerticalLayout rightPart = new VerticalLayout(statisticsController);
+        Component frameRateController = getFrameRateController();
+
+        VerticalLayout rightPart = new VerticalLayout(
+                frameRateController,
+                statisticsController
+        );
 
         HorizontalLayout mainPanel = new HorizontalLayout(wordStatisticsController, rightPart);
         mainPanel.setSizeFull();
@@ -191,6 +229,7 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
 
     public void refresh() {
         wordStatus.setValue(getWordStatus());
+        frameRateStatus.setValue(getFrameRateStatus());
         statisticsStatus.setValue(getStatisticsStatus());
     }
 

@@ -75,6 +75,7 @@ public class RotatableWidget extends Widget {
             return;
         }
         prepare();
+        g = g.create();
         g.clip(x, y, unmovable.getWidth(), movable.getHeight() + unmovable.getHeight() + margin);
         double opacity = opacity();
         drawImage(g, unmovable, x, y, opacity);

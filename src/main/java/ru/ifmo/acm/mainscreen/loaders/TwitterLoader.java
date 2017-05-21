@@ -1,5 +1,6 @@
 package ru.ifmo.acm.mainscreen.loaders;
 
+import com.vaadin.ui.Notification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.ContextListener;
@@ -12,7 +13,7 @@ import ru.ifmo.acm.mainscreen.Words.WordStatisticsData;
 import twitter4j.*;
 
 import java.io.IOException;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by Aksenov239 on 26.03.2017.
@@ -65,7 +66,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 
     public void doOnStatus(Status status) {
         System.err.println(status.getUser().getId() + " " + status.getText());
-        if (status.getText().startsWith(mainHashTag)) {
+        if (Arrays.stream(status.getHashtagEntities()).anyMatch(e -> ("#" + e.getText()).equals(mainHashTag))) {
             WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + " " + status.getText());
             MessageData.processTwitterMessage(status);
         }
@@ -136,5 +137,18 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 
         twitterStream.cleanUp();
         twitterStream.clearListeners();
+    }
+
+    public Collection<Status> loadByQuery(String query) throws TwitterException {
+        List<Status> ret;
+        if (query.startsWith("@")) {
+            String username = query.substring(1);
+            ret = twitter.getUserTimeline(username);
+        } else {
+            ret = twitter.search(new Query(query)).getTweets();
+        }
+        ret = ret.subList(0, Math.min(ret.size(), 5));
+        Collections.reverse(ret);
+        return ret;
     }
 }

@@ -54,6 +54,7 @@ public class MainScreenData {
         teamStatsData = new TeamStatsData();
         pollData = new PollData();
         wordStatisticsData = new WordStatisticsData();
+        frameRateData = new FrameRateData();
     }
 
     public void update() {
@@ -85,6 +86,7 @@ public class MainScreenData {
     public TeamStatsData teamStatsData;
     public PollData pollData;
     public WordStatisticsData wordStatisticsData;
+    public FrameRateData frameRateData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

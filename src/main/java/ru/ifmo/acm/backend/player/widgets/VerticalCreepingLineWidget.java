@@ -96,51 +96,13 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         }
     }
 
+    int nowStandingsPosition = 0;
     int nextStandingsPosition = 0;
     TeamInfo[] standings;
     private final String STANDINGS_MESSAGE = "#Standings#";
     private final int STANDINGS_SIZE = 12;
     private final int STANDINGS_PAGE = 4;
-
-
-    private final double SPACE_WIDTH = 0.02;
-    private final double RANK_WIDTH = 0.1;
-    private final double SMALL_PLATE_DY = 5.5;
-    private final int SMALL_PLATE_HEIGHT = (int)(0.85 * HEIGHT);
-    private final double NAME_WIDTH = 0.50;
-    private final double TOTAL_WIDTH = 0.1;
-    private final double PENALTY_WIDTH = 0.2;
-
-    private void drawSmallTeamPane(Graphics g, TeamInfo team, int width, int height, int x, int y) {
-        int spaceWidth = (int) (SPACE_WIDTH * width);
-        int rankWidth = (int) (RANK_WIDTH * width);
-        int nameWidth = (int) (NAME_WIDTH * width);
-        int totalWidth = (int) (TOTAL_WIDTH * width);
-        int penaltyWidth = (int) (PENALTY_WIDTH * width);
-
-        // small rectangle with rank
-        PlateStyle color = getTeamRankColor(team);
-
-        x += spaceWidth;
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, (int)(y + SMALL_PLATE_DY), rankWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.CENTER, messageFont, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += rankWidth + spaceWidth;
-
-        // team name
-        drawTextInRect(g, team.getShortName(), x, (int) (y + SMALL_PLATE_DY), nameWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.LEFT, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
-
-        x += nameWidth + spaceWidth;
-
-        // total
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, (int) (y + SMALL_PLATE_DY), totalWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.CENTER, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += totalWidth + spaceWidth;
-
-        // penalty
-        drawTextInRect(g, "" + team.getPenalty(), x, (int) (y + SMALL_PLATE_DY), penaltyWidth, SMALL_PLATE_HEIGHT,
-                Graphics.Alignment.CENTER, messageFont, TeamPaneStylesheet.penalty, 1, WidgetAnimation.UNFOLD_ANIMATED);
-    }
+    private final double percent = 0.87;
 
     private void drawInfo(Graphics g, Message message, boolean next, int width, int height) {
         if (!STANDINGS_MESSAGE.equals(message.message)) {
@@ -148,10 +110,12 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                     messageFont, CreepingLineStylesheet.main.text);
             return;
         }
+        standings = Preparation.eventsLoader.getContestData().getStandings();
         int dx = width / STANDINGS_PAGE;
-        int start = next ? nextStandingsPosition : nextStandingsPosition - STANDINGS_PAGE;
+        int start = next ? nextStandingsPosition : nowStandingsPosition;
         for (int i = 0; i < STANDINGS_PAGE && start + i < standings.length; i++) {
-            drawSmallTeamPane(g, standings[start + i], dx, height, dx * i, (int)message.position);
+            drawTeamPane(g, standings[start + i], dx * i + 5, (int) message.position + 5,
+                    (int) (percent * height), 1);
         }
     }
 
@@ -184,6 +148,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         if (messagesQueue.size() > 0 && lastRotation + rotateTime < System.currentTimeMillis()) {
 //        if (lastRotation + rotateTime < System.currentTimeMillis()) {
             messageNow = messageNext;
+            nowStandingsPosition = nextStandingsPosition;
             nextStandingsPosition += STANDINGS_PAGE;
             if (STANDINGS_MESSAGE.equals(messageNow.message) &&
                     nextStandingsPosition < Math.min(STANDINGS_SIZE, standings == null ? STANDINGS_SIZE : standings.length)) {
@@ -191,6 +156,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
             } else {
                 if (messagesQueue.size() > 0) {
                     messageNext = new Message(messagesQueue.poll(), g, messageFont);
+                    inQueue.remove(messageNext.message);
                     if (STANDINGS_MESSAGE.equals(messageNext.message)) {
                         nextStandingsPosition = 0;
                         standings = Preparation.eventsLoader.getContestData().getStandings();
@@ -198,22 +164,12 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                 } else {
                     messageNext = new Message();
                 }
-//                if (STANDINGS_MESSAGE.equals(messageNext.message)) {
-//                    messageNext = new Message("H!", g, messageFont);
-//                } else {
-//                    messageNext = new Message(STANDINGS_MESSAGE, g, messageFont);
-//                }
-                if (STANDINGS_MESSAGE.equals(messageNext.message)) {
-//                    nextStandingsPosition = 0;
-//                    standings = Preparation.eventsLoader.getContestData().getStandings();
-                }
             }
             messageNext.position = HEIGHT;
             lastRotation = System.currentTimeMillis();
         }
 
         if (messageNow.position + messageNow.heigth < 0) {
-            inQueue.remove(messageNow.message);
             messageNow = new Message();
         } else {
             messageNow.position -= V * dt;
