@@ -23,6 +23,9 @@ import java.io.IOException;
  * @author egor@egork.net
  */
 public class TeamStatsWidget extends RotatableWidget {
+
+    private static final int AWARD_HEIGHT = 55;
+
     private static Logger log = LogManager.getLogger(TeamStatsWidget.class);
 
     private static final int X = 519;
@@ -53,15 +56,18 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final Color TOP_BACKGROUND = TeamStatsStylesheet.background;
     private static final Color BOTTOM_BACKGROUND = TeamStatsStylesheet.background;
 
-    private static final int ACHIVEMENT_X = 20;
-    private static final int ACHIVEMENT_Y = 50;
-    private static final Color ACHIVEMENT_COLOR = new Color(0xaaaacc);
-    private static final Font ACHIVEMENT_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
+    private static final int WF_CAPTION_X = 20;
+    private static final int WF_CAPTION_Y = 50;
+    private static final Color WF_CAPTION_COLOR = new Color(0xaaaacc);
+    private static final Font WF_CAPTION_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
 
-    private static final int AWARDS_X = 200;
-    private static final int AWARDS_Y = 50;
-    private static final Color AWARDS_COLOR = new Color(0xaaaacc);
-    private static final Font AWARDS_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
+    private static final int AWARDS_CAPTION_X = 150;
+    private static final int AWARDS_CAPTION_Y = 50;
+    private static final Color AWARDS_CAPTION_COLOR = new Color(0xaaaacc);
+    private static final Font AWARDS_CAPTION_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
+
+    private static final int AWARDS_X = 150;
+    private static final int AWARDS_Y = 114;
 
     private static final int APPEARANCES_X = 20;
     private static final int APPEARANCES_Y = 114;
@@ -82,6 +88,10 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int ACHIEVEMENT_WIDTH = 314;
     private static final Color ACHIEVEMENT_COLOR = new Color(0xEFDFED);
     private static final Font ACHIEVEMENT_CAPTION_FONT = Font.decode("Open Sans 18");
+    private BufferedImage goldMedalImage;
+    private BufferedImage silverMedalImage;
+    private BufferedImage bronzeMedalImage;
+    private BufferedImage cupImage;
 
     private ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -89,6 +99,15 @@ public class TeamStatsWidget extends RotatableWidget {
     public TeamStatsWidget(long updateWait, long sleepTime) {
         super(updateWait, X, Y, WIDTH, MARGIN, SHIFTS, SHOW_TIME, SHIFT_SPEED, FADE_TIME);
         this.sleepTime = sleepTime;
+        try {
+            cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), 1000, AWARD_HEIGHT, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+            goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold_medal.png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+            silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver_medal.png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+            bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze_medal.png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private long sleepTime;
@@ -139,18 +158,38 @@ public class TeamStatsWidget extends RotatableWidget {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
-        g.setColor(ACHIEVEMENT_COLOR);
-        g.setFont(ACHIVEMENT_FONT);
-        g.drawString("World Finals", ACHIVEMENT_X, ACHIVEMENT_Y);
+        g.setColor(WF_CAPTION_COLOR);
+        g.setFont(WF_CAPTION_FONT);
+        g.drawString("Finals", WF_CAPTION_X, WF_CAPTION_Y);
 
         g.setColor(APPEARANCES_COLOR);
         g.setFont(APPEARANCES_FONT);
         g.drawString("" + record.university.getAppearances(), APPEARANCES_X, APPEARANCES_Y);
 
         if (record.university.getGold() + record.university.getSilver() + record.university.getBronze() + record.university.getRegionalChampionships() > 0) {
-            g.setColor(AWARDS_COLOR);
-            g.setFont(AWARDS_FONT);
-            g.drawString("Awards", AWARDS_X, AWARDS_Y);
+            g.setColor(AWARDS_CAPTION_COLOR);
+            g.setFont(AWARDS_CAPTION_FONT);
+            g.drawString("Awards", AWARDS_CAPTION_X, AWARDS_CAPTION_Y);
+            int x = AWARDS_X;
+            for (int i = 0; i < record.university.getWins(); i++) {
+                g.drawImage(cupImage, x, AWARDS_Y, null);
+                x += 20;
+            }
+            if (record.university.getWins() > 0) x += 20;
+            for (int i = 0; i < record.university.getGold(); i++) {
+                g.drawImage(goldMedalImage, x, AWARDS_Y, null);
+                x += 20;
+            }
+            if (record.university.getGold() > 0) x += 20;
+            for (int i = 0; i < record.university.getSilver(); i++) {
+                g.drawImage(silverMedalImage, x, AWARDS_Y, null);
+                x += 20;
+            }
+            if (record.university.getSilver() > 0) x += 20;
+            for (int i = 0; i < record.university.getBronze(); i++) {
+                g.drawImage(bronzeMedalImage, x, AWARDS_Y, null);
+                x += 20;
+            }
         }
         int x = INITIAL_SHIFT;
         Person[] persons = {record.coach, record.contestants[0], record.contestants[1], record.contestants[2]};

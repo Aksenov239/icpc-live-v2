@@ -94,16 +94,11 @@ public class PollWidget extends Widget {
         for (int i = 0; i < total; i++) {
             drawTextInRect(g, options[i].option, 0, y, optionWidth, plateHeight,
                     Graphics.Alignment.CENTER, font, PollStylesheet.option,
-                    Math.min(1, visibilityState / visibilityOption), WidgetAnimation.HORIZONTAL_ANIMATED);
+                    Math.min(1, visibilityState / visibilityOption), WidgetAnimation.NOT_ANIMATED);
             int voteWidth = (int) ((this.width - optionWidth - minimalVoteWidth) * percent[i]);
-            int now_percent = (int)Math.round(percent[i] * 100);
-            total_percent -= now_percent;
-            if (i == total - 1 && percent[i] != 0) {
-                now_percent = total_percent;
-            }
             int ww = (int)((minimalVoteWidth + voteWidth) * visibilityState);
             drawTextInRect(g, "" + options[i].votes, optionWidth, y,
-                    minimalVoteWidth + voteWidth, plateHeight,
+                    ww, plateHeight,
                     Graphics.Alignment.CENTER, font, PollStylesheet.votes,
                     visibilityState,
                     WidgetAnimation.NOT_ANIMATED);
