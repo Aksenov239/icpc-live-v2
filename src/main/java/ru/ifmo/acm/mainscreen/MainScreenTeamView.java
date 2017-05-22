@@ -180,6 +180,9 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
 
             if (stats.getValue()) {
+                if ("".equals(type.getValue())) {
+                    mainScreenData.teamData.setSleepTime(0);
+                }
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
             }
 
