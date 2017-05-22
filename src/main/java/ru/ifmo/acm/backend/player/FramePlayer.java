@@ -1,19 +1,11 @@
 package ru.ifmo.acm.backend.player;
 
-import org.imgscalr.Scalr;
 import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.TimerTask;
 
 public class FramePlayer extends Player {
@@ -95,18 +87,13 @@ public class FramePlayer extends Player {
                         imagePane.repaint();
                     }
                 }, 0L, 1000 / frameRate);
-
     }
 
     @SuppressWarnings("serial")
     private final class ImagePane extends JPanel {
         @Override
         public void paint(Graphics g) {
-            AffineTransform transform = AffineTransform.getTranslateInstance(0, generator.getHeight());
-            transform.concatenate(AffineTransform.getScaleInstance(1, -1));
-            ((Graphics2D)g).setTransform(transform);
-            g.drawImage(generator.getScreen(), 0, 0, null);
+            generator.draw((Graphics2D) g);
         }
     }
-
 }

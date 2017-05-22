@@ -2,7 +2,7 @@ package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
 import ru.ifmo.acm.backend.player.FramePlayer;
-import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
+import ru.ifmo.acm.backend.player.generator.ScreenGeneratorGL;
 import ru.ifmo.acm.backend.player.widgets.*;
 
 import java.io.File;
@@ -38,7 +38,7 @@ public class Main {
         int height = Integer.parseInt(properties.getProperty("height", "720"));
         int frameRate = Integer.parseInt(properties.getProperty("rate", "25"));
 
-        ScreenGenerator generator = new ScreenGenerator(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        ScreenGeneratorGL generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
@@ -130,7 +130,7 @@ public class Main {
     private Properties readProperties() {
         Properties properties = new Properties();
         try {
-            properties.load(ScreenGenerator.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
