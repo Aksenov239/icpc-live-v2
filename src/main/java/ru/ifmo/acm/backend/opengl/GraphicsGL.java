@@ -8,13 +8,9 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureData;
-import com.jogamp.opengl.util.texture.TextureIO;
-import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.Widget;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
-import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -136,6 +132,11 @@ public class GraphicsGL extends Graphics {
 
     @Override
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
+
+    }
+
+    @Override
+    public void clear(int x, int y, int width, int height) {
 
     }
 
@@ -268,28 +269,6 @@ public class GraphicsGL extends Graphics {
 
 //        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), color, 1);
         drawString(text, xx, yy, (float) textScale, 1f, font, color, 1);
-    }
-
-    @Override
-    public void drawStar(int x, int y, int size) {
-        x += x0;
-        y += y0;
-        setColor(Color.decode(Stylesheet.styles.get("star.color")), 1);
-        int[] xx = new int[10];
-        int[] yy = new int[10];
-        double[] d = {size, size * 2};
-        for (int i = 0; i < xx.length; i++) {
-            xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
-            yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
-        }
-
-        gl2.glBegin(GL2.GL_TRIANGLES);
-        for (int i = 0; i < xx.length; i++) {
-            gl2.glVertex2i(xx[i], Widget.BASE_HEIGHT - yy[i]);
-            gl2.glVertex2i(x, Widget.BASE_HEIGHT - y);
-            gl2.glVertex2i(xx[(i + 1) % xx.length], Widget.BASE_HEIGHT - yy[(i + 1) % yy.length]);
-        }
-        gl2.glEnd();
     }
 
     @Override

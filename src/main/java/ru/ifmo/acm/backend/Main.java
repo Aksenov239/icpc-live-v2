@@ -1,7 +1,7 @@
 package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
-import ru.ifmo.acm.backend.player.FramePlayer;
+import ru.ifmo.acm.backend.player.MemoryFilePlayer;
 import ru.ifmo.acm.backend.player.generator.ScreenGeneratorGL;
 import ru.ifmo.acm.backend.player.widgets.*;
 
@@ -43,8 +43,6 @@ public class Main {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-//        generator.addWidget(new GreenScreenWidget(true));
-
         generator.addWidget(new NewTeamWidget(
                 Integer.parseInt(properties.getProperty("sleep.time")),
                 Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
@@ -52,7 +50,8 @@ public class Main {
         generator.addWidget(new VerticalCreepingLineWidget(updateWait,
                 Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
                 properties.getProperty("creeping.line.logo", "ICPC 2016"),
-                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "20000")),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "2000")),
+                Integer.parseInt(properties.getProperty("creeping.line.clock.time", "20000")),
                 Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
 
         StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
@@ -63,29 +62,29 @@ public class Main {
         generator.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
 
         BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
-                1350, 39, updateWait, 22, true);
+                1371, 39, updateWait, 22, true);
         bigStandingsWidget.alignBottom(994);
         generator.addWidget(bigStandingsWidget);
 
         generator.addWidget(new StatisticsWidget(
-                519, 200, 39, 1350, updateWait
+                519, 994, 39, 1371, updateWait
         ));
 
-        generator.addWidget(new BreakingNewsWidget(
-                updateWait,
-                (int)(Widget.BASE_WIDTH * 0.65),
-                (int)(Widget.BASE_HEIGHT * 0.6),
-                (int)(Widget.BASE_WIDTH * 0.3),
-                (int)(Widget.BASE_HEIGHT * 0.2),
-                16. / 9,
-                Integer.parseInt(properties.getProperty("sleep.time")),
-                Integer.parseInt(properties.getProperty("breakingnews.time"))
-        ));
+//        generator.addWidget(new BreakingNewsWidget(
+//                updateWait,
+//                (int)(Widget.BASE_WIDTH * 0.65),
+//                (int)(Widget.BASE_HEIGHT * 0.6),
+//                (int)(Widget.BASE_WIDTH * 0.3),
+//                (int)(Widget.BASE_HEIGHT * 0.2),
+//                16. / 9,
+//                Integer.parseInt(properties.getProperty("sleep.time")),
+//                Integer.parseInt(properties.getProperty("breakingnews.time"))
+//        ));
 
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
-        generator.addWidget(new ClockWidget(updateWait));
+//        generator.addWidget(new ClockWidget(updateWait));
 
         TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
         generator.addWidget(widget);
@@ -95,9 +94,10 @@ public class Main {
                 Integer.parseInt(properties.getProperty("poll.top.teams", "5")),
                 519,
                 50,
-                1000,
+                1371,
                 200,
-                80
+                80,
+                519, 994
         ));
 
         generator.addWidget(new WordStatisticsWidget(updateWait,
@@ -122,9 +122,9 @@ public class Main {
 
         generator.addWidget(new TestFramesWidget());
 
-        new FramePlayer("Main", generator, frameRate);
-//        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
-//        new MemoryFilePlayer(filename, generator, frameRate);
+//        new FramePlayer("Main", generator, frameRate);
+        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
+        new MemoryFilePlayer(filename, generator, frameRate);
     }
 
     private Properties readProperties() {

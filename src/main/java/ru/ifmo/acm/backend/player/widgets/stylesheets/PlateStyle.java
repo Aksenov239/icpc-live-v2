@@ -39,7 +39,8 @@ public class PlateStyle {
     public PlateStyle(String styleName) {
         background = Color.decode(Stylesheet.styles.getOrDefault(styleName + ".background", "#000000"));
         text = Color.decode(Stylesheet.styles.getOrDefault(styleName + ".text", "#FFFFFF"));
-        rectangleType = Graphics.RectangleType.valueOf(Stylesheet.styles.getOrDefault(styleName + ".style", "SOLID_ROUNDED").toUpperCase());
+        rectangleType = RectangleType.SOLID;
+//        rectangleType = Graphics.RectangleType.valueOf(Stylesheet.styles.getOrDefault(styleName + ".style", "SOLID_ROUNDED").toUpperCase());
         alignment = Graphics.Alignment.valueOf(Stylesheet.styles.getOrDefault(styleName + ".align", "Left").toUpperCase());
     }
 

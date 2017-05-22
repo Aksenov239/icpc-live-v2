@@ -127,6 +127,7 @@ public class ScreenGeneratorGL implements ScreenGenerator {
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }
+        g.drawRect(0, 0, 1, 1, Color.WHITE, .5, Graphics.RectangleType.SOLID);
 
         g2.dispose();
     }

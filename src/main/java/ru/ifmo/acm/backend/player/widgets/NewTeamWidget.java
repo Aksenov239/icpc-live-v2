@@ -18,9 +18,9 @@ import java.awt.*;
 public class NewTeamWidget extends Widget {
     private static double standardAspect = 16. / 9;
 
-    private static final int BIG_HEIGHT = 780;
+    private static final int BIG_HEIGHT = 1371 * 9 / 16;//780;
     //    private static final int BIG_WIDTH = BIG_HEIGHT * 16 / 9;
-    private static final int BIG_X_RIGHT = 1880;//493;
+    private static final int BIG_X_RIGHT = 1890;//493;
     private static final int BIG_Y = 89;
 
     private static final int BIG_Y_43 = 0;//10;
@@ -31,7 +31,7 @@ public class NewTeamWidget extends Widget {
     private static final int SMALL_X = 35;
     private static final int SMALL_Y = 89;
 
-    private static final int TEAM_PANE_X = 936;
+    private static final int TEAM_PANE_X = 963;
     private static final int TEAM_PANE_Y = 909;
     private static final int TEAM_PANE_HEIGHT = 85;
 
@@ -66,6 +66,9 @@ public class NewTeamWidget extends Widget {
         } else {
            setVisible(true);
             //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
+            mainVideo.sleepTime = data.teamData.sleepTime;
+            smallVideo.sleepTime = data.teamData.sleepTime;
+
             if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) &&
                     mainVideo.readyToShow()) {
                 //log.info("Change to " + urlTemplates.get(data.teamData.infoType) + " " + data.teamData.teamId);
@@ -79,9 +82,6 @@ public class NewTeamWidget extends Widget {
                 teamId = data.teamData.getTeamId();
                 currentInfoType = data.teamData.infoType;
             }
-            
-            mainVideo.sleepTime = data.teamData.sleepTime;
-            smallVideo.sleepTime = data.teamData.sleepTime;
         }
     }
 

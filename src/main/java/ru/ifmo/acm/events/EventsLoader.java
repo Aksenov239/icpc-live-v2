@@ -14,7 +14,7 @@ public abstract class EventsLoader extends Thread {
 
     private static EventsLoader instance;
 
-    public static double EMULATION_SPEED = 2;
+    public static double EMULATION_SPEED = 10;
 
     public static synchronized EventsLoader getInstance() {
         if (instance == null) {

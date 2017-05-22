@@ -14,6 +14,7 @@ import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
 import ru.ifmo.acm.events.WF.WFEventsLoader;
 import ru.ifmo.acm.events.WF.WFRunInfo;
+import sun.java2d.opengl.OGLRenderQueue;
 
 import java.awt.*;
 import java.io.IOException;
@@ -251,9 +252,13 @@ public class BigStandingsWidget extends Widget {
                 }
             }
 
-            drawHead(g, spaceX, 0, firstSolved);
+            Graphics wasG = g;
 
             int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
+
+            drawHead(wasG, spaceX, 0, firstSolved);
+
+            g = g.create();
             g.clip(-plateHeight,
                     initY,
                     this.width + 2 * plateHeight,
@@ -294,7 +299,7 @@ public class BigStandingsWidget extends Widget {
             }
 
             for (Point star : stars) {
-                g.drawStar(star.x, star.y, STAR_SIZE);
+                drawStar(g, star.x, star.y, STAR_SIZE);
             }
 
         } else {
@@ -309,6 +314,7 @@ public class BigStandingsWidget extends Widget {
     }
 
     private void drawHead(Graphics g, int x, int y, RunInfo[] firstSolved) {
+        g = g.create();
         int problemWidth = problemWidth(firstSolved.length);
 
         PlateStyle heading = BigStandingsStylesheet.heading;
@@ -325,9 +331,10 @@ public class BigStandingsWidget extends Widget {
             }
         }
 
+        //g.clear(x, y, this.width, plateHeight);
         drawTextInRect(g, headingText, x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
-                Graphics.Alignment.CENTER, font, heading, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                Graphics.Alignment.CENTER, font, heading, visibilityState, WidgetAnimation.NOT_ANIMATED);
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
@@ -335,9 +342,12 @@ public class BigStandingsWidget extends Widget {
                     ((firstSolved[i] != null) ? BigStandingsStylesheet.udProblem : BigStandingsStylesheet.noProblem) :
                     BigStandingsStylesheet.acProblem;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
-                    Graphics.Alignment.CENTER, font, color, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                    Graphics.Alignment.CENTER, font, color, visibilityState, WidgetAnimation.NOT_ANIMATED);
             x += problemWidth + spaceX;
         }
+
+        g.drawRect(x, y, totalWidth + penaltyWidth, plateHeight, BigStandingsStylesheet.penalty.background,
+                opacity, Graphics.RectangleType.SOLID);
     }
 
     private void drawFullTeamPane(Graphics g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
@@ -419,7 +429,7 @@ public class BigStandingsWidget extends Widget {
                 font, penaltyColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         for (Point star : stars) {
-            g.drawStar(star.x, star.y, STAR_SIZE);
+            drawStar(g, star.x, star.y, STAR_SIZE);
         }
     }
 

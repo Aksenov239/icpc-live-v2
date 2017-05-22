@@ -154,7 +154,7 @@ public class QueueWidget extends Widget {
 
     private void drawRun(Graphics g, int x, int y, RunPlate plate) {
 
-        boolean blinking = plate == breaking;
+        boolean blinking = breakingNews.isVisible() && plate == breaking;
 
         RunInfo runInfo = plate.runInfo;
         TeamInfo team = info.getParticipant(runInfo.getTeamId());
@@ -222,11 +222,11 @@ public class QueueWidget extends Widget {
                         visibilityState * plate.visibilityState, Graphics.RectangleType.SOLID);
             }
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
-                g.drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
+                drawStar(g, x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         } else {
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
-                g.drawStar(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
+                drawStar(g, x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         }
 

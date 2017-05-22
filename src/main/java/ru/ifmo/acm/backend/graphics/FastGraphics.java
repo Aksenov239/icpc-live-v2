@@ -1,7 +1,6 @@
 package ru.ifmo.acm.backend.graphics;
 
 import ru.ifmo.acm.backend.player.widgets.stylesheets.PlateStyle;
-import ru.ifmo.acm.backend.player.widgets.stylesheets.Stylesheet;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -164,6 +163,11 @@ public class FastGraphics extends Graphics {
         }
     }
 
+    @Override
+    public void clear(int x, int y, int width, int height) {
+
+    }
+
     public static int mergeColors(int backgroundColor, int foregroundColor) {
         final int ap1 = backgroundColor >>> 24;
         final int ap2 = foregroundColor >>> 24;
@@ -213,20 +217,6 @@ public class FastGraphics extends Graphics {
         g.drawString(text, 0, 0);
         g.dispose();
         g = saved;
-    }
-
-    @Override
-    public void drawStar(int x, int y, int size) {
-        g.setColor(Color.decode(Stylesheet.styles.get("star.color")));
-        int[] xx = new int[10];
-        int[] yy = new int[10];
-
-        double[] d = {size, size * 2};
-        for (int i = 0; i < 10; i++) {
-            xx[i] = x0 + (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
-            yy[i] = y0 + (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
-        }
-        g.fillPolygon(xx, yy, xx.length);
     }
 
     @Override

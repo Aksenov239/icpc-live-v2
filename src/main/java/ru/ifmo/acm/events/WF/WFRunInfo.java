@@ -59,7 +59,7 @@ public class WFRunInfo implements RunInfo {
             total = test.total;
         }
         passed = test.id;
-        lastUpdateTimestamp = System.currentTimeMillis();
+        lastUpdateTimestamp = Math.max(lastUpdateTimestamp, (long) (test.timestamp * 1000));
     }
 
     public int getPassedTestsNumber() {
