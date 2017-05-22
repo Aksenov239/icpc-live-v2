@@ -139,7 +139,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         twitterStream.clearListeners();
     }
 
-    public Collection<Status> loadByQuery(String query) throws TwitterException {
+    public List<Status> loadByQuery(String query) throws TwitterException {
         List<Status> ret;
         if (query.startsWith("@")) {
             String username = query.substring(1);
@@ -147,7 +147,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
         } else {
             ret = twitter.search(new Query(query)).getTweets();
         }
-        ret = ret.subList(0, Math.min(ret.size(), 5));
+        ret = ret.subList(0, Math.min(ret.size(), 7));
         Collections.reverse(ret);
         return ret;
     }
