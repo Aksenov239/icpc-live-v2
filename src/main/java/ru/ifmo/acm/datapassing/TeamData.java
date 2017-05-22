@@ -24,7 +24,7 @@ public class TeamData extends CachedData {
         this.infoType = data.infoType;
         this.teamId = data.teamId;
         this.delay = data.delay;
-
+        this.sleepTime = data.sleepTime;
 
         return this;
     }
@@ -122,6 +122,11 @@ public class TeamData extends CachedData {
         return true;
     }
 
+    public void setSleepTime(int sleepTime) {
+        MainScreenData.getProperties().sleepTime = sleepTime;
+        this.sleepTime = sleepTime;
+    }
+
     public synchronized boolean isVisible() {
         return isVisible;
     }
@@ -185,6 +190,8 @@ public class TeamData extends CachedData {
     private TeamInfo[] teamsToShow;
     private int currentPosition;
 
+    public int sleepTime;
+
     public static class TeamDataSerializer implements JsonSerializer<TeamData> {
 
         @Override
@@ -194,6 +201,7 @@ public class TeamData extends CachedData {
             jsonObject.addProperty("isVisible", teamData.isVisible);
             jsonObject.addProperty("infoType", teamData.infoType);
             jsonObject.addProperty("teamId", teamData.teamId);
+            jsonObject.addProperty("sleepTime", teamData.sleepTime);
 
             return jsonObject;
         }
@@ -211,6 +219,7 @@ public class TeamData extends CachedData {
             teamData.isVisible = jsonObject.get("isVisible").getAsBoolean();
             teamData.infoType = jsonObject.get("infoType").getAsString();
             teamData.teamId = jsonObject.get("teamId").getAsInt();
+            teamData.sleepTime = jsonObject.get("sleepTime").getAsInt();
 
             //log.info("Hello from TeamDataDeserializer!");
 

@@ -79,6 +79,9 @@ public class NewTeamWidget extends Widget {
                 teamId = data.teamData.getTeamId();
                 currentInfoType = data.teamData.infoType;
             }
+            
+            mainVideo.sleepTime = data.teamData.sleepTime;
+            smallVideo.sleepTime = data.teamData.sleepTime;
         }
     }
 
