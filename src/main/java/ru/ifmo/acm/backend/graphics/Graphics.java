@@ -31,6 +31,8 @@ public abstract class Graphics {
         this.scale = scale;
     }
 
+    public abstract void clear(int x, int y, int width, int height);
+
     public enum RectangleType {
         SOLID_ROUNDED,
         SOLID,
@@ -56,8 +58,6 @@ public abstract class Graphics {
 
     public abstract void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color,
                                           double margin);
-
-    public abstract void drawStar(int x, int y, int size);
 
     public abstract void drawImage(Image image, int x, int y, int width, int height);
 

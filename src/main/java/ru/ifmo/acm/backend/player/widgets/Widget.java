@@ -113,10 +113,12 @@ public abstract class Widget {
         if (Preparation.eventsLoader.getContestData() == null) return;
         try {
             g.reset();
+            g = g.create();
             g.clip(0, 0, width, height);
             paintImpl(g, width, height);
         } catch (Exception e) {
             log.error("Failed to paint " + this.getClass().toString(), e);
+            e.printStackTrace();
         }
     }
 

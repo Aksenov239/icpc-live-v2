@@ -268,7 +268,7 @@ public class TwitterBasedQueue extends Thread {
             String statusText =
                     "@" + statusTo.getUser().getScreenName()
                             + " Added to automatic queue " + request.type
-                            + "for team " + contestInfo.getParticipant(request.teamId).getName()
+                            + " for team " + contestInfo.getParticipant(request.teamId).getName()
                             + ". See at http://icpclive.com. " + mainHashTag;
             StatusUpdate status = new StatusUpdate(statusText);
             status.setInReplyToStatusId(statusTo.getId());

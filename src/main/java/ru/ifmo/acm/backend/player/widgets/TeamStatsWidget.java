@@ -8,6 +8,7 @@ import net.egork.teaminfo.data.Record;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ifmo.acm.backend.graphics.Graphics;
+import ru.ifmo.acm.backend.player.widgets.stylesheets.TeamStatsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
 import ru.ifmo.acm.datapassing.Data;
 
@@ -24,58 +25,49 @@ import java.io.IOException;
 public class TeamStatsWidget extends RotatableWidget {
     private static Logger log = LogManager.getLogger(TeamStatsWidget.class);
 
-    private static final int X = 492;
-    private static final int Y = 698;
+    private static final int X = 519;
+    private static final int Y = 794;
     private static final int MARGIN = 2;
-    private static final int STATS_WIDTH = 225;
-    private static final int WIDTH = STATS_WIDTH * 6 + 5 * MARGIN;
+    private static final int WIDTH = 1371;
+    private static final int LEFT_WIDTH = WIDTH / 2;
+    private static final int HEIGHT = 200;
     private static final int INITIAL_SHIFT = WIDTH + MARGIN;
     private static final int PERSON_WIDTH = 1066;
     private static final int PERSON_SHIFT = PERSON_WIDTH + MARGIN;
     private static final int BOTTOM_WIDTH = WIDTH + 3 * PERSON_WIDTH + 4 * MARGIN + WIDTH;
-    private static final int BOTTOM_HEIGHT = 178;
-    private static final int LOGO_SIZE = 88;
+    private static final int LOGO_SIZE = 130;
     private static final int LOGO_SHIFT = 22;
-    private static final int TOP_HEIGHT = 132;
     private static final int[] SHIFTS = new int[]{0, INITIAL_SHIFT, INITIAL_SHIFT + PERSON_SHIFT,
             INITIAL_SHIFT + PERSON_SHIFT * 2, INITIAL_SHIFT + PERSON_SHIFT * 3};
     private static final int SHOW_TIME = 5000;
     private static final int SHIFT_SPEED = 1800; //pixels in second
     private static final int FADE_TIME = 1000;
-    private static final int UNIVERSITY_NAME_X = 128;
-    private static final int UNIVERSITY_NAME_Y = 59;
-    private static final Font UNIVERSITY_NAME = Font.decode("Open Sans 35");
+    private static final int UNIVERSITY_NAME_X = 168;
+    private static final int UNIVERSITY_NAME_Y = 50;
+    private static final Font UNIVERSITY_NAME = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
     private static final int TEAM_INFO_X = UNIVERSITY_NAME_X;
     private static final int TEAM_INFO_Y = 94;
-    private static final Font TEAM_INFO = Font.decode("Open Sans 25");
+    private static final Font TEAM_INFO = Font.decode("Open Sans 24");
     private static final Color TOP_FOREGROUND = Color.WHITE;
-    private static final Color STATS_TITLE = Color.WHITE;
     private static final Color NAME_COLOR = Color.WHITE;
-    private static final Color TOP_BACKGROUND = new Color(0x3567AD);
-    private static final Color BOTTOM_BACKGROUND = new Color(0x3A235B);
-    private static final String[] TITLE = {
-            "Appearances",
-            "Wins",
-            "Gold Medals",
-            "Silver Medals",
-            "Bronze Medals",
-            "Regional Wins"
-    };
+    private static final Color TOP_BACKGROUND = TeamStatsStylesheet.background;
+    private static final Color BOTTOM_BACKGROUND = TeamStatsStylesheet.background;
 
-    private static final Color[] STATS_COLOR = {
-            new Color(0x7ED2EF),
-            new Color(0xEA513B),
-            new Color(0xE9D61D),
-            new Color(0xE4E9EA),
-            new Color(0xAD742A),
-            new Color(0x75C590),
-    };
+    private static final int ACHIVEMENT_X = 20;
+    private static final int ACHIVEMENT_Y = 50;
+    private static final Color ACHIVEMENT_COLOR = new Color(0xaaaacc);
+    private static final Font ACHIVEMENT_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
 
-    private static final int STRIP_HEIGHT = 8;
-    private static final Font VALUE_STATS_FONT = Font.decode("Open Sans 64").deriveFont(Font.BOLD);
-    private static final int VALUE_STATS_Y = 127;
-    private static final Font TITLE_STATS_FONT = Font.decode("Open Sans 24");
-    private static final int TITLE_STATS_Y = 47;
+    private static final int AWARDS_X = 200;
+    private static final int AWARDS_Y = 50;
+    private static final Color AWARDS_COLOR = new Color(0xaaaacc);
+    private static final Font AWARDS_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
+
+    private static final int APPEARANCES_X = 20;
+    private static final int APPEARANCES_Y = 114;
+    private static final Color APPEARANCES_COLOR = Color.WHITE;
+    private static final Font APPEARANCES_FONT = Font.decode("Open Sans 50").deriveFont(Font.BOLD);
+
     private static final int PERSON_CIRCLE_X = 30;
     private static final int PERSON_CIRCLE_Y = 28;
     private static final int PERSON_CIRCLE_DIAMETER = 24;
@@ -83,19 +75,19 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int PERSON_NAME_Y = 50;
     private static final Font PERSON_NAME_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
     private static final int PERSON_RATING_Y = 86;
-    private static final Font RATING_FONT = Font.decode("Open Sans 18");
+    private static final Font RATING_FONT = Font.decode("Open Sans 24").deriveFont(Font.BOLD);
     private static final int RATING_SPACE = 18;
     private static final int TOP_ACHIEVEMENT_Y = 114;
-    private static final int BOTTOM_ACHIEVEMENT_Y = 144;
+    private static final int ACHIEVEMENT_DY = 30;
     private static final int ACHIEVEMENT_WIDTH = 314;
     private static final Color ACHIEVEMENT_COLOR = new Color(0xEFDFED);
-    private static final Font ACHIEVEMENT_FONT = Font.decode("Open Sans 18");
+    private static final Font ACHIEVEMENT_CAPTION_FONT = Font.decode("Open Sans 18");
 
     private ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public TeamStatsWidget(long updateWait, long sleepTime) {
-        super(updateWait, X, Y, MARGIN, SHIFTS, SHOW_TIME, SHIFT_SPEED, FADE_TIME);
+        super(updateWait, X, Y, WIDTH, MARGIN, SHIFTS, SHOW_TIME, SHIFT_SPEED, FADE_TIME);
         this.sleepTime = sleepTime;
     }
 
@@ -105,6 +97,7 @@ public class TeamStatsWidget extends RotatableWidget {
     private boolean previousVisible;
 
     public void updateImpl(Data data) {
+        sleepTime = data.teamData.sleepTime;
         if (data.teamStatsData.timestamp > lastUpdateTimestamp) {
             lastUpdateTimestamp = data.teamStatsData.timestamp;
             setVisible(data.teamStatsData.isVisible);
@@ -124,13 +117,13 @@ public class TeamStatsWidget extends RotatableWidget {
         }
     }
 
-    public void showTeam(int id) {
+    private void showTeam(int id) {
         try {
             Record record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
             System.out.println("teamData/" + id + ".json");
             BufferedImage logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-            VolatileImage unmovable = prepareTopPlaque(record, logo);
-            VolatileImage movable = prepareBottomPlaque(record);
+            VolatileImage unmovable = prepareLeftPlaque(record, logo);
+            VolatileImage movable = prepareRightPlaque(record);
             setUnmovable(unmovable);
             setMovable(movable);
             start();
@@ -139,32 +132,31 @@ public class TeamStatsWidget extends RotatableWidget {
         }
     }
 
-    private VolatileImage prepareBottomPlaque(Record record) {
-        VolatileImage image = createVolatileImage(BOTTOM_WIDTH, BOTTOM_HEIGHT);
+    private VolatileImage prepareRightPlaque(Record record) {
+        VolatileImage image = createVolatileImage(BOTTOM_WIDTH, HEIGHT);
         Graphics2D g = (Graphics2D) image.getGraphics();
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
-        int x = 0;
-        int[] stats = {
-                record.university.getAppearances(),
-                record.university.getWins(),
-                record.university.getGold(),
-                record.university.getSilver(),
-                record.university.getBronze(),
-                record.university.getRegionalChampionships()
-        };
-        for (int i = 0; i < 6; i++) {
-            g.setColor(BOTTOM_BACKGROUND);
-            g.fillRect(x, 0, STATS_WIDTH, BOTTOM_HEIGHT);
-            drawStatsPlaque(g, x, TITLE[i], stats[i], STATS_COLOR[i]);
-            x += STATS_WIDTH + MARGIN;
+        g.setColor(ACHIEVEMENT_COLOR);
+        g.setFont(ACHIVEMENT_FONT);
+        g.drawString("World Finals", ACHIVEMENT_X, ACHIVEMENT_Y);
+
+        g.setColor(APPEARANCES_COLOR);
+        g.setFont(APPEARANCES_FONT);
+        g.drawString("" + record.university.getAppearances(), APPEARANCES_X, APPEARANCES_Y);
+
+        if (record.university.getGold() + record.university.getSilver() + record.university.getBronze() + record.university.getRegionalChampionships() > 0) {
+            g.setColor(AWARDS_COLOR);
+            g.setFont(AWARDS_FONT);
+            g.drawString("Awards", AWARDS_X, AWARDS_Y);
         }
+        int x = INITIAL_SHIFT;
         Person[] persons = {record.coach, record.contestants[0], record.contestants[1], record.contestants[2]};
         for (int i = 0; i < 4; i++) {
             g.setColor(BOTTOM_BACKGROUND);
-            g.fillRect(x, 0, i == 3 ? WIDTH : PERSON_WIDTH, BOTTOM_HEIGHT);
+            g.fillRect(x, 0, i == 3 ? WIDTH : PERSON_WIDTH, HEIGHT);
             drawPersonProfile(g, x, persons[i], i == 0);
             x += PERSON_WIDTH + MARGIN;
         }
@@ -197,10 +189,10 @@ public class TeamStatsWidget extends RotatableWidget {
             g.drawString(Integer.toString(person.getCfRating()), xx, PERSON_RATING_Y);
         }
         g.setColor(ACHIEVEMENT_COLOR);
-        g.setFont(ACHIEVEMENT_FONT);
+        g.setFont(ACHIEVEMENT_CAPTION_FONT);
         for (int i = 0; i < 6 && i < person.getAchievements().size(); i++) {
-            int cx = x + PERSON_NAME_X + (i / 2) * ACHIEVEMENT_WIDTH;
-            int cy = i % 2 == 0 ? TOP_ACHIEVEMENT_Y : BOTTOM_ACHIEVEMENT_Y;
+            int cx = x + PERSON_NAME_X + (i / 3) * ACHIEVEMENT_WIDTH;
+            int cy = TOP_ACHIEVEMENT_Y + ACHIEVEMENT_DY * (i % 3);
             g.drawString(prepareAchievement(g, person.getAchievements().get(i).achievement, ACHIEVEMENT_WIDTH - RATING_SPACE)
                     , cx, cy);
         }
@@ -263,38 +255,31 @@ public class TeamStatsWidget extends RotatableWidget {
         return new Color(0x808080);
     }
 
-    private void drawStatsPlaque(Graphics2D g, int x, String title, int value, Color color) {
-        g.setColor(color);
-        g.fillRect(x, BOTTOM_HEIGHT - STRIP_HEIGHT, STATS_WIDTH, STRIP_HEIGHT);
-        printCenteredText(g, Integer.toString(value), VALUE_STATS_FONT, x + STATS_WIDTH / 2, VALUE_STATS_Y);
-        g.setColor(STATS_TITLE);
-        printCenteredText(g, title, TITLE_STATS_FONT, x + STATS_WIDTH / 2, TITLE_STATS_Y);
-    }
-
-    private void printCenteredText(Graphics2D g, String caption, Font font, int x, int y) {
-        g.setFont(font);
-        int width = g.getFontMetrics().stringWidth(caption);
-        g.drawString(caption, x - width / 2, y);
-    }
-
-    private VolatileImage prepareTopPlaque(Record record, BufferedImage logo) {
-        VolatileImage image = createVolatileImage(WIDTH, TOP_HEIGHT);
+    private VolatileImage prepareLeftPlaque(Record record, BufferedImage logo) {
+        VolatileImage image = createVolatileImage(LEFT_WIDTH, HEIGHT);
         Graphics2D g = (Graphics2D) image.getGraphics();
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
-        g.setColor(TOP_BACKGROUND);
-        g.fillRect(0, 0, INITIAL_SHIFT, TOP_HEIGHT);
+        g.setColor(new Color(TOP_BACKGROUND.getRGB() & 0x77ffffff));
+        g.fillRect(0, 0, INITIAL_SHIFT, HEIGHT);
         g.drawImage(logo, LOGO_SHIFT, LOGO_SHIFT, null);
         g.setColor(TOP_FOREGROUND);
         g.setFont(UNIVERSITY_NAME);
         g.drawString(record.university.getFullName(), UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
         g.setFont(TEAM_INFO);
         g.drawString(
-                record.team.getName() + " | " + record.team.getRegionals().iterator().next() + " | " +
-                        record.university.getHashTag(),
+                record.team.getName(), //record.team.getRegionals().iterator().next() + " | " +
                 TEAM_INFO_X, TEAM_INFO_Y
+        );
+//        g.drawString(
+//                record.team.getRegionals().iterator().next(),
+//                TEAM_INFO_X, TEAM_INFO_Y + 30
+//        );
+        g.drawString(
+                        "#" + record.university.getHashTag(),
+                TEAM_INFO_X, TEAM_INFO_Y + 40
         );
         return image;
     }
@@ -302,13 +287,11 @@ public class TeamStatsWidget extends RotatableWidget {
     private VolatileImage createVolatileImage(int width, int height) {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
-        return gc.createCompatibleVolatileImage(width, height, Transparency.TRANSLUCENT);
-    }
-
-    private void drawScaledImage(Graphics2D g, BufferedImage image, int x, int y, int width, int height) {
-        g.drawImage(getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true), x, y, null);
-//        g.drawImage(image, new AffineTransform((double) width / image.getWidth(), 0, 0,
-//                (double) height / image.getHeight(), x, y), null);
+        VolatileImage image = gc.createCompatibleVolatileImage(width, height, Transparency.TRANSLUCENT);
+        Graphics2D g = image.createGraphics();
+        g.setColor(TeamStatsStylesheet.background);
+        g.fillRect(0, 0, width, height);
+        return image;
     }
 
     public void paintImpl(Graphics g, int width, int height) {
@@ -321,11 +304,11 @@ public class TeamStatsWidget extends RotatableWidget {
     }
 
 
-    protected BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
+    private BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
         int type = (img.getTransparency() == Transparency.OPAQUE)
                 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
 
-        BufferedImage ret = (BufferedImage) img;
+        BufferedImage ret = img;
 
         if (targetHeight > 0 || targetWidth > 0) {
             int w, h;

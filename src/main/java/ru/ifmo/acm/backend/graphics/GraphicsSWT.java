@@ -105,9 +105,15 @@ public class GraphicsSWT extends Graphics {
 
     @Override
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
-        setColor(color, opacity * .9);
+        setColor(color, opacity * .8);
         g.fillRect(x + x0, y + y0, width, height);
         //super.drawRect(x, y, width, height, color, opacity, rectangleType);
+    }
+
+    @Override
+    public void clear(int x, int y, int width, int height) {
+        g.setBackground(new Color(0, 0, 0, 0));
+        g.clearRect(x + x0, y + y0, width, height);
     }
 
     @Override
@@ -142,20 +148,6 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public void drawStar(int x, int y, int size) {
-        g.setColor(Color.decode(Stylesheet.styles.get("star.color")));
-        int[] xx = new int[10];
-        int[] yy = new int[10];
-
-        double[] d = {size, size * 2};
-        for (int i = 0; i < 10; i++) {
-            xx[i] = x0 + (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
-            yy[i] = y0 + (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
-        }
-        g.fillPolygon(xx, yy, xx.length);
-    }
-
-    @Override
     public void drawImage(Image image, int x, int y, int width, int height) {
         g.drawImage(image, x0 + x, y0 + y, width, height, null);
     }
@@ -168,13 +160,13 @@ public class GraphicsSWT extends Graphics {
     }
 
     public void drawImage(BufferedImage image, int x, int y, double opacity) {
-        RescaleOp rop = new RescaleOp(new float[] { 1f, 1f, 1f, (float)opacity}, new float[4], null);
+        RescaleOp rop = new RescaleOp(new float[]{1f, 1f, 1f, (float) opacity}, new float[4], null);
         g.drawImage(image, rop, x, y);
     }
 
     @Override
     public void fillPolygon(int[] x, int[] y, Color color, double opacity) {
-        setColor(color, opacity);
+        setColor(color, opacity * 0.99);
         int[] xx = new int[x.length];
         int[] yy = new int[y.length];
         for (int i = 0; i < x.length; i++) {

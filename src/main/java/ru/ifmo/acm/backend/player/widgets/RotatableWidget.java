@@ -10,6 +10,7 @@ import java.awt.image.VolatileImage;
  * @author egor@egork.net
  */
 public class RotatableWidget extends Widget {
+    private final int width;
     private int x;
     private int y;
     private VolatileImage unmovable;
@@ -32,10 +33,11 @@ public class RotatableWidget extends Widget {
     private int timeRemaining;
 
 
-    public RotatableWidget(long updateWait, int x, int y, int margin, int[] shifts, int showTime, int shiftSpeed, int fadeTime) {
+    public RotatableWidget(long updateWait, int x, int y, int width, int margin, int[] shifts, int showTime, int shiftSpeed, int fadeTime) {
         super(updateWait);
         this.x = x;
         this.y = y;
+        this.width = width;
         this.margin = margin;
         this.shifts = shifts;
         this.showTime = showTime;
@@ -76,10 +78,11 @@ public class RotatableWidget extends Widget {
         }
         prepare();
         g = g.create();
-        g.clip(x, y, unmovable.getWidth(), movable.getHeight() + unmovable.getHeight() + margin);
+        g.clip(x, y, this.width, Math.max(movable.getHeight(), unmovable.getHeight()));
         double opacity = opacity();
         drawImage(g, unmovable, x, y, opacity);
-        drawImage(g, movable, x - currentShift, y + unmovable.getHeight() + margin, opacity);
+        g.clip(x + unmovable.getWidth(), y, this.width - unmovable.getWidth(), Math.max(movable.getHeight(), unmovable.getHeight()));
+        drawImage(g, movable, x + unmovable.getWidth() - currentShift, y, opacity);
     }
 
     private void drawImage(Graphics g, VolatileImage image, int x, int y, double opacity) {
@@ -90,7 +93,7 @@ public class RotatableWidget extends Widget {
             g.drawImage(image, x, y, image.getWidth(), image.getHeight());
             return;
         }
-        g.drawImage(image, x, (int)(y + image.getHeight() / 2 * (1 - opacity)), image.getWidth(), (int)(image.getHeight() * opacity));
+        g.drawImage(image, x, y, image.getWidth(), image.getHeight(), opacity);
     }
 
     @Override

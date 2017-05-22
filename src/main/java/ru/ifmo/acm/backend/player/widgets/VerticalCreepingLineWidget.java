@@ -16,15 +16,17 @@ import static ru.ifmo.acm.backend.player.widgets.ClockWidget.getTimeString;
  * @author: pashka
  */
 public class VerticalCreepingLineWidget extends CreepingLineWidget {
-    public long rotateTime;
-    public long lastRotation;
-    public long logoTime;
-    public long lastLogoRotation;
+    public static final String CLOCK = "#Clock#";
+    private long rotateTime;
+    private long lastRotation;
+    private long logoTime;
+    private long clockTime;
+    private long lastLogoRotation;
     // public String[] logos;
-    public String currentLogo = "";
-    public long logoChangeTime;
+    private String currentLogo = "";
+    private long logoChangeTime;
 
-    public VerticalCreepingLineWidget(long updateWait, long rotateTime, String logo, long logoTime, long logoChangeTime) {
+    public VerticalCreepingLineWidget(long updateWait, long rotateTime, String logo, long logoTime, long clockTime, long logoChangeTime) {
         super(updateWait);
         this.rotateTime = rotateTime;
         messageNow.position = HEIGHT;
@@ -32,6 +34,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         // this.logos = logo.split(";");
         lastLogoRotation = System.currentTimeMillis();
         this.logoTime = logoTime;
+        this.clockTime = clockTime;
         this.logoChangeTime = logoChangeTime;
         LOGO_V = 1. / logoChangeTime;
     }
@@ -55,14 +58,15 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         long dt = System.currentTimeMillis() - lastLogoIteration;
         lastLogoIteration = System.currentTimeMillis();
 //        System.err.println((System.currentTimeMillis() - lastLogoRotation) + " " + logoTime / 2 + " " + logoChangeTime / 2 + " " + logoState);
+        long time = currentLogo.equals(CLOCK) ? this.clockTime : this.logoTime;
         switch (logoState) {
             case 0:
-                if (lastLogoRotation + (logoTime - logoChangeTime) / 2 < System.currentTimeMillis()) {
+                if (lastLogoRotation + (time - logoChangeTime) / 2 < System.currentTimeMillis()) {
                     logoState = 1;
                 }
                 break;
             case 1:
-                if (lastLogoRotation + logoTime / 2 >= System.currentTimeMillis()) {
+                if (lastLogoRotation + time / 2 >= System.currentTimeMillis()) {
                     logoVisible -= dt * LOGO_V;
                     logoVisible = Math.max(logoVisible, 0);
                 } else {
@@ -80,7 +84,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                 logoState = 3;
                 break;
             case 3:
-                if (lastLogoRotation + (logoTime + logoChangeTime) / 2 >= System.currentTimeMillis() || logoVisible < 1) {
+                if (lastLogoRotation + (time + logoChangeTime) / 2 >= System.currentTimeMillis() || logoVisible < 1) {
                     logoVisible += dt * LOGO_V;
                     logoVisible = Math.min(logoVisible, 1);
                 } else {
@@ -89,7 +93,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                 break;
             case 4:
 //                System.err.println(lastLogoRotation + " " + logoTime + " " + System.currentTimeMillis() );
-                if (lastLogoRotation + logoTime < System.currentTimeMillis()) {
+                if (lastLogoRotation + time < System.currentTimeMillis()) {
                     lastLogoRotation = System.currentTimeMillis();
                     logoState = 0;
                 }
@@ -120,7 +124,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     }
 
     public void drawLogo(Graphics g, String currentLogo) {
-        if (currentLogo.equals("#Clock#")) {
+        if (currentLogo.equals(CLOCK)) {
             long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
             currentLogo = getTimeString(Math.abs(time));
         }

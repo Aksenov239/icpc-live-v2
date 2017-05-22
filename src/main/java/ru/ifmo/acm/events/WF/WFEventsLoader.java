@@ -191,7 +191,7 @@ public class WFEventsLoader extends EventsLoader {
 
     public WFRunInfo readRun(XMLEventReader xmlEventReader) throws XMLStreamException {
         WFRunInfo run = new WFRunInfo();
-        run.setLastUpdateTimestamp(System.currentTimeMillis());
+        run.setLastUpdateTimestamp(0);
         while (true) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
@@ -233,6 +233,7 @@ public class WFEventsLoader extends EventsLoader {
                         break;
                     case "timestamp":
                         run.timestamp = Double.parseDouble(xmlEvent.asCharacters().getData());
+                        run.setLastUpdateTimestamp((long) Math.max(run.getLastUpdateTimestamp(), run.timestamp * 1000));
                         break;
                 }
             }

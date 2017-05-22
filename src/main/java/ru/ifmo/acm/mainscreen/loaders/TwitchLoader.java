@@ -15,6 +15,7 @@ import ru.ifmo.acm.mainscreen.Words.WordStatisticsData;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Aksenov239 on 26.03.2017.
@@ -62,12 +63,16 @@ public class TwitchLoader extends Utils.StoppedRunnable {
                 .setServerPassword(password)
                 .addServer(url)
                 .addListener(new ListenerAdapter() {
+                    AtomicLong lastTimestamp = new AtomicLong();
                     @Override
                     public void onMessage(MessageEvent event) throws Exception {
                         logger.log(Level.INFO, "Message: " + event.getUser() + " " + event.getMessage());
-//                        System.err.println("Message: " + event.getUser() + " " + event.getMessage());
-                        PollsData.vote("Twitch#" + event.getUser().getLogin(), event.getMessage());
-                        WordStatisticsData.vote(event.getMessage());
+                        long previousTimestamp = lastTimestamp.getAndSet(event.getTimestamp());
+                        if (event.getTimestamp() > previousTimestamp + 3) { // The messages are different
+                            
+                            PollsData.vote("Twitch#" + event.getUser().getLogin(), event.getMessage());
+                            WordStatisticsData.vote(event.getMessage());
+                        }
                     }
                 });
         manager = new MultiBotManager();

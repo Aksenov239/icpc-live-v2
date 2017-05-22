@@ -6,6 +6,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import ru.ifmo.acm.datapassing.PollData;
 import ru.ifmo.acm.mainscreen.MainScreenData;
+import ru.ifmo.acm.mainscreen.Utils;
 
 /**
  * Created by Aksenov239 on 12.03.2017.
@@ -21,6 +22,7 @@ public class MainScreenPollView extends CustomComponent implements View {
     PollData pollData;
     Label status;
     Button showPoll;
+    Button hidePoll;
 
     public MainScreenPollView() {
         pollsData = PollsData.getInstance();
@@ -39,6 +41,11 @@ public class MainScreenPollView extends CustomComponent implements View {
             if (result != null) {
                 Notification.show(result, Notification.Type.WARNING_MESSAGE);
             }
+        });
+
+        hidePoll = new Button("Hide poll");
+        hidePoll.addClickListener(event -> {
+            pollData.hide();
         });
 
         pollContainer = pollsData.pollList.getContainer();
@@ -63,7 +70,8 @@ public class MainScreenPollView extends CustomComponent implements View {
             }
         }
 
-        VerticalLayout rightPart = new VerticalLayout(status, showPoll, pollForm);
+        Component controller = Utils.createGroupLayout(showPoll, hidePoll);
+        VerticalLayout rightPart = new VerticalLayout(status, controller, pollForm);
         pollForm.setSizeFull();
         rightPart.setSpacing(true);
         rightPart.setMargin(true);

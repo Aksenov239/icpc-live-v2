@@ -2,7 +2,8 @@ package ru.ifmo.acm.backend;
 
 import com.sun.jna.NativeLibrary;
 import ru.ifmo.acm.backend.player.FramePlayer;
-import ru.ifmo.acm.backend.player.generator.ScreenGenerator;
+import ru.ifmo.acm.backend.player.generator.ScreenGeneratorGL;
+import ru.ifmo.acm.backend.player.generator.ScreenGeneratorSWT;
 import ru.ifmo.acm.backend.player.widgets.*;
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class SplitScreen {
         int height = Integer.parseInt(properties.getProperty("height", "720"));
         int frameRate = Integer.parseInt(properties.getProperty("rate", "25"));
 
-        ScreenGenerator generator = new ScreenGenerator(width, height, readMainProperties(), (double) width / Widget.BASE_WIDTH);
+        ScreenGeneratorSWT generator = new ScreenGeneratorSWT(width, height, readMainProperties(), (double) width / Widget.BASE_WIDTH);
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
 
         // generator.addWidget(new GreenScreenWidget(true));
@@ -56,7 +57,7 @@ public class SplitScreen {
     private Properties readProperties() {
         Properties properties = new Properties();
         try {
-            properties.load(ScreenGenerator.class.getClassLoader().getResourceAsStream("splitscreen.properties"));
+            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("splitscreen.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -66,7 +67,7 @@ public class SplitScreen {
     private Properties readMainProperties() {
         Properties properties = new Properties();
         try {
-            properties.load(ScreenGenerator.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
