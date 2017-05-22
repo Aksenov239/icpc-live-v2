@@ -25,6 +25,9 @@ public class MainScreenTeamView extends CustomComponent implements View {
     Button automatedShow;
     Button automatedStop;
     ComboBox automatedNumber;
+
+    TextField sleepTime;
+
     final String[] types = TeamUrls.types;
     ComboBox type;
     //    ListSelect teamSelection;
@@ -49,6 +52,14 @@ public class MainScreenTeamView extends CustomComponent implements View {
 //        }
     }
 
+    private void setSleepTime() {
+        try {
+            mainScreenData.teamData.setSleepTime(Integer.parseInt(sleepTime.getValue()));
+        } catch (Exception e) {
+            Notification.show(e.getMessage(), Type.ERROR_MESSAGE);
+        }
+    }
+
     public Component getControllerTeam() {
         teamStatus = new Label(getTeamStatus());
 
@@ -58,6 +69,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         type.setValue(types[0]);
 
         type.addValueChangeListener(event -> {
+            setSleepTime();
             if (teamSelection.getValue() == null)
                 return;
             if (mainScreenData.teamData.isVisible() &&
@@ -79,6 +91,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         automaticStatus = new Label(AUTOMATIC_STOPPED_STATUS, ContentMode.HTML);
         automatedShow = new Button("Show top teams");
         automatedShow.addClickListener(event -> {
+            setSleepTime();
             if (mainScreenData.teamData.inAutomaticShow()) {
                 Notification.show("Automatic show is already on", Type.WARNING_MESSAGE);
                 return;
@@ -101,6 +114,11 @@ public class MainScreenTeamView extends CustomComponent implements View {
         automatedNumber.setNullSelectionAllowed(false);
         automatedNumber.setValue(10);
 
+        sleepTime = new TextField("Sleep time");
+        sleepTime.setValue("" + MainScreenData.getProperties().sleepTime);
+
+        setSleepTime();
+
         teamSelection = new OptionGroup();
         teamSelection.setHtmlContentAllowed(true);
 
@@ -117,6 +135,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         teamSelection.setWidth("100%");
 
         teamSelection.addValueChangeListener(event -> {
+            setSleepTime();
             if (mainScreenData.teamData.isVisible()) {
                 if (stats.getValue() && "".equals(type.getValue())) {
                     return;
@@ -140,6 +159,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         stats = new CheckBox("Statistics");
 
         stats.addValueChangeListener(event -> {
+            setSleepTime();
             if (!"".equals(type.getValue())) {
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
             }
@@ -147,6 +167,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
+            setSleepTime();
             if (mainScreenData.teamData.inAutomaticShow()) {
                 Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                 return;
@@ -182,6 +203,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         VerticalLayout result = new VerticalLayout(
                 automaticStatus,
                 controlAutomaticGroup,
+                sleepTime,
                 teamStatus,
                 controlGroup,
                 teamSelection
@@ -190,6 +212,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         result.setSizeFull();
         result.setHeight("100%");
         result.setComponentAlignment(controlAutomaticGroup, Alignment.MIDDLE_CENTER);
+        result.setComponentAlignment(sleepTime, Alignment.MIDDLE_CENTER);
         result.setComponentAlignment(teamStatus, Alignment.MIDDLE_CENTER);
         result.setComponentAlignment(controlGroup, Alignment.MIDDLE_CENTER);
 

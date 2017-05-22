@@ -108,7 +108,7 @@ public class MainScreenProperties {
     public final long personTimeToShow;
 
     // Team
-    public final int sleepTime;
+    public int sleepTime;
     public final int automatedShowTime;
     public final String automatedInfo;
     public final ContestInfo contestInfo;
