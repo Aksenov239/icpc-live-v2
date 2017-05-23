@@ -73,7 +73,7 @@ public class PollsData {
             return;
         }
 
-        if (!tokens[0].equals("vote") || tokens.length > 3) {
+        if (!tokens[0].equals("vote")) {
             return;
         }
 
