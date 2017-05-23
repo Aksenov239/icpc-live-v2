@@ -142,7 +142,8 @@ public class MessageData {
     public static void addMessageToFlow(Message message) {
         // messageList.addBean(message);
         synchronized (messageFlow) {
-            if (!existingMessages.contains(message)) {
+//            System.err.println(existingMessages);
+            if (!existingMessages.contains(message.getMessage())) {
                 messageFlow.addItemAt(0, message);
                 existingMessages.add(message.getMessage());
             }
