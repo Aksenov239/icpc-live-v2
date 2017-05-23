@@ -20,10 +20,7 @@ import ru.ifmo.acm.utils.SynchronizedBeanItemContainer;
 import twitter4j.Status;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +31,7 @@ public class MessageData {
     private static final Logger log = LogManager.getLogger(MessageData.class);
 
     private static MessageData messageData;
+    private static HashSet<String> existingMessages;
 
     public static MessageData getMessageData() {
         if (messageData == null) {
@@ -72,6 +70,7 @@ public class MessageData {
         update.start();
         ContextListener.addThread(update);
         messageFlow = new SynchronizedBeanItemContainer<>(Message.class);
+        existingMessages = new HashSet<>();
         EventsLoader eventsLoader = EventsLoader.getInstance();
         Utils.StoppedThread analytics = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
@@ -143,7 +142,10 @@ public class MessageData {
     public static void addMessageToFlow(Message message) {
         // messageList.addBean(message);
         synchronized (messageFlow) {
-            messageFlow.addItemAt(0, message);
+            if (!existingMessages.contains(message)) {
+                messageFlow.addItemAt(0, message);
+                existingMessages.add(message.getMessage());
+            }
             int toRemove = 200;
             if (messageFlow.size() > 2 * toRemove) {
                 while (messageFlow.size() > toRemove) {
