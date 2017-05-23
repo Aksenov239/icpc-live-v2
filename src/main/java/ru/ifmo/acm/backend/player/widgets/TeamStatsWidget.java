@@ -38,17 +38,19 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int PERSON_WIDTH = 1066;
     private static final int PERSON_SHIFT = PERSON_WIDTH + MARGIN;
     private static final int BOTTOM_WIDTH = WIDTH + 3 * PERSON_WIDTH + 4 * MARGIN + WIDTH;
-    private static final int LOGO_SIZE = 130;
-    private static final int LOGO_SHIFT = 22;
+    private static final int LOGO_SIZE = 110;
+    private static final int LOGO_X = 20;
+    private static final int LOGO_Y = 70;
     private static final int[] SHIFTS = new int[]{0, INITIAL_SHIFT, INITIAL_SHIFT + PERSON_SHIFT,
             INITIAL_SHIFT + PERSON_SHIFT * 2, INITIAL_SHIFT + PERSON_SHIFT * 3};
     private static final int SHOW_TIME = 5000;
     private static final int SHIFT_SPEED = 1800; //pixels in second
     private static final int FADE_TIME = 1000;
-    private static final int UNIVERSITY_NAME_X = 168;
+    private static final int UNIVERSITY_NAME_X = 20;
     private static final int UNIVERSITY_NAME_Y = 50;
+    private static final Color UNIVERSITY_NAME_COLOR = new Color(0xaaaacc);
     private static final Font UNIVERSITY_NAME = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
-    private static final int TEAM_INFO_X = UNIVERSITY_NAME_X;
+    private static final int TEAM_INFO_X = 145;
     private static final int TEAM_INFO_Y = 94;
     private static final Font TEAM_INFO = Font.decode("Open Sans 24");
     private static final Color TOP_FOREGROUND = Color.WHITE;
@@ -90,6 +92,7 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int PERSON_CIRCLE_DIAMETER = 24;
     private static final int PERSON_NAME_X = 63;
     private static final int PERSON_NAME_Y = 50;
+    private static final Color PERSON_NAME_COLOR = Color.WHITE;
     private static final Font PERSON_NAME_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
     private static final int PERSON_RATING_Y = 86;
     private static final Font RATING_FONT = Font.decode("Open Sans 24").deriveFont(Font.BOLD);
@@ -234,6 +237,7 @@ public class TeamStatsWidget extends RotatableWidget {
         g.setColor(NAME_COLOR);
         g.fillOval(x + PERSON_CIRCLE_X, PERSON_CIRCLE_Y, PERSON_CIRCLE_DIAMETER, PERSON_CIRCLE_DIAMETER);
         g.setFont(PERSON_NAME_FONT);
+        g.setColor(PERSON_NAME_COLOR);
         g.drawString(person.getName() + (isCoach ? ", Coach" : ", Contestant"), x + PERSON_NAME_X, PERSON_NAME_Y);
         g.setFont(RATING_FONT);
         int xx = x + PERSON_NAME_X;
@@ -329,26 +333,44 @@ public class TeamStatsWidget extends RotatableWidget {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
-        g.setColor(new Color(TOP_BACKGROUND.getRGB() & 0x77ffffff));
-        g.fillRect(0, 0, INITIAL_SHIFT, HEIGHT);
-        g.drawImage(logo, LOGO_SHIFT, LOGO_SHIFT, null);
+        g.drawImage(logo, LOGO_X, LOGO_Y, null);
         g.setColor(TOP_FOREGROUND);
         g.setFont(UNIVERSITY_NAME);
-        g.drawString(record.university.getFullName(), UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
+        g.setColor(UNIVERSITY_NAME_COLOR);
+        String[] parts = split(record.university.getFullName(), 40);
+        int dy = 0;
+        if (parts.length == 1) {
+            g.drawString(parts[0], UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
+        } else {
+            g.drawString(parts[0], UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
+            g.drawString(parts[1], TEAM_INFO_X, UNIVERSITY_NAME_Y + 40);
+            dy += 40;
+        }
+        g.setColor(Color.WHITE);
         g.setFont(TEAM_INFO);
         g.drawString(
                 record.team.getName(), //record.team.getRegionals().iterator().next() + " | " +
-                TEAM_INFO_X, TEAM_INFO_Y
+                TEAM_INFO_X, TEAM_INFO_Y + dy
         );
 //        g.drawString(
 //                record.team.getRegionals().iterator().next(),
 //                TEAM_INFO_X, TEAM_INFO_Y + 30
 //        );
         g.drawString(
-                        "#" + record.university.getHashTag(),
-                TEAM_INFO_X, TEAM_INFO_Y + 40
+                "#" + record.university.getHashTag(),
+                TEAM_INFO_X, TEAM_INFO_Y + 40 + dy
         );
         return image;
+    }
+
+    private String[] split(String s, int max) {
+        if (s.length() <= max) return new String[]{s};
+        int i = max;
+        s = s + " ";
+        while (s.charAt(i) != ' ' || s.charAt(i + 1) == '-') {
+            i--;
+        }
+        return new String[]{s.substring(0, i), s.substring(i + 1)};
     }
 
     private VolatileImage createVolatileImage(int width, int height) {
@@ -375,7 +397,7 @@ public class TeamStatsWidget extends RotatableWidget {
         int type = (img.getTransparency() == Transparency.OPAQUE)
                 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
 
-        double scale = Math.min(1.0 * targetHeight / img.getHeight(), 1.0 * targetWidth/ img.getWidth());
+        double scale = Math.min(1.0 * targetHeight / img.getHeight(), 1.0 * targetWidth / img.getWidth());
         targetHeight = (int) (img.getHeight() * scale);
         targetWidth = (int) (img.getWidth() * scale);
         BufferedImage ret = img;
