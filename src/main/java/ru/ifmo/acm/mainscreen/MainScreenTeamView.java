@@ -68,18 +68,18 @@ public class MainScreenTeamView extends CustomComponent implements View {
         type.setNullSelectionAllowed(false);
         type.setValue(types[0]);
 
-        type.addValueChangeListener(event -> {
-            setSleepTime();
-            if (teamSelection.getValue() == null)
-                return;
-            if (mainScreenData.teamData.isVisible() &&
-                    !mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                type.setValue(mainScreenData.teamData.infoType);
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
-            } else {
-                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
-            }
-        });
+//        type.addValueChangeListener(event -> {
+//            setSleepTime();
+//            if (teamSelection.getValue() == null)
+//                return;
+//            if (mainScreenData.teamData.isVisible() &&
+//                    !mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
+//                type.setValue(mainScreenData.teamData.infoType);
+//                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
+//            } else {
+//                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+//            }
+//        });
 
         //teamSelection = new ListSelect();
         //teamSelection.addItems(mainScreenData.teamStatus.teamNames);
@@ -180,7 +180,9 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
 
             if (stats.getValue()) {
-                if ("".equals(type.getValue())) {
+                if ("".equals(type.getValue()) ||
+                        (!"screen".equals(type.getValue()) && !"camera".equals(type.getValue()))) {
+                    // TODO: rewrite in the client
                     mainScreenData.teamData.setSleepTime(0);
                 }
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
