@@ -16,12 +16,12 @@ public class CaptionWidget extends Widget {
     private final int X_LEFT = 30;
     private final int X_RIGHT = 1890;
     private final int HEIGHT1 = 80;
-    private final int HEIGHT2 = 39;
+    private final int HEIGHT2 = 50;
 
     private final int Y = 994 - HEIGHT2 - HEIGHT1 - SPACE;
 
     private final Font FONT1 = Font.decode("Open Sans " + 40);
-    private final Font FONT2 = Font.decode("Open Sans " + 20);
+    private final Font FONT2 = Font.decode("Open Sans " + 28);
 
     private String caption;
     private String description;

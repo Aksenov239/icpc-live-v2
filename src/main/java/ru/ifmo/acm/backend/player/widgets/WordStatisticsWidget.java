@@ -69,17 +69,16 @@ public class WordStatisticsWidget extends Widget {
             try {
                 if (wordStatistics.getPicture().length() != 0) {
                     picture = ImageIO.read(new File(wordStatistics.getPicture()));
+                    BufferedImage bi = new BufferedImage(
+                            picture.getWidth(), picture.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
+                    Graphics2D g = bi.createGraphics();
+                    g.drawImage(picture, 0, 0, null);
+                    g.dispose();
+                    picture = bi;
                 }
             } catch (IOException e) {
                 picture = null;
             }
-
-            BufferedImage bi = new BufferedImage(
-                    picture.getWidth(), picture.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
-            Graphics2D g = bi.createGraphics();
-            g.drawImage(picture, 0, 0, null);
-            g.dispose();
-            picture = bi;
 
             setVisible(true);
         } else {

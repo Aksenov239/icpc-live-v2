@@ -126,15 +126,19 @@ statistics.ud.background=ud.color
 statistics.ud.text=white.color
 
 #polls
-polls.question.background=main.color
+polls.background=main.color
+polls.question.background=accent.color
 polls.question.text=white.color
-polls.hashtag.background=additional.color
+polls.hashtag.background=main.color
 polls.hashtag.text=white.color
 polls.option.background=additional.color
 polls.option.text=white.color
-polls.votes.background=#DDDDDD
+polls.votes.background=yellow.color
 polls.votes.text=black.color
 
 #memes
 word.statistics.word.background=main.color
 word.statistics.word.text=white.color
+
+#team stats
+stats.background=main.color
