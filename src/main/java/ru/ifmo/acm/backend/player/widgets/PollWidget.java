@@ -89,7 +89,6 @@ public class PollWidget extends Widget {
 
         y += plateHeight;
 
-        int total_percent = 100;
         double visibilityOption = 1. * optionWidth / this.width;
         for (int i = 0; i < total; i++) {
             drawTextInRect(g, options[i].option, 0, y, optionWidth, plateHeight,
