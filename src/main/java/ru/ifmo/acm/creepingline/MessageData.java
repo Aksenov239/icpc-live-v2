@@ -150,6 +150,7 @@ public class MessageData {
             if (messageFlow.size() > 2 * toRemove) {
                 while (messageFlow.size() > toRemove) {
                     messageFlow.removeItem(messageFlow.getIdByIndex(toRemove));
+                    existingMessages.remove(message.getMessage());
                 }
             }
         }
