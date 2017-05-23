@@ -244,7 +244,8 @@ public class TeamWidget extends Widget {
     }
 
     public void change(RunInfo run) {
-        mainVideo.change(TeamUrls.getUrl(run));
+//        mainVideo.change(TeamUrls.getUrl(run));
+        mainVideo.change(TeamUrls.getUrl(run.getTeamInfoBefore(), "camera"));
         smallVideo.changeManually(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
