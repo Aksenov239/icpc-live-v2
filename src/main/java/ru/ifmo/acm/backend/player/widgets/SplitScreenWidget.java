@@ -7,6 +7,7 @@ import ru.ifmo.acm.events.RunInfo;
 import ru.ifmo.acm.events.TeamInfo;
 import ru.ifmo.acm.events.WF.WFContestInfo;
 import ru.ifmo.acm.backend.graphics.Graphics;
+
 import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
@@ -89,7 +90,8 @@ public class SplitScreenWidget extends Widget {
     private boolean teamInUse(int teamId) {
         for (int i = 0; i < teamInfoWidgets.length; i++) {
             if (teamInfoWidgets[i].teamId == teamId ||
-                    teamInfoWidgets[i].team.getId() == teamId) {
+                    (teamInfoWidgets[i].team != null &&
+                            teamInfoWidgets[i].team.getId() == teamId)) {
                 return true;
             }
         }
@@ -107,9 +109,9 @@ public class SplitScreenWidget extends Widget {
         while (currentRunId <= contestInfo.getLastRunId() && replayRun == null) {
             WFRunInfo run = contestInfo.getRun(currentRunId);
             if (run != null)
-                System.err.println((long)(1000 * run.timestamp) + " " + System.currentTimeMillis() + " " +
-                        (long)(System.currentTimeMillis() - 1000 * run.timestamp)+ " " + run + " " +
-                    run.isAccepted());
+                System.err.println((long) (1000 * run.timestamp) + " " + System.currentTimeMillis() + " " +
+                        (long) (System.currentTimeMillis() - 1000 * run.timestamp) + " " + run + " " +
+                        run.isAccepted());
             if (run != null &&
                     run.timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
 //                    run.getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&
@@ -122,12 +124,12 @@ public class SplitScreenWidget extends Widget {
         log.info("Found replay " + replayRun);
         System.err.println("Found replay " + replayRun);
         if (replayRun != null) {
-//            TODO: While we have problems with records
-            teamInfoWidgets[widget].change(replayRun);
-//            teamInfoWidgets[widget].change(
-//                    contestInfo.getParticipant(replayRun.getTeamId()),
-//                    "camera"
-//            );
+//            TODO: while replay do not work
+//            teamInfoWidgets[widget].change(replayRun);
+            teamInfoWidgets[widget].change(
+                    replayRun,
+                    contestInfo.getParticipant(replayRun.getTeamId())
+            );
             lastSwitch[widget] = System.currentTimeMillis() - switchTime + replayTime;
             return;
         }
