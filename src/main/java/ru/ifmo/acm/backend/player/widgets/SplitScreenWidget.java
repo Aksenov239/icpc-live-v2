@@ -123,11 +123,11 @@ public class SplitScreenWidget extends Widget {
         System.err.println("Found replay " + replayRun);
         if (replayRun != null) {
 //            TODO: While we have problems with records
-//            teamInfoWidgets[widget].change(replayRun);
-            teamInfoWidgets[widget].change(
-                    contestInfo.getParticipant(replayRun.getTeamId()),
-                    "camera"
-            );
+            teamInfoWidgets[widget].change(replayRun);
+//            teamInfoWidgets[widget].change(
+//                    contestInfo.getParticipant(replayRun.getTeamId()),
+//                    "camera"
+//            );
             lastSwitch[widget] = System.currentTimeMillis() - switchTime + replayTime;
             return;
         }
