@@ -50,17 +50,17 @@ public class BreakingNewsForm extends FormLayout {
         breakingNewsStatus.addStyleName("large");
 
         isLive = new CheckBox("Is live");
+        isLive.setValue(true);
         isLive.addValueChangeListener(event -> {
             types.setEnabled(isLive.getValue());
             breakingNewsStatus.setValue(getBreakingNewsStatus());
         });
-        isLive.setValue(true);
 
         types = new OptionGroup();
         types.addItems(TeamUrls.types);
         types.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         types.setValue(TeamUrls.types[0]);
-        types.setEnabled(false);
+        types.setEnabled(true);
 
         messageToShow = new Label("Message");
 

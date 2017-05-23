@@ -52,9 +52,9 @@ public class PollsData {
     }
 
     public void removePoll(Poll poll) {
-        pollList.removeItem(poll);
-        pollsByHashtag.remove(poll.getHashtag(), poll);
-    }
+    pollList.removeItem(poll);
+    pollsByHashtag.remove(poll.getHashtag(), poll);
+}
 
     public void updateHashtag(Poll poll, String hashtag) {
         pollsByHashtag.remove(poll.getHashtag());

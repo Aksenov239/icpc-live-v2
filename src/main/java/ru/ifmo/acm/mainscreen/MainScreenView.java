@@ -78,6 +78,7 @@ public class MainScreenView extends CustomComponent implements View {
 
     Button addCreepingLineLogoButton;
     Button removeCreepingLineLogoButton;
+    Button discardCreepingLineLogoButton;
 
     public Component getCreepingLineLogoController() {
         creepingLineLogoStatus = new Label("Creeping line logos");
@@ -92,13 +93,16 @@ public class MainScreenView extends CustomComponent implements View {
             }
             addCreepingLineLogoButton.setCaption(addButtonStatuses[1]);
             removeCreepingLineLogoButton.setVisible(true);
+            discardCreepingLineLogoButton.setVisible(true);
             creepingLineLogoText.setValue(((Advertisement) creepingLineLogos.getValue()).getAdvertisement());
         });
 
         createAddCreepingLineLogoButton();
         createRemoveCreepingLineLogoButton();
+        createDiscardCreepingLineLogoButton();
 
-        CssLayout groupAdd = createGroupLayout(creepingLineLogoText, addCreepingLineLogoButton, removeCreepingLineLogoButton);
+        CssLayout groupAdd = createGroupLayout(creepingLineLogoText,
+                addCreepingLineLogoButton, removeCreepingLineLogoButton, discardCreepingLineLogoButton);
 
         VerticalLayout panel = new VerticalLayout(
                 creepingLineLogoStatus,
@@ -138,10 +142,21 @@ public class MainScreenView extends CustomComponent implements View {
         removeCreepingLineLogoButton.setVisible(false);
     }
 
+    private void createDiscardCreepingLineLogoButton() {
+        discardCreepingLineLogoButton = new Button("Discard selected");
+        discardCreepingLineLogoButton.addClickListener(event -> {
+            creepingLineLogos.setValue(null);
+            creepingLineLogoText.setValue("");
+            setCreepingLineLogoDefaultValues();
+        });
+        discardCreepingLineLogoButton.setVisible(false);
+    }
+
     private void setCreepingLineLogoDefaultValues() {
         creepingLineLogos.setValue(null);
         addCreepingLineLogoButton.setCaption(addButtonStatuses[0]);
         removeCreepingLineLogoButton.setVisible(false);
+        discardCreepingLineLogoButton.setVisible(false);
     }
 
     public String getAdvertisementStatus() {
