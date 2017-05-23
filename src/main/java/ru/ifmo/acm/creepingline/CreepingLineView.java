@@ -81,6 +81,9 @@ public class CreepingLineView extends CustomComponent implements View {
         messageFlow.setVisibleColumns(messageFlowColumns);
         messageFlow.setSelectable(true);
         messageFlow.setMultiSelect(false);
+        messageFlow.setEditable(false);
+        messageFlow.setSizeFull();
+        messageFlow.setWidth("1800px");
         messageFlow.addValueChangeListener(event -> {
             if (messageFlow.getValue() != null) {
                 messageForm.editFromFlow((Message) messageFlow.getValue());
@@ -130,23 +133,25 @@ public class CreepingLineView extends CustomComponent implements View {
 //            messageFlowContainer.removeAllContainerFilters();
 //        });
 
-//        CssLayout sourceController =
+        Panel messageFlowPanel = new Panel(messageFlow);
 
         VerticalLayout left = new VerticalLayout(messageList,
                 sourceFilter,
                 Utils.createGroupLayout(load, loadButton),
-        /*twitterQueryForm, twitterSearchForm,*/ messageFlow);
-        left.setSizeFull();
+        /*twitterQueryForm, twitterSearchForm,*/
+                messageFlowPanel
+        );
+//        left.setSizeFull();
         messageList.setSizeFull();
-        messageFlow.setSizeFull();
-        left.setExpandRatio(messageList, 1);
-        left.setExpandRatio(messageFlow, 1);
+//        messageFlowPanel.setSizeFull();
+//        left.setExpandRatio(messageList, 1);
+//        left.setExpandRatio(messageFlow, 1);
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, messageForm);
         mainLayout.setSizeFull();
 //        messageForm.setWidth("50%");
-        mainLayout.setExpandRatio(left, 1);
-        mainLayout.setExpandRatio(messageForm, 1);
+//        mainLayout.setExpandRatio(left, 1);
+//        mainLayout.setExpandRatio(messageForm, 1);
 
         setCompositionRoot(mainLayout);
     }
