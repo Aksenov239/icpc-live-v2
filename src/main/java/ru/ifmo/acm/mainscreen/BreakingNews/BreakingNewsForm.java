@@ -54,7 +54,7 @@ public class BreakingNewsForm extends FormLayout {
             types.setEnabled(isLive.getValue());
             breakingNewsStatus.setValue(getBreakingNewsStatus());
         });
-        isLive.setValue(false);
+        isLive.setValue(true);
 
         types = new OptionGroup();
         types.addItems(TeamUrls.types);
