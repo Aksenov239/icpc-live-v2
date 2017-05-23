@@ -178,13 +178,12 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 return;
             }
 
+            if (!"screen".equals(type.getValue()) && !"camera".equals(type.getValue())) {
+                // TODO: rewrite in the client
+                mainScreenData.teamData.setSleepTime(0);
+            }
 
             if (stats.getValue()) {
-                if ("".equals(type.getValue()) ||
-                        (!"screen".equals(type.getValue()) && !"camera".equals(type.getValue()))) {
-                    // TODO: rewrite in the client
-                    mainScreenData.teamData.setSleepTime(0);
-                }
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
             }
 

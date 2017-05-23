@@ -94,7 +94,8 @@ public class WFEventsLoader extends EventsLoader {
             JsonObject jsonObject = new Gson().fromJson(line, JsonObject.class);
             JsonObject problemObject = jsonObject.get("problem").getAsJsonObject();
             problem.letter = problemObject.get("label").getAsString();
-            problem.name = problemObject.get("name").getAsString();
+            problem.name = problemObject.get("name") == null ? "temporary" :
+                problemObject.get("name").getAsString();
             problem.color = Color.decode(problemObject.get("rgb").getAsString());
         }
         return problems;
