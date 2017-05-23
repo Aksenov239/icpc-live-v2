@@ -14,6 +14,7 @@ import ru.ifmo.acm.mainscreen.Utils;
 import ru.ifmo.acm.mainscreen.Words.WordStatisticsData;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -64,6 +65,7 @@ public class TwitchLoader extends Utils.StoppedRunnable {
                 .addServer(url)
                 .addListener(new ListenerAdapter() {
                     AtomicLong lastTimestamp = new AtomicLong();
+
                     @Override
                     public void onMessage(MessageEvent event) throws Exception {
                         logger.log(Level.INFO, "Message: " + event.getUser() + " " + event.getMessage());
@@ -73,7 +75,8 @@ public class TwitchLoader extends Utils.StoppedRunnable {
                             WordStatisticsData.vote(event.getMessage());
                         }
                     }
-                });
+                })
+                .setEncoding(Charset.forName("UTF-8"));
         manager = new MultiBotManager();
         for (String channel : channels.split(";")) {
             System.err.println(channel);
