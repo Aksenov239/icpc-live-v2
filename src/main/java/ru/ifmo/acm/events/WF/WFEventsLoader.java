@@ -232,8 +232,10 @@ public class WFEventsLoader extends EventsLoader {
                         }
                         break;
                     case "timestamp":
-                        run.timestamp = Double.parseDouble(xmlEvent.asCharacters().getData());
+//                        run.timestamp = Double.parseDouble(xmlEvent.asCharacters().getData());
                         run.setLastUpdateTimestamp((long) Math.max(run.getLastUpdateTimestamp(), run.timestamp * 1000));
+                        run.timestamp = System.currentTimeMillis() / 1000;
+                        // Double.parseDouble(xmlEvent.asCharacters().getData());
                         break;
                 }
             }
