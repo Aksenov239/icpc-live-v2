@@ -111,15 +111,6 @@ public class TeamStatsWidget extends RotatableWidget {
             e.printStackTrace();
         }
         this.sleepTime = sleepTime;
-        try {
-            cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), 1000, AWARD_HEIGHT, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-            goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold_medal.png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-            silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver_medal.png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-            bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze_medal.png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private long sleepTime;
