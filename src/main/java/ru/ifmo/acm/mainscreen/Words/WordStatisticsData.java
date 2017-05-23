@@ -66,8 +66,12 @@ public class WordStatisticsData {
             return;
         }
         for (WordStatistics word : wordsList.getData()) {
-            if (text.contains(word.getWord().toLowerCase())) {
-                wordsList.getItem(word).getItemProperty("count").setValue(word.getCount() + 1);
+            String[] patterns = word.getWord().toLowerCase().split(";");
+            for (String pattern : patterns) {
+                if (text.contains(pattern)) {
+                    wordsList.getItem(word).getItemProperty("count").setValue(word.getCount() + 1);
+                    break;
+                }
             }
         }
     }

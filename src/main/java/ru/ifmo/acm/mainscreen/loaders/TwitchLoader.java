@@ -68,8 +68,7 @@ public class TwitchLoader extends Utils.StoppedRunnable {
                     public void onMessage(MessageEvent event) throws Exception {
                         logger.log(Level.INFO, "Message: " + event.getUser() + " " + event.getMessage());
                         long previousTimestamp = lastTimestamp.getAndSet(event.getTimestamp());
-                        if (event.getTimestamp() > previousTimestamp + 3) { // The messages are different
-                            
+                        if (event.getTimestamp() > previousTimestamp + 50) { // The messages are different
                             PollsData.vote("Twitch#" + event.getUser().getLogin(), event.getMessage());
                             WordStatisticsData.vote(event.getMessage());
                         }
