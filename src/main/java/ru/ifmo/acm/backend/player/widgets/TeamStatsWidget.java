@@ -62,22 +62,11 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int WF_CAPTION_Y = 50;
     private static final Color WF_CAPTION_COLOR = new Color(0xaaaacc);
     private static final Font WF_CAPTION_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
-<<<<<<< HEAD
 
     private static final int AWARDS_CAPTION_X = 150;
     private static final int AWARDS_CAPTION_Y = 50;
     private static final Color AWARDS_CAPTION_COLOR = new Color(0xaaaacc);
     private static final Font AWARDS_CAPTION_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
-
-    private static final int AWARDS_X = 150;
-    private static final int AWARDS_Y = 114;
-=======
-
-    private static final int AWARDS_CAPTION_X = 150;
-    private static final int AWARDS_CAPTION_Y = 50;
-    private static final Color AWARDS_CAPTION_COLOR = new Color(0xaaaacc);
-    private static final Font AWARDS_CAPTION_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
->>>>>>> fixed
 
     private static final int AWARDS_X = 150;
     private static final int AWARDS_Y = 70;
