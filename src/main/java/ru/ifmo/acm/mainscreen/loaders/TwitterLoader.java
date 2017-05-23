@@ -65,7 +65,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
     }
 
     public void doOnStatus(Status status) {
-        System.err.println(status.getUser().getId() + " " + status.getText());
+//        System.err.println(status.getUser().getId() + " " + status.getText());
         if (Arrays.stream(status.getHashtagEntities()).anyMatch(e -> ("#" + e.getText()).equals(mainHashTag))) {
             WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + " " + status.getText());
             MessageData.processTwitterMessage(status);
@@ -74,7 +74,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 //        System.err.println(status.getUser().getId() + " " + status.getText());
         if (status.getText().startsWith(pollHashTag + " ")) {
             PollsData.vote("Twitter#" + status.getUser().getId(),
-                    status.getText().substring(pollHashTag.length() + 1));
+                    "vote " + status.getText().substring(pollHashTag.length() + 1));
         }
     }
 
