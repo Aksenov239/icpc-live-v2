@@ -87,7 +87,11 @@ public class NewBreakingNewsWidget extends Widget {
 
             String url;
             if (data.breakingNewsData.isLive) {
-                url = TeamUrls.getUrl(team, data.breakingNewsData.infoType);
+                if ("".equals(data.breakingNewsData.infoType)) {
+                    url = null;
+                } else {
+                    url = TeamUrls.getUrl(team, data.breakingNewsData.infoType);
+                }
             } else {
                 if (run == null) {
                     log.warn("Couldn't find run for team " + teamId + " and problem " + problemId);
@@ -192,7 +196,8 @@ public class NewBreakingNewsWidget extends Widget {
 
 //        log.debug(visibilityState + " " + opacity);
 
-        if (run == null || video.getCurrentURL() != null) {
+        if (//run == null ||
+                video.getCurrentURL() != null) {
             int hh = video.height;//(int) (video.height * opacity);
             video.draw(g, x, y + (video.height - hh) / 2, video.width, hh, opacity);
         }
