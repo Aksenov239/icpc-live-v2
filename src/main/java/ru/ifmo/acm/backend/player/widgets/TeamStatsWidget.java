@@ -7,6 +7,7 @@ import net.egork.teaminfo.data.Person;
 import net.egork.teaminfo.data.Record;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.SyslogAppender;
 import ru.ifmo.acm.backend.graphics.Graphics;
 import ru.ifmo.acm.backend.player.widgets.stylesheets.TeamStatsStylesheet;
 import ru.ifmo.acm.datapassing.CachedData;
@@ -33,9 +34,9 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final int X = 519;
     private static final int Y = 794;
     private static final int MARGIN = 2;
-    private static final int WIDTH = 1371;
+    static final int WIDTH = 1371;
     private static final int LEFT_WIDTH = WIDTH / 2;
-    private static final int HEIGHT = 200;
+    static final int HEIGHT = 200;
     private static final int INITIAL_SHIFT = WIDTH + MARGIN;
     private static final int PERSON_WIDTH = 1066;
     private static final int PERSON_SHIFT = PERSON_WIDTH + MARGIN;
@@ -70,6 +71,9 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final Color AWARDS_CAPTION_COLOR = new Color(0xaaaacc);
     private static final Font AWARDS_CAPTION_FONT = Font.decode("Open Sans 30").deriveFont(Font.BOLD);
 
+    private static final Color REGION_CAPTION_COLOR = new Color(0xaaaacc);
+    private static final Font REGION_CAPTION_FONT = Font.decode("Open Sans 24");
+
     private static final int AWARDS_X = 150;
     private static final int AWARDS_Y = 70;
 
@@ -95,6 +99,7 @@ public class TeamStatsWidget extends RotatableWidget {
     private static final Font ACHIEVEMENT_CAPTION_FONT = Font.decode("Open Sans 18");
     private static final int AWARD_SIZE = 40;
     private BufferedImage cupImage;
+    private BufferedImage regionalCupImage;
     private BufferedImage goldMedalImage;
     private BufferedImage silverMedalImage;
     private BufferedImage bronzeMedalImage;
@@ -106,6 +111,7 @@ public class TeamStatsWidget extends RotatableWidget {
         super(updateWait, X, Y, WIDTH, MARGIN, SHIFTS, SHOW_TIME, SHIFT_SPEED, FADE_TIME);
         try {
             cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            regionalCupImage = getScaledInstance(ImageIO.read(new File("pics/regional.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
@@ -141,7 +147,7 @@ public class TeamStatsWidget extends RotatableWidget {
         }
     }
 
-    private void showTeam(int id) {
+    void showTeam(int id) {
         try {
             Record record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
             System.out.println("teamData/" + id + ".json");
@@ -152,7 +158,8 @@ public class TeamStatsWidget extends RotatableWidget {
             setMovable(movable);
             start();
         } catch (IOException e) {
-            log.error("Can't load team info for team " + id, e);
+//            log.error("Can't load team info for team " + id, e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -175,21 +182,16 @@ public class TeamStatsWidget extends RotatableWidget {
             g.setColor(AWARDS_CAPTION_COLOR);
             g.setFont(AWARDS_CAPTION_FONT);
             g.drawString("Awards", AWARDS_CAPTION_X, AWARDS_CAPTION_Y);
-            BufferedImage[] images = new BufferedImage[]{cupImage, goldMedalImage, silverMedalImage, bronzeMedalImage};
-            int[] num = new int[]{record.university.getWins(), record.university.getGold(),
+            BufferedImage[] images = new BufferedImage[]{cupImage, regionalCupImage, goldMedalImage, silverMedalImage, bronzeMedalImage};
+            int[] num = new int[]{record.university.getWins(), record.university.getRegionalChampionships() - record.university.getWins(),
+                    record.university.getGold(),
                     record.university.getSilver(), record.university.getBronze()};
             int[] dx = new int[images.length];
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < images.length; i++) {
                 dx[i] = images[i].getWidth() + 1;
             }
-//            if (num[1] + num[2] + num[3] > 10) {
-//                for (int i = 1; i < 4; i++) {
-//                    dx[i] /= 2;
-//                }
-//            }
             int x = AWARDS_X;
             int y = AWARDS_Y;
-
 
             int[] additional = new int[5];
             try {
@@ -210,23 +212,25 @@ public class TeamStatsWidget extends RotatableWidget {
             }
 
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < images.length; i++) {
                 for (int j = 0; j < num[i]; j++) {
                     if (j == num[i] - 1 && additional[j] > 0) {
                         BufferedImage scaledImage = getScaledInstance(images[i], AWARD_SIZE * 3 / 2, AWARD_SIZE * 3 / 2, null, false);
                         g.drawImage(scaledImage, x, y - AWARD_SIZE / 2, null);
                         x += scaledImage.getWidth() - images[i].getWidth();
                     } else {
-                        g.drawImage(images[i], x, y, null);
+                        g.drawImage(images[i], x, y + (i == 1 ? -1 : 0), null);
                         x += dx[i];
                     }
                 }
-                if (num[i] > 0) {
-                    if (i == 0) {
+                if (i == 1) {
+                    if (num[0] + num[1] > 0) {
                         x = AWARDS_X;
                         y += 50;
-                    } else {
-                        x += 1.5 * images[1].getWidth() - dx[i];
+                    }
+                } else {
+                    if (num[i] > 0) {
+                        x += 1.5 * images[i].getWidth() - dx[i];
                     }
                 }
             }
@@ -352,23 +356,41 @@ public class TeamStatsWidget extends RotatableWidget {
             g.drawString(parts[0], UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
         } else {
             g.drawString(parts[0], UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
-            g.drawString(parts[1], TEAM_INFO_X, UNIVERSITY_NAME_Y + 40);
-            dy += 40;
+            for (int i = 1; i < parts.length; i++) {
+                dy += 40;
+                g.drawString(parts[i], TEAM_INFO_X, UNIVERSITY_NAME_Y + dy);
+            }
         }
         g.setColor(Color.WHITE);
         g.setFont(TEAM_INFO);
-        g.drawString(
-                record.team.getName(), //record.team.getRegionals().iterator().next() + " | " +
-                TEAM_INFO_X, TEAM_INFO_Y + dy
-        );
-//        g.drawString(
-//                record.team.getRegionals().iterator().next(),
-//                TEAM_INFO_X, TEAM_INFO_Y + 30
-//        );
-        g.drawString(
-                "#" + record.university.getHashTag(),
-                TEAM_INFO_X, TEAM_INFO_Y + 40 + dy
-        );
+        if (parts.length > 2) {
+            g.drawString(
+                    record.team.getName() + " | " + "#" + record.university.getHashTag(),
+                    TEAM_INFO_X, TEAM_INFO_Y + dy
+            );
+        } else if (parts.length > 1) {
+            g.drawString(
+                    record.team.getName(), //record.team.getRegionals().iterator().next() + " | " +
+                    TEAM_INFO_X, TEAM_INFO_Y + dy
+            );
+            g.drawString(
+                    "#" + record.university.getHashTag() + " | " + record.university.getRegion(),
+                    TEAM_INFO_X, TEAM_INFO_Y + 40 + dy
+            );
+        } else {
+            g.drawString(
+                    record.team.getName(), //record.team.getRegionals().iterator().next() + " | " +
+                    TEAM_INFO_X, TEAM_INFO_Y + dy
+            );
+            g.drawString(
+                    "#" + record.university.getHashTag(),
+                    TEAM_INFO_X, TEAM_INFO_Y + 40 + dy
+            );
+            g.drawString(
+                    record.university.getRegion(),
+                    TEAM_INFO_X, TEAM_INFO_Y + 80 + dy
+            );
+        }
         return image;
     }
 
@@ -379,7 +401,11 @@ public class TeamStatsWidget extends RotatableWidget {
         while (s.charAt(i) != ' ' || s.charAt(i + 1) == '-') {
             i--;
         }
-        return new String[]{s.substring(0, i), s.substring(i + 1)};
+        String[] ss = split(s.substring(i + 1), max);
+        String[] res = new String[ss.length + 1];
+        System.arraycopy(ss, 0, res, 1, ss.length);
+        res[0] = s.substring(0, i);
+        return res;
     }
 
     private VolatileImage createVolatileImage(int width, int height) {
