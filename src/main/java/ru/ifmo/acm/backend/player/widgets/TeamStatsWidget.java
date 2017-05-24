@@ -17,7 +17,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * @author egor@egork.net
@@ -187,10 +189,37 @@ public class TeamStatsWidget extends RotatableWidget {
 //            }
             int x = AWARDS_X;
             int y = AWARDS_Y;
+
+
+            int[] additional = new int[5];
+            try {
+                Scanner in = new Scanner(new File("additional_awards.txt"));
+                while (in.hasNext()) {
+                    String s = in.next();
+                    String[] p = new String[]{"win", "regional", "gold", "silver", "bronze"};
+                    for (int i = 0; i < p.length; i++) {
+                        if (s.equals(p[i])) {
+                            additional[i]++;
+                        }
+                    }
+                }
+            } catch (FileNotFoundException e) {
+            }
+            for (int i = 0; i < num.length; i++) {
+                num[i] += additional[i];
+            }
+
+
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < num[i]; j++) {
-                    g.drawImage(images[i], x, y, null);
-                    x += dx[i];
+                    if (j == num[i] - 1 && additional[j] > 0) {
+                        BufferedImage scaledImage = getScaledInstance(images[i], AWARD_SIZE * 3 / 2, AWARD_SIZE * 3 / 2, null, false);
+                        g.drawImage(scaledImage, x, y - AWARD_SIZE / 2, null);
+                        x += scaledImage.getWidth() - images[i].getWidth();
+                    } else {
+                        g.drawImage(images[i], x, y, null);
+                        x += dx[i];
+                    }
                 }
                 if (num[i] > 0) {
                     if (i == 0) {
