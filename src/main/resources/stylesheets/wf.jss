@@ -140,5 +140,5 @@ polls.votes.text=black.color
 word.statistics.word.background=main.color
 word.statistics.word.text=white.color
 
-#team stats
+#stats
 stats.background=main.color

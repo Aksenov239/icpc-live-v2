@@ -33,14 +33,14 @@ public class PlayerInImage {
         image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height);
         image.setAccelerationPriority(1.0f);
         this.frame = frame;
-//        factory = new MediaPlayerFactory(new String[0]);
-        factory = new MediaPlayerFactory(
+        factory = new MediaPlayerFactory(new String[0]);
+//        factory = new MediaPlayerFactory(
 //                "--http-hui=hui");
-                "--http-ca=/Users/Meepo/Documents/icpc-live-v2/server.pem");
+//                "--http-ca=/Users/Meepo/Documents/icpc-live-v2/server.pem");
         mediaPlayer = factory.newDirectMediaPlayer(new TestBufferFormatCallback(), new TestRenderCallback());
-//        mediaPlayer.setRepeat(true);
+        mediaPlayer.setRepeat(true);
 //        mediaPlayer.addMediaOptions(":file-caching=1500");
-//        mediaPlayer.setStandardMediaOptions(":file-caching=1500");
+        mediaPlayer.setStandardMediaOptions(":file-caching=2000");
 //        mediaPlayer.setVolume(0);
         mediaPlayer.setAspectRatio("16:9");
         if (media != null)

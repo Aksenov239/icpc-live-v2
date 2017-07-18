@@ -93,7 +93,7 @@ public class VideoVLCWidget extends PlayerWidget {
 
     public void stop() {
 //        SwingUtilities.invokeLater(() -> {
-            if (player != null) {
+            if (player != null && currentUrl != null) {
                 player.stop();
             }
             currentUrl = null;

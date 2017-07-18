@@ -67,7 +67,9 @@ public class NewTeamWidget extends Widget {
            setVisible(true);
             //log.info(data.teamData.teamId + " " + teamId + " " + ready.get());
             mainVideo.sleepTime = data.teamData.sleepTime;
-            smallVideo.sleepTime = data.teamData.sleepTime;
+            if (doubleVideo) {
+                smallVideo.sleepTime = data.teamData.sleepTime;
+            }
 
             if ((data.teamData.getTeamId() != teamId || !data.teamData.infoType.equals(currentInfoType)) &&
                     mainVideo.readyToShow()) {
@@ -138,7 +140,7 @@ public class NewTeamWidget extends Widget {
         updateVisibilityState();
 
         mainVideo.updateState(g, false);
-        if (smallVideo != null) {
+        if (smallVideo != null && smallVideo.getCurrentURL() != null) {
             smallVideo.updateState(g, true);
         }
 
@@ -178,7 +180,7 @@ public class NewTeamWidget extends Widget {
             System.out.println("Set volume " + newVolume);
             volume = newVolume;
             mainVideo.setVolume(volume);
-            if (doubleVideo) {
+            if (doubleVideo && smallVideo.getCurrentURL() != null) {
                 smallVideo.setVolume(volume);
             }
         }
@@ -196,7 +198,8 @@ public class NewTeamWidget extends Widget {
             double x = visibilityState;
             mainVideo.x = (int) (BIG_X_RIGHT - mainVideo.width + width * (1 - 3 * x * x + 2 * x * x * x));
         }
-        if (doubleVideo && smallVideo != null && smallVideo.getCurrentURL() != null) {            smallVideo.width = (int)Math.round(smallVideo.height * smallVideo.getAspectRatio());
+        if (doubleVideo && smallVideo != null && smallVideo.getCurrentURL() != null) {
+            smallVideo.width = (int)Math.round(smallVideo.height * smallVideo.getAspectRatio());
             double x = visibilityState;
             smallVideo.x = (int) (SMALL_X - width * (1 - 3 * x * x + 2 * x * x * x));
             smallVideo.draw(g);
@@ -279,10 +282,15 @@ public class NewTeamWidget extends Widget {
 
         mainVideo.change(TeamUrls.getUrl(team, infoType));
         if (doubleVideo) {
-            if (!infoType.equals(TeamUrls.types[0])) {
-                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[0]));
+//            if (!infoType.equals(TeamUrls.types[0])) {
+//                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[0]));
+//            } else {
+//                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[1]));
+//            }
+            if (infoType.equals("screen")) {
+                smallVideo.changeManually(TeamUrls.getUrl(team, "camera"));
             } else {
-                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[1]));
+                smallVideo.changeManually(null);
             }
         }
         nextProblemId = -1;

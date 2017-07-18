@@ -235,8 +235,13 @@ public class QueueWidget extends Widget {
     private void calculateQueue() {
         info = Preparation.eventsLoader.getContestData();
 
+        for (RunPlate plate : plates.values()) {
+            plate.visible = false;
+            plate.desiredPosition = 0;
+        }
+
         RunPlate breaking = null;
-        if (breakingNews.isVisible()) {
+        if (breakingNews.visibilityState > 0.01) {
             RunInfo run = breakingNews.getRun();
             breaking = this.breaking = getRunPlate(run);
         }
@@ -250,9 +255,9 @@ public class QueueWidget extends Widget {
                 continue;
             }
 
-            if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
-                continue;
-            }
+//            if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
+//                continue;
+//            }
 
 //            System.err.println(r.getTime() + " " + System.currentTimeMillis() + " " + (System.currentTimeMillis() - info.getStartTime()) + " " +
 //                    info.getStartTime() + " " + (long)r.timestamp + " " + (r.timestamp * 1000 - info.getStartTime()));

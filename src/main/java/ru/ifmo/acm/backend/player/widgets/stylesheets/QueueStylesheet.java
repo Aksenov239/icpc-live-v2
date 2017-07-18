@@ -16,7 +16,7 @@ public class QueueStylesheet extends Stylesheet {
         acProblem = new PlateStyle("queue.ac");
         waProblem = new PlateStyle("queue.wa");
         udProblem = new PlateStyle("queue.ud");udTests = Color.decode(styles.get("queue.ud.tests"));
-        frozenProblem = new PlateStyle("queue.no");
+        frozenProblem = new PlateStyle("queue.frozen");
         name = new PlateStyle("queue.name");
     }
 }

@@ -154,7 +154,7 @@ public class DataLoader {
         String host = properties.getProperty("data.host");
         int port = Integer.parseInt(properties.getProperty("data.port"));
         //update = Long.parseLong(properties.getProperty("data.update"));
-
+        System.err.println(host + ":" + port);
         data = new AtomicReference<>();
 
         //data.set(load(link));
