@@ -75,7 +75,7 @@ public class VideoGLWidget extends PlayerWidget {
         return null;
     }
 
-    public void changeManually(String url) {
+    public void loadNext(String url) {
         if (url == null) {
             nextUrl = null;
             return;
@@ -85,7 +85,7 @@ public class VideoGLWidget extends PlayerWidget {
         nextTexture = loadTexture(url);
     }
 
-    public void switchManually() {
+    public void switchToNext() {
         if (nextUrl == null) {
             stopCurrent();
             return;
@@ -289,7 +289,7 @@ public class VideoGLWidget extends PlayerWidget {
                 if (manualSwitch || System.currentTimeMillis() - changeTimestamp < sleepTime) {
                     break;
                 }
-                switchManually();
+                switchToNext();
 
                 inChange = true;
                 ready = true;

@@ -155,13 +155,17 @@ public class NewTeamWidget extends Widget {
             return;
         }
 
-        if (mainVideo.inChange) {
-            team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
-            currentProblemId = nextProblemId;
+//        if (mainVideo.inChange) {
+        if (mainVideo.nextIsReady()) {
+            if (!doubleVideo || (doubleVideo && smallVideo.nextIsReady())) {
+                team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+                currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
-            mainVideo.inChange = false;
-            if (doubleVideo) {
-                smallVideo.switchManually();
+                mainVideo.switchToNext();
+                mainVideo.inChange = false;
+                if (doubleVideo) {
+                    smallVideo.switchToNext();
+                }
             }
         }
 
@@ -280,7 +284,8 @@ public class NewTeamWidget extends Widget {
 
     public void change(TeamInfo team, String infoType) {
 
-        mainVideo.change(TeamUrls.getUrl(team, infoType));
+//        mainVideo.change(TeamUrls.getUrl(team, infoType));
+        mainVideo.loadNext(TeamUrls.getUrl(team, infoType));
         if (doubleVideo) {
 //            if (!infoType.equals(TeamUrls.types[0])) {
 //                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[0]));
@@ -288,9 +293,9 @@ public class NewTeamWidget extends Widget {
 //                smallVideo.changeManually(TeamUrls.getUrl(team, TeamUrls.types[1]));
 //            }
             if (infoType.equals("screen")) {
-                smallVideo.changeManually(TeamUrls.getUrl(team, "camera"));
+                smallVideo.loadNext(TeamUrls.getUrl(team, "camera"));
             } else {
-                smallVideo.changeManually(null);
+                smallVideo.loadNext(null);
             }
         }
         nextProblemId = -1;
@@ -300,7 +305,7 @@ public class NewTeamWidget extends Widget {
     public void change(RunInfo run) {
         mainVideo.change(TeamUrls.getUrl(run));
         if (doubleVideo) {
-            smallVideo.changeManually(null);
+            smallVideo.loadNext(null);
         }
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();

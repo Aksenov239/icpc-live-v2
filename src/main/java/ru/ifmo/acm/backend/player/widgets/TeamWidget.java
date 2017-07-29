@@ -113,7 +113,7 @@ public class TeamWidget extends Widget {
             currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
             mainVideo.inChange = false;
-            smallVideo.switchManually();
+            smallVideo.switchToNext();
         }
 
         if (mainVideo.getCurrentURL() == null || mainVideo.getCurrentURL().contains("info")) {
@@ -235,9 +235,9 @@ public class TeamWidget extends Widget {
     public void change(TeamInfo team, String infoType) {
         mainVideo.change(TeamUrls.getUrl(team, infoType));
         if (!infoType.equals("camera")) {
-            smallVideo.changeManually(TeamUrls.getUrl(team, "camera"));
+            smallVideo.loadNext(TeamUrls.getUrl(team, "camera"));
         } else {
-            smallVideo.changeManually(TeamUrls.getUrl(team, "screen"));
+            smallVideo.loadNext(TeamUrls.getUrl(team, "screen"));
         }
         nextProblemId = -1;
         teamId = team.getId();
@@ -245,14 +245,14 @@ public class TeamWidget extends Widget {
 
     public void change(RunInfo run) {
         mainVideo.change(TeamUrls.getUrl(run));
-        smallVideo.changeManually(null);
+        smallVideo.loadNext(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
     }
 
     public void change(RunInfo run, TeamInfo teamInfo) {
         mainVideo.change(TeamUrls.getUrl(teamInfo, "camera"));
-        smallVideo.changeManually(null);
+        smallVideo.loadNext(null);
         nextProblemId = run.getProblemNumber();
         teamId = run.getTeamId();
     }

@@ -60,7 +60,7 @@ public class CamerasTestWidget extends Widget {
                         if (id > totalTeams) {
                             cameraWidgets[i][j].stop();
                         }
-                        cameraWidgets[i][j].changeManually(TeamUrls.getUrl(
+                        cameraWidgets[i][j].loadNext(TeamUrls.getUrl(
                                 id++,
                                 contest, videoType));
                     }
@@ -123,7 +123,7 @@ public class CamerasTestWidget extends Widget {
                 for (int j = 0; j < cameraWidgets[i].length; j++) {
                     if (id > totalTeams) {
                         continue;}
-                    cameraWidgets[i][j].switchManually();
+                    cameraWidgets[i][j].switchToNext();
                     id++;
                 }
             }

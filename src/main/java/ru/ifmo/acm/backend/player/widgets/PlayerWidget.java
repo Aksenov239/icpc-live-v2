@@ -34,9 +34,13 @@ public abstract class PlayerWidget extends Widget {
 
     public abstract void setVolume(int volume);
 
-    public abstract void changeManually(String url);
+    public abstract void loadNext(String url);
 
-    public abstract void switchManually();
+    public abstract void switchToNext();
+
+    public boolean nextIsReady() {
+        throw new AssertionError("nextIsReady is not implemented");
+    }
 
     public abstract boolean readyToShow();
 

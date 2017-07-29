@@ -104,7 +104,7 @@ public class NewBreakingNewsWidget extends Widget {
 
             log.info("Change to " + url);
 
-            video.change(url);
+            video.loadNext(url);
             isLive = data.breakingNewsData.isLive;
 
             if (run != null) {
@@ -166,10 +166,15 @@ public class NewBreakingNewsWidget extends Widget {
             return;
         }
 
-        if (!video.readyToShow()) {
+        if (video.nextIsReady()) {
+            video.switchToNext();
+        }
+
+        if (video.getCurrentURL() == null) {
             visibilityState = 0;
             return;
         }
+
 
         timer += dt;
         if (rankState == 0) {

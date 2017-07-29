@@ -7,6 +7,7 @@ import ru.ifmo.acm.datapassing.Data;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
  * @author: pashka
@@ -15,9 +16,13 @@ public class VideoVLCWidget extends PlayerWidget {
     private PlayerInImage player;
     protected BufferedImage image;
 
+    private PlayerInImage nextPlayer;
+    private BufferedImage nextImage;
+
     protected boolean ready;
 
     protected String currentUrl;
+    private String nextUrl;
 
     public VideoVLCWidget(int x, int y, int width, int height, int sleepTime, long updateWait) {
         super(updateWait);
@@ -31,33 +36,37 @@ public class VideoVLCWidget extends PlayerWidget {
         ready = true;
     }
 
-    private PlayerInImage manualTempPlayer;
-    private String manualTempURL;
-
-    public void changeManually(String url) {
+    public void loadNext(String url) {
 //        SwingUtilities.invokeLater(() -> {
             if (url == null) {
-                manualTempURL = null;
+                nextUrl = null;
                 return;
             }
-            manualTempPlayer = new PlayerInImage(width, height, null, url);
-            manualTempURL = url;
+            nextPlayer = new PlayerInImage(width, height, null, url);
+            nextImage = nextPlayer.getImage();
+            nextUrl = url;
 //        });
     }
 
-    public void switchManually() {
+    public void switchToNext() {
 //        checkEDT();
-        if (manualTempURL == null) {
+        if (nextUrl == null) {
             stop();
             return;
         }
         JComponent component = player.getComponent();
         player.setComponent(null);
-        manualTempPlayer.setComponent(component);
+        nextPlayer.setComponent(component);
+        inChange = true;
         player.stop();
-        player = manualTempPlayer;
-        image = player.getImage();
-        currentUrl = manualTempURL;
+
+        player = nextPlayer;
+        image = nextImage;
+        currentUrl = nextUrl;
+
+        nextPlayer = null;
+        nextImage = null;
+        nextUrl = null;
     }
 
     public void change(String url) {
@@ -69,21 +78,31 @@ public class VideoVLCWidget extends PlayerWidget {
                 return;
             }
             ready = false;
-            PlayerInImage player2 = new PlayerInImage(width, height, null, url);
+            loadNext(url);
             Timer timer = new Timer(sleepTime, (a) -> {
-                JComponent component = player.getComponent();
-                player.setComponent(null);
-                player2.setComponent(component);
-                inChange = true;
-                player.stop();
-                player = player2;
-                image = player2.getImage();
+                switchToNext();
                 ready = true;
-                currentUrl = url;
             });
             timer.setRepeats(false);
             timer.start();
 //        });
+    }
+
+    // If 20 random points do not contain black the the video has been loaded
+    public boolean isBlack(BufferedImage image) {
+        Random rnd = new Random();
+        for (int i = 0; i < 20; i++) {
+            if (image.getRGB(rnd.nextInt(image.getWidth()),
+                    rnd.nextInt(image.getHeight())) != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // If 20 random points do not contain black then the video has been loaded
+    public boolean nextIsReady() {
+        return nextImage != null && !isBlack(nextImage);
     }
 
     public void setVolume(int volume) {
@@ -97,6 +116,10 @@ public class VideoVLCWidget extends PlayerWidget {
                 player.stop();
             }
             currentUrl = null;
+            if (nextPlayer != null && nextUrl != null) {
+                nextPlayer.stop();
+            }
+            nextUrl = null;
 //        });
     }
 
