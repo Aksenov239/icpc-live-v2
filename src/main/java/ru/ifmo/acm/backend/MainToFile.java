@@ -15,10 +15,10 @@ import java.util.Properties;
 /**
  * @author: pashka
  */
-public class Main {
+public class MainToFile {
 
     public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
-        new Main().run();
+        new MainToFile().run();
     }
 
     private void run() throws InterruptedException, InvocationTargetException, IOException {
