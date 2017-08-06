@@ -41,6 +41,7 @@ public class NewTeamWidget extends Widget {
     private int height;
 
     PlayerWidget mainVideo = null;
+    private long timeToChange;
 
     PlayerWidget smallVideo = null;
     boolean doubleVideo;
@@ -83,6 +84,7 @@ public class NewTeamWidget extends Widget {
                 change(team, data.teamData.infoType);
                 teamId = data.teamData.getTeamId();
                 currentInfoType = data.teamData.infoType;
+                timeToChange = System.currentTimeMillis() + data.teamData.sleepTime;
             }
         }
     }
@@ -156,15 +158,17 @@ public class NewTeamWidget extends Widget {
         }
 
 //        if (mainVideo.inChange) {
-        if (mainVideo.nextIsReady()) {
-            if (!doubleVideo || (doubleVideo && smallVideo.nextIsReady())) {
-                team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
-                currentProblemId = nextProblemId;
+        if (timeToChange < System.currentTimeMillis()) {
+            if (mainVideo.nextIsReady()) {
+                if (!doubleVideo || (doubleVideo && smallVideo.nextIsReady())) {
+                    team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+                    currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
-                mainVideo.switchToNext();
-                mainVideo.inChange = false;
-                if (doubleVideo) {
-                    smallVideo.switchToNext();
+                    mainVideo.switchToNext();
+                    mainVideo.inChange = false;
+                    if (doubleVideo) {
+                        smallVideo.switchToNext();
+                    }
                 }
             }
         }
