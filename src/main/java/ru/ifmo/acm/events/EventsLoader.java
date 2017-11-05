@@ -14,7 +14,7 @@ public abstract class EventsLoader extends Thread {
 
     private static EventsLoader instance;
 
-    public static double EMULATION_SPEED = 30;
+    public static double EMULATION_SPEED = 1;
 
     public static synchronized EventsLoader getInstance() {
         if (instance == null) {
@@ -24,6 +24,8 @@ public abstract class EventsLoader extends Thread {
                 properties.load(EventsLoader.class.getClassLoader().getResourceAsStream("events.properties"));
 
                 String standingsType = properties.getProperty("standings.type");
+
+                System.err.println(standingsType);
 
                 if ("WF".equals(standingsType)) {
                     instance = new WFEventsLoader();

@@ -268,7 +268,9 @@ public class QueueWidget extends Widget {
                 }
             } else {
                 //if (r.timestamp * 1000 > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED) {
+                if (r.getLastUpdateTimestamp() >
+                        System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED ||
+                        (!r.isJudged() && r.getTime() <= ContestInfo.FREEZE_TIME)) {
                     queue.add(getRunPlate(r));
                 }
             }
@@ -291,7 +293,9 @@ public class QueueWidget extends Widget {
                 if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
                     continue;
                 } else {
-                    if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED) {
+                    if (r.getLastUpdateTimestamp() >
+                            System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED ||
+                            (!r.isJudged() && r.getTime() <= ContestInfo.FREEZE_TIME)) {
                         if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
                             extra--;
                             continue;

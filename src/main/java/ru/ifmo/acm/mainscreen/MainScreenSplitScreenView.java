@@ -4,7 +4,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import ru.ifmo.acm.backend.Main;
 import ru.ifmo.acm.backend.player.urls.TeamUrls;
 import ru.ifmo.acm.events.TeamInfo;
 

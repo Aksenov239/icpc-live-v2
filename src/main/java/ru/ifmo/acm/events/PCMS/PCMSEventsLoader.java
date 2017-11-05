@@ -57,9 +57,9 @@ public class PCMSEventsLoader extends EventsLoader {
         ContestInfo.CONTEST_LENGTH = Integer.parseInt(properties.getProperty("contest.length", "" + 5 * 60 * 60 * 1000));
         ContestInfo.FREEZE_TIME = Integer.parseInt(properties.getProperty("freeze.time", "" + 4 * 60 * 60 * 1000));
 
-        int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
+        int problemsNumber = Integer.parseInt(properties.getProperty("problems.number"));
         PCMSContestInfo initial = new PCMSContestInfo(problemsNumber);
-        String fn = properties.getProperty("participants");
+        String fn = properties.getProperty("teams.url");
         String xml = new String(Files.readAllBytes(Paths.get(fn)), StandardCharsets.UTF_8);
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
         Element participants = doc.child(0);
@@ -143,7 +143,7 @@ public class PCMSEventsLoader extends EventsLoader {
     private int lastRunId = 0;
 
     private PCMSContestInfo parseContestInfo(Element element) {
-        int problemsNumber = Integer.parseInt(properties.getProperty("problemsNumber"));
+        int problemsNumber = Integer.parseInt(properties.getProperty("problems.number"));
         PCMSContestInfo updatedContestInfo = new PCMSContestInfo(problemsNumber);
 
         long previousStartTime = contestInfo.get().getStartTime();
@@ -247,7 +247,7 @@ public class PCMSEventsLoader extends EventsLoader {
         long time = Long.parseLong(element.attr("time"));
         long timestamp = (contestInfo.get().getStartTime() + time) / 1000;
         boolean isFrozen = time >= ContestInfo.FREEZE_TIME;
-        boolean isJudged = !isFrozen && !"undefined".equals(element.attr("accepted"));
+        boolean isJudged = !isFrozen && !"undefined".equals(element.attr("outcome"));
         String result = "yes".equals(element.attr("accepted")) ? "AC" :
                 !isJudged ? "" :
                 outcomeMap.getOrDefault(element.attr("outcome"), "WA");

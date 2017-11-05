@@ -48,11 +48,10 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     public int mergeRuns(ArrayList<PCMSRunInfo> runs, int problemId, int lastRunId) {
-        for (int i = 0; i < runs.size(); i++) {
-            if (i >= problemRuns[problemId].size()) {
-                runs.get(i).id = lastRunId++;
-                problemRuns[problemId].add(runs.get(i));
-            }
+        int previousSize = problemRuns[problemId].size();
+        for (int i = previousSize; i < runs.size(); i++) {
+            runs.get(i).id = lastRunId++;
+            problemRuns[problemId].add(runs.get(i));
         }
         return lastRunId;
     }
