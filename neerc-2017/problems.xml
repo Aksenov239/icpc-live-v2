@@ -1,0 +1,5 @@
+<challenge>
+    <problem problem-id="xtra" name="Xtrapolation" id="x" alias="X"/>
+    <problem problem-id="yield" name="Yield" id="y" alias="Y"/>
+    <problem problem-id="zero" name="Zero-complexity Transposition" id="z" alias="Z"/> 
+</challenge>
