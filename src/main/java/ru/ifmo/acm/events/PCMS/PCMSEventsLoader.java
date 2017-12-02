@@ -43,7 +43,7 @@ public class PCMSEventsLoader extends EventsLoader {
             ProblemInfo problem = new ProblemInfo();
             problem.letter = element.attr("alias");
             problem.name = element.attr("name");
-            problem.color = Color.getColor(element.attr("color"));
+            problem.color = element.attr("color") == null ? Color.BLACK : Color.getColor(element.attr("color"));
             ContestInfo.problems.add(problem);
         }
     }
@@ -90,8 +90,10 @@ public class PCMSEventsLoader extends EventsLoader {
             PCMSTeamInfo team = new PCMSTeamInfo(
                     id, alias, participantName, shortName,
                     hashTag, region, initial.getProblemsNumber());
-            initial.addTeamStandings(team);
-            id++;
+            if (team.shortName.length() != 0) {
+                initial.addTeamStandings(team);
+                id++;
+            }
         }
         initialStandings = initial.getStandings();
         contestInfo.set(initial);
@@ -180,8 +182,10 @@ public class PCMSEventsLoader extends EventsLoader {
         element.children().forEach(session -> {
             if ("session".equals(session.tagName())) {
                 PCMSTeamInfo teamInfo = parseTeamInfo(session);
-                updatedContestInfo.addTeamStandings(teamInfo);
-                taken[teamInfo.getId()] = true;
+                if (teamInfo != null) {
+                    updatedContestInfo.addTeamStandings(teamInfo);
+                    taken[teamInfo.getId()] = true;
+                }
             }
         });
 
@@ -201,17 +205,21 @@ public class PCMSEventsLoader extends EventsLoader {
 
     private PCMSTeamInfo parseTeamInfo(Element element) {
         String alias = element.attr("alias");
-        PCMSTeamInfo teamInfo = new PCMSTeamInfo(contestInfo.get().getParticipant(alias));
+        PCMSTeamInfo teamInfo = contestInfo.get().getParticipant(alias);
+        if (teamInfo == null || teamInfo.getShortName().length() == 0) {
+            return null;
+        }
+        PCMSTeamInfo teamInfoCopy = new PCMSTeamInfo(teamInfo);
 
-        teamInfo.solved = Integer.parseInt(element.attr("solved"));
-        teamInfo.penalty = Integer.parseInt(element.attr("penalty"));
+        teamInfoCopy.solved = Integer.parseInt(element.attr("solved"));
+        teamInfoCopy.penalty = Integer.parseInt(element.attr("penalty"));
 
         for (int i = 0; i < element.children().size(); i++) {
-            ArrayList<PCMSRunInfo> problemRuns = parseProblemRuns(element.child(i), i, teamInfo.getId());
-            lastRunId = teamInfo.mergeRuns(problemRuns, i, lastRunId);
+            ArrayList<PCMSRunInfo> problemRuns = parseProblemRuns(element.child(i), i, teamInfoCopy.getId());
+            lastRunId = teamInfoCopy.mergeRuns(problemRuns, i, lastRunId);
         }
 
-        return teamInfo;
+        return teamInfoCopy;
     }
 
     private ArrayList<PCMSRunInfo> parseProblemRuns(Element element, int problemId, int teamId) {
