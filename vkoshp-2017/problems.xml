@@ -11,4 +11,5 @@
     <problem id = "j" alias = "J" problem-id = "j" name = "J" color="#7C0026"/>
     <problem id = "k" alias = "K" problem-id = "k" name = "K" color="#7C0026"/>
     <problem id = "l" alias = "L" problem-id = "l" name = "L" color="#7C0026"/>
+    <problem id = 'm' alias = 'M' problem-id = 'm' name = 'M' color="#7C0026"/>
 </challenge>
