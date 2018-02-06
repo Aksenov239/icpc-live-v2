@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
@@ -41,8 +42,7 @@ public class WFEventsLoader extends EventsLoader {
 
     public WFEventsLoader() {
         try {
-            Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream("events.properties"));
+            Properties properties = Config.loadProperties("events");
 
             login = properties.getProperty("login");
             password = properties.getProperty("password");

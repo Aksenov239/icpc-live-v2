@@ -26,3 +26,6 @@ buildNumber.properties
 
 # VLC Plugin
 libvlc/x64/plugins/plugins.dat
+
+# Config
+config/*.properties

@@ -2,6 +2,7 @@ package org.icpclive.events.PCMS;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,6 +30,10 @@ import org.icpclive.events.ContestInfo.Status;
 
 import java.util.HashMap;
 
+import static org.icpclive.events.ContestInfo.Status.BEFORE;
+import static org.icpclive.events.ContestInfo.Status.PAUSED;
+import static org.icpclive.events.ContestInfo.Status.RUNNING;
+
 public class PCMSEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(PCMSEventsLoader.class);
 
@@ -49,8 +54,7 @@ public class PCMSEventsLoader extends EventsLoader {
     TeamInfo[] initialStandings;
 
     public PCMSEventsLoader() throws IOException {
-        properties = new Properties();
-        properties.load(this.getClass().getClassLoader().getResourceAsStream("events.properties"));
+        properties = Config.loadProperties("events");
 
         ContestInfo.CONTEST_LENGTH = Integer.parseInt(properties.getProperty("contest.length", "" + 5 * 60 * 60 * 1000));
         ContestInfo.FREEZE_TIME = Integer.parseInt(properties.getProperty("freeze.time", "" + 4 * 60 * 60 * 1000));

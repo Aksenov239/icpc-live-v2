@@ -1,1 +1,1 @@
-mvn package exec:java -Dexec.mainClass="ru.ifmo.acm.testing.CamerasTest"
+mvn package exec:java -Dexec.mainClass="org.icpclive.testing.CamerasTest"

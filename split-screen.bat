@@ -1,1 +1,1 @@
-mvn package exec:java -Dexec.mainClass="ru.ifmo.acm.backend.SplitScreen"
+mvn package exec:java -Dexec.mainClass="org.icpclive.backend.SplitScreen"

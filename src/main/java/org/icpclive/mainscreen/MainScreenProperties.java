@@ -2,6 +2,7 @@ package org.icpclive.mainscreen;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import org.icpclive.ContextListener;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.TeamInfo;
@@ -19,13 +20,9 @@ public class MainScreenProperties {
     public MainScreenProperties() {
         Properties properties = new Properties();
         try {
-//            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
-//            FileInputStream fileInputStream = new FileInputStream(
-//                    new File("src/resources/mainscreen.properties"));
-            properties.load(new InputStreamReader(getClass().getResourceAsStream("/mainscreen.properties"),
-                    Charset.forName("UTF-8")));
+            properties = Config.loadProperties("mainscreen");
         } catch (IOException e) {
-            log.error("error", e);
+            log.error("Cannot read mainscreen properties file", e);
         }
 
         latency = Long.parseLong(properties.getProperty("latency.time"));
