@@ -29,3 +29,7 @@ libvlc/x64/plugins/plugins.dat
 
 # Config
 config/*.properties
+
+# Log
+
+log/
