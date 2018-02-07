@@ -1,7 +1,7 @@
 package org.icpclive.datapassing;
 
 import org.icpclive.events.TeamInfo;
-import org.icpclive.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 
 /**
  * Created by Aksenov239 on 21.11.2015.

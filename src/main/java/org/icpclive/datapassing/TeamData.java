@@ -4,7 +4,7 @@ import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.events.TeamInfo;
-import org.icpclive.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 import org.icpclive.events.EventsLoader;
 
 import java.lang.reflect.Type;

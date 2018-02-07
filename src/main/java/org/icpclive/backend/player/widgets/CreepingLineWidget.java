@@ -4,7 +4,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.Graphics;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
-import org.icpclive.mainscreen.Advertisement;
+import org.icpclive.webadmin.mainscreen.Advertisement;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -43,7 +43,7 @@ public abstract class CreepingLineWidget extends Widget {
     }
 
     protected void updateImpl(Data data) {
-        for (org.icpclive.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
+        for (org.icpclive.webadmin.creepingline.Message message : Preparation.dataLoader.getDataBackend().creepingLineData.messages) {
             addMessage(message.getMessage(), messagesQueue, inQueue);
         }
 

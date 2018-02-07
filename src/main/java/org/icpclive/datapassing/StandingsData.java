@@ -3,7 +3,7 @@ package org.icpclive.datapassing;
 import org.icpclive.backend.player.widgets.BigStandingsWidget;
 import org.icpclive.backend.player.widgets.StandingsWidget;
 import org.icpclive.events.EventsLoader;
-import org.icpclive.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 
 public class StandingsData extends CachedData {
     @Override

@@ -1,8 +1,8 @@
 package org.icpclive.datapassing;
 
-import org.icpclive.creepingline.Message;
-import org.icpclive.creepingline.MessageData;
-import org.icpclive.mainscreen.Advertisement;
+import org.icpclive.webadmin.creepingline.Message;
+import org.icpclive.webadmin.creepingline.MessageData;
+import org.icpclive.webadmin.mainscreen.Advertisement;
 
 import java.util.List;
 //import java.util.concurrent.atomic.AtomicStampedReference;

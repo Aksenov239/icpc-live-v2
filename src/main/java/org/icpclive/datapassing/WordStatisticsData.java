@@ -1,8 +1,8 @@
 package org.icpclive.datapassing;
 
-import org.icpclive.mainscreen.MainScreenData;
-import org.icpclive.mainscreen.MainScreenProperties;
-import org.icpclive.mainscreen.Words.WordStatistics;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.MainScreenProperties;
+import org.icpclive.webadmin.mainscreen.Words.WordStatistics;
 
 /**
  * Created by Meepo on 4/16/2017.

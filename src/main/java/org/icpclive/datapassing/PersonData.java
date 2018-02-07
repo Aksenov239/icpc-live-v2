@@ -1,8 +1,8 @@
 package org.icpclive.datapassing;
 
 import com.vaadin.data.util.BeanItemContainer;
-import org.icpclive.mainscreen.MainScreenData;
-import org.icpclive.mainscreen.Person;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.Person;
 
 public class PersonData extends CachedData {
     public PersonData() {

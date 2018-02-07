@@ -5,7 +5,7 @@ import org.icpclive.backend.graphics.GraphicsSWT;
 import org.icpclive.backend.player.widgets.stylesheets.WordStatisticsStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
-import org.icpclive.mainscreen.Words.WordStatistics;
+import org.icpclive.webadmin.mainscreen.Words.WordStatistics;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

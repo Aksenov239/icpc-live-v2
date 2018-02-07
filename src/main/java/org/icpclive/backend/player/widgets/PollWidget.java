@@ -4,7 +4,7 @@ import org.icpclive.backend.graphics.Graphics;
 import org.icpclive.backend.player.widgets.stylesheets.PollStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
-import org.icpclive.mainscreen.Polls.Poll;
+import org.icpclive.webadmin.mainscreen.Polls.Poll;
 
 import java.awt.*;
 import java.util.Arrays;

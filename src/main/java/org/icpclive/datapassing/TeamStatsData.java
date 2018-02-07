@@ -3,7 +3,7 @@ package org.icpclive.datapassing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.events.TeamInfo;
-import org.icpclive.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 
 public class TeamStatsData extends CachedData {
     private static final Logger log = LogManager.getLogger(TeamStatsData.class);

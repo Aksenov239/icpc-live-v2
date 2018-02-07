@@ -1,8 +1,8 @@
 package org.icpclive.datapassing;
 
 import com.vaadin.data.util.BeanItemContainer;
-import org.icpclive.mainscreen.Advertisement;
-import org.icpclive.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.Advertisement;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 
 /**
  * Created by Aksenov239 on 21.11.2015.

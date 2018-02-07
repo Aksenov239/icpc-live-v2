@@ -1,8 +1,8 @@
 package org.icpclive.datapassing;
 
 import com.google.gson.*;
-import org.icpclive.mainscreen.MainScreenData;
-import org.icpclive.mainscreen.Polls.Poll;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.Polls.Poll;
 
 import java.lang.reflect.Type;
 

@@ -1,6 +1,6 @@
 package org.icpclive.datapassing;
 
-import org.icpclive.mainscreen.MainScreenData;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 
 public class CameraData extends CachedData {
     public CameraData() {
