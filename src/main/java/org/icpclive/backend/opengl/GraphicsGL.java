@@ -8,7 +8,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.Widget;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 
@@ -22,7 +22,7 @@ import java.util.HashMap;
 /**
  * Created by Aksenov239 on 08.10.2016.
  */
-public class GraphicsGL extends Graphics {
+public class GraphicsGL extends AbstractGraphics {
     public static RenderState renderState;
     public static RegionRenderer regionRenderer;
     public static TextRegionUtil textRegionUtil;
@@ -107,7 +107,7 @@ public class GraphicsGL extends Graphics {
     }
 
     @Override
-    public Graphics create() {
+    public AbstractGraphics create() {
         GraphicsGL g = new GraphicsGL(x, y, width, height, gl2, glu);
         g.x0 = x0;
         g.y0 = y0;
@@ -119,7 +119,7 @@ public class GraphicsGL extends Graphics {
     }
 
     @Override
-    public Graphics create(int x, int y, int width, int height) {
+    public AbstractGraphics create(int x, int y, int width, int height) {
         GraphicsGL g = new GraphicsGL(x + x0, y + y0, width, height, gl2, glu);
         g.x0 = x + x0;
         g.y0 = y + y0;

@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.datapassing.Data;
 import org.icpclive.datapassing.CachedData;
 
@@ -72,7 +72,7 @@ public class RotatableWidget extends Widget {
     }
 
     @Override
-    protected void paintImpl(Graphics g, int width, int height) {
+    protected void paintImpl(AbstractGraphics g, int width, int height) {
         if (state == State.HIDDEN) {
             return;
         }
@@ -88,7 +88,7 @@ public class RotatableWidget extends Widget {
         drawImage(g, movable, x + unmovable.getWidth() - currentShift, y, opacity);
     }
 
-    private void drawImage(Graphics g, VolatileImage image, int x, int y, double opacity) {
+    private void drawImage(AbstractGraphics g, VolatileImage image, int x, int y, double opacity) {
         if (opacity == 0) {
             return;
         }

@@ -1,5 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 
@@ -10,7 +11,7 @@ import java.awt.*;
  */
 public class TestFramesWidget extends Widget {
 
-    Font font = Font.decode("Open Sans 30");
+    Font font = Font.decode(MAIN_FONT + " " + 30);
 
     public TestFramesWidget() {
         super(100);
@@ -26,7 +27,7 @@ public class TestFramesWidget extends Widget {
     String message = "";
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
         if (!isVisible()) {
             return;

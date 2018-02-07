@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.PlayerInImage;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
@@ -139,19 +139,19 @@ public class VideoVLCWidget extends PlayerWidget {
         return player.getPlayer().getAspectRatio().equals("16:9") ? 16. / 9 : 4. / 3;
     }
 
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         draw(g);
     }
 
-    public void draw(Graphics g) {
+    public void draw(AbstractGraphics g) {
         g.drawImage(player.getImage(), x, y, this.width, this.height);
     }
 
-    public void draw(Graphics g, int x, int y, int width, int height) {
+    public void draw(AbstractGraphics g, int x, int y, int width, int height) {
         g.drawImage(player.getImage(), x, y, width, height);
     }
 
-    public void draw(Graphics g, int x, int y, int width, int height, double opacity) {
+    public void draw(AbstractGraphics g, int x, int y, int width, int height, double opacity) {
         g.drawImage(player.getImage(), x, y, width, height, opacity);
     }
 

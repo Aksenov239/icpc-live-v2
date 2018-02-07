@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.urls.TeamUrls;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
@@ -150,7 +151,7 @@ public class NewBreakingNewsWidget extends Widget {
     private int rankState;
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
 
         int dt = updateVisibilityState();

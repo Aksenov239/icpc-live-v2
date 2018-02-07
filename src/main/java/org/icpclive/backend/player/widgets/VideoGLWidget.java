@@ -9,7 +9,7 @@ import com.jogamp.opengl.util.av.GLMediaPlayerFactory;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.opengl.GraphicsGL;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
@@ -152,7 +152,7 @@ public class VideoGLWidget extends PlayerWidget {
         return 1. * player.getWidth() / player.getHeight();
     }
 
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         draw(g);
     }
 
@@ -241,24 +241,24 @@ public class VideoGLWidget extends PlayerWidget {
         return currentTexture;
     }
 
-    public void draw(Graphics g) {
+    public void draw(AbstractGraphics g) {
         if (processTexture() == null)
             return;
         g.drawTexture(processTexture(), x, y, this.width, this.height);
     }
 
-    public void draw(Graphics g, int x, int y, int width, int height) {
+    public void draw(AbstractGraphics g, int x, int y, int width, int height) {
         if (processTexture() == null)
             return;
         g.drawTexture(processTexture(), x, y, width, height);
     }
 
     @Override
-    public void draw(Graphics g, int x, int y, int width, int height, double opacity) {
+    public void draw(AbstractGraphics g, int x, int y, int width, int height, double opacity) {
 
     }
 
-    public void updateState(Graphics g, boolean manualSwitch) {
+    public void updateState(AbstractGraphics g, boolean manualSwitch) {
         if (gl == null) {
             gl = ((GraphicsGL) g).getGL();
         }

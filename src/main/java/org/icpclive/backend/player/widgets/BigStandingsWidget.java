@@ -1,6 +1,8 @@
 package org.icpclive.backend.player.widgets;
 
+import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.BigStandingsStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
@@ -45,24 +47,24 @@ public class BigStandingsWidget extends Widget {
 
     private final Font font;
 
-    int timer;
-    int start;
-    final int baseX;
-    int baseY;
-    final int width;
-    final boolean controlled;
-    final int teamsOnPage;
+    private int timer;
+    private int start;
+    private final int baseX;
+    private int baseY;
+    private final int width;
+    private final boolean controlled;
+    private final int teamsOnPage;
 
     private ContestInfo contestData;
     private StandingsData.OptimismLevel optimismLevel = StandingsData.OptimismLevel.NORMAL;
     private String region = "all";
 
-    double[] currentTeamPositions;
-    double[] desiredTeamPositions;
+    private double[] currentTeamPositions;
+    private double[] desiredTeamPositions;
 
     long blinkingTime;
 
-    public BigStandingsWidget(int baseX, int baseY, int width, int plateHeight, long updateWait, int teamsOnPage, boolean controlled) {
+    public BigStandingsWidget(int baseX, int baseY, int width, int plateHeight, long updateWait, int teamsOnPage, boolean controlled) throws IOException {
         super(updateWait);
         last = System.currentTimeMillis();
 
@@ -88,14 +90,9 @@ public class BigStandingsWidget extends Widget {
 
         this.updateWait = updateWait;
 
-        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
+        font = Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7));
 
-        Properties properties = new Properties();
-        try {
-            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
-        } catch (IOException e) {
-            log.error("error", e);
-        }
+        Properties properties = Config.loadProperties("mainscreen");
         blinkingTime = Long.parseLong(properties.getProperty("standings.blinking.time"));
     }
 
@@ -158,7 +155,7 @@ public class BigStandingsWidget extends Widget {
     boolean[] topUniversity;
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         contestData = Preparation.eventsLoader.getContestData();
         if (contestData == null) {
             return;
@@ -247,7 +244,7 @@ public class BigStandingsWidget extends Widget {
                 }
             }
 
-            org.icpclive.backend.graphics.Graphics wasG = g;
+            AbstractGraphics wasG = g;
 
             int initY = plateHeight + BIG_SPACE_COUNT * spaceY;
 
@@ -308,7 +305,7 @@ public class BigStandingsWidget extends Widget {
         return data.standingsData;
     }
 
-    private void drawHead(org.icpclive.backend.graphics.Graphics g, int x, int y, RunInfo[] firstSolved) {
+    private void drawHead(AbstractGraphics g, int x, int y, RunInfo[] firstSolved) {
         g = g.create();
         int problemWidth = problemWidth(firstSolved.length);
 
@@ -329,7 +326,7 @@ public class BigStandingsWidget extends Widget {
         //g.clear(x, y, this.width, plateHeight);
         drawTextInRect(g, headingText, x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
-                org.icpclive.backend.graphics.Graphics.Alignment.CENTER, font, heading, visibilityState, WidgetAnimation.NOT_ANIMATED);
+                AbstractGraphics.Alignment.CENTER, font, heading, visibilityState, WidgetAnimation.NOT_ANIMATED);
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
@@ -337,20 +334,20 @@ public class BigStandingsWidget extends Widget {
                     ((firstSolved[i] != null) ? BigStandingsStylesheet.udProblem : BigStandingsStylesheet.noProblem) :
                     BigStandingsStylesheet.acProblem;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
-                    org.icpclive.backend.graphics.Graphics.Alignment.CENTER, font, color, visibilityState, WidgetAnimation.NOT_ANIMATED);
+                    AbstractGraphics.Alignment.CENTER, font, color, visibilityState, WidgetAnimation.NOT_ANIMATED);
             x += problemWidth + spaceX;
         }
 
         g.drawRect(x, y, totalWidth + penaltyWidth, plateHeight, BigStandingsStylesheet.penalty.background,
-                opacity, org.icpclive.backend.graphics.Graphics.RectangleType.SOLID);
+                opacity, AbstractGraphics.RectangleType.SOLID);
     }
 
-    private void drawFullTeamPane(org.icpclive.backend.graphics.Graphics g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
+    private void drawFullTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
         stars.clear();
         Font font = this.font;
         PlateStyle color = getTeamRankColor(team);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.CENTER,
+                rankWidth, plateHeight, AbstractGraphics.Alignment.CENTER,
                 font, color, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += rankWidth + spaceX;
@@ -362,7 +359,7 @@ public class BigStandingsWidget extends Widget {
         }
         String name = team.getShortName();//getShortName(g, teamId.getShortName());
         drawTextInRect(g, name, x, y,
-                nameWidth, plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.LEFT,
+                nameWidth, plateHeight, AbstractGraphics.Alignment.LEFT,
                 font, nameStyle, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += nameWidth + spaceX;
@@ -394,7 +391,7 @@ public class BigStandingsWidget extends Widget {
             boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - team.getLastRun(i).getTimestamp() * 1000) < blinkingTime;
             if (status.length() == 0) status = ".";
             drawTextInRect(g, status, x, y,
-                    problemWidth, plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.CENTER,
+                    problemWidth, plateHeight, AbstractGraphics.Alignment.CENTER,
                     font, statusColor, visibilityState,
                     true, WidgetAnimation.UNFOLD_ANIMATED, isBlinking);
 
@@ -412,7 +409,7 @@ public class BigStandingsWidget extends Widget {
             problemsColor = problemsColor.brighter();
         }
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth,
-                plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.CENTER,
+                plateHeight, AbstractGraphics.Alignment.CENTER,
                 font, problemsColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
         PlateStyle penaltyColor = BigStandingsStylesheet.penalty;
@@ -420,7 +417,7 @@ public class BigStandingsWidget extends Widget {
             penaltyColor = penaltyColor.brighter();
         }
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
-                plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.CENTER,
+                plateHeight, AbstractGraphics.Alignment.CENTER,
                 font, penaltyColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         for (Point star : stars) {

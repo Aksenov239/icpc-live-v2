@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.QueueStylesheet;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
@@ -74,7 +75,7 @@ public class QueueWidget extends Widget {
         problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
         statusWidth = (int) Math.round(STATUS_WIDTH * plateHeight);
 
-        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
+        font = Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7));
 
         this.showVerdict = showVerdict;
 
@@ -88,13 +89,13 @@ public class QueueWidget extends Widget {
     }
 
     @Override
-    public void paint(org.icpclive.backend.graphics.Graphics g, int width, int height, double scale) {
+    public void paint(AbstractGraphics g, int width, int height, double scale) {
         super.paint(g, width, height, scale);
         breakingNews.paint(g, width, height, scale);
     }
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         move(width, height, updateVisibilityState());
         g.clip(baseX - width, baseY - height, 2 * width, height);
         g.setFont(font);
@@ -151,7 +152,7 @@ public class QueueWidget extends Widget {
         return plate;
     }
 
-    private void drawRun(org.icpclive.backend.graphics.Graphics g, int x, int y, RunPlate plate) {
+    private void drawRun(AbstractGraphics g, int x, int y, RunPlate plate) {
 
         boolean blinking = breakingNews.isVisible() && plate == breaking;
 
@@ -185,21 +186,21 @@ public class QueueWidget extends Widget {
         PlateStyle color = getTeamRankColor(team);
 
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.CENTER,
+                rankWidth, plateHeight, AbstractGraphics.Alignment.CENTER,
                 font, color, visibilityState * plate.visibilityState,
                 true, WidgetAnimation.NOT_ANIMATED, blinking);
 
         x += rankWidth + spaceX;
 
         drawTextInRect(g, name, x, y,
-                nameWidth, plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.LEFT,
+                nameWidth, plateHeight, AbstractGraphics.Alignment.LEFT,
                 font, teamColor, visibilityState * plate.visibilityState,
                 true, WidgetAnimation.NOT_ANIMATED, blinking);
 
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, font, teamColor, visibilityState * plate.visibilityState,
+                plateHeight, AbstractGraphics.Alignment.CENTER, font, teamColor, visibilityState * plate.visibilityState,
                 true, WidgetAnimation.NOT_ANIMATED, blinking);
 
         if (showVerdict) {
@@ -212,13 +213,13 @@ public class QueueWidget extends Widget {
             }
 
             drawTextInRect(g, result, x, y, statusWidth,
-                    plateHeight, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, font,
+                    plateHeight, AbstractGraphics.Alignment.CENTER, font,
                     resultColor, visibilityState * plate.visibilityState,
                     true, WidgetAnimation.NOT_ANIMATED, blinking);
 
             if (inProgress) {
                 g.drawRect(x, y, progressWidth, plateHeight, QueueStylesheet.udTests,
-                        visibilityState * plate.visibilityState, org.icpclive.backend.graphics.Graphics.RectangleType.SOLID);
+                        visibilityState * plate.visibilityState, AbstractGraphics.RectangleType.SOLID);
             }
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
                 drawStar(g, x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);

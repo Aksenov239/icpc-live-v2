@@ -10,7 +10,7 @@ import com.jogamp.opengl.util.texture.Texture;
 /**
  * Created by Aksenov239 on 04.09.2016.
  */
-public abstract class Graphics {
+public abstract class AbstractGraphics {
     protected int width, height;
     protected int x0, y0;
     protected int x, y;
@@ -18,9 +18,9 @@ public abstract class Graphics {
     protected Color color;
     protected double scale = 1;
 
-    public abstract Graphics create();
+    public abstract AbstractGraphics create();
 
-    public abstract Graphics create(int x, int y, int width, int height);
+    public abstract AbstractGraphics create(int x, int y, int width, int height);
 
     private final int POINTS_IN_ROUND = 1;
     private final int ROUND_RADIUS = 0;

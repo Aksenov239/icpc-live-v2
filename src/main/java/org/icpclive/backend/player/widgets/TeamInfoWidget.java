@@ -4,7 +4,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.TeamInfo;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 
 /**
  * @author: pashka
@@ -47,7 +47,7 @@ public class TeamInfoWidget extends TeamWidget {
         }
     }
 
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
         super.paintImpl(g, width, height);
     }

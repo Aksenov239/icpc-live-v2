@@ -2,7 +2,7 @@ package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.player.urls.TeamUrls;
 import org.icpclive.backend.Preparation;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.TeamStylesheet;
 import org.icpclive.datapassing.CachedData;
@@ -98,7 +98,7 @@ public class NewTeamWidget extends Widget {
         teamId = id;
     }
 
-    protected Font FONT1 = Font.decode("Open Sans " + 40);
+    protected Font FONT1 = Font.decode(MAIN_FONT + " " + 40);
 
     protected int X = 1320;
     protected int Y = 20;
@@ -109,7 +109,7 @@ public class NewTeamWidget extends Widget {
     protected int RUN_SMALL_WIDTH = 20;
     protected int HEIGHT = 45;
     protected int STAR_SIZE = 5;
-    Font FONT2 = Font.decode("Open Sans " + 30);
+    Font FONT2 = Font.decode(MAIN_FONT + " " + 30);
 
     protected TeamInfo team;
     protected int currentProblemId = -1;
@@ -128,13 +128,13 @@ public class NewTeamWidget extends Widget {
         return (second % 2 == 0 ? v : 1 - v) / 2 + 0.5;
     }
 
-    private void drawReplay(Graphics g, int x, int y, int width, int height) {
+    private void drawReplay(AbstractGraphics g, int x, int y, int width, int height) {
         drawTextInRect(g, "R", (int) (x + width * 0.95), (int) (y + height * 0.17), -1, HEIGHT,
-                Graphics.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
+                AbstractGraphics.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
     }
 
     @Override
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
 
 //        if (teamId == -1) return;
@@ -250,7 +250,7 @@ public class NewTeamWidget extends Widget {
             mainVideo.y = BIG_Y;
 
             drawTextInRect(g, "" + (char) ('A' + i), mainVideo.x + X, mainVideo.y + y,
-                    PR_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, problemColor, 1);
+                    PR_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, problemColor, 1);
 
             int x = X - GAP_X;
             for (int j = 0; j < runs.length; j++) {
@@ -258,7 +258,7 @@ public class NewTeamWidget extends Widget {
                 PlateStyle color = run.getResult().equals("AC") ? TeamStylesheet.acProblem : run.getResult().equals("") ? TeamStylesheet.udProblem : TeamStylesheet.waProblem;
                 if (j == runs.length - 1 || run.getResult().equals("AC")) {
                     drawTextInRect(g, format(run.getTime() / 1000), mainVideo.x + x - RUN_WIDTH, mainVideo.y + y,
-                            RUN_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, color,
+                            RUN_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color,
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
                     //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
@@ -269,7 +269,7 @@ public class NewTeamWidget extends Widget {
                     break;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
                     drawTextInRect(g, "", mainVideo.x + x - RUN_SMALL_WIDTH, mainVideo.y + y,
-                            RUN_SMALL_WIDTH, HEIGHT, Graphics.Alignment.CENTER, FONT2, color, 1);
+                            RUN_SMALL_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color, 1);
                     x -= RUN_SMALL_WIDTH + GAP_X;
                 }
 

@@ -11,7 +11,7 @@ import java.awt.image.RescaleOp;
 /**
  * Created by Aksenov239 on 04.09.2016.
  */
-public class GraphicsSWT extends Graphics {
+public class GraphicsSWT extends AbstractGraphics {
 
     public Graphics2D g;
 
@@ -20,7 +20,7 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public Graphics create() {
+    public AbstractGraphics create() {
         GraphicsSWT newG = new GraphicsSWT(g);
         newG.x0 = x0;
         newG.y0 = y0;
@@ -28,7 +28,7 @@ public class GraphicsSWT extends Graphics {
     }
 
     @Override
-    public Graphics create(int x, int y, int width, int height) {
+    public AbstractGraphics create(int x, int y, int width, int height) {
         GraphicsSWT g2 = new GraphicsSWT((Graphics2D) g.create(x + x0, y + y0, width, height));
         g2.width = width;
         g2.height = height;

@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 
@@ -10,7 +10,7 @@ import org.icpclive.datapassing.Data;
 public class AdvertisementWidget extends CaptionWidget {
 
     public AdvertisementWidget(long updateWait, long duration) {
-        super(Graphics.Alignment.CENTER);
+        super(AbstractGraphics.Alignment.CENTER);
         this.duration = duration;
         setVisible(false);
     }
@@ -33,7 +33,7 @@ public class AdvertisementWidget extends CaptionWidget {
     }
 
     @Override
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
         super.paintImpl(g, width, height);
     }

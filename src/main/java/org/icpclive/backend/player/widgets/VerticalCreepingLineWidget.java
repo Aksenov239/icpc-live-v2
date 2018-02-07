@@ -1,7 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.Preparation;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.CreepingLineStylesheet;
 import org.icpclive.events.TeamInfo;
 
@@ -13,7 +13,10 @@ import static org.icpclive.backend.player.widgets.old.ClockWidget.getTimeString;
  * @author: pashka
  */
 public class VerticalCreepingLineWidget extends CreepingLineWidget {
-    public static final String CLOCK = "#Clock#";
+
+    private static final String CLOCK = "#Clock#";
+    private static final String STANDINGS_MESSAGE = "#Standings#";
+
     private long rotateTime;
     private long lastRotation;
     private long logoTime;
@@ -97,15 +100,14 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         }
     }
 
-    int nowStandingsPosition = 0;
-    int nextStandingsPosition = 0;
-    TeamInfo[] standings;
-    private final String STANDINGS_MESSAGE = "#Standings#";
+    private int nowStandingsPosition = 0;
+    private int nextStandingsPosition = 0;
+    private TeamInfo[] standings;
     private final int STANDINGS_SIZE = 12;
     private final int STANDINGS_PAGE = 4;
     private final double percent = 0.87;
 
-    private void drawInfo(Graphics g, Message message, boolean next, int width, int height) {
+    private void drawInfo(AbstractGraphics g, Message message, boolean next, int width, int height) {
         if (!STANDINGS_MESSAGE.equals(message.message)) {
             drawTextToFit(g, message.message, 0, message.position, 0, 0, width, height,
                     messageFont, CreepingLineStylesheet.main.text);
@@ -120,20 +122,20 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         }
     }
 
-    public void drawLogo(Graphics g, String currentLogo) {
+    public void drawLogo(AbstractGraphics g, String currentLogo) {
         if (currentLogo.equals(CLOCK)) {
             long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
             currentLogo = getTimeString(Math.abs(time));
         }
 
-        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, Graphics.Alignment.CENTER,
+        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER,
                 messageFont, CreepingLineStylesheet.logo, logoVisible);
     }
 
     @Override
-    public void paintImpl(Graphics gg, int width, int height) {
+    public void paintImpl(AbstractGraphics gg, int width, int height) {
         update();
-        Graphics g = gg.create(0, BASE_HEIGHT - HEIGHT - MARGIN, BASE_WIDTH, HEIGHT);
+        AbstractGraphics g = gg.create(0, BASE_HEIGHT - HEIGHT - MARGIN, BASE_WIDTH, HEIGHT);
         g.setFont(messageFont);
         iterateLogo();
 
@@ -141,7 +143,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
 
         g = g.create(LOGO_WIDTH, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
         //g.clip();
-        g.drawRect(0, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
+        g.drawRect(0, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT, CreepingLineStylesheet.main.background, 1, AbstractGraphics.RectangleType.SOLID);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
         last = time;

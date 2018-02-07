@@ -10,7 +10,7 @@ import java.awt.geom.Rectangle2D;
  * @author pashka
  */
 @Deprecated
-public class FastGraphics extends org.icpclive.backend.graphics.Graphics {
+public class FastGraphics extends AbstractGraphics {
 
     private Graphics2D g;
     private int[] buffer;
@@ -29,14 +29,14 @@ public class FastGraphics extends org.icpclive.backend.graphics.Graphics {
     }
 
     @Override
-    public org.icpclive.backend.graphics.Graphics create() {
-        org.icpclive.backend.graphics.Graphics g2 = new FastGraphics((Graphics2D) g.create(), x0, y0, buffer, pitch);
+    public AbstractGraphics create() {
+        AbstractGraphics g2 = new FastGraphics((Graphics2D) g.create(), x0, y0, buffer, pitch);
         g2.setScale(scale);
         return g2;
     }
 
     @Override
-    public org.icpclive.backend.graphics.Graphics create(int x, int y, int width, int height) {
+    public AbstractGraphics create(int x, int y, int width, int height) {
         Graphics2D gg = (Graphics2D) g.create();
         FastGraphics g2 = new FastGraphics(gg, x + x0, y + y0, buffer, pitch);
         gg.clipRect(x + x0, y + y0, width, height);

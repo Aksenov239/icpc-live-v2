@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.urls.TeamUrls;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.TeamStylesheet;
@@ -63,7 +64,7 @@ public class TeamWidget extends Widget {
         teamId = id;
     }
 
-    protected Font FONT1 = Font.decode("Open Sans Italic " + 40);
+    protected Font FONT1 = Font.decode(MAIN_FONT + " " + 40);
 
     protected int X = 20;
     protected int Y = 20;
@@ -75,7 +76,7 @@ public class TeamWidget extends Widget {
     protected int HEIGHT = 45;
     protected int WIGHT = 30;
     protected int STAR_SIZE = 5;
-    Font FONT2 = Font.decode("Open Sans Italic " + 30);
+    Font FONT2 = Font.decode(MAIN_FONT + " " + 30);
 
     private static final Color GREEN = new Color(27, 155, 82);//Color.decode("0x33ff00");
     private static final Color RED = Color.decode("0xaa0000");
@@ -95,13 +96,13 @@ public class TeamWidget extends Widget {
         return (second % 2 == 0 ? v : 1 - v) / 2 + 0.5;
     }
 
-    private void drawReplay(org.icpclive.backend.graphics.Graphics g, int x, int y, int width, int height) {
+    private void drawReplay(AbstractGraphics g, int x, int y, int width, int height) {
         drawTextInRect(g, "R", (int) (x + width * 0.95), (int) (y + height * 0.17), -1,
-                HEIGHT, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
+                HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
     }
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         mainVideo.updateState(g, false);
         if (!isVisible())
             return;
@@ -133,7 +134,7 @@ public class TeamWidget extends Widget {
         }
 
         // TODO: fill rect
-        g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1, org.icpclive.backend.graphics.Graphics.RectangleType.SOLID);
+        g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1, AbstractGraphics.RectangleType.SOLID);
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
 
@@ -169,14 +170,14 @@ public class TeamWidget extends Widget {
             if (!isFull) {
                 int yy = Y + (HEIGHT + GAP_Y) * i;
                 drawTextInRect(g, "" + (char) ('A' + i), x + X, y + yy,
-                        PR_WIDTH, HEIGHT, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, FONT2,
+                        PR_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2,
                         problemColor, 1, WidgetAnimation.UNFOLD_ANIMATED);
             } else {
                 // int x = X + (PR_WIDTH + GAP_X) * i;
                 int xx = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i) - X;
                 double timeOpacity = i == currentProblemId ? getTimeOpacity() : 1;
                 drawTextInRect(g, "" + (char) ('A' + i), x + xx, y + dy,
-                        PR_WIDTH, HEIGHT, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, FONT2, problemColor,
+                        PR_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, problemColor,
                         timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
             }
 
@@ -186,7 +187,7 @@ public class TeamWidget extends Widget {
                 if ("AC".equals(run.getResult())) {
                     if (!isFull) {
                         drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
-                                RUN_WIDTH, HEIGHT, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, FONT2, TeamStylesheet.acProblem,
+                                RUN_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, TeamStylesheet.acProblem,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
@@ -208,7 +209,7 @@ public class TeamWidget extends Widget {
                     PlateStyle color = "".equals(run.getResult()) ? TeamStylesheet.udProblem: TeamStylesheet.waProblem;
                     if (j == runs.length - 1) {
                         drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
-                                RUN_WIDTH, HEIGHT, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, FONT2, color,
+                                RUN_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
@@ -216,7 +217,7 @@ public class TeamWidget extends Widget {
                         x += RUN_WIDTH + GAP_X;
                     } else {
                         drawTextInRect(g, "", x + x, y + y,
-                                RUN_SMALL_WIDTH, HEIGHT, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, FONT2, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                                RUN_SMALL_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
                         x += RUN_SMALL_WIDTH + GAP_X;
                     }
                 }

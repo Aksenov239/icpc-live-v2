@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.generator;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.Widget;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -116,7 +117,7 @@ public class ScreenGeneratorGL implements ScreenGenerator {
             width = (int) Math.round(width / scale);
             height = (int) Math.round(height / scale);
         }
-        org.icpclive.backend.graphics.Graphics g = new GraphicsSWT(g2);
+        AbstractGraphics g = new GraphicsSWT(g2);
 
 //        Graphics g = new FastGraphics(g2, ((DataBufferInt)raster.getDataBuffer()).getData(), this.width);
         g.setScale(scale);
@@ -125,7 +126,7 @@ public class ScreenGeneratorGL implements ScreenGenerator {
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }
-        g.drawRect(0, 0, 1, 1, Color.WHITE, .5, org.icpclive.backend.graphics.Graphics.RectangleType.SOLID);
+        g.drawRect(0, 0, 1, 1, Color.WHITE, .5, AbstractGraphics.RectangleType.SOLID);
 
         g2.dispose();
     }

@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.CreepingLineStylesheet;
 
 import java.util.ArrayDeque;
@@ -18,12 +18,12 @@ public class HorizontalCreepingLineWidget extends CreepingLineWidget {
     ArrayDeque<Message> messagesOnScreen;
 
     @Override
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
 //            g2.setColor(Color.red);
 //            g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
         update();
-        g.drawRect(0, height - HEIGHT - MARGIN, width, HEIGHT, CreepingLineStylesheet.main.background, 1, Graphics.RectangleType.SOLID);
+        g.drawRect(0, height - HEIGHT - MARGIN, width, HEIGHT, CreepingLineStylesheet.main.background, 1, AbstractGraphics.RectangleType.SOLID);
         g.setFont(messageFont);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);

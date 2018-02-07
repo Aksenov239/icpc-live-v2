@@ -2,7 +2,7 @@ package org.icpclive.backend.player.widgets.old;
 
 import org.icpclive.backend.player.urls.TeamUrls;
 import org.icpclive.backend.Preparation;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.PlayerWidget;
 import org.icpclive.backend.player.widgets.Widget;
 import org.icpclive.backend.player.widgets.WidgetAnimation;
@@ -32,10 +32,10 @@ public class OldBreakingNewsWidget extends Widget {
         video = PlayerWidget.getPlayerWidget(x, y, width, (int) (width / aspectRatio), sleepTime, 0);
         this.updateWait = updateWait;
 
-        PLATE_HEIGHT = (int) (0.1 * video.height);
+        PLATE_HEIGHT = (int) (0.1 * video.getHeight());
         double total_factor = RANK_WIDTH + NAME_WIDTH + TOTAL_WIDTH + PENALTY_WIDTH + 3 * SPACE_X;
         PLATE_WIDTH = (int) (PLATE_HEIGHT * total_factor);
-        GAP = (int) (0.02 * video.height);
+        GAP = (int) (0.02 * video.getHeight());
 
         this.x = x;
         this.y = y;
@@ -63,7 +63,7 @@ public class OldBreakingNewsWidget extends Widget {
             }
             if (isVisible())
                 return;
-            video.sleepTime = data.teamData.sleepTime;
+            video.setSleepTime(data.teamData.sleepTime);
 
             int teamId = data.breakingNewsData.teamId;
             int problemId = data.breakingNewsData.problemId;
@@ -156,7 +156,7 @@ public class OldBreakingNewsWidget extends Widget {
     private int rankState;
 
     @Override
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
 
         int dt = updateVisibilityState();
@@ -202,16 +202,16 @@ public class OldBreakingNewsWidget extends Widget {
 
         if (//run == null ||
                 video.getCurrentURL() != null) {
-            int hh = (int) (video.height * opacity);
-            video.draw(g, x, y + (video.height - hh) / 2, video.width, hh);
+            int hh = (int) (video.getHeight() * opacity);
+            video.draw(g, x, y + (video.getHeight() - hh) / 2, video.getWidth(), hh);
         }
 
-        int y = this.y + video.height + GAP;
-        int x = this.x + (int) (1.1 * video.width - PLATE_WIDTH);
+        int y = this.y + video.getHeight() + GAP;
+        int x = this.x + (int) (1.1 * video.getWidth() - PLATE_WIDTH);
         drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
-        Font font = Font.decode("Open Sans " + (int) Math.round(PLATE_HEIGHT * 0.7));
+        Font font = Font.decode(MAIN_FONT + " " + (int) Math.round(PLATE_HEIGHT * 0.7));
         drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
-                Graphics.Alignment.RIGHT, font, BreakingNewsStylesheet.caption, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                AbstractGraphics.Alignment.RIGHT, font, BreakingNewsStylesheet.caption, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     @Override

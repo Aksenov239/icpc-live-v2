@@ -1,5 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.backend.player.widgets.stylesheets.CaptionStylesheet;
@@ -19,14 +20,14 @@ public class CaptionWidget extends Widget {
 
     private final int Y = 994 - HEIGHT2 - HEIGHT1 - SPACE;
 
-    private final Font FONT1 = Font.decode("Open Sans " + 40);
-    private final Font FONT2 = Font.decode("Open Sans " + 28);
+    private final Font FONT1 = Font.decode(MAIN_FONT + " " + 40);
+    private final Font FONT2 = Font.decode(MAIN_FONT + " " + 28);
 
     private String caption;
     private String description;
-    private final org.icpclive.backend.graphics.Graphics.Alignment alignment;
+    private final AbstractGraphics.Alignment alignment;
 
-    public CaptionWidget(org.icpclive.backend.graphics.Graphics.Alignment alignment) {
+    public CaptionWidget(AbstractGraphics.Alignment alignment) {
         this.alignment = alignment;
     }
 
@@ -36,17 +37,17 @@ public class CaptionWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         updateVisibilityState();
         if (visibilityState > 0) {
             int x1;
             int x2;
             int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
-            if (alignment == org.icpclive.backend.graphics.Graphics.Alignment.LEFT) {
+            if (alignment == AbstractGraphics.Alignment.LEFT) {
                 x1 = X_LEFT;
                 x2 = x1 + dx;
                 QueueWidget.Y_SHIFT = 3;
-            } else if (alignment == org.icpclive.backend.graphics.Graphics.Alignment.RIGHT) {
+            } else if (alignment == AbstractGraphics.Alignment.RIGHT) {
                 x1 = X_RIGHT;
                 x2 = x1 - dx;
             } else {

@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets.old;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.Widget;
 import org.icpclive.backend.player.widgets.WidgetAnimation;
 import org.icpclive.backend.player.widgets.stylesheets.ClockStylesheet;
@@ -22,7 +23,7 @@ public class ClockWidget extends Widget {
     private final int y = 30;
     private final int WIDTH = 154;
     private final int HEIGHT = 66;
-    Font clockFont = Font.decode("Open Sans Light " + FONT_SIZE);
+    Font clockFont = Font.decode(MAIN_FONT + " " + FONT_SIZE);
     private long start;
 
     private void initialization() {
@@ -52,7 +53,7 @@ public class ClockWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
         updateVisibilityState();
         if (opacity == 0) return;
@@ -85,7 +86,7 @@ public class ClockWidget extends Widget {
 //        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
 
         PlateStyle style = time < ContestInfo.FREEZE_TIME / 1000 ? ClockStylesheet.main : ClockStylesheet.freeze;
-        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, org.icpclive.backend.graphics.Graphics.Alignment.CENTER,
+        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER,
                 clockFont, style, opacity, WidgetAnimation.VERTICAL_ANIMATED);
 //        drawRect(g, x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, 1);
     }

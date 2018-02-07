@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.datapassing.StandingsData;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.datapassing.CachedData;
@@ -66,7 +67,7 @@ public class StandingsWidget extends Widget {
         dx = (int) Math.round(DX * plateHeight) + nameWidth + rankWidth + totalWidth + penaltyWidth + 3 * spaceX;
         dy = plateHeight + spaceY;
 
-        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
+        font = Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7));
     }
 
     public void setState(StandingsData.StandingsType type) {
@@ -119,7 +120,7 @@ public class StandingsWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(org.icpclive.backend.graphics.Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
 
         contestData = Preparation.eventsLoader.getContestData();
@@ -166,7 +167,7 @@ public class StandingsWidget extends Widget {
         return data.standingsData;
     }
 
-    private void drawStandings(org.icpclive.backend.graphics.Graphics g, int x, int y, ContestInfo contestData, int start) {
+    private void drawStandings(AbstractGraphics g, int x, int y, ContestInfo contestData, int start) {
         for (int i = 0; i < TEAMS_ON_PAGE; i++) {
             if (start + i >= LENGTH)
                 break;

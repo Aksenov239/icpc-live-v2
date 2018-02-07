@@ -2,7 +2,7 @@ package org.icpclive.backend.player.widgets;
 
 import org.icpclive.events.ProblemInfo;
 import org.icpclive.backend.Preparation;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.StatisticsStylesheet;
 import org.icpclive.datapassing.CachedData;
@@ -44,7 +44,7 @@ public class StatisticsWidget extends Widget {
         this.width = width;
         problemWidth = (int) round(PROBLEM_WIDTH * plateHeight);
 
-        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
+        font = Font.decode(MAIN_FONT + " "  + (int) (plateHeight * 0.7));
 
         setVisibilityState(0);
         setVisible(false);
@@ -63,7 +63,7 @@ public class StatisticsWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics g, int screenWidth, int screenHeight) {
+    public void paintImpl(AbstractGraphics g, int screenWidth, int screenHeight) {
         update();
         updateVisibilityState();
         if (visibilityState == 0) return;
@@ -74,9 +74,9 @@ public class StatisticsWidget extends Widget {
         g = g.create();
         g.translate(leftX, bottomY - height);
 
-        g.drawRect(0, 0, width, plateHeight, BACKGROUND, opacity, Graphics.RectangleType.SOLID);
+        g.drawRect(0, 0, width, plateHeight, BACKGROUND, opacity, AbstractGraphics.RectangleType.SOLID);
 
-        drawTextInRect(g, "Teams solved for each problem", 0, 0, -1, plateHeight, Graphics.Alignment.LEFT,
+        drawTextInRect(g, "Teams solved for each problem", 0, 0, -1, plateHeight, AbstractGraphics.Alignment.LEFT,
                 font, StatisticsStylesheet.header, visibilityState, WidgetAnimation.NOT_ANIMATED);
 
         List<ProblemInfo> problems = info.problems;
@@ -100,7 +100,7 @@ public class StatisticsWidget extends Widget {
             }
 
             drawTextInRect(g, problem.letter, 0, y, problemWidth,
-                    plateHeight, Graphics.Alignment.CENTER, font,
+                    plateHeight, AbstractGraphics.Alignment.CENTER, font,
                     style, visibilityState,
                     WidgetAnimation.NOT_ANIMATED);
 
@@ -136,14 +136,14 @@ public class StatisticsWidget extends Widget {
                     String text = "" + num[j];
 
                     drawTextInRect(g, text, x, y,
-                            w, plateHeight, len[j] < 5 ? Graphics.Alignment.CENTER : Graphics.Alignment.RIGHT, font,
+                            w, plateHeight, len[j] < 5 ? AbstractGraphics.Alignment.CENTER : AbstractGraphics.Alignment.RIGHT, font,
                             styles[j],
                             visibilityState, false, WidgetAnimation.NOT_ANIMATED, false);
 
                     x += w;
                 }
             }
-            g.drawRect(x, y, width - x, plateHeight, BACKGROUND, opacity, Graphics.RectangleType.SOLID);
+            g.drawRect(x, y, width - x, plateHeight, BACKGROUND, opacity, AbstractGraphics.RectangleType.SOLID);
             y += plateHeight;
         }
     }

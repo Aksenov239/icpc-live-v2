@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 
 /**
  * Created by aksenov on 28.04.2015.
@@ -24,11 +24,11 @@ public abstract class PlayerWidget extends Widget {
         return new VideoVLCWidget(x, y, width, height, sleepTime, updateWait);
     }
 
-    public abstract void draw(Graphics g);
+    public abstract void draw(AbstractGraphics g);
 
-    public abstract void draw(Graphics g, int x, int y, int width, int height);
+    public abstract void draw(AbstractGraphics g, int x, int y, int width, int height);
 
-    public abstract void draw(Graphics g, int x, int y, int width, int height, double opacity);
+    public abstract void draw(AbstractGraphics g, int x, int y, int width, int height, double opacity);
 
     public abstract void change(String url);
 
@@ -50,6 +50,18 @@ public abstract class PlayerWidget extends Widget {
 
     public abstract double getAspectRatio();
 
-    public void updateState(Graphics g, boolean manualSwitch) {
+    public void updateState(AbstractGraphics g, boolean manualSwitch) {
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setSleepTime(int sleepTime) {
+        this.sleepTime = sleepTime;
     }
 }

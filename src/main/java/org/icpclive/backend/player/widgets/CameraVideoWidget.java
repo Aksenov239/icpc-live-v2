@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 
@@ -22,7 +22,7 @@ public class CameraVideoWidget extends Widget {
         }
     }
 
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
 
         // g.drawImage(image, x, y, null);

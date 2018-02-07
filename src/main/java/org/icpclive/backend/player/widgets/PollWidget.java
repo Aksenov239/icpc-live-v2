@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.PollStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
@@ -43,7 +43,7 @@ public class PollWidget extends Widget {
         this.leftX = leftX;
         this.bottomY = bottomY;
 
-        font = Font.decode("Open Sans " + (int) (plateHeight * 0.7));
+        font = Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7));
 
         this.minimalVoteWidth = minimalVoteWidth;
 
@@ -65,7 +65,7 @@ public class PollWidget extends Widget {
     }
 
     @Override
-    protected void paintImpl(Graphics g, int screenWidth, int screenHeight) {
+    protected void paintImpl(AbstractGraphics g, int screenWidth, int screenHeight) {
         update();
         updateVisibilityState();
 
@@ -81,10 +81,10 @@ public class PollWidget extends Widget {
 
         int y = 0;
         drawTextInRect(g, "Vote with hashtag " + pollToShow.getHashtag(), 0, y, width, plateHeight,
-                Graphics.Alignment.RIGHT, font, PollStylesheet.hashtag,
+                AbstractGraphics.Alignment.RIGHT, font, PollStylesheet.hashtag,
                 visibilityState, WidgetAnimation.NOT_ANIMATED);
 
-        drawTextInRect(g, pollToShow.getQuestion(), 0, 0, -1, plateHeight, Graphics.Alignment.LEFT,
+        drawTextInRect(g, pollToShow.getQuestion(), 0, 0, -1, plateHeight, AbstractGraphics.Alignment.LEFT,
                 font, PollStylesheet.question, visibilityState, WidgetAnimation.NOT_ANIMATED);
 
         y += plateHeight;
@@ -92,17 +92,17 @@ public class PollWidget extends Widget {
         double visibilityOption = 1. * optionWidth / this.width;
         for (int i = 0; i < total; i++) {
             drawTextInRect(g, options[i].option, 0, y, optionWidth, plateHeight,
-                    Graphics.Alignment.CENTER, font, PollStylesheet.option,
+                    AbstractGraphics.Alignment.CENTER, font, PollStylesheet.option,
                     Math.min(1, visibilityState / visibilityOption), WidgetAnimation.NOT_ANIMATED);
             int voteWidth = (int) ((this.width - optionWidth - minimalVoteWidth) * percent[i]);
             int ww = (int)((minimalVoteWidth + voteWidth) * visibilityState);
             drawTextInRect(g, "" + options[i].votes, optionWidth, y,
                     ww, plateHeight,
-                    Graphics.Alignment.CENTER, font, PollStylesheet.votes,
+                    AbstractGraphics.Alignment.CENTER, font, PollStylesheet.votes,
                     visibilityState,
                     WidgetAnimation.NOT_ANIMATED);
             g.drawRect(optionWidth + ww, y, this.width - (optionWidth + ww),
-                    plateHeight, PollStylesheet.background, this.visibilityState, Graphics.RectangleType.SOLID);
+                    plateHeight, PollStylesheet.background, this.visibilityState, AbstractGraphics.RectangleType.SOLID);
             y += plateHeight;
         }
     }

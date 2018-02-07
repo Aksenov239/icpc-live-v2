@@ -1,6 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.graphics.GraphicsSWT;
 import org.icpclive.backend.player.widgets.stylesheets.WordStatisticsStylesheet;
 import org.icpclive.datapassing.CachedData;
@@ -42,7 +42,7 @@ public class WordStatisticsWidget extends Widget {
         this.DX = (int) (0.05 * widthR);
         this.heightR = heightR;
         this.Y = Y;
-        font = new Font("Open Sans", Font.BOLD, 40);
+        font = new Font(MAIN_FONT, Font.BOLD, 40);
 
         Properties properties = new Properties();
         try {
@@ -87,21 +87,21 @@ public class WordStatisticsWidget extends Widget {
     }
 
     @Override
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         update();
         updateVisibilityState();
         if (visibilityState == 0) {
             return;
         }
         int X = BASE_WIDTH - (int) ((widthR + DX) * visibilityState);
-        g.drawRect(X, Y, widthR, heightR, WordStatisticsStylesheet.word.background, 1, Graphics.RectangleType.SOLID);
+        g.drawRect(X, Y, widthR, heightR, WordStatisticsStylesheet.word.background, 1, AbstractGraphics.RectangleType.SOLID);
 
         if (picture == null) {
             int w = IMAGE_WIDTH - 20;
             int h = heightR - 20;
 
             g.drawRectWithText(word, X + 10, Y + 10, w, h,
-                    Graphics.Alignment.CENTER, font, WordStatisticsStylesheet.word,
+                    AbstractGraphics.Alignment.CENTER, font, WordStatisticsStylesheet.word,
                     visibilityState, 1, 0, false);
         } else {
             int x = X + IMAGE_WIDTH / 2 - picture.getWidth() / 2;

@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.generator;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.Widget;
 import org.icpclive.backend.graphics.GraphicsSWT;
 
@@ -55,7 +56,7 @@ public class ScreenGeneratorSWT implements ScreenGenerator {
             width = (int) Math.round(width / scale);
             height = (int) Math.round(height / scale);
         }
-        org.icpclive.backend.graphics.Graphics g = new GraphicsSWT(g2);
+        AbstractGraphics g = new GraphicsSWT(g2);
 
 //        Graphics g = new FastGraphics(g2, ((DataBufferInt)raster.getDataBuffer()).getData(), this.width);
         g.setScale(scale);

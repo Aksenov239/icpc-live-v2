@@ -6,7 +6,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.icpclive.backend.player.widgets.ClockWidget;
+import org.icpclive.backend.player.widgets.old.ClockWidget;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.PCMS.PCMSContestInfo;

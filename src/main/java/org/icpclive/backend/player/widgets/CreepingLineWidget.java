@@ -1,7 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.Preparation;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.webadmin.mainscreen.Advertisement;
@@ -70,7 +70,7 @@ public abstract class CreepingLineWidget extends Widget {
         super(updateWait);
     }
 
-    Font messageFont = Font.decode("Open Sans " + 34);
+    Font messageFont = Font.decode(MAIN_FONT + " " + 34);
 
     public void addMessage(String s) {
         inQueue.add(s);
@@ -92,7 +92,7 @@ public abstract class CreepingLineWidget extends Widget {
             position = 0;
         }
 
-        public Message(String message, Graphics g, Font font) {
+        public Message(String message, AbstractGraphics g, Font font) {
             this.message = message;
             Rectangle2D wh = g.getStringBounds(message, font);
             width = (int) Math.ceil(wh.getWidth());

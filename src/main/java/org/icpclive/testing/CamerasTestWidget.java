@@ -1,7 +1,7 @@
 package org.icpclive.testing;
 
 import org.icpclive.backend.player.urls.TeamUrls;
-import org.icpclive.backend.graphics.Graphics;
+import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.PlayerWidget;
 import org.icpclive.backend.player.widgets.Widget;
 import org.icpclive.datapassing.CachedData;
@@ -115,7 +115,7 @@ public class CamerasTestWidget extends Widget {
         }
     }
 
-    public void paintImpl(Graphics g, int width, int height) {
+    public void paintImpl(AbstractGraphics g, int width, int height) {
         if (inChange && lastChange + sleepTime < System.currentTimeMillis()) {
             oldPage = currentPage;
             int id = (currentPage - 1) * onPage + 1;
