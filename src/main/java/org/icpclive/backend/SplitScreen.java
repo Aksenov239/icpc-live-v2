@@ -4,7 +4,7 @@ import com.sun.jna.NativeLibrary;
 import org.icpclive.backend.player.FramePlayer;
 import org.icpclive.backend.player.generator.ScreenGeneratorGL;
 import org.icpclive.backend.player.generator.ScreenGeneratorSWT;
-import org.icpclive.backend.player.widgets.ClockWidget;
+import org.icpclive.backend.player.widgets.old.ClockWidget;
 import org.icpclive.backend.player.widgets.SplitScreenWidget;
 import org.icpclive.backend.player.widgets.Widget;
 

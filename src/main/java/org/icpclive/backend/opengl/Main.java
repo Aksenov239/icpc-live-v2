@@ -3,7 +3,7 @@ package org.icpclive.backend.opengl;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.sun.jna.NativeLibrary;
-import org.icpclive.backend.player.widgets.ClockWidget;
+import org.icpclive.backend.player.widgets.old.ClockWidget;
 
 import javax.swing.*;
 import java.awt.*;

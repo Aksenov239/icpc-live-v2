@@ -76,7 +76,7 @@ public class MainToScreen {
                 519, 994, 39, 1371, updateWait
         ));
 
-//        generator.addWidget(new BreakingNewsWidget(
+//        generator.addWidget(new OldBreakingNewsWidget(
 //                updateWait,
 //                (int)(Widget.BASE_WIDTH * 0.65),
 //                (int)(Widget.BASE_HEIGHT * 0.6),

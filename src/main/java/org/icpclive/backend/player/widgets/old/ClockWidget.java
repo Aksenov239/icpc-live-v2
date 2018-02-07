@@ -1,6 +1,8 @@
-package org.icpclive.backend.player.widgets;
+package org.icpclive.backend.player.widgets.old;
 
 import org.icpclive.backend.Preparation;
+import org.icpclive.backend.player.widgets.Widget;
+import org.icpclive.backend.player.widgets.WidgetAnimation;
 import org.icpclive.backend.player.widgets.stylesheets.ClockStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;

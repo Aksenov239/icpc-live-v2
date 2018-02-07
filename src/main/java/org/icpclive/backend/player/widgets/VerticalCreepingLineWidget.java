@@ -7,7 +7,7 @@ import org.icpclive.events.TeamInfo;
 
 import java.awt.*;
 
-import static org.icpclive.backend.player.widgets.ClockWidget.getTimeString;
+import static org.icpclive.backend.player.widgets.old.ClockWidget.getTimeString;
 
 /**
  * @author: pashka

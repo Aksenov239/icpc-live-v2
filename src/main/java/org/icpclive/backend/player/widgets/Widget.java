@@ -77,10 +77,10 @@ public abstract class Widget {
     private static final int POINTS_IN_ROUND = 1;
     private static final double ROUND_RADIUS = 0;
 
-    long last = 0;
-    double opacity = 0;
-    double textOpacity = 0;
-    double visibilityState = 0;
+    private long last = 0;
+    protected double opacity = 0;
+    protected double textOpacity = 0;
+    protected double visibilityState = 0;
 
     protected long updateWait;
     protected long lastUpdate;
@@ -166,33 +166,33 @@ public abstract class Widget {
         return visible;
     }
 
-    static final int POSITION_LEFT = 0;
-    static final int POSITION_RIGHT = 1;
-    static final int POSITION_CENTER = 2;
+    public static final int POSITION_LEFT = 0;
+    public static final int POSITION_RIGHT = 1;
+    public static final int POSITION_CENTER = 2;
 
     private double lastBlinkingOpacity = 0;
     private long lastBlinkingOpacityUpdate = 0;
     private double blinkingValue = 0.20;
 
-    void drawTextInRect(org.icpclive.backend.graphics.Graphics gg, String text, int x, int y, int width, int height,
+    protected void drawTextInRect(org.icpclive.backend.graphics.Graphics gg, String text, int x, int y, int width, int height,
                         org.icpclive.backend.graphics.Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
                         double visibilityState) {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true);
     }
 
-    void drawTextInRect(org.icpclive.backend.graphics.Graphics gg, String text, int x, int y, int width, int height,
+    protected void drawTextInRect(org.icpclive.backend.graphics.Graphics gg, String text, int x, int y, int width, int height,
                         org.icpclive.backend.graphics.Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
                         double visibilityState, WidgetAnimation widgetAnimation) {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true, widgetAnimation, false);
     }
 
-    void drawTextInRect(org.icpclive.backend.graphics.Graphics gg, String text, int x, int y, int width, int height,
+    protected void drawTextInRect(org.icpclive.backend.graphics.Graphics gg, String text, int x, int y, int width, int height,
                         org.icpclive.backend.graphics.Graphics.Alignment alignment, Font font, PlateStyle plateStyle,
                         double visibilityState, boolean scale) {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, scale, WidgetAnimation.NOT_ANIMATED, false);
     }
 
-    void drawTextInRect(org.icpclive.backend.graphics.Graphics g, String text, int x, int y, int width, int height, org.icpclive.backend.graphics.Graphics.Alignment alignment,
+    protected void drawTextInRect(org.icpclive.backend.graphics.Graphics g, String text, int x, int y, int width, int height, org.icpclive.backend.graphics.Graphics.Alignment alignment,
                         Font font, PlateStyle plateStyle,
                         double visibilityState, boolean scale,
                         WidgetAnimation widgetAnimation, boolean isBlinking) {
@@ -225,12 +225,12 @@ public abstract class Widget {
                 opacity, textOpacity, MARGIN, scale);
     }
 
-    void drawTextToFit(org.icpclive.backend.graphics.Graphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
+    protected void drawTextToFit(org.icpclive.backend.graphics.Graphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
        // Graphics gg = g.create(x, y, width, height);
         g.drawTextThatFits(text, (int) X, (int) Y, width, height, font, color, MARGIN);
     }
 
-    void drawTeamPane(org.icpclive.backend.graphics.Graphics g, TeamInfo team, int x, int y, int height, double state,
+    protected void drawTeamPane(org.icpclive.backend.graphics.Graphics g, TeamInfo team, int x, int y, int height, double state,
                       double rank_width, double name_width, double total_width, double penalty_width) {
 
         PlateStyle color = getTeamRankColor(team);
@@ -250,7 +250,7 @@ public abstract class Widget {
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, org.icpclive.backend.graphics.Graphics.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
-    void drawTeamPane(org.icpclive.backend.graphics.Graphics g, TeamInfo team, int x, int y, int height, double state) {
+    protected void drawTeamPane(org.icpclive.backend.graphics.Graphics g, TeamInfo team, int x, int y, int height, double state) {
         drawTeamPane(g, team, x, y, height, state, RANK_WIDTH, NAME_WIDTH, TOTAL_WIDTH, PENALTY_WIDTH);
     }
 
