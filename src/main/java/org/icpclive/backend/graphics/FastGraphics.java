@@ -9,6 +9,7 @@ import java.awt.geom.Rectangle2D;
 /**
  * @author pashka
  */
+@Deprecated
 public class FastGraphics extends org.icpclive.backend.graphics.Graphics {
 
     private Graphics2D g;
