@@ -86,7 +86,7 @@ public class ClockWidget extends Widget {
 //        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
 
         PlateStyle style = time < ContestInfo.FREEZE_TIME / 1000 ? ClockStylesheet.main : ClockStylesheet.freeze;
-        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER,
+        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, PlateStyle.Alignment.CENTER,
                 clockFont, style, opacity, WidgetAnimation.VERTICAL_ANIMATED);
 //        drawRect(g, x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, 1);
     }

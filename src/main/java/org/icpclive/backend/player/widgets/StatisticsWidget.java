@@ -74,9 +74,9 @@ public class StatisticsWidget extends Widget {
         g = g.create();
         g.translate(leftX, bottomY - height);
 
-        g.drawRect(0, 0, width, plateHeight, BACKGROUND, opacity, AbstractGraphics.RectangleType.SOLID);
+        g.drawRect(0, 0, width, plateHeight, BACKGROUND, opacity, PlateStyle.RectangleType.SOLID);
 
-        drawTextInRect(g, "Teams solved for each problem", 0, 0, -1, plateHeight, AbstractGraphics.Alignment.LEFT,
+        drawTextInRect(g, "Teams solved for each problem", 0, 0, -1, plateHeight, PlateStyle.Alignment.LEFT,
                 font, StatisticsStylesheet.header, visibilityState, WidgetAnimation.NOT_ANIMATED);
 
         List<ProblemInfo> problems = info.problems;
@@ -100,7 +100,7 @@ public class StatisticsWidget extends Widget {
             }
 
             drawTextInRect(g, problem.letter, 0, y, problemWidth,
-                    plateHeight, AbstractGraphics.Alignment.CENTER, font,
+                    plateHeight, PlateStyle.Alignment.CENTER, font,
                     style, visibilityState,
                     WidgetAnimation.NOT_ANIMATED);
 
@@ -136,14 +136,14 @@ public class StatisticsWidget extends Widget {
                     String text = "" + num[j];
 
                     drawTextInRect(g, text, x, y,
-                            w, plateHeight, len[j] < 5 ? AbstractGraphics.Alignment.CENTER : AbstractGraphics.Alignment.RIGHT, font,
+                            w, plateHeight, len[j] < 5 ? PlateStyle.Alignment.CENTER : PlateStyle.Alignment.RIGHT, font,
                             styles[j],
                             visibilityState, false, WidgetAnimation.NOT_ANIMATED, false);
 
                     x += w;
                 }
             }
-            g.drawRect(x, y, width - x, plateHeight, BACKGROUND, opacity, AbstractGraphics.RectangleType.SOLID);
+            g.drawRect(x, y, width - x, plateHeight, BACKGROUND, opacity, PlateStyle.RectangleType.SOLID);
             y += plateHeight;
         }
     }

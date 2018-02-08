@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.graphics.AbstractGraphics;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.backend.player.widgets.stylesheets.CaptionStylesheet;
@@ -25,9 +26,9 @@ public class CaptionWidget extends Widget {
 
     private String caption;
     private String description;
-    private final AbstractGraphics.Alignment alignment;
+    private final PlateStyle.Alignment alignment;
 
-    public CaptionWidget(AbstractGraphics.Alignment alignment) {
+    public CaptionWidget(PlateStyle.Alignment alignment) {
         this.alignment = alignment;
     }
 
@@ -43,11 +44,11 @@ public class CaptionWidget extends Widget {
             int x1;
             int x2;
             int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
-            if (alignment == AbstractGraphics.Alignment.LEFT) {
+            if (alignment == PlateStyle.Alignment.LEFT) {
                 x1 = X_LEFT;
                 x2 = x1 + dx;
                 QueueWidget.Y_SHIFT = 3;
-            } else if (alignment == AbstractGraphics.Alignment.RIGHT) {
+            } else if (alignment == PlateStyle.Alignment.RIGHT) {
                 x1 = X_RIGHT;
                 x2 = x1 - dx;
             } else {

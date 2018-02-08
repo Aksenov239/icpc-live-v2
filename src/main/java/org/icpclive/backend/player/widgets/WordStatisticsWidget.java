@@ -2,6 +2,7 @@ package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.graphics.GraphicsSWT;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.WordStatisticsStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
@@ -94,14 +95,14 @@ public class WordStatisticsWidget extends Widget {
             return;
         }
         int X = BASE_WIDTH - (int) ((widthR + DX) * visibilityState);
-        g.drawRect(X, Y, widthR, heightR, WordStatisticsStylesheet.word.background, 1, AbstractGraphics.RectangleType.SOLID);
+        g.drawRect(X, Y, widthR, heightR, WordStatisticsStylesheet.word.background, 1, PlateStyle.RectangleType.SOLID);
 
         if (picture == null) {
             int w = IMAGE_WIDTH - 20;
             int h = heightR - 20;
 
             g.drawRectWithText(word, X + 10, Y + 10, w, h,
-                    AbstractGraphics.Alignment.CENTER, font, WordStatisticsStylesheet.word,
+                    PlateStyle.Alignment.CENTER, font, WordStatisticsStylesheet.word,
                     visibilityState, 1, 0, false);
         } else {
             int x = X + IMAGE_WIDTH / 2 - picture.getWidth() / 2;

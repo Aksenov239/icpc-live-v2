@@ -171,24 +171,24 @@ public abstract class Widget {
     private double blinkingValue = 0.20;
 
     protected void drawTextInRect(AbstractGraphics gg, String text, int x, int y, int width, int height,
-                                  AbstractGraphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                                  PlateStyle.Alignment alignment, Font font, PlateStyle plateStyle,
                                   double visibilityState) {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true);
     }
 
     protected void drawTextInRect(AbstractGraphics gg, String text, int x, int y, int width, int height,
-                                  AbstractGraphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                                  PlateStyle.Alignment alignment, Font font, PlateStyle plateStyle,
                                   double visibilityState, WidgetAnimation widgetAnimation) {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true, widgetAnimation, false);
     }
 
     protected void drawTextInRect(AbstractGraphics gg, String text, int x, int y, int width, int height,
-                                  AbstractGraphics.Alignment alignment, Font font, PlateStyle plateStyle,
+                                  PlateStyle.Alignment alignment, Font font, PlateStyle plateStyle,
                                   double visibilityState, boolean scale) {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, scale, WidgetAnimation.NOT_ANIMATED, false);
     }
 
-    protected void drawTextInRect(AbstractGraphics g, String text, int x, int y, int width, int height, AbstractGraphics.Alignment alignment,
+    protected void drawTextInRect(AbstractGraphics g, String text, int x, int y, int width, int height, PlateStyle.Alignment alignment,
                                   Font font, PlateStyle plateStyle,
                                   double visibilityState, boolean scale,
                                   WidgetAnimation widgetAnimation, boolean isBlinking) {
@@ -236,13 +236,13 @@ public abstract class Widget {
         int totalWidth = (int) round(height * total_width);
         int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, AbstractGraphics.Alignment.CENTER, font, color, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += rankWidth + spaceX;
-        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, AbstractGraphics.Alignment.LEFT, font, TeamPaneStylesheet.name, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += nameWidth + spaceX;
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, AbstractGraphics.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, AbstractGraphics.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     protected void drawTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, int height, double state) {

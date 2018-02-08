@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.graphics.AbstractGraphics;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.Stylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
@@ -19,7 +20,7 @@ public class GreenScreenWidget extends Widget {
     public void paintImpl(AbstractGraphics g, int width, int height) {
         if (isVisible()) {
 //            g.clear(width, height);
-            g.drawRect(0, 0, width, height, Color.decode(Stylesheet.styles.get("chromakey.color")), 1, AbstractGraphics.RectangleType.SOLID);
+            g.drawRect(0, 0, width, height, Color.decode(Stylesheet.styles.get("chromakey.color")), 1, PlateStyle.RectangleType.SOLID);
         }
     }
 

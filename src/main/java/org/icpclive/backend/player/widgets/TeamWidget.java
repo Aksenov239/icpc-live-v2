@@ -98,7 +98,7 @@ public class TeamWidget extends Widget {
 
     private void drawReplay(AbstractGraphics g, int x, int y, int width, int height) {
         drawTextInRect(g, "R", (int) (x + width * 0.95), (int) (y + height * 0.17), -1,
-                HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
+                HEIGHT, PlateStyle.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
     }
 
     @Override
@@ -134,7 +134,7 @@ public class TeamWidget extends Widget {
         }
 
         // TODO: fill rect
-        g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1, AbstractGraphics.RectangleType.SOLID);
+        g.drawRect(x, y, this.width - mainVideo.width, height, new Color(0, 0, 30), 1, PlateStyle.RectangleType.SOLID);
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;
 
@@ -170,14 +170,14 @@ public class TeamWidget extends Widget {
             if (!isFull) {
                 int yy = Y + (HEIGHT + GAP_Y) * i;
                 drawTextInRect(g, "" + (char) ('A' + i), x + X, y + yy,
-                        PR_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2,
+                        PR_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2,
                         problemColor, 1, WidgetAnimation.UNFOLD_ANIMATED);
             } else {
                 // int x = X + (PR_WIDTH + GAP_X) * i;
                 int xx = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i) - X;
                 double timeOpacity = i == currentProblemId ? getTimeOpacity() : 1;
                 drawTextInRect(g, "" + (char) ('A' + i), x + xx, y + dy,
-                        PR_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, problemColor,
+                        PR_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, problemColor,
                         timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
             }
 
@@ -187,7 +187,7 @@ public class TeamWidget extends Widget {
                 if ("AC".equals(run.getResult())) {
                     if (!isFull) {
                         drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
-                                RUN_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, TeamStylesheet.acProblem,
+                                RUN_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, TeamStylesheet.acProblem,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
@@ -209,7 +209,7 @@ public class TeamWidget extends Widget {
                     PlateStyle color = "".equals(run.getResult()) ? TeamStylesheet.udProblem: TeamStylesheet.waProblem;
                     if (j == runs.length - 1) {
                         drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
-                                RUN_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color,
+                                RUN_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, color,
                                 i == currentProblemId ? getTimeOpacity() : 1,
                                 WidgetAnimation.UNFOLD_ANIMATED
                         );
@@ -217,7 +217,7 @@ public class TeamWidget extends Widget {
                         x += RUN_WIDTH + GAP_X;
                     } else {
                         drawTextInRect(g, "", x + x, y + y,
-                                RUN_SMALL_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                                RUN_SMALL_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
                         x += RUN_SMALL_WIDTH + GAP_X;
                     }
                 }

@@ -130,7 +130,7 @@ public class NewTeamWidget extends Widget {
 
     private void drawReplay(AbstractGraphics g, int x, int y, int width, int height) {
         drawTextInRect(g, "R", (int) (x + width * 0.95), (int) (y + height * 0.17), -1, HEIGHT,
-                AbstractGraphics.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
+                PlateStyle.Alignment.CENTER, FONT2, TeamStylesheet.replay, getTimeOpacity());
     }
 
     @Override
@@ -250,7 +250,7 @@ public class NewTeamWidget extends Widget {
             mainVideo.y = BIG_Y;
 
             drawTextInRect(g, "" + (char) ('A' + i), mainVideo.x + X, mainVideo.y + y,
-                    PR_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, problemColor, 1);
+                    PR_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, problemColor, 1);
 
             int x = X - GAP_X;
             for (int j = 0; j < runs.length; j++) {
@@ -258,7 +258,7 @@ public class NewTeamWidget extends Widget {
                 PlateStyle color = run.getResult().equals("AC") ? TeamStylesheet.acProblem : run.getResult().equals("") ? TeamStylesheet.udProblem : TeamStylesheet.waProblem;
                 if (j == runs.length - 1 || run.getResult().equals("AC")) {
                     drawTextInRect(g, format(run.getTime() / 1000), mainVideo.x + x - RUN_WIDTH, mainVideo.y + y,
-                            RUN_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color,
+                            RUN_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, color,
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
                     //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
@@ -269,7 +269,7 @@ public class NewTeamWidget extends Widget {
                     break;
                 } else if (run.getTime() != runs[j + 1].getTime()) {
                     drawTextInRect(g, "", mainVideo.x + x - RUN_SMALL_WIDTH, mainVideo.y + y,
-                            RUN_SMALL_WIDTH, HEIGHT, AbstractGraphics.Alignment.CENTER, FONT2, color, 1);
+                            RUN_SMALL_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, color, 1);
                     x -= RUN_SMALL_WIDTH + GAP_X;
                 }
 

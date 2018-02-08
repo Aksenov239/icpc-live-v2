@@ -7,6 +7,7 @@ import org.icpclive.backend.player.widgets.PlayerWidget;
 import org.icpclive.backend.player.widgets.Widget;
 import org.icpclive.backend.player.widgets.WidgetAnimation;
 import org.icpclive.backend.player.widgets.stylesheets.BreakingNewsStylesheet;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.RunInfo;
@@ -211,7 +212,7 @@ public class OldBreakingNewsWidget extends Widget {
         drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
         Font font = Font.decode(MAIN_FONT + " " + (int) Math.round(PLATE_HEIGHT * 0.7));
         drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
-                AbstractGraphics.Alignment.RIGHT, font, BreakingNewsStylesheet.caption, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                PlateStyle.Alignment.RIGHT, font, BreakingNewsStylesheet.caption, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.AbstractGraphics;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.datapassing.PersonData;
@@ -16,8 +17,8 @@ public class DoublePersonWidget extends Widget {
 
     public DoublePersonWidget(long updateWait, long duration) {
         super(updateWait);
-        leftWidget = new CaptionWidget(AbstractGraphics.Alignment.LEFT);
-        rightWidget = new CaptionWidget(AbstractGraphics.Alignment.RIGHT);
+        leftWidget = new CaptionWidget(PlateStyle.Alignment.LEFT);
+        rightWidget = new CaptionWidget(PlateStyle.Alignment.RIGHT);
         this.duration = duration;
     }
 

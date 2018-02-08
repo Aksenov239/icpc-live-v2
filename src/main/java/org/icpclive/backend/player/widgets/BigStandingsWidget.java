@@ -326,7 +326,7 @@ public class BigStandingsWidget extends Widget {
         //g.clear(x, y, this.width, plateHeight);
         drawTextInRect(g, headingText, x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
-                AbstractGraphics.Alignment.CENTER, font, heading, visibilityState, WidgetAnimation.NOT_ANIMATED);
+                PlateStyle.Alignment.CENTER, font, heading, visibilityState, WidgetAnimation.NOT_ANIMATED);
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
@@ -334,12 +334,12 @@ public class BigStandingsWidget extends Widget {
                     ((firstSolved[i] != null) ? BigStandingsStylesheet.udProblem : BigStandingsStylesheet.noProblem) :
                     BigStandingsStylesheet.acProblem;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
-                    AbstractGraphics.Alignment.CENTER, font, color, visibilityState, WidgetAnimation.NOT_ANIMATED);
+                    PlateStyle.Alignment.CENTER, font, color, visibilityState, WidgetAnimation.NOT_ANIMATED);
             x += problemWidth + spaceX;
         }
 
         g.drawRect(x, y, totalWidth + penaltyWidth, plateHeight, BigStandingsStylesheet.penalty.background,
-                opacity, AbstractGraphics.RectangleType.SOLID);
+                opacity, PlateStyle.RectangleType.SOLID);
     }
 
     private void drawFullTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
@@ -347,7 +347,7 @@ public class BigStandingsWidget extends Widget {
         Font font = this.font;
         PlateStyle color = getTeamRankColor(team);
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, AbstractGraphics.Alignment.CENTER,
+                rankWidth, plateHeight, PlateStyle.Alignment.CENTER,
                 font, color, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += rankWidth + spaceX;
@@ -359,7 +359,7 @@ public class BigStandingsWidget extends Widget {
         }
         String name = team.getShortName();//getShortName(g, teamId.getShortName());
         drawTextInRect(g, name, x, y,
-                nameWidth, plateHeight, AbstractGraphics.Alignment.LEFT,
+                nameWidth, plateHeight, PlateStyle.Alignment.LEFT,
                 font, nameStyle, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += nameWidth + spaceX;
@@ -391,7 +391,7 @@ public class BigStandingsWidget extends Widget {
             boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - team.getLastRun(i).getTimestamp() * 1000) < blinkingTime;
             if (status.length() == 0) status = ".";
             drawTextInRect(g, status, x, y,
-                    problemWidth, plateHeight, AbstractGraphics.Alignment.CENTER,
+                    problemWidth, plateHeight, PlateStyle.Alignment.CENTER,
                     font, statusColor, visibilityState,
                     true, WidgetAnimation.UNFOLD_ANIMATED, isBlinking);
 
@@ -409,7 +409,7 @@ public class BigStandingsWidget extends Widget {
             problemsColor = problemsColor.brighter();
         }
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth,
-                plateHeight, AbstractGraphics.Alignment.CENTER,
+                plateHeight, PlateStyle.Alignment.CENTER,
                 font, problemsColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
         PlateStyle penaltyColor = BigStandingsStylesheet.penalty;
@@ -417,7 +417,7 @@ public class BigStandingsWidget extends Widget {
             penaltyColor = penaltyColor.brighter();
         }
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
-                plateHeight, AbstractGraphics.Alignment.CENTER,
+                plateHeight, PlateStyle.Alignment.CENTER,
                 font, penaltyColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
 
         for (Point star : stars) {

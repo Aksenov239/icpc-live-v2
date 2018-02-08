@@ -131,7 +131,7 @@ public class GraphicsGL extends AbstractGraphics {
     }
 
     @Override
-    public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
+    public void drawRect(int x, int y, int width, int height, Color color, double opacity, PlateStyle.RectangleType rectangleType) {
 
     }
 
@@ -193,7 +193,7 @@ public class GraphicsGL extends AbstractGraphics {
     }
 
     @Override
-    public void drawRectWithText(String text, int x, int y, int width, int height, Alignment alignment, Font font,
+    public void drawRectWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
                                  PlateStyle plateStyle, double opacity, double textOpacity, double margin,
                                  boolean scale) {
         x += x0;
@@ -213,9 +213,9 @@ public class GraphicsGL extends AbstractGraphics {
 
         if (width == -1) {
             width = (int) (textWidth + 2 * margin);
-            if (alignment == Alignment.CENTER) {
+            if (alignment == PlateStyle.Alignment.CENTER) {
                 x -= width / 2;
-            } else if (alignment == Alignment.RIGHT) {
+            } else if (alignment == PlateStyle.Alignment.RIGHT) {
                 x -= width;
             }
         } else if (scale) {
@@ -233,9 +233,9 @@ public class GraphicsGL extends AbstractGraphics {
                 - 0.03f * height);
 
         float xx;
-        if (alignment == Alignment.LEFT) {
+        if (alignment == PlateStyle.Alignment.LEFT) {
             xx = (float) (x + margin);
-        } else if (alignment == Alignment.CENTER) {
+        } else if (alignment == PlateStyle.Alignment.CENTER) {
             xx = (float) (x + (width - textWidth * textScale) / 2);
         } else {
             xx = (float) (x + width - textWidth * textScale - margin);
@@ -326,18 +326,6 @@ public class GraphicsGL extends AbstractGraphics {
         gl2.glBegin(GL2.GL_POLYGON);
         for (int i = 0; i < x.length; i++) {
             gl2.glVertex2i(x[i] + x0, Widget.BASE_HEIGHT - y[i] - y0);
-        }
-        gl2.glEnd();
-    }
-
-    @Override
-    public void fillPolygon(int[] x, int[] y, int xC, int yC, Color color, double opacity) {
-        setColor(color, opacity);
-        gl2.glBegin(GL2.GL_TRIANGLES);
-        for (int i = 0; i < x.length; i++) {
-            gl2.glVertex2i(x[i] + x0, Widget.BASE_HEIGHT - y[i] - y0);
-            gl2.glVertex2i(xC + x0, Widget.BASE_HEIGHT - yC - y0);
-            gl2.glVertex2i(x[(i + 1) % x.length] + x0, Widget.BASE_HEIGHT - y[(i + 1) % y.length] - y0);
         }
         gl2.glEnd();
     }

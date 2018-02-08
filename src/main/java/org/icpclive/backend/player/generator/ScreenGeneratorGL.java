@@ -3,6 +3,7 @@ package org.icpclive.backend.player.generator;
 import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.Widget;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -126,7 +127,7 @@ public class ScreenGeneratorGL implements ScreenGenerator {
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }
-        g.drawRect(0, 0, 1, 1, Color.WHITE, .5, AbstractGraphics.RectangleType.SOLID);
+        g.drawRect(0, 0, 1, 1, Color.WHITE, .5, PlateStyle.RectangleType.SOLID);
 
         g2.dispose();
     }

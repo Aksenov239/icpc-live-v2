@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.graphics.AbstractGraphics;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 
@@ -10,7 +11,7 @@ import org.icpclive.datapassing.Data;
 public class AdvertisementWidget extends CaptionWidget {
 
     public AdvertisementWidget(long updateWait, long duration) {
-        super(AbstractGraphics.Alignment.CENTER);
+        super(PlateStyle.Alignment.CENTER);
         this.duration = duration;
         setVisible(false);
     }

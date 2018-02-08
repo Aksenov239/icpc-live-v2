@@ -49,7 +49,7 @@ public class GraphicsSWT extends AbstractGraphics {
     }
 
     @Override
-    public void drawRectWithText(String text, int x, int y, int width, int height, Alignment alignment, Font font,
+    public void drawRectWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
                                  PlateStyle plateStyle, double opacity, double textOpacity, double margin,
                                  boolean scale) {
         Graphics2D saved = g;
@@ -64,9 +64,9 @@ public class GraphicsSWT extends AbstractGraphics {
 
         if (width == -1) {
             width = (int) (textWidth + 2 * margin);
-            if (alignment == Alignment.CENTER) {
+            if (alignment == PlateStyle.Alignment.CENTER) {
                 x -= width / 2;
-            } else if (alignment == Alignment.RIGHT) {
+            } else if (alignment == PlateStyle.Alignment.RIGHT) {
                 x -= width;
             }
         } else if (scale) {
@@ -86,9 +86,9 @@ public class GraphicsSWT extends AbstractGraphics {
                 - 0.03f * height;
 
         float xx;
-        if (alignment == Alignment.LEFT) {
+        if (alignment == PlateStyle.Alignment.LEFT) {
             xx = (float) (x + margin);
-        } else if (alignment == Alignment.CENTER) {
+        } else if (alignment == PlateStyle.Alignment.CENTER) {
             xx = (float) (x + (width - textWidth * textScale) / 2);
         } else {
             xx = (float) (x + width - textWidth * textScale - margin);
@@ -103,7 +103,7 @@ public class GraphicsSWT extends AbstractGraphics {
     }
 
     @Override
-    public void drawRect(int x, int y, int width, int height, Color color, double opacity, RectangleType rectangleType) {
+    public void drawRect(int x, int y, int width, int height, Color color, double opacity, PlateStyle.RectangleType rectangleType) {
         setColor(color, opacity * .8);
         g.fillRect(x + x0, y + y0, width, height);
         //super.drawRect(x, y, width, height, color, opacity, rectangleType);
@@ -173,11 +173,6 @@ public class GraphicsSWT extends AbstractGraphics {
             yy[i] = y[i] + y0;
         }
         g.fillPolygon(xx, yy, xx.length);
-    }
-
-    @Override
-    public void fillPolygon(int[] x, int[] y, int xC, int yC, Color color, double opacity) {
-        fillPolygon(x, y, color, opacity);
     }
 
     @Override

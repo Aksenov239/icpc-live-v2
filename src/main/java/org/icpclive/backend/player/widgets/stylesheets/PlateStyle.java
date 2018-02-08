@@ -1,7 +1,5 @@
 package org.icpclive.backend.player.widgets.stylesheets;
 
-import org.icpclive.backend.graphics.AbstractGraphics;
-
 import java.awt.*;
 
 /**
@@ -10,10 +8,10 @@ import java.awt.*;
 public class PlateStyle {
     public Color background;
     public Color text;
-    public AbstractGraphics.RectangleType rectangleType;
-    public AbstractGraphics.Alignment alignment;
+    public RectangleType rectangleType;
+    public Alignment alignment;
 
-    public PlateStyle(Color background, Color text, AbstractGraphics.RectangleType rectangleType, AbstractGraphics.Alignment alignment) {
+    public PlateStyle(Color background, Color text, RectangleType rectangleType, Alignment alignment) {
         this.background = background;
         this.text = text;
         this.rectangleType = rectangleType;
@@ -37,10 +35,21 @@ public class PlateStyle {
     public PlateStyle(String styleName) {
         background = Color.decode(Stylesheet.styles.getOrDefault(styleName + ".background", "#000000"));
         text = Color.decode(Stylesheet.styles.getOrDefault(styleName + ".text", "#FFFFFF"));
-        rectangleType = AbstractGraphics.RectangleType.SOLID;
+        rectangleType = RectangleType.SOLID;
 //        rectangleType = Graphics.RectangleType.valueOf(Stylesheet.styles.getOrDefault(styleName + ".style", "SOLID_ROUNDED").toUpperCase());
-        alignment = AbstractGraphics.Alignment.valueOf(Stylesheet.styles.getOrDefault(styleName + ".align", "Left").toUpperCase());
+        alignment = Alignment.valueOf(Stylesheet.styles.getOrDefault(styleName + ".align", "Left").toUpperCase());
     }
 
 
+    public enum RectangleType {
+        SOLID_ROUNDED,
+        SOLID,
+        ITALIC
+    }
+
+    public enum Alignment {
+        LEFT,
+        CENTER,
+        RIGHT
+    }
 }

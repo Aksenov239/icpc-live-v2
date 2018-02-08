@@ -2,6 +2,7 @@ package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.CreepingLineStylesheet;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 
 import java.util.ArrayDeque;
 
@@ -23,7 +24,7 @@ public class HorizontalCreepingLineWidget extends CreepingLineWidget {
 //            g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
         update();
-        g.drawRect(0, height - HEIGHT - MARGIN, width, HEIGHT, CreepingLineStylesheet.main.background, 1, AbstractGraphics.RectangleType.SOLID);
+        g.drawRect(0, height - HEIGHT - MARGIN, width, HEIGHT, CreepingLineStylesheet.main.background, 1, PlateStyle.RectangleType.SOLID);
         g.setFont(messageFont);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
