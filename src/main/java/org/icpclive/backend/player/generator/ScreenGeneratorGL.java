@@ -16,6 +16,7 @@ import sun.java2d.opengl.OGLRenderQueue;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.VolatileImage;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ScreenGeneratorGL implements ScreenGenerator {
     private VolatileImage image;
     private Surface surface;
 
-    public ScreenGeneratorGL(int width, int height, Properties properties, double scale) {
+    public ScreenGeneratorGL(int width, int height, Properties properties, double scale) throws IOException {
         this.width = width;
         this.height = height;
         this.scale = scale;

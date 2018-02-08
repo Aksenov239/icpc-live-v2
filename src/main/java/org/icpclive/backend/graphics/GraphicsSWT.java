@@ -13,6 +13,7 @@ import java.awt.image.RescaleOp;
  */
 public class GraphicsSWT extends AbstractGraphics {
 
+    public static final float TEXT_VERTICAL_SHIFT = -0.03f;
     public Graphics2D g;
 
     public GraphicsSWT(Graphics2D g) {
@@ -83,7 +84,7 @@ public class GraphicsSWT extends AbstractGraphics {
         FontMetrics wh = g.getFontMetrics();
 
         float yy = (float) (y + 1.0 * (height - wh.getStringBounds(text, g).getHeight()) / 2) + wh.getAscent()
-                - 0.03f * height;
+                + TEXT_VERTICAL_SHIFT * height;
 
         float xx;
         if (alignment == PlateStyle.Alignment.LEFT) {

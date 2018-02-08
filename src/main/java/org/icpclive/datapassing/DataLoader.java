@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -144,13 +145,8 @@ public class DataLoader {
         }
     }
 
-    public void backendInitialize() {
-        Properties properties = new Properties();
-        try {
-            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
-        } catch (IOException e) {
-            log.error("error", e);
-        }
+    public void backendInitialize() throws IOException {
+        Properties properties = Config.loadProperties("mainscreen");
         String host = properties.getProperty("data.host");
         int port = Integer.parseInt(properties.getProperty("data.port"));
         //update = Long.parseLong(properties.getProperty("data.update"));

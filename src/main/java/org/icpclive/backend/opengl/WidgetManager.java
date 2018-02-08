@@ -12,6 +12,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.backend.player.widgets.Widget;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -25,7 +26,7 @@ public class WidgetManager implements GLEventListener {
     private int width;
     private int height;
 
-    public WidgetManager(Properties properties) {
+    public WidgetManager(Properties properties) throws IOException {
         Preparation.prepareEventsLoader();
         Preparation.prepareDataLoader();
         Preparation.prepareNetwork(properties.getProperty("login", null), properties.getProperty("password", null));

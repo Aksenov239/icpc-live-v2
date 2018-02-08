@@ -1,8 +1,12 @@
 package org.icpclive.backend;
 
 import com.sun.jna.NativeLibrary;
+import org.icpclive.Config;
+import org.icpclive.backend.player.FramePlayer;
 import org.icpclive.backend.player.MemoryFilePlayer;
+import org.icpclive.backend.player.generator.ScreenGenerator;
 import org.icpclive.backend.player.generator.ScreenGeneratorGL;
+import org.icpclive.backend.player.generator.ScreenGeneratorSWT;
 import org.icpclive.backend.player.widgets.*;
 
 import java.io.File;
@@ -15,10 +19,10 @@ import java.util.Properties;
 /**
  * @author: pashka
  */
-public class MainToFile {
+public class Main {
 
     public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
-        new MainToFile().run();
+        new Main().run();
     }
 
     private void run() throws InterruptedException, InvocationTargetException, IOException {
@@ -33,12 +37,14 @@ public class MainToFile {
             NativeLibrary.addSearchPath("vlc", "/Applications/VLC.app/Contents/MacOS/lib");
         }
 
-        Properties properties = readProperties();
+        Properties properties = Config.loadProperties("mainscreen");
+
         int width = Integer.parseInt(properties.getProperty("width", "1280"));
         int height = Integer.parseInt(properties.getProperty("height", "720"));
         int frameRate = Integer.parseInt(properties.getProperty("rate", "25"));
 
-        ScreenGeneratorGL generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
+//        ScreenGeneratorGL generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        ScreenGenerator generator = new ScreenGeneratorSWT(width, height, properties, (double) width / Widget.BASE_WIDTH);
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
@@ -70,21 +76,8 @@ public class MainToFile {
                 519, 994, 39, 1371, updateWait
         ));
 
-//        generator.addWidget(new OldBreakingNewsWidget(
-//                updateWait,
-//                (int)(Widget.BASE_WIDTH * 0.65),
-//                (int)(Widget.BASE_HEIGHT * 0.6),
-//                (int)(Widget.BASE_WIDTH * 0.3),
-//                (int)(Widget.BASE_HEIGHT * 0.2),
-//                16. / 9,
-//                Integer.parseInt(properties.getProperty("sleep.time")),
-//                Integer.parseInt(properties.getProperty("breakingnews.time"))
-//        ));
-
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
-
-//        generator.addWidget(new ClockWidget(updateWait));
 
         TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
         generator.addWidget(widget);
@@ -106,34 +99,14 @@ public class MainToFile {
                 200
         ));
 
-//        new Timer().schedule(new TimerTask() {
-//            int id = 1;
-//
-//            @Override
-//            public void run() {
-//                widget.showTeam(id);
-//                id++;
-//                if (id == 129) {
-//                    id = 1;
-//                }
-//            }
-//        }, 1000, 32000);
-//
-
         generator.addWidget(new TestFramesWidget());
 
-//        new FramePlayer("Main", generator, frameRate);
-        String filename = properties.getProperty("outputFile", "c:\\work\\image.bin");
-        new MemoryFilePlayer(filename, generator, frameRate);
-    }
-
-    private Properties readProperties() {
-        Properties properties = new Properties();
-        try {
-            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        String outputMode = properties.getProperty("output.mode", "window");
+        if (outputMode.equals("file")) {
+            String filename = properties.getProperty("output.file", "c:\\work\\image.bin");
+            new MemoryFilePlayer(filename, generator, frameRate);
+        } else {
+            new FramePlayer("Main", generator, frameRate);
         }
-        return properties;
     }
 }

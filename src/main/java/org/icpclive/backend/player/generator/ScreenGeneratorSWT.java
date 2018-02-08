@@ -7,6 +7,7 @@ import org.icpclive.backend.graphics.GraphicsSWT;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -21,7 +22,7 @@ public class ScreenGeneratorSWT implements ScreenGenerator {
 
     private BufferedImage image;
 
-    public ScreenGeneratorSWT(int width, int height, Properties properties, double scale) {
+    public ScreenGeneratorSWT(int width, int height, Properties properties, double scale) throws IOException {
         this.width = width;
         this.height = height;
         this.scale = scale;
@@ -61,7 +62,7 @@ public class ScreenGeneratorSWT implements ScreenGenerator {
 //        Graphics g = new FastGraphics(g2, ((DataBufferInt)raster.getDataBuffer()).getData(), this.width);
         g.setScale(scale);
 
-//        g.clear(width, height);
+        g.clear(width, height);
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }
@@ -77,6 +78,7 @@ public class ScreenGeneratorSWT implements ScreenGenerator {
         return height;
     }
 
+    @Override
     public void addWidget(Widget widget) {
         widgets.add(widget);
     }

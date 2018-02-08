@@ -1,5 +1,6 @@
 package org.icpclive.backend.player;
 
+import org.icpclive.backend.player.generator.ScreenGenerator;
 import org.icpclive.backend.player.generator.ScreenGeneratorGL;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class MemoryFilePlayer extends Player {
     private final int height;
     private final int length;
 
-    public MemoryFilePlayer(String filename, ScreenGeneratorGL generator, int frameRate) throws InterruptedException, InvocationTargetException {
+    public MemoryFilePlayer(String filename, ScreenGenerator generator, int frameRate) throws InterruptedException, InvocationTargetException {
         super(generator);
         width = generator.getWidth();
         height = generator.getHeight();

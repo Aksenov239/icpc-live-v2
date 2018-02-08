@@ -18,7 +18,7 @@ import static java.lang.Math.round;
  * @author: pashka
  */
 public abstract class Widget {
-    protected static final String MAIN_FONT = "Open Sans";
+    protected static final String MAIN_FONT = "Open Sans Light";
     private static final int PAUSE_AFTER_ERROR = 50;
 
     protected final Logger log = LogManager.getLogger(getClass());

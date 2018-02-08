@@ -30,7 +30,7 @@ public class Preparation {
 
     public static DataLoader dataLoader;
 
-    public static void prepareDataLoader() {
+    public static void prepareDataLoader() throws IOException {
         dataLoader = new DataLoader();
         dataLoader.backendInitialize();
     }
