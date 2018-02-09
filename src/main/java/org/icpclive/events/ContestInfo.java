@@ -11,8 +11,7 @@ import org.icpclive.datapassing.StandingsData;
 public abstract class ContestInfo {
     public int teamNumber;
     public int problemNumber = 0;
-    protected long startTime = 0;
-    protected final long totalTime = 0;
+    private long startTime = 0;
     public List<ProblemInfo> problems;
     public long lastTime;
     private static String[] hashtags;
@@ -96,10 +95,6 @@ public abstract class ContestInfo {
             return getStandings(optimismLevel);
         }
         TeamInfo[] infos = getStandings(optimismLevel);
-//        System.err.println(infos.length);
-//        for (TeamInfo team : infos) {
-//            System.err.println(team.getId() + " " + team.getRegion() + " " + region);
-//        }
         return Stream.of(infos).filter(x -> region.equals(x.getRegion())).toArray(TeamInfo[]::new);
     }
 
