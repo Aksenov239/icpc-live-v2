@@ -157,7 +157,7 @@ public class QueueWidget extends Widget {
         RunInfo runInfo = plate.runInfo;
         TeamInfo team = info.getParticipant(runInfo.getTeamId());
         String name = team.getShortName();
-        String problem = ContestInfo.problems.get(runInfo.getProblemNumber()).letter;
+        String problem = info.problems.get(runInfo.getProblemNumber()).letter;
         String result = runInfo.getResult();
 
         PlateStyle teamColor = QueueStylesheet.name;

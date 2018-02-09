@@ -13,7 +13,7 @@ public abstract class ContestInfo {
     public int problemNumber = 0;
     protected long startTime = 0;
     protected final long totalTime = 0;
-    public static List<ProblemInfo> problems;
+    public List<ProblemInfo> problems;
     public long lastTime;
     private static String[] hashtags;
 

@@ -41,13 +41,13 @@ public class PCMSEventsLoader extends EventsLoader {
         String xml = new String(Files.readAllBytes(Paths.get(problemsFile)), StandardCharsets.UTF_8);
         Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
         Element problems = doc.child(0);
-        ContestInfo.problems = new ArrayList<>();
+        contestInfo.get().problems = new ArrayList<>();
         for (Element element : problems.children()) {
             ProblemInfo problem = new ProblemInfo();
             problem.letter = element.attr("alias");
             problem.name = element.attr("name");
             problem.color = element.attr("color") == null ? Color.BLACK : Color.getColor(element.attr("color"));
-            ContestInfo.problems.add(problem);
+            contestInfo.get().problems.add(problem);
         }
     }
 

@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.HashSet;
 
 /**
- * @author: pashka
+ * Full scale standings
  */
 public class BigStandingsWidget extends Widget {
     private static final double V = 0.01;
@@ -29,10 +29,10 @@ public class BigStandingsWidget extends Widget {
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
-    public static int PERIOD = STANDING_TIME + MOVING_TIME;
+    private static int PERIOD = STANDING_TIME + MOVING_TIME;
 
-    protected static final double TOTAL_WIDTH = 1.8;
-    protected static final double PENALTY_WIDTH = 2.4;
+    private static final double TOTAL_WIDTH = 1.8;
+    private static final double PENALTY_WIDTH = 2.4;
 
     private final int plateHeight;
     private final int spaceY;
@@ -62,7 +62,7 @@ public class BigStandingsWidget extends Widget {
     private double[] currentTeamPositions;
     private double[] desiredTeamPositions;
 
-    long blinkingTime;
+    private long blinkingTime;
 
     public BigStandingsWidget(int baseX, int baseY, int width, int plateHeight, long updateWait, int teamsOnPage, boolean controlled) throws IOException {
         super(updateWait);
@@ -151,8 +151,8 @@ public class BigStandingsWidget extends Widget {
         lastChange = data.standingsData.getStandingsTimestamp();
     }
 
-    List<Point> stars = new ArrayList<>();
-    boolean[] topUniversity;
+    private List<Point> stars = new ArrayList<>();
+    private boolean[] topUniversity;
 
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
