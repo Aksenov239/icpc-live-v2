@@ -59,13 +59,13 @@ public class MainScreenProperties {
 
         String onsiteRegex = properties.getProperty("onsite.teams", ".*");
         teamInfos = contestInfo.getStandings();
-        int l = 0;
-        for (int i = 0; i < teamInfos.length; i++) {
-            if (teamInfos[i].getAlias().matches(onsiteRegex)) {
-                teamInfos[l++] = teamInfos[i];
-            }
-        }
-        teamInfos = Arrays.copyOf(teamInfos, l);
+//        int l = 0;
+//        for (int i = 0; i < teamInfos.length; i++) {
+//            if (teamInfos[i].getAlias().matches(onsiteRegex)) {
+//                teamInfos[l++] = teamInfos[i];
+//            }
+//        }
+//        teamInfos = Arrays.copyOf(teamInfos, l);
         Arrays.sort(teamInfos);
 
         loaderThread.start();
