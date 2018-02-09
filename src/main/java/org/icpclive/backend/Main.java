@@ -43,8 +43,15 @@ public class Main {
         int height = Integer.parseInt(properties.getProperty("height", "720"));
         int frameRate = Integer.parseInt(properties.getProperty("rate", "25"));
 
-//        ScreenGeneratorGL generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
-        ScreenGenerator generator = new ScreenGeneratorSWT(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        String outputMode = properties.getProperty("output.mode", "window");
+
+        ScreenGenerator generator;
+        if (outputMode.equals("file")) {
+            System.setProperty("sun.java2d.opengl", "True");
+            generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        } else {
+            generator = new ScreenGeneratorSWT(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        }
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
@@ -101,7 +108,6 @@ public class Main {
 
         generator.addWidget(new TestFramesWidget());
 
-        String outputMode = properties.getProperty("output.mode", "window");
         if (outputMode.equals("file")) {
             String filename = properties.getProperty("output.file", "c:\\work\\image.bin");
             new MemoryFilePlayer(filename, generator, frameRate);
