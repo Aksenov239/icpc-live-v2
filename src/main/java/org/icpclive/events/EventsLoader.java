@@ -2,6 +2,7 @@ package org.icpclive.events;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import org.icpclive.events.PCMS.PCMSEventsLoader;
 import org.icpclive.events.WF.WFEventsLoader;
 
@@ -13,24 +14,21 @@ public abstract class EventsLoader extends Thread {
 
     private static EventsLoader instance;
 
-    public static double EMULATION_SPEED = 10;
+    protected double emulationSpeed;
+    protected long emulationStartTime;
 
     public static synchronized EventsLoader getInstance() {
         if (instance == null) {
-            Properties properties = new Properties();
-
             try {
-                properties.load(EventsLoader.class.getClassLoader().getResourceAsStream("events.properties"));
-
+                Properties properties = Config.loadProperties("events");
                 String standingsType = properties.getProperty("standings.type");
-
-                System.err.println(standingsType);
-
                 if ("WF".equals(standingsType)) {
                     instance = new WFEventsLoader();
                 } if ("PCMS".equals(standingsType)) {
                     instance = new PCMSEventsLoader();
                 }
+                instance.emulationSpeed = Double.parseDouble(properties.getProperty("emulation.speed", "1"));
+                instance.emulationStartTime = Long.parseLong(properties.getProperty("emulation.startTime", "0"));
             } catch (IOException e) {
                 log.error("error", e);
             }
@@ -42,4 +40,8 @@ public abstract class EventsLoader extends Thread {
     public abstract void run();
 
     public abstract ContestInfo getContestData();
+
+    public double getEmulationSpeed() {
+        return emulationSpeed;
+    }
 }

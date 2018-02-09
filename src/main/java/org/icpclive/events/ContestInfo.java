@@ -67,7 +67,7 @@ public abstract class ContestInfo {
             case RUNNING:
                 return startTime == 0 ? 0 :
                     (long) Math.min(
-                            ((System.currentTimeMillis() - startTime) * EventsLoader.EMULATION_SPEED),
+                            ((System.currentTimeMillis() - startTime) * EventsLoader.getInstance().getEmulationSpeed()),
                             ContestInfo.CONTEST_LENGTH
                     );
             case OVER:

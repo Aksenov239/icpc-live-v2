@@ -54,7 +54,7 @@ public class WFEventsLoader extends EventsLoader {
             if (!(url.startsWith("http") || url.startsWith("https"))) {
                 emulation = true;
             } else {
-                EMULATION_SPEED = 1;
+                emulationSpeed = 1;
             }
 
             problemsInfoURL = properties.getProperty("problems.url");
@@ -410,12 +410,11 @@ public class WFEventsLoader extends EventsLoader {
                                 WFRunInfo run = readRun(xmlEventReader);
                                 if (emulation) {
                                     try {
-                                        long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / EMULATION_SPEED);
                                         if (firstRun) {
-                                            contestInfo.setStartTime(contestInfo.getStartTime() - dt);
-                                            dt = 0;
+                                            contestInfo.setStartTime((long) (contestInfo.getStartTime() - emulationStartTime * 60000 / emulationSpeed));
                                             firstRun = false;
                                         }
+                                        long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / emulationSpeed);
                                         if (dt > 0)
                                             Thread.sleep(dt);
                                         total++;
@@ -443,7 +442,7 @@ public class WFEventsLoader extends EventsLoader {
                                 WFTestCaseInfo test = readTest(xmlEventReader);
                                 if (emulation) {
                                     try {
-                                        long dt = (long) ((test.time - contestInfo.getCurrentTime()) / EMULATION_SPEED);
+                                        long dt = (long) ((test.time - contestInfo.getCurrentTime()) / emulationSpeed);
                                         if (dt > 0) Thread.sleep(dt);
                                     } catch (InterruptedException e) {
                                         log.error("error", e);
@@ -506,7 +505,7 @@ public class WFEventsLoader extends EventsLoader {
                                 WFAnalystMessage message = readMessage(xmlEventReader);
                                 if (emulation) {
                                     try {
-                                        long dt = (long) ((message.getTime() - contestInfo.getCurrentTime()) / EMULATION_SPEED);
+                                        long dt = (long) ((message.getTime() - contestInfo.getCurrentTime()) / emulationSpeed);
                                         if (dt > 0)
                                             Thread.sleep(dt);
                                         total++;
