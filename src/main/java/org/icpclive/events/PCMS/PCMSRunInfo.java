@@ -23,8 +23,7 @@ public class PCMSRunInfo implements RunInfo {
         this.result = run.getResult();
         this.problem = run.getProblemNumber();
         this.time = run.getTime();
-        this.timestamp = run.getTimestamp();
-        this.lastUpdateTimestamp = run.getLastUpdateTimestamp();
+        this.lastUpdateTimestamp = run.getLastUpdateTime();
         this.teamId = run.getTeamId();
     }
 
@@ -57,13 +56,8 @@ public class PCMSRunInfo implements RunInfo {
     }
 
     @Override
-    public long getLastUpdateTimestamp() {
+    public long getLastUpdateTime() {
         return lastUpdateTimestamp;
-    }
-
-    @Override
-    public double getTimestamp() {
-        return timestamp;
     }
 
     public int getTeamId() {
@@ -88,7 +82,7 @@ public class PCMSRunInfo implements RunInfo {
     protected int teamId;
     protected int problem;
     protected long time;
-    protected double timestamp;
+    protected long timestamp;
     protected long lastUpdateTimestamp;
     public boolean reallyUnknown;
 }

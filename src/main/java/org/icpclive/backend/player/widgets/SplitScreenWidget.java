@@ -108,12 +108,12 @@ public class SplitScreenWidget extends Widget {
         while (currentRunId <= contestInfo.getLastRunId() && replayRun == null) {
             WFRunInfo run = contestInfo.getRun(currentRunId);
             if (run != null)
-                System.err.println((long) (1000 * run.timestamp) + " " + System.currentTimeMillis() + " " +
-                        (long) (System.currentTimeMillis() - 1000 * run.timestamp) + " " + run + " " +
-                        run.isAccepted());
+//                System.err.println((long) (1000 * run.time + " " + System.currentTimeMillis() + " " +
+//                        (long) (System.currentTimeMillis() - 1000 * run.timestamp) + " " + run + " " +
+//                        run.isAccepted());
             if (run != null &&
-                    run.timestamp * 1000 + relevanceTime > System.currentTimeMillis() &&
-//                    run.getLastUpdateTimestamp() + relevanceTime > System.currentTimeMillis() &&
+                    run.time + relevanceTime > contestInfo.getCurrentTime() &&
+//                    run.getLastUpdateTime() + relevanceTime > System.currentTimeMillis() &&
                     run.isAccepted()) {
                 replayRun = run;
             }

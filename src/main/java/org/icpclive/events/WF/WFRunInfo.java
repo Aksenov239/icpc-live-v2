@@ -15,16 +15,15 @@ public class WFRunInfo implements RunInfo {
     public int problem;
     public int teamId;
     public double time;
-    public double timestamp;
+    private long lastUpdateTime;
     private int passed;
     private int total;
-    private long lastUpdateTimestamp;
     private SmallTeamInfo teamInfoBefore;
     public TeamInfo team;
     public boolean reallyUnknown;
 
     public WFRunInfo() {
-        lastUpdateTimestamp = System.currentTimeMillis();
+//        lastUpdateTime = System.currentTimeMillis();
     }
 
     public WFRunInfo(WFRunInfo another) {
@@ -35,19 +34,18 @@ public class WFRunInfo implements RunInfo {
         this.problem = another.problem;
         this.teamId = another.teamId;
         this.time = another.time;
-        this.timestamp = another.timestamp;
         this.passed = another.getPassedTestsNumber();
         this.total = another.getTotalTestsNumber();
-        this.lastUpdateTimestamp = another.getLastUpdateTimestamp();
+        this.lastUpdateTime = another.getLastUpdateTime();
     }
 
     @Override
-    public long getLastUpdateTimestamp() {
-        return lastUpdateTimestamp;
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
     }
 
-    public void setLastUpdateTimestamp(long lastUpdateTimestamp) {
-        this.lastUpdateTimestamp = lastUpdateTimestamp;
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 
     public void setTeamInfoBefore(SmallTeamInfo teamInfoBefore) {
@@ -59,7 +57,7 @@ public class WFRunInfo implements RunInfo {
             total = test.total;
         }
         passed = test.id;
-        lastUpdateTimestamp = Math.max(lastUpdateTimestamp, (long) (test.timestamp * 1000));
+        lastUpdateTime = Math.max(lastUpdateTime, test.time);
     }
 
     public int getPassedTestsNumber() {
@@ -97,11 +95,6 @@ public class WFRunInfo implements RunInfo {
     @Override
     public long getTime() {
         return (long) (time * 1000);
-    }
-
-    @Override
-    public double getTimestamp() {
-        return timestamp;
     }
 
     public int getTeamId() {

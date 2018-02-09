@@ -388,7 +388,7 @@ public class BigStandingsWidget extends Widget {
             }
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
-            boolean isBlinking = team.getLastRun(i) != null && (System.currentTimeMillis() - team.getLastRun(i).getTimestamp() * 1000) < blinkingTime;
+            boolean isBlinking = team.getLastRun(i) != null && (contestData.getCurrentTime() <= team.getLastRun(i).getLastUpdateTime() + blinkingTime);
             if (status.length() == 0) status = ".";
             drawTextInRect(g, status, x, y,
                     problemWidth, plateHeight, PlateStyle.Alignment.CENTER,

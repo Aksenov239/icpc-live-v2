@@ -6,13 +6,13 @@ public interface RunInfo extends Comparable<RunInfo> {
     boolean isJudged();
     String getResult();
     int getProblemNumber();
-    long getTime();
     int getTeamId();
     SmallTeamInfo getTeamInfoBefore();
     boolean isReallyUnknown();
     double getPercentage();
-    long getLastUpdateTimestamp();
-    double getTimestamp();
+
+    long getTime();
+    long getLastUpdateTime();
 
     default public int compareTo(RunInfo runInfo) {
         return Long.compare(getTime(), runInfo.getTime());

@@ -191,7 +191,7 @@ public class WFEventsLoader extends EventsLoader {
 
     public WFRunInfo readRun(XMLEventReader xmlEventReader) throws XMLStreamException {
         WFRunInfo run = new WFRunInfo();
-        run.setLastUpdateTimestamp(0);
+        run.setLastUpdateTime(0);
         while (true) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
@@ -232,8 +232,8 @@ public class WFEventsLoader extends EventsLoader {
                         }
                         break;
                     case "timestamp":
-                        run.timestamp = Double.parseDouble(xmlEvent.asCharacters().getData());
-                        run.setLastUpdateTimestamp((long) Math.max(run.getLastUpdateTimestamp(), run.timestamp * 1000));
+//                        run.timestamp = (long) (Double.parseDouble(xmlEvent.asCharacters().getData()) * 1000);
+//                        run.setLastUpdateTime(Math.max(run.getLastUpdateTime(), run.timestamp));
                         //run.timestamp = System.currentTimeMillis() / 1000;
                         // Double.parseDouble(xmlEvent.asCharacters().getData());
                         break;
@@ -399,6 +399,7 @@ public class WFEventsLoader extends EventsLoader {
                 //emulation = false;
 
                 int total = 0;
+                boolean firstRun = true;
                 while (xmlEventReader.hasNext()) {
                     XMLEvent xmlEvent =
                             xmlEventReader.nextEvent();
@@ -406,11 +407,15 @@ public class WFEventsLoader extends EventsLoader {
                         StartElement startElement = xmlEvent.asStartElement();
                         switch (startElement.getName().getLocalPart()) {
                             case "run":
-
                                 WFRunInfo run = readRun(xmlEventReader);
                                 if (emulation) {
                                     try {
                                         long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / EMULATION_SPEED);
+                                        if (firstRun) {
+                                            contestInfo.setStartTime(contestInfo.getStartTime() - dt);
+                                            dt = 0;
+                                            firstRun = false;
+                                        }
                                         if (dt > 0)
                                             Thread.sleep(dt);
                                         total++;

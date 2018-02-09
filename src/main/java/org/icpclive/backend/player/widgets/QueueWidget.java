@@ -8,7 +8,6 @@ import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.TeamInfo;
-import org.icpclive.events.EventsLoader;
 import org.icpclive.events.RunInfo;
 
 import java.awt.*;
@@ -19,8 +18,8 @@ public class QueueWidget extends Widget {
 
     private static final double V = 0.005;
 
-    public static final int WAIT_TIME = 60000;
-    public static final int FIRST_TO_SOLVE_WAIT_TIME = 120000;
+    public static final long WAIT_TIME = 60000;
+    public static final long FIRST_TO_SOLVE_WAIT_TIME = 120000;
     private static final int MAX_QUEUE_SIZE = 16;
 
     public static double Y_SHIFT;
@@ -255,22 +254,13 @@ public class QueueWidget extends Widget {
                 continue;
             }
 
-//            if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
-//                continue;
-//            }
-
-//            System.err.println(r.getTime() + " " + System.currentTimeMillis() + " " + (System.currentTimeMillis() - info.getStartTime()) + " " +
-//                    info.getStartTime() + " " + (long)r.timestamp + " " + (r.timestamp * 1000 - info.getStartTime()));
             if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
-                //if (r.timestamp * 1000 > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / WFEventsLoader.SPEED) {
-                if (r.getLastUpdateTimestamp() > System.currentTimeMillis() - FIRST_TO_SOLVE_WAIT_TIME / EventsLoader.EMULATION_SPEED) {
+                if (r.getLastUpdateTime() > info.getCurrentTime() - FIRST_TO_SOLVE_WAIT_TIME) {
                     firstToSolves.add(getRunPlate(r));
                 }
             } else {
-                //if (r.timestamp * 1000 > System.currentTimeMillis() - WAIT_TIME / WFEventsLoader.SPEED) {
-                if (r.getLastUpdateTimestamp() >
-                        System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED ||
-                        (!r.isJudged() && r.getTime() <= ContestInfo.FREEZE_TIME)) {
+                if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
+//                    System.out.println(r.getLastUpdateTime() + " " + info.getCurrentTime());
                     queue.add(getRunPlate(r));
                 }
             }
@@ -283,7 +273,7 @@ public class QueueWidget extends Widget {
             for (RunInfo r : info.getRuns()) {
                 if (r == null)
                     continue;
-                if (r.getTimestamp() >= System.currentTimeMillis() / 1000) {
+                if (r.getTime() >= info.getCurrentTime()) {
                     continue;
                 }
                 if (breaking != null && breaking.runInfo == r) {
@@ -293,13 +283,10 @@ public class QueueWidget extends Widget {
                 if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
                     continue;
                 } else {
-                    if (r.getLastUpdateTimestamp() >
-                            System.currentTimeMillis() - WAIT_TIME / EventsLoader.EMULATION_SPEED ||
-                            (!r.isJudged() && r.getTime() <= ContestInfo.FREEZE_TIME)) {
+                    if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
                         if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
                             extra--;
                             continue;
-
                         }
                         queue.add(getRunPlate(r));
                     }
