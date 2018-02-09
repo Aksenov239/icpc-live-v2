@@ -191,7 +191,6 @@ public class WFEventsLoader extends EventsLoader {
 
     public WFRunInfo readRun(XMLEventReader xmlEventReader) throws XMLStreamException {
         WFRunInfo run = new WFRunInfo();
-        run.setLastUpdateTime(0);
         while (true) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
@@ -226,10 +225,11 @@ public class WFEventsLoader extends EventsLoader {
                         run.team = contestInfo.getParticipant(run.teamId);
                         break;
                     case "time":
-                        double time = Double.parseDouble(xmlEvent.asCharacters().getData());
+                        long time = (long)(Double.parseDouble(xmlEvent.asCharacters().getData()) * 1000);
                         if (run.time == 0) {
                             run.time = time;
                         }
+                        run.setLastUpdateTime(Math.max(run.getLastUpdateTime(), time));
                         break;
                     case "timestamp":
 //                        run.timestamp = (long) (Double.parseDouble(xmlEvent.asCharacters().getData()) * 1000);
@@ -415,6 +415,7 @@ public class WFEventsLoader extends EventsLoader {
                                             firstRun = false;
                                         }
                                         long dt = (long) ((run.getTime() - contestInfo.getCurrentTime()) / emulationSpeed);
+//                                        System.out.println("Sleep " + dt + " " + run.getTime() + " " + contestInfo.getCurrentTime());
                                         if (dt > 0)
                                             Thread.sleep(dt);
                                         total++;
@@ -422,7 +423,8 @@ public class WFEventsLoader extends EventsLoader {
                                         log.error("error", e);
                                     }
                                 }
-                                log.info("New run: " + run);
+                                System.out.println(run);
+//                                log.info("New run: " + run);
                                 if (run.getTime() <= ContestInfo.FREEZE_TIME || run.getResult().length() == 0) {
                                     if (contestInfo.runExists(run.getId())) {
                                         run.setTeamInfoBefore(contestInfo.getParticipant(run.getTeamId()).getSmallTeamInfo());

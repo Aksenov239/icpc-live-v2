@@ -14,7 +14,7 @@ public class WFRunInfo implements RunInfo {
     public String language;
     public int problem;
     public int teamId;
-    public double time;
+    public long time;
     private long lastUpdateTime;
     private int passed;
     private int total;
@@ -94,7 +94,7 @@ public class WFRunInfo implements RunInfo {
 
     @Override
     public long getTime() {
-        return (long) (time * 1000);
+        return time;
     }
 
     public int getTeamId() {
@@ -118,6 +118,6 @@ public class WFRunInfo implements RunInfo {
     public String toString() {
         String teamName = "" + teamId;
         if (team != null) teamName = team.getShortName();
-        return teamName + " " + (char)('A' + problem) + " " + result;
+        return teamName + " " + (char) ('A' + problem) + " " + result;
     }
 }

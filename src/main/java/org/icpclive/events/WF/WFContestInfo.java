@@ -144,7 +144,9 @@ public class WFContestInfo extends ContestInfo {
     public void addTest(WFTestCaseInfo test) {
 //		System.out.println("Adding test " + test.id + " to run " + test.run);
         if (runExists(test.run)) {
-            runs[test.run].add(test);
+            WFRunInfo run = runs[test.run];
+            run.add(test);
+            run.setLastUpdateTime(Math.max(run.getLastUpdateTime(), test.time));
 //			System.out.println("Run " + runs[test.run] + " passed " + runs[test.run].getPassedTestsNumber() + " tests");
         }
     }

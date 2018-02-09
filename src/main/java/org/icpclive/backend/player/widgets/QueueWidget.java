@@ -259,8 +259,8 @@ public class QueueWidget extends Widget {
                     firstToSolves.add(getRunPlate(r));
                 }
             } else {
+//                System.out.println(r.getLastUpdateTime() + " " + info.getCurrentTime());
                 if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
-//                    System.out.println(r.getLastUpdateTime() + " " + info.getCurrentTime());
                     queue.add(getRunPlate(r));
                 }
             }
