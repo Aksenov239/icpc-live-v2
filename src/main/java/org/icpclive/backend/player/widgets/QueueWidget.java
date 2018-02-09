@@ -18,11 +18,11 @@ public class QueueWidget extends Widget {
 
     private static final double V = 0.005;
 
-    public static final long WAIT_TIME = 60000;
-    public static final long FIRST_TO_SOLVE_WAIT_TIME = 120000;
+    private static final long WAIT_TIME = 60000;
+    private static final long FIRST_TO_SOLVE_WAIT_TIME = 120000;
     private static final int MAX_QUEUE_SIZE = 16;
 
-    public static double Y_SHIFT;
+    static double Y_SHIFT;
 
     private final int baseX;
     private final int baseY;
@@ -36,28 +36,27 @@ public class QueueWidget extends Widget {
     private final int statusWidth;
     private final Font font;
 
-    private final int videoWidth;
     private final int videoHeight;
 
     ContestInfo info;
-    boolean showVerdict;
+    private boolean showVerdict;
 
-    NewBreakingNewsWidget breakingNews;
+    private NewBreakingNewsWidget breakingNews;
     private RunPlate breaking;
 
-    class RunPlate {
+    private class RunPlate {
         double currentPosition;
         double desiredPosition;
         double visibilityState;
         RunInfo runInfo;
         boolean visible;
 
-        public RunPlate(RunInfo runInfo) {
+        RunPlate(RunInfo runInfo) {
             this.runInfo = runInfo;
         }
     }
 
-    Map<Integer, RunPlate> plates = new HashMap<>();
+    private Map<Integer, RunPlate> plates = new HashMap<>();
 
     public QueueWidget(int baseX, int baseY, int plateHeight, long updateWait, boolean showVerdict) {
         super(updateWait);
@@ -78,7 +77,7 @@ public class QueueWidget extends Widget {
 
         this.showVerdict = showVerdict;
 
-        videoWidth = problemWidth + nameWidth + rankWidth + statusWidth;
+        int videoWidth = problemWidth + nameWidth + rankWidth + statusWidth;
         videoHeight = videoWidth * 9 / 16;
 
         breakingNews = new NewBreakingNewsWidget(updateWait, videoWidth, videoHeight);
@@ -279,17 +278,15 @@ public class QueueWidget extends Widget {
                 if (breaking != null && breaking.runInfo == r) {
                     continue;
                 }
-
                 if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
                     continue;
-                } else {
-                    if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
-                        if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
-                            extra--;
-                            continue;
-                        }
-                        queue.add(getRunPlate(r));
+                }
+                if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
+                    if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
+                        extra--;
+                        continue;
                     }
+                    queue.add(getRunPlate(r));
                 }
             }
         }
