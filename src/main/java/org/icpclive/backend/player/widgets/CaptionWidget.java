@@ -57,11 +57,11 @@ public class CaptionWidget extends Widget {
             }
             int y = Y;
             drawTextInRect(g, caption, x1, y, -1, HEIGHT1, alignment, FONT1,
-                    CaptionStylesheet.main, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                    CaptionStylesheet.main, visibilityState, 1, WidgetAnimation.UNFOLD_ANIMATED);
             y += HEIGHT1 + SPACE;
             if (description != null && description.length() != 0) {
                 drawTextInRect(g, description, x2, y, -1, HEIGHT2, alignment, FONT2,
-                        CaptionStylesheet.description, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                        CaptionStylesheet.description, visibilityState, 1, WidgetAnimation.UNFOLD_ANIMATED);
             }
         }
     }

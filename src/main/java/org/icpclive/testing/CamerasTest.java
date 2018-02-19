@@ -56,7 +56,7 @@ public class CamerasTest {
         String contest = properties.getProperty("contest.type", "WF");
         String videoType = properties.getProperty("video.type", "camera");
 
-        ScreenGeneratorGL generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
+        ScreenGeneratorGL generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH, null);
 
         CamerasTestWidget widget = new CamerasTestWidget(sleepTime, teams, rows, columns, aspectRatio, contest, videoType);
 

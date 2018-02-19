@@ -20,7 +20,7 @@ public abstract class CreepingLineWidget extends Widget {
 
     protected double SEPARATOR = 75;
     public static final int HEIGHT = 45;
-    public int MARGIN = 18;
+    public int MARGIN = 8;
 
     Queue<String> messagesQueue = new ArrayDeque<>(100);
     Set<String> inQueue = new HashSet<String>();

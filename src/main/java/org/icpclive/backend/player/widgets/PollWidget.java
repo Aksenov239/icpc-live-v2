@@ -83,10 +83,10 @@ public class PollWidget extends Widget {
         int y = 0;
         drawTextInRect(g, "Vote with hashtag " + pollToShow.getHashtag(), 0, y, width, plateHeight,
                 PlateStyle.Alignment.RIGHT, font, PollStylesheet.hashtag,
-                visibilityState, WidgetAnimation.NOT_ANIMATED);
+                visibilityState, 1, WidgetAnimation.NOT_ANIMATED);
 
         drawTextInRect(g, pollToShow.getQuestion(), 0, 0, -1, plateHeight, PlateStyle.Alignment.LEFT,
-                font, PollStylesheet.question, visibilityState, WidgetAnimation.NOT_ANIMATED);
+                font, PollStylesheet.question, visibilityState, 1, WidgetAnimation.NOT_ANIMATED);
 
         y += plateHeight;
 
@@ -94,14 +94,14 @@ public class PollWidget extends Widget {
         for (int i = 0; i < total; i++) {
             drawTextInRect(g, options[i].option, 0, y, optionWidth, plateHeight,
                     PlateStyle.Alignment.CENTER, font, PollStylesheet.option,
-                    Math.min(1, visibilityState / visibilityOption), WidgetAnimation.NOT_ANIMATED);
+                    Math.min(1, visibilityState / visibilityOption), 1, WidgetAnimation.NOT_ANIMATED);
             int voteWidth = (int) ((this.width - optionWidth - minimalVoteWidth) * percent[i]);
             int ww = (int)((minimalVoteWidth + voteWidth) * visibilityState);
             drawTextInRect(g, "" + options[i].votes, optionWidth, y,
                     ww, plateHeight,
                     PlateStyle.Alignment.CENTER, font, PollStylesheet.votes,
                     visibilityState,
-                    WidgetAnimation.NOT_ANIMATED);
+                    1, WidgetAnimation.NOT_ANIMATED);
             g.drawRect(optionWidth + ww, y, this.width - (optionWidth + ww),
                     plateHeight, PollStylesheet.background, this.visibilityState, PlateStyle.RectangleType.SOLID);
             y += plateHeight;

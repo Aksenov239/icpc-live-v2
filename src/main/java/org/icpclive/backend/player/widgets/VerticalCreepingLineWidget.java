@@ -106,7 +106,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     private TeamInfo[] standings;
     private final int STANDINGS_SIZE = 12;
     private final int STANDINGS_PAGE = 4;
-    private final double percent = 0.87;
+    private final double percent = 0.8;
 
     private void drawInfo(AbstractGraphics g, Message message, boolean next, int width, int height) {
         if (!STANDINGS_MESSAGE.equals(message.message)) {

@@ -2,13 +2,19 @@ package org.icpclive.backend.player;
 
 import org.icpclive.backend.player.generator.ScreenGenerator;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.TimerTask;
 
 public class FramePlayer extends Player {
+    private final int width;
+    private final int height;
     ImagePane imagePane;
     private Point initialClick;
     private int screenNumber = -1;
@@ -17,8 +23,8 @@ public class FramePlayer extends Player {
 
     public FramePlayer(String name, ScreenGenerator generator, int frameRate) throws InterruptedException, InvocationTargetException {
         super(generator);
-        int width = generator.getWidth();
-        int height = generator.getHeight();
+        width = generator.getWidth();
+        height = generator.getHeight();
 
         imagePane = new ImagePane();
         imagePane.setSize(width, height);

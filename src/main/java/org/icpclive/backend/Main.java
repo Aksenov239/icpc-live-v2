@@ -9,6 +9,7 @@ import org.icpclive.backend.player.generator.ScreenGeneratorGL;
 import org.icpclive.backend.player.generator.ScreenGeneratorSWT;
 import org.icpclive.backend.player.widgets.*;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -47,10 +48,11 @@ public class Main {
 
         ScreenGenerator generator;
         if (outputMode.equals("file")) {
-            System.setProperty("sun.java2d.opengl", "True");
-            generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH);
+            generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH, null);
         } else {
-            generator = new ScreenGeneratorSWT(width, height, properties, (double) width / Widget.BASE_WIDTH);
+            generator = new ScreenGeneratorGL(width, height, properties,
+                    (double) width / Widget.BASE_WIDTH, ImageIO.read(new File("pics/bg.jpg")));
+//            generator = new ScreenGeneratorSWT(width, height, properties, (double) width / Widget.BASE_WIDTH);
         }
         long updateWait = Long.parseLong(properties.getProperty("update.wait", "1000"));
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
@@ -67,20 +69,22 @@ public class Main {
                 Integer.parseInt(properties.getProperty("creeping.line.clock.time", "20000")),
                 Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
 
-        StandingsWidget standingsWidget = new StandingsWidget(519, 825, 39, updateWait);
-        standingsWidget.alignBottom(994);
+        int plateHeight = 41;
+        int bottomY = 1007;
+        StandingsWidget standingsWidget = new StandingsWidget(519, 825, plateHeight, updateWait);
+        standingsWidget.alignBottom(bottomY);
         generator.addWidget(standingsWidget);
 
         boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
-        generator.addWidget(new QueueWidget(30, 994, 39, 100, showVerdict));
+        generator.addWidget(new QueueWidget(30, bottomY, plateHeight, 100, showVerdict));
 
-        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(519, 69,
-                1371, 39, updateWait, 22, true);
-        bigStandingsWidget.alignBottom(994);
+        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(544, 69,
+                1338, plateHeight, updateWait, 22, true);
+        bigStandingsWidget.alignBottom(bottomY);
         generator.addWidget(bigStandingsWidget);
 
         generator.addWidget(new StatisticsWidget(
-                519, 994, 39, 1371, updateWait
+                519, bottomY, plateHeight, 1371, updateWait
         ));
 
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
@@ -97,7 +101,7 @@ public class Main {
                 1371,
                 200,
                 80,
-                519, 994
+                519, bottomY
         ));
 
         generator.addWidget(new WordStatisticsWidget(updateWait,

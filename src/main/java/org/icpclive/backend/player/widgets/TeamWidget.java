@@ -171,14 +171,14 @@ public class TeamWidget extends Widget {
                 int yy = Y + (HEIGHT + GAP_Y) * i;
                 drawTextInRect(g, "" + (char) ('A' + i), x + X, y + yy,
                         PR_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2,
-                        problemColor, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                        problemColor, 1, 1, WidgetAnimation.UNFOLD_ANIMATED);
             } else {
                 // int x = X + (PR_WIDTH + GAP_X) * i;
                 int xx = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i) - X;
                 double timeOpacity = i == currentProblemId ? getTimeOpacity() : 1;
                 drawTextInRect(g, "" + (char) ('A' + i), x + xx, y + dy,
                         PR_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, problemColor,
-                        timeOpacity, WidgetAnimation.UNFOLD_ANIMATED);
+                        timeOpacity, 1, WidgetAnimation.UNFOLD_ANIMATED);
             }
 
 
@@ -189,7 +189,7 @@ public class TeamWidget extends Widget {
                         drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
                                 RUN_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, TeamStylesheet.acProblem,
                                 i == currentProblemId ? getTimeOpacity() : 1,
-                                WidgetAnimation.UNFOLD_ANIMATED
+                                1, WidgetAnimation.UNFOLD_ANIMATED
                         );
                     }
                     if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
@@ -211,13 +211,13 @@ public class TeamWidget extends Widget {
                         drawTextInRect(g, format(run.getTime() / 1000), x + x, y + y,
                                 RUN_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, color,
                                 i == currentProblemId ? getTimeOpacity() : 1,
-                                WidgetAnimation.UNFOLD_ANIMATED
+                                1, WidgetAnimation.UNFOLD_ANIMATED
                         );
 
                         x += RUN_WIDTH + GAP_X;
                     } else {
                         drawTextInRect(g, "", x + x, y + y,
-                                RUN_SMALL_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, color, 1, WidgetAnimation.UNFOLD_ANIMATED);
+                                RUN_SMALL_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, FONT2, color, 1, 1, WidgetAnimation.UNFOLD_ANIMATED);
                         x += RUN_SMALL_WIDTH + GAP_X;
                     }
                 }

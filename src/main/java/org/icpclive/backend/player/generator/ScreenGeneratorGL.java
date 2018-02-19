@@ -13,9 +13,12 @@ import sun.awt.image.SunVolatileImage;
 import sun.java2d.Surface;
 import sun.java2d.opengl.OGLRenderQueue;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
@@ -35,10 +38,15 @@ public class ScreenGeneratorGL implements ScreenGenerator {
     private VolatileImage image;
     private Surface surface;
 
-    public ScreenGeneratorGL(int width, int height, Properties properties, double scale) throws IOException {
+
+    private Image background;
+
+    public ScreenGeneratorGL(int width, int height, Properties properties, double scale, Image background) throws IOException {
+        System.setProperty("sun.java2d.opengl", "True");
         this.width = width;
         this.height = height;
         this.scale = scale;
+        this.background = background;
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
@@ -87,7 +95,11 @@ public class ScreenGeneratorGL implements ScreenGenerator {
 
     @Override
     public void draw(Graphics2D g2) {
-        throw new UnsupportedOperationException();
+        draw();
+        AffineTransform transform = AffineTransform.getTranslateInstance(0, height);
+        transform.concatenate(AffineTransform.getScaleInstance(1, -1));
+        g2.setTransform(transform);
+        g2.drawImage(image.getSnapshot(), 0, 0, null);
     }
 
     public final void drawToBuffer(ByteBuffer buf) {
@@ -100,9 +112,9 @@ public class ScreenGeneratorGL implements ScreenGenerator {
     }
 
     private void draw() {
-
-//        Arrays.fill(((DataBufferInt)raster.getDataBuffer()).getData(), 0);
-
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
+        image = gc.createCompatibleVolatileImage(width, height, VolatileImage.TRANSLUCENT);
         Graphics2D g2 = (Graphics2D) image.getGraphics();
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -121,10 +133,11 @@ public class ScreenGeneratorGL implements ScreenGenerator {
         }
         AbstractGraphics g = new GraphicsSWT(g2);
 
-//        Graphics g = new FastGraphics(g2, ((DataBufferInt)raster.getDataBuffer()).getData(), this.width);
         g.setScale(scale);
+        if (background != null) {
+            g.drawImage(background, 0, 0, width, height);
+        }
 
-//        g.clear(width, height);
         for (Widget widget : widgets) {
             if (widget != null) widget.paint(g, width, height);
         }

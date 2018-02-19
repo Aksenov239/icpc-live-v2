@@ -26,6 +26,11 @@ import java.util.HashSet;
 public class BigStandingsWidget extends Widget {
     private static final double V = 0.01;
     private static final int STAR_SIZE = 5;
+
+    public static final String CURRENT_STANDINGS = "CURRENT STANDINGS";
+    public static final String OPTIMISTIC_STANDINGS = "Optimistic Standings";
+    public static final String FROZEN_STANDINGS = "Frozen Standings";
+
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
     private static final int MOVING_TIME = 500;
@@ -261,7 +266,9 @@ public class BigStandingsWidget extends Widget {
 
             stars.clear();
 
+            boolean odd = true;
             for (int i = standings.length - 1; i >= 0; i--) {
+                odd = !odd;
                 TeamInfo teamInfo = standings[i];
                 if (teamInfo.getSolvedProblemsNumber() != lastProblems) {
                     lastProblems = teamInfo.getSolvedProblemsNumber();
@@ -286,7 +293,7 @@ public class BigStandingsWidget extends Widget {
                 }
                 double yy = currentTeamPositions[id] - start;
                 if (yy > -1 && yy < teamsOnPage) {
-                    drawFullTeamPane(g, teamInfo, spaceX, initY + (int) (yy * (plateHeight + spaceY)), bright, firstSolved);
+                    drawFullTeamPane(g, teamInfo, spaceX, initY + (int) (yy * (plateHeight + spaceY)), bright, odd, firstSolved);
                 }
             }
 
@@ -311,22 +318,22 @@ public class BigStandingsWidget extends Widget {
 
         PlateStyle heading = BigStandingsStylesheet.heading;
 
-        String headingText = region.equals(StandingsData.ALL_REGIONS) ? "Current Standings" : region;
+        String headingText = region.equals(StandingsData.ALL_REGIONS) ? CURRENT_STANDINGS : region;
 
         if (contestData.getCurrentTime() > ContestInfo.FREEZE_TIME) {
             if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
                 heading = BigStandingsStylesheet.optimisticHeading;
-                headingText = "Optimistic Standings";
+                headingText = OPTIMISTIC_STANDINGS;
             } else {
                 heading = BigStandingsStylesheet.frozenHeading;
-                headingText = "Frozen Standings";
+                headingText = FROZEN_STANDINGS;
             }
         }
 
         //g.clear(x, y, this.width, plateHeight);
         drawTextInRect(g, headingText, x, y,
                 rankWidth + nameWidth + spaceX, plateHeight,
-                PlateStyle.Alignment.CENTER, font, heading, visibilityState, WidgetAnimation.NOT_ANIMATED);
+                PlateStyle.Alignment.CENTER, font, heading, visibilityState, 1, WidgetAnimation.NOT_ANIMATED);
         x += rankWidth + nameWidth + 2 * spaceX;
         for (int i = 0; i < firstSolved.length; i++) {
             ProblemInfo problem = contestData.problems.get(i);
@@ -334,7 +341,7 @@ public class BigStandingsWidget extends Widget {
                     ((firstSolved[i] != null) ? BigStandingsStylesheet.udProblem : BigStandingsStylesheet.noProblem) :
                     BigStandingsStylesheet.acProblem;
             drawTextInRect(g, problem.letter, x, y, problemWidth, plateHeight,
-                    PlateStyle.Alignment.CENTER, font, color, visibilityState, WidgetAnimation.NOT_ANIMATED);
+                    PlateStyle.Alignment.CENTER, font, color, visibilityState, 1, WidgetAnimation.NOT_ANIMATED);
             x += problemWidth + spaceX;
         }
 
@@ -342,13 +349,14 @@ public class BigStandingsWidget extends Widget {
                 opacity, PlateStyle.RectangleType.SOLID);
     }
 
-    private void drawFullTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, boolean bright, RunInfo[] firstSolved) {
+    private void drawFullTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, boolean bright, boolean odd, RunInfo[] firstSolved) {
         stars.clear();
         Font font = this.font;
         PlateStyle color = getTeamRankColor(team);
+        double v = odd ? 1 : 0.9;
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
                 rankWidth, plateHeight, PlateStyle.Alignment.CENTER,
-                font, color, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                font, color, visibilityState, v, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += rankWidth + spaceX;
 
@@ -360,7 +368,7 @@ public class BigStandingsWidget extends Widget {
         String name = team.getShortName();//getShortName(g, teamId.getShortName());
         drawTextInRect(g, name, x, y,
                 nameWidth, plateHeight, PlateStyle.Alignment.LEFT,
-                font, nameStyle, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                font, nameStyle, visibilityState, v, WidgetAnimation.UNFOLD_ANIMATED);
 
         x += nameWidth + spaceX;
 
@@ -392,8 +400,7 @@ public class BigStandingsWidget extends Widget {
             if (status.length() == 0) status = ".";
             drawTextInRect(g, status, x, y,
                     problemWidth, plateHeight, PlateStyle.Alignment.CENTER,
-                    font, statusColor, visibilityState,
-                    true, WidgetAnimation.UNFOLD_ANIMATED, isBlinking);
+                    font, statusColor, visibilityState, v, true, WidgetAnimation.UNFOLD_ANIMATED, isBlinking);
 
             RunInfo firstSolvedRun = firstSolved[i];
             if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId() && visibilityState >= 0.5) {
@@ -410,7 +417,7 @@ public class BigStandingsWidget extends Widget {
         }
         drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth,
                 plateHeight, PlateStyle.Alignment.CENTER,
-                font, problemsColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                font, problemsColor, visibilityState, v, WidgetAnimation.UNFOLD_ANIMATED);
         x += totalWidth + spaceX;
         PlateStyle penaltyColor = BigStandingsStylesheet.penalty;
         if (bright) {
@@ -418,7 +425,7 @@ public class BigStandingsWidget extends Widget {
         }
         drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth,
                 plateHeight, PlateStyle.Alignment.CENTER,
-                font, penaltyColor, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
+                font, penaltyColor, visibilityState, v, WidgetAnimation.UNFOLD_ANIMATED);
 
         for (Point star : stars) {
             drawStar(g, star.x, star.y, STAR_SIZE);

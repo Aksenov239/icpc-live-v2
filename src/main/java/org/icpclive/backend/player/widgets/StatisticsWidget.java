@@ -18,7 +18,7 @@ import static java.lang.Math.*;
 
 public class StatisticsWidget extends Widget {
     private static final double V = 1e-3;
-    private static final Color BACKGROUND = new Color(0x333344);
+    public static final String HEADER = "STATISTICS";
 
     private final int leftX;
     private final int bottomY;
@@ -74,10 +74,10 @@ public class StatisticsWidget extends Widget {
         g = g.create();
         g.translate(leftX, bottomY - height);
 
-        g.drawRect(0, 0, width, plateHeight, BACKGROUND, opacity, PlateStyle.RectangleType.SOLID);
+        g.drawRect(0, 0, width, plateHeight, StatisticsStylesheet.problemAlias.background, opacity, PlateStyle.RectangleType.SOLID);
 
-        drawTextInRect(g, "Teams solved for each problem", 0, 0, -1, plateHeight, PlateStyle.Alignment.LEFT,
-                font, StatisticsStylesheet.header, visibilityState, WidgetAnimation.NOT_ANIMATED);
+        drawTextInRect(g, HEADER, 0, 0, -1, plateHeight, PlateStyle.Alignment.LEFT,
+                font, StatisticsStylesheet.header, visibilityState, 1, WidgetAnimation.NOT_ANIMATED);
 
         List<ProblemInfo> problems = info.problems;
 
@@ -102,7 +102,7 @@ public class StatisticsWidget extends Widget {
             drawTextInRect(g, problem.letter, 0, y, problemWidth,
                     plateHeight, PlateStyle.Alignment.CENTER, font,
                     style, visibilityState,
-                    WidgetAnimation.NOT_ANIMATED);
+                    1, WidgetAnimation.NOT_ANIMATED);
 
 
             int maxNum = info.teamNumber + 3;
@@ -143,7 +143,7 @@ public class StatisticsWidget extends Widget {
                     x += w;
                 }
             }
-            g.drawRect(x, y, width - x, plateHeight, BACKGROUND, opacity, PlateStyle.RectangleType.SOLID);
+            g.drawRect(x, y, width - x, plateHeight, StatisticsStylesheet.problemAlias.background, opacity, PlateStyle.RectangleType.SOLID);
             y += plateHeight;
         }
     }

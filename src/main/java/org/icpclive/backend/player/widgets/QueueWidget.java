@@ -99,8 +99,10 @@ public class QueueWidget extends Widget {
         g.setFont(font);
         List<RunPlate> list = new ArrayList<>(plates.values());
         Collections.sort(list, (o1, o2) -> -Double.compare(o1.desiredPosition, o2.desiredPosition));
+        boolean odd = true;
         for (RunPlate plate : list) {
-            drawRun(g, baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), plate);
+            odd = !odd;
+            drawRun(g, baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), odd, plate);
         }
         if (breaking != null) {
             breakingNews.setPosition(baseX, baseY + (int) (breaking.currentPosition * (plateHeight + spaceY)) - videoHeight);
@@ -150,7 +152,7 @@ public class QueueWidget extends Widget {
         return plate;
     }
 
-    private void drawRun(AbstractGraphics g, int x, int y, RunPlate plate) {
+    private void drawRun(AbstractGraphics g, int x, int y, boolean odd, RunPlate plate) {
 
         boolean blinking = breakingNews.isVisible() && plate == breaking;
 
@@ -181,25 +183,29 @@ public class QueueWidget extends Widget {
 //            return;
 //        }
 
+//        double v = odd ? 1 : 0.9;
+        double v = 1;
+
         PlateStyle color = getTeamRankColor(team);
 
         drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
                 rankWidth, plateHeight, PlateStyle.Alignment.CENTER,
-                font, color, visibilityState * plate.visibilityState,
+                font, color, visibilityState * plate.visibilityState, v,
                 true, WidgetAnimation.NOT_ANIMATED, blinking);
 
         x += rankWidth + spaceX;
 
         drawTextInRect(g, name, x, y,
                 nameWidth, plateHeight, PlateStyle.Alignment.LEFT,
-                font, teamColor, visibilityState * plate.visibilityState,
+                font, teamColor, visibilityState * plate.visibilityState, v,
                 true, WidgetAnimation.NOT_ANIMATED, blinking);
 
         x += nameWidth + spaceX;
 
         drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, PlateStyle.Alignment.CENTER, font, teamColor, visibilityState * plate.visibilityState,
-                true, WidgetAnimation.NOT_ANIMATED, blinking);
+                plateHeight, PlateStyle.Alignment.CENTER, font, teamColor,
+                visibilityState * plate.visibilityState,
+                v, true, WidgetAnimation.NOT_ANIMATED, blinking);
 
         if (showVerdict) {
             x += problemWidth + spaceX;
@@ -212,7 +218,7 @@ public class QueueWidget extends Widget {
 
             drawTextInRect(g, result, x, y, statusWidth,
                     plateHeight, PlateStyle.Alignment.CENTER, font,
-                    resultColor, visibilityState * plate.visibilityState,
+                    resultColor, visibilityState * plate.visibilityState, v,
                     true, WidgetAnimation.NOT_ANIMATED, blinking);
 
             if (inProgress) {
