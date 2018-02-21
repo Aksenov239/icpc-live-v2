@@ -36,7 +36,7 @@ public abstract class Widget {
     protected static final double RANK_WIDTH = 1.5;
     protected static final double TOTAL_WIDTH = 1.3;
     protected static final double PENALTY_WIDTH = 2.0;
-    protected static final double PROBLEM_WIDTH = 1;
+    protected static final double PROBLEM_WIDTH = 1.2;
     protected static final double STATUS_WIDTH = 1.6;
 
     protected static final int STAR_SIZE = 5;
@@ -187,7 +187,7 @@ public abstract class Widget {
 
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
-        if (graphics != null) graphics.setFillColor(backgroundColor);
+        if (graphics != null) graphics.setFillColor(backgroundColor, maximumOpacity);
     }
 
     public void setTextColor(Color textColor) {
@@ -201,6 +201,7 @@ public abstract class Widget {
 
     public void setMaximumOpacity(double maximumOpacity) {
         this.maximumOpacity = maximumOpacity;
+        graphics.setFillColor(backgroundColor, maximumOpacity);
     }
 
     public void setGraphics(AbstractGraphics graphics) {
@@ -404,7 +405,7 @@ public abstract class Widget {
         return color;
     }
 
-    protected void drawStar(AbstractGraphics g, int x, int y, int size) {
+    protected void drawStar(int x, int y, int size) {
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};
@@ -412,7 +413,7 @@ public abstract class Widget {
             xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
             yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
         }
-        g.fillPolygon(xx, yy, STAR_COLOR);
+        graphics.fillPolygon(xx, yy, STAR_COLOR);
     }
 
 }

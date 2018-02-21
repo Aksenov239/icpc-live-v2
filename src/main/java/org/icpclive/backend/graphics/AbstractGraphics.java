@@ -11,6 +11,9 @@ import com.jogamp.opengl.util.texture.Texture;
  * Created by Aksenov239 on 04.09.2016.
  */
 public abstract class AbstractGraphics {
+
+    public static final double GLOBAL_OPACITY = .9;
+
     protected int width, height;
     protected int x0, y0;
     protected int x, y;
@@ -74,7 +77,7 @@ public abstract class AbstractGraphics {
     }
 
     public void setFillColor(Color color, double opacity) {
-        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (opacity * 255));
+        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (opacity * GLOBAL_OPACITY * 255));
         setFillColor(color);
     }
 

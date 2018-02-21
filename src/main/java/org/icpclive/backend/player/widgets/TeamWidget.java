@@ -194,11 +194,13 @@ public class TeamWidget extends Widget {
                     }
                     if (run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
                         if (!isFull) {
-                            drawStar(g, x + x + RUN_WIDTH, (int) (y + y + STAR_SIZE / 2), (int) STAR_SIZE);
+                            setGraphics(g);
+                            drawStar(x + x + RUN_WIDTH, (int) (y + y + STAR_SIZE / 2), (int) STAR_SIZE);
                         } else {
                             int star_shift = 6;
                             int xx = dx - (PR_WIDTH + GAP_X) * (problemsNumber - i - 1) - X - star_shift;
-                            drawStar(g, x + xx, (y + dy + star_shift), (int) (STAR_SIZE * 0.8));
+                            setGraphics(g);
+                            drawStar(x + xx, (y + dy + star_shift), (int) (STAR_SIZE * 0.8));
                         }
                     }
                     break;

@@ -100,7 +100,7 @@ public class QueueWidget extends Widget {
         List<RunPlate> list = new ArrayList<>(plates.values());
         Collections.sort(list, (o1, o2) -> -Double.compare(o1.desiredPosition, o2.desiredPosition));
         for (RunPlate plate : list) {
-            drawRun(g, baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), plate);
+            drawRun(baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), plate);
         }
         if (breaking != null) {
             breakingNews.setPosition(baseX, baseY + (int) (breaking.currentPosition * (plateHeight + spaceY)) - videoHeight);
@@ -150,7 +150,7 @@ public class QueueWidget extends Widget {
         return plate;
     }
 
-    private void drawRun(AbstractGraphics g, int x, int y, RunPlate plate) {
+    private void drawRun(int x, int y, RunPlate plate) {
 
         boolean blinking = breakingNews.isVisible() && plate == breaking;
 
@@ -214,15 +214,15 @@ public class QueueWidget extends Widget {
                     plateHeight, PlateStyle.Alignment.CENTER, blinking);
 
             if (inProgress) {
-                g.drawRect(x, y, progressWidth, plateHeight, QueueStylesheet.udTests,
+                graphics.drawRect(x, y, progressWidth, plateHeight, QueueStylesheet.udTests,
                         visibilityState * plate.visibilityState, PlateStyle.RectangleType.SOLID);
             }
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
-                drawStar(g, x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
+                drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         } else {
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
-                drawStar(g, x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
+                drawStar(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         }
 

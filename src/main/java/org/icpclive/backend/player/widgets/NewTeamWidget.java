@@ -263,7 +263,8 @@ public class NewTeamWidget extends Widget {
                     );
                     //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
                     if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
-                        drawStar(g, mainVideo.x + x - STAR_SIZE, (int) (mainVideo.y + y + STAR_SIZE), (int) STAR_SIZE);
+                        setGraphics(g);
+                        drawStar(mainVideo.x + x - STAR_SIZE, (int) (mainVideo.y + y + STAR_SIZE), (int) STAR_SIZE);
                     }
                     x -= RUN_WIDTH + GAP_X;
                     break;

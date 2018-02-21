@@ -14,7 +14,6 @@ import java.awt.image.RescaleOp;
 public class GraphicsSWT extends AbstractGraphics {
 
     public static final float TEXT_VERTICAL_SHIFT = -0.03f;
-    public static final double GLOBAL_OPACITY = .8;
     public Graphics2D g;
 
     public GraphicsSWT(Graphics2D g) {
@@ -164,7 +163,7 @@ public class GraphicsSWT extends AbstractGraphics {
     }
 
     public void drawRect(int x, int y, int width, int height, Color color, double opacity) {
-        setFillColor(color, opacity * GLOBAL_OPACITY);
+        setFillColor(color, opacity);
         drawRect(x, y, width, height);
     }
 
@@ -240,7 +239,7 @@ public class GraphicsSWT extends AbstractGraphics {
 
     @Override
     public void fillPolygon(int[] x, int[] y, Color color, double opacity) {
-        setFillColor(color, opacity * 0.99);
+        setFillColor(color, opacity);
         int[] xx = new int[x.length];
         int[] yy = new int[y.length];
         for (int i = 0; i < x.length; i++) {
