@@ -20,7 +20,7 @@ public class HorizontalCreepingLineWidget extends CreepingLineWidget {
 
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
-//            g2.setColor(Color.red);
+//            g2.setFillColor(Color.red);
 //            g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
         update();

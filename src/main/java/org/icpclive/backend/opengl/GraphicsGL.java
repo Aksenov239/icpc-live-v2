@@ -136,6 +136,11 @@ public class GraphicsGL extends AbstractGraphics {
     }
 
     @Override
+    public void drawRect(int x, int y, int width, int height) {
+
+    }
+
+    @Override
     public void clear(int x, int y, int width, int height) {
 
     }
@@ -193,9 +198,9 @@ public class GraphicsGL extends AbstractGraphics {
     }
 
     @Override
-    public void drawRectWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
-                                 PlateStyle plateStyle, double opacity, double textOpacity, double margin,
-                                 boolean scale) {
+    public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
+                               PlateStyle plateStyle, double opacity, double textOpacity, double margin,
+                               boolean scale) {
         x += x0;
         y += y0;
 //        com.jogamp.graph.font.Font joglFont = getFont(font);
@@ -246,7 +251,12 @@ public class GraphicsGL extends AbstractGraphics {
     }
 
     @Override
-    public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double margin) {
+    public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double opacity, double textOpacity, double margin, boolean scaleText) {
+
+    }
+
+    @Override
+    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin) {
         x += x0;
         y += y0;
 
@@ -268,7 +278,7 @@ public class GraphicsGL extends AbstractGraphics {
         float xx = (float) (x + margin);
 
 //        drawString(text, xx, yy, (float) textScale, 1f, joglFont, font.getSize(), color, 1);
-        drawString(text, xx, yy, (float) textScale, 1f, font, color, 1);
+        drawString(text, xx, yy, (float) textScale, 1f, font, textColor, 1);
     }
 
     @Override
@@ -322,7 +332,7 @@ public class GraphicsGL extends AbstractGraphics {
 
     @Override
     public void fillPolygon(int[] x, int[] y, Color color, double opacity) {
-        setColor(color, opacity);
+        setFillColor(color, opacity);
         gl2.glBegin(GL2.GL_POLYGON);
         for (int i = 0; i < x.length; i++) {
             gl2.glVertex2i(x[i] + x0, Widget.BASE_HEIGHT - y[i] - y0);
@@ -370,12 +380,12 @@ public class GraphicsGL extends AbstractGraphics {
     }
 
     @Override
-    public void setColor(Color color) {
+    public void setFillColor(Color color) {
         gl2.glColor4i(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
     @Override
-    public void setColor(Color color, double opacity) {
+    public void setFillColor(Color color, double opacity) {
         gl2.glColor4d(1. * color.getRed() / 256, 1. * color.getGreen() / 256, 1. * color.getBlue() / 256, opacity);
     }
 }

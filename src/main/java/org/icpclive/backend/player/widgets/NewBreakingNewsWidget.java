@@ -210,7 +210,7 @@ public class NewBreakingNewsWidget extends Widget {
 //        int x = this.x + (int) (1.1 * video.width - PLATE_WIDTH);
 //        drawTeamPane(g, currentShow, x, y, PLATE_HEIGHT, rankState == 2 || rankState == 3 ? localVisibility : visibilityState);
 //        Font font = Font.decode("Open Sans " + (int) Math.round(PLATE_HEIGHT * 0.7));
-//        drawTextInRect(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
+//        drawRectWithText(g, caption, (int) (x - 0.005 * PLATE_WIDTH), y, -1, PLATE_HEIGHT,
 //                Graphics.Alignment.RIGHT, font, BreakingNewsStylesheet.caption, visibilityState, WidgetAnimation.UNFOLD_ANIMATED);
     }
 

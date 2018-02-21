@@ -7,6 +7,7 @@ import org.icpclive.events.ContestInfo;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
+import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
 import org.icpclive.events.RunInfo;
 
@@ -34,7 +35,6 @@ public class QueueWidget extends Widget {
     private final int rankWidth;
     private final int problemWidth;
     private final int statusWidth;
-    private final Font font;
 
     private final int videoHeight;
 
@@ -73,7 +73,7 @@ public class QueueWidget extends Widget {
         problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
         statusWidth = (int) Math.round(STATUS_WIDTH * plateHeight);
 
-        font = Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7));
+        setFont(Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7)));
 
         this.showVerdict = showVerdict;
 
@@ -94,15 +94,13 @@ public class QueueWidget extends Widget {
 
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
+        super.paintImpl(g, width, height);
         move(width, height, updateVisibilityState());
-        g.clip(baseX - width, baseY - height, 2 * width, height);
-        g.setFont(font);
+        graphics.clip(baseX - width, baseY - height, 2 * width, height);
         List<RunPlate> list = new ArrayList<>(plates.values());
         Collections.sort(list, (o1, o2) -> -Double.compare(o1.desiredPosition, o2.desiredPosition));
-        boolean odd = true;
         for (RunPlate plate : list) {
-            odd = !odd;
-            drawRun(g, baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), odd, plate);
+            drawRun(g, baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), plate);
         }
         if (breaking != null) {
             breakingNews.setPosition(baseX, baseY + (int) (breaking.currentPosition * (plateHeight + spaceY)) - videoHeight);
@@ -152,14 +150,16 @@ public class QueueWidget extends Widget {
         return plate;
     }
 
-    private void drawRun(AbstractGraphics g, int x, int y, boolean odd, RunPlate plate) {
+    private void drawRun(AbstractGraphics g, int x, int y, RunPlate plate) {
 
         boolean blinking = breakingNews.isVisible() && plate == breaking;
+
+        setVisibilityState(plate.visibilityState);
 
         RunInfo runInfo = plate.runInfo;
         TeamInfo team = info.getParticipant(runInfo.getTeamId());
         String name = team.getShortName();
-        String problem = info.problems.get(runInfo.getProblemNumber()).letter;
+        ProblemInfo problem = info.problems.get(runInfo.getProblemNumber());
         String result = runInfo.getResult();
 
         PlateStyle teamColor = QueueStylesheet.name;
@@ -170,9 +170,9 @@ public class QueueWidget extends Widget {
 
         if (runInfo.isJudged()) {
             if (runInfo.isAccepted()) {
-                resultColor = teamColor = QueueStylesheet.acProblem;
+                resultColor = QueueStylesheet.acProblem;
             } else {
-                resultColor = teamColor = QueueStylesheet.waProblem;
+                resultColor = QueueStylesheet.waProblem;
             }
         } else {
             inProgress = true;
@@ -184,28 +184,21 @@ public class QueueWidget extends Widget {
 //        }
 
 //        double v = odd ? 1 : 0.9;
-        double v = 1;
 
         PlateStyle color = getTeamRankColor(team);
-
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, PlateStyle.Alignment.CENTER,
-                font, color, visibilityState * plate.visibilityState, v,
-                true, WidgetAnimation.NOT_ANIMATED, blinking);
+        applyStyle(color);
+        drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y,
+                rankWidth, plateHeight, PlateStyle.Alignment.CENTER, blinking);
 
         x += rankWidth + spaceX;
 
-        drawTextInRect(g, name, x, y,
-                nameWidth, plateHeight, PlateStyle.Alignment.LEFT,
-                font, teamColor, visibilityState * plate.visibilityState, v,
-                true, WidgetAnimation.NOT_ANIMATED, blinking);
+        applyStyle(teamColor);
+        drawRectangleWithText(name, x, y,
+                nameWidth, plateHeight, PlateStyle.Alignment.LEFT, blinking);
 
         x += nameWidth + spaceX;
 
-        drawTextInRect(g, problem, x, y, problemWidth,
-                plateHeight, PlateStyle.Alignment.CENTER, font, teamColor,
-                visibilityState * plate.visibilityState,
-                v, true, WidgetAnimation.NOT_ANIMATED, blinking);
+        drawProblemPane(problem, x, y, problemWidth, plateHeight, blinking);
 
         if (showVerdict) {
             x += problemWidth + spaceX;
@@ -216,10 +209,9 @@ public class QueueWidget extends Widget {
                 inProgress = false;
             }
 
-            drawTextInRect(g, result, x, y, statusWidth,
-                    plateHeight, PlateStyle.Alignment.CENTER, font,
-                    resultColor, visibilityState * plate.visibilityState, v,
-                    true, WidgetAnimation.NOT_ANIMATED, blinking);
+            applyStyle(resultColor);
+            drawRectangleWithText(result, x, y, statusWidth,
+                    plateHeight, PlateStyle.Alignment.CENTER, blinking);
 
             if (inProgress) {
                 g.drawRect(x, y, progressWidth, plateHeight, QueueStylesheet.udTests,

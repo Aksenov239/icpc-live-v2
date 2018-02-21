@@ -15,7 +15,8 @@ public abstract class AbstractGraphics {
     protected int x0, y0;
     protected int x, y;
     protected Font font;
-    protected Color color;
+    protected Color fillColor;
+    protected Color textColor;
     protected double scale = 1;
 
     public abstract AbstractGraphics create();
@@ -23,6 +24,8 @@ public abstract class AbstractGraphics {
     public abstract AbstractGraphics create(int x, int y, int width, int height);
 
     public abstract void drawRect(int x, int y, int width, int height, Color color, double opacity, PlateStyle.RectangleType rectangleType);
+
+    public abstract void drawRect(int x, int y, int width, int height);
 
     public void setScale(double scale) {
         this.scale = scale;
@@ -38,12 +41,15 @@ public abstract class AbstractGraphics {
         drawString(text, x, y, font, color, 1D);
     }
 
-    public abstract void drawRectWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
-                                          PlateStyle plateStyle, double opacity, double textOpacity,
-                                          double margin, boolean scale);
+    public abstract void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
+                                        PlateStyle plateStyle, double opacity, double textOpacity,
+                                        double margin, boolean scale);
 
-    public abstract void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color,
-                                          double margin);
+    public abstract void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double opacity, double textOpacity,
+                                        double margin, boolean scaleText);
+
+    public abstract void drawTextThatFits(String text, int x, int y, int width, int height,
+                                          PlateStyle.Alignment alignment, double margin);
 
     public abstract void drawImage(Image image, int x, int y, int width, int height);
 
@@ -63,9 +69,23 @@ public abstract class AbstractGraphics {
         this.font = font;
     }
 
-    public abstract void setColor(Color color);
+    public void setFillColor(Color color) {
+        fillColor = color;
+    }
 
-    public abstract void setColor(Color color, double opacity);
+    public void setFillColor(Color color, double opacity) {
+        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (opacity * 255));
+        setFillColor(color);
+    }
+
+    public void setTextColor(Color color) {
+        textColor = color;
+    }
+
+    public void setTextColor(Color color, double opacity) {
+        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (opacity * 255));
+        setTextColor(color);
+    }
 
     public abstract Rectangle2D getStringBounds(String text, Font font);
 

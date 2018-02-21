@@ -123,7 +123,7 @@ public class WidgetManager implements GLEventListener {
 //        gl.glScaled(2, 1, 0);
 //        TextRenderer renderer = new TextRenderer(java.awt.Font.decode("Open Sans 18"));
 //        renderer.begin3DRendering();
-//        renderer.setColor(1, 1, 1, 1);
+//        renderer.setFillColor(1, 1, 1, 1);
 //        renderer.draw("TestTestTest", 0, 0);
 //        renderer.end3DRendering();
 //        gl.glPopMatrix();

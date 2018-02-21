@@ -30,6 +30,7 @@ team.pane.rank.bronze.background=#BF7329
 team.pane.rank.bronze.text=white.color
 team.pane.name.background=main.color
 team.pane.name.text=white.color
+team.pane.name.opacity=0.9
 team.pane.problems.background=additional.color
 team.pane.problems.text=white.color
 team.pane.penalty.background=additional.color
@@ -39,6 +40,7 @@ star.color=#FFFFA0
 #big standings
 big.standings.name.background=main.color
 big.standings.name.text=white.color
+big.standings.name.opacity=0.9
 big.standings.ac.background=ac.color
 big.standings.ac.text=white.color
 big.standings.wa.background=wa.color
@@ -47,6 +49,7 @@ big.standings.ud.background=ud.color
 big.standings.ud.text=white.color
 big.standings.no.background=no.color
 big.standings.no.text=white.color
+big.standings.no.opacity=0.9
 big.standings.problems.background=additional.color
 big.standings.problems.text=white.color
 big.standings.penalty.background=additional.color
@@ -110,6 +113,7 @@ queue.frozen.background=main.color
 queue.frozen.text=white.color
 queue.name.background=main.color
 queue.name.text=white.color
+queue.name.opacity=0.9
 
 #statistics
 statistics.header.background=accent.color

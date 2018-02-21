@@ -136,6 +136,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     @Override
     public void paintImpl(AbstractGraphics gg, int width, int height) {
         update();
+//        System.out.println(BASE_HEIGHT - HEIGHT - MARGIN);
         AbstractGraphics g = gg.create(0, BASE_HEIGHT - HEIGHT - MARGIN, BASE_WIDTH, HEIGHT);
         g.setFont(messageFont);
         iterateLogo();

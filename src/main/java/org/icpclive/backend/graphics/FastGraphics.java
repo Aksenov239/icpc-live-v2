@@ -55,14 +55,14 @@ public class FastGraphics extends AbstractGraphics {
     @Override
     public void drawString(String text, int x, int y, Font font, Color color, double opacity) {
         g.setFont(font);
-        setColor(color, opacity);
+        setFillColor(color, opacity);
         g.drawString(text, x + x0, y + y0);
     }
 
     @Override
-    public void drawRectWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
-                                 PlateStyle plateStyle, double opacity, double textOpacity, double margin,
-                                 boolean scale) {
+    public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
+                               PlateStyle plateStyle, double opacity, double textOpacity, double margin,
+                               boolean scale) {
 
         Graphics2D saved = g;
         x += x0;
@@ -90,7 +90,7 @@ public class FastGraphics extends AbstractGraphics {
 
         drawRect(x - x0, y - y0, width, height, plateStyle.background, opacity, plateStyle.rectangleType);
 
-        setColor(plateStyle.text, textOpacity);
+        setFillColor(plateStyle.text, textOpacity);
 
         FontMetrics wh = g.getFontMetrics();
 
@@ -114,11 +114,16 @@ public class FastGraphics extends AbstractGraphics {
         g = saved;
     }
 
+    @Override
+    public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double opacity, double textOpacity, double margin, boolean scaleText) {
+
+    }
+
     static final Rectangle clip = new Rectangle();
 
     @Override
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, PlateStyle.RectangleType rectangleType) {
-//        setColor(color, opacity * .9);
+//        setFillColor(color, opacity * .9);
 //        g.fillRect(x + x0, y + y0, width, height);
         int c = color.getRGB() & 0xffffff | ((int) (opacity * 230) << 24);
         x += x0;
@@ -165,6 +170,11 @@ public class FastGraphics extends AbstractGraphics {
     }
 
     @Override
+    public void drawRect(int x, int y, int width, int height) {
+
+    }
+
+    @Override
     public void clear(int x, int y, int width, int height) {
 
     }
@@ -190,13 +200,13 @@ public class FastGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawTextThatFits(String text, int x, int y, int width, int height, Font font, Color color, double margin) {
+    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin) {
         Graphics2D saved = g;
         x += x0;
         y += y0;
         g = (Graphics2D) saved.create();
         g.setFont(font);
-        g.setColor(color);
+        g.setColor(textColor);
         FontMetrics wh = g.getFontMetrics();
         int textWidth = g.getFontMetrics().stringWidth(text);
         double textScale = 1;
@@ -232,7 +242,7 @@ public class FastGraphics extends AbstractGraphics {
 
     @Override
     public void fillPolygon(int[] x, int[] y, Color color, double opacity) {
-        setColor(color, opacity);
+        setFillColor(color, opacity);
         int[] xx = new int[x.length];
         int[] yy = new int[y.length];
         for (int i = 0; i < x.length; i++) {
@@ -254,12 +264,12 @@ public class FastGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void setColor(Color color) {
+    public void setFillColor(Color color) {
         g.setColor(color);
     }
 
     @Override
-    public void setColor(Color color, double opacity) {
+    public void setFillColor(Color color, double opacity) {
         g.setColor(color);
         g.setComposite(AlphaComposite.SrcOver.derive((float) opacity));
     }

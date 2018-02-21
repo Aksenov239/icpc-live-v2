@@ -219,8 +219,8 @@ public class NewTeamWidget extends Widget {
             drawReplay(g, mainVideo.x, mainVideo.y, this.width, this.height);
         }
 
-//        g.setColor(Color.WHITE);
-//        g.setColor(new Color(0, 0, 30));
+//        g.setFillColor(Color.WHITE);
+//        g.setFillColor(new Color(0, 0, 30));
 //        g.fillRect(x, y, this.width - widthVideo, height);
 //        teamId = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
 //        if (teamId == null) return;

@@ -101,7 +101,7 @@ public class WordStatisticsWidget extends Widget {
             int w = IMAGE_WIDTH - 20;
             int h = heightR - 20;
 
-            g.drawRectWithText(word, X + 10, Y + 10, w, h,
+            g.drawTextInRect(word, X + 10, Y + 10, w, h,
                     PlateStyle.Alignment.CENTER, font, WordStatisticsStylesheet.word,
                     visibilityState, 1, 0, false);
         } else {

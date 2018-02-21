@@ -58,7 +58,7 @@ public class ClockWidget extends Widget {
         updateVisibilityState();
         if (opacity == 0) return;
         /*g.drawRect(x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, opacity);
-        g.setColor(ClockStylesheet.main.text);
+        g.setFillColor(ClockStylesheet.main.text);
         g.setFont(clockFont);
         long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
 
@@ -83,7 +83,7 @@ public class ClockWidget extends Widget {
         } */
         long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
         String timeS = getTimeString(Math.abs(time));
-//        drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
+//        drawRectWithText(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
 
         PlateStyle style = time < ContestInfo.FREEZE_TIME / 1000 ? ClockStylesheet.main : ClockStylesheet.freeze;
         drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, PlateStyle.Alignment.CENTER,

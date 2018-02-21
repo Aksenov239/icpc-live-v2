@@ -8,6 +8,7 @@ import org.icpclive.backend.player.widgets.stylesheets.TeamPaneStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
+import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
 
 import java.awt.*;
@@ -91,7 +92,9 @@ public abstract class Widget {
     protected void move(int width, int height, int dt) {
     }
 
-    protected abstract void paintImpl(AbstractGraphics g, int width, int height);
+    protected void paintImpl(AbstractGraphics g, int width, int height) {
+        setGraphics(g.create());
+    }
 
     public void paint(AbstractGraphics g, int width, int height) {
         paint(g, width, height, 1);
@@ -170,12 +173,51 @@ public abstract class Widget {
     private long lastBlinkingOpacityUpdate = 0;
     private double blinkingValue = 0.20;
 
+    protected AbstractGraphics graphics;
+    protected Font font;
+    private Color backgroundColor;
+    private Color textColor;
+    private PlateStyle.Alignment alignment;
+    protected double maximumOpacity;
+
+    public void setFont(Font font) {
+        this.font = font;
+        if (graphics != null) graphics.setFont(font);
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+        if (graphics != null) graphics.setFillColor(backgroundColor);
+    }
+
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
+        if (graphics != null) graphics.setTextColor(textColor);
+    }
+
+    public void setAlignment(PlateStyle.Alignment alignment) {
+        this.alignment = alignment;
+    }
+
+    public void setMaximumOpacity(double maximumOpacity) {
+        this.maximumOpacity = maximumOpacity;
+    }
+
+    public void setGraphics(AbstractGraphics graphics) {
+        if (graphics != null) this.graphics = graphics;
+        graphics.setFillColor(backgroundColor);
+        graphics.setTextColor(textColor);
+        graphics.setFont(font);
+    }
+
+    @Deprecated
     protected void drawTextInRect(AbstractGraphics gg, String text, int x, int y, int width, int height,
                                   PlateStyle.Alignment alignment, Font font, PlateStyle plateStyle,
                                   double visibilityState) {
         drawTextInRect(gg, text, x, y, width, height, alignment, font, plateStyle, visibilityState, true);
     }
 
+    @Deprecated
     protected void drawTextInRect(AbstractGraphics gg, String text, int x, int y, int width, int height,
                                   PlateStyle.Alignment alignment, Font font, PlateStyle plateStyle,
                                   double visibilityState, double maximumOpacity, WidgetAnimation widgetAnimation) {
@@ -183,6 +225,7 @@ public abstract class Widget {
                 maximumOpacity, true, widgetAnimation, false);
     }
 
+    @Deprecated
     protected void drawTextInRect(AbstractGraphics gg, String text, int x, int y, int width, int height,
                                   PlateStyle.Alignment alignment, Font font, PlateStyle plateStyle,
                                   double visibilityState, boolean scale) {
@@ -190,6 +233,7 @@ public abstract class Widget {
                 visibilityState, scale, WidgetAnimation.NOT_ANIMATED, false);
     }
 
+    @Deprecated
     protected void drawTextInRect(AbstractGraphics g, String text, int x, int y, int width, int height, PlateStyle.Alignment alignment,
                                   Font font, PlateStyle plateStyle,
                                   double visibilityState, boolean scale,
@@ -197,6 +241,7 @@ public abstract class Widget {
         drawTextInRect(g, text, x, y, width, height, alignment, font, plateStyle, visibilityState, 1, scale, widgetAnimation, isBlinking);
     }
 
+    @Deprecated
     protected void drawTextInRect(AbstractGraphics g, String text, int x, int y, int width, int height, PlateStyle.Alignment alignment,
                                   Font font, PlateStyle plateStyle,
                                   double visibilityState, double maximumOpacity, boolean scale,
@@ -221,17 +266,63 @@ public abstract class Widget {
 //        }
 
         if (isBlinking) {
-            double v = (System.currentTimeMillis() % BLINKING_PERIOD) * 1.0 / BLINKING_PERIOD;
-            v = Math.abs(v * 2 - 1);
+            double v = getBlinkingState();
             textOpacity *= v;
         }
 
-        g.drawRectWithText(text, x, y, width, height, alignment, font, plateStyle,
+        g.drawTextInRect(text, x, y, width, height, alignment, font, plateStyle,
                 opacity, textOpacity, MARGIN, scale);
     }
 
+    protected void drawRectangleWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment) {
+        drawRectangleWithText(text, x, y, width, height, alignment, false);
+    }
+    protected void drawRectangleWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, boolean blinking) {
+        double opacity = getOpacity(visibilityState) * maximumOpacity;
+        double textOpacity = getTextOpacity(visibilityState);
+        if (text == null) {
+            text = "NULL";
+        }
+        if (opacity == 0) return;
+        if (blinking) {
+            double v = getBlinkingState();
+            textOpacity *= v;
+        }
+        graphics.setFillColor(backgroundColor, opacity);
+        graphics.drawRect(x, y, width, height);
+        graphics.setTextColor(textColor, textOpacity);
+        graphics.drawTextThatFits(text, x, y, width, height, alignment, MARGIN);
+    }
+
+
     protected void drawTextToFit(AbstractGraphics g, String text, double X, double Y, int x, int y, int width, int height, Font font, Color color) {
-        g.drawTextThatFits(text, (int) X, (int) Y, width, height, font, color, MARGIN);
+        g.drawTextThatFits(text, (int) X, (int) Y, width, height, PlateStyle.Alignment.CENTER, MARGIN);
+    }
+
+    protected void drawProblemPane(ProblemInfo problem, int x, int y, int width, int height) {
+        drawProblemPane(problem, x, y, width, height, false);
+    }
+
+    protected void drawProblemPane(ProblemInfo problem, int x, int y, int width, int height, boolean blinking) {
+        double opacity = getOpacity(visibilityState) * maximumOpacity;
+        double textOpacity = getTextOpacity(visibilityState);
+        if (blinking) {
+            double v = getBlinkingState();
+            textOpacity *= v;
+        }
+        if (opacity == 0) return;
+        graphics.setFillColor(backgroundColor, opacity);
+        graphics.drawRect(x, y, width, height - 5);
+        graphics.setFillColor(problem.color, opacity);
+        graphics.drawRect(x, y + height - 5, width, 5);
+        graphics.setTextColor(textColor, textOpacity);
+        graphics.drawTextThatFits(problem.letter, x, y, width, height, PlateStyle.Alignment.CENTER, MARGIN);
+    }
+
+    private double getBlinkingState() {
+        double v = (System.currentTimeMillis() % BLINKING_PERIOD) * 1.0 / BLINKING_PERIOD;
+        v = Math.abs(v * 2 - 1);
+        return v;
     }
 
     protected void drawTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, int height, double state,
@@ -262,6 +353,12 @@ public abstract class Widget {
     private long lastTimestamp;
     private Data currentData;
 
+    protected void applyStyle(PlateStyle style) {
+        setBackgroundColor(style.background);
+        setTextColor(style.text);
+        setMaximumOpacity(style.opacity);
+    }
+
     protected void update() {
 
         if (lastUpdate + updateWait < System.currentTimeMillis()) {
@@ -283,7 +380,8 @@ public abstract class Widget {
 
             if (lastChangeTimestamp + correspondingData.delay < System.currentTimeMillis()) {
                 currentData = data;
-            };
+            }
+            ;
             updateImpl(currentData);
             lastUpdate = System.currentTimeMillis();
         }
@@ -316,4 +414,5 @@ public abstract class Widget {
         }
         g.fillPolygon(xx, yy, STAR_COLOR);
     }
+
 }
