@@ -78,13 +78,13 @@ public class Main {
         boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
         generator.addWidget(new QueueWidget(30, bottomY, plateHeight, 100, showVerdict));
 
-        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(544, 69,
-                1338, plateHeight, updateWait, 22, true);
+        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(588, 69,
+                1295, plateHeight, updateWait, 22, true);
         bigStandingsWidget.alignBottom(bottomY);
         generator.addWidget(bigStandingsWidget);
 
         generator.addWidget(new StatisticsWidget(
-                519, bottomY, plateHeight, 1371, updateWait
+                588, bottomY, plateHeight, 1295, updateWait
         ));
 
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));

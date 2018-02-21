@@ -33,6 +33,7 @@ public class QueueWidget extends Widget {
 
     private final int nameWidth;
     private final int rankWidth;
+    private final int solvedWidth;
     private final int problemWidth;
     private final int statusWidth;
 
@@ -70,6 +71,7 @@ public class QueueWidget extends Widget {
 
         nameWidth = (int) Math.round(NAME_WIDTH * plateHeight);
         rankWidth = (int) Math.round(RANK_WIDTH * plateHeight);
+        solvedWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
         problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
         statusWidth = (int) Math.round(STATUS_WIDTH * plateHeight);
 
@@ -77,7 +79,7 @@ public class QueueWidget extends Widget {
 
         this.showVerdict = showVerdict;
 
-        int videoWidth = problemWidth + nameWidth + rankWidth + statusWidth;
+        int videoWidth = problemWidth + solvedWidth + nameWidth + rankWidth + statusWidth;
         videoHeight = videoWidth * 9 / 16;
 
         breakingNews = new NewBreakingNewsWidget(updateWait, videoWidth, videoHeight);
@@ -197,6 +199,11 @@ public class QueueWidget extends Widget {
                 nameWidth, plateHeight, PlateStyle.Alignment.LEFT, blinking);
 
         x += nameWidth + spaceX;
+
+        drawRectangleWithText("" + team.getSolvedProblemsNumber(), x, y,
+                solvedWidth, plateHeight, PlateStyle.Alignment.CENTER, blinking);
+
+        x += solvedWidth;
 
         drawProblemPane(problem, x, y, problemWidth, plateHeight, blinking);
 

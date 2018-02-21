@@ -74,9 +74,12 @@ public class StatisticsWidget extends Widget {
         g = g.create();
         g.translate(leftX, bottomY - height);
 
-        g.drawRect(0, 0, width, plateHeight, StatisticsStylesheet.problemAlias.background, opacity, PlateStyle.RectangleType.SOLID);
+        int headerWidth = 228;
 
-        drawTextInRect(g, HEADER, 0, 0, -1, plateHeight, PlateStyle.Alignment.LEFT,
+        g.drawRect(headerWidth, 0, width - headerWidth, plateHeight, StatisticsStylesheet.problemAlias.background, opacity,
+                PlateStyle.RectangleType.SOLID);
+
+        drawTextInRect(g, HEADER, 0, 0, headerWidth, plateHeight, PlateStyle.Alignment.CENTER,
                 font, StatisticsStylesheet.header, visibilityState, 1, WidgetAnimation.NOT_ANIMATED);
 
         List<ProblemInfo> problems = info.problems;
