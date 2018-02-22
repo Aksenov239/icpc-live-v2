@@ -200,7 +200,7 @@ public class FastGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin) {
+    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin, boolean scaleText) {
         Graphics2D saved = g;
         x += x0;
         y += y0;

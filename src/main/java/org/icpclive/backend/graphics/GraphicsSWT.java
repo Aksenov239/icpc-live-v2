@@ -181,7 +181,7 @@ public class GraphicsSWT extends AbstractGraphics {
     }
 
     @Override
-    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin) {
+    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin, boolean scaleText) {
         Graphics2D saved = g;
         x += x0;
         y += y0;
@@ -195,7 +195,7 @@ public class GraphicsSWT extends AbstractGraphics {
         margin = height * margin;
 
         int maxTextWidth = (int) (width - 2 * margin);
-        if (textWidth > maxTextWidth) {
+        if (scaleText && textWidth > maxTextWidth) {
             textScale = 1. * maxTextWidth / textWidth;
         }
 

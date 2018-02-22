@@ -44,15 +44,17 @@ public abstract class AbstractGraphics {
         drawString(text, x, y, font, color, 1D);
     }
 
+    @Deprecated
     public abstract void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
                                         PlateStyle plateStyle, double opacity, double textOpacity,
                                         double margin, boolean scale);
 
+    @Deprecated
     public abstract void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double opacity, double textOpacity,
                                         double margin, boolean scaleText);
 
     public abstract void drawTextThatFits(String text, int x, int y, int width, int height,
-                                          PlateStyle.Alignment alignment, double margin);
+                                          PlateStyle.Alignment alignment, double margin, boolean scaleText);
 
     public abstract void drawImage(Image image, int x, int y, int width, int height);
 
@@ -105,5 +107,6 @@ public abstract class AbstractGraphics {
     }
 
     public abstract void dispose();
+
 
 }

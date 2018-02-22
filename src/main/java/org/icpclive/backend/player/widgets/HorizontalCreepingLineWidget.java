@@ -24,7 +24,7 @@ public class HorizontalCreepingLineWidget extends CreepingLineWidget {
 //            g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 //            g2.fillRoundRect(100, 100, 100, 80, 32, 32);
         update();
-        g.drawRect(0, height - HEIGHT - MARGIN, width, HEIGHT, CreepingLineStylesheet.main.background, 1, PlateStyle.RectangleType.SOLID);
+        g.drawRect(0, height - HEIGHT - BOTTOM, width, HEIGHT, CreepingLineStylesheet.main.background, 1, PlateStyle.RectangleType.SOLID);
         g.setFont(messageFont);
         long time = System.currentTimeMillis();
         int dt = (int) (time - last);
@@ -52,7 +52,7 @@ public class HorizontalCreepingLineWidget extends CreepingLineWidget {
         for (Message message : messagesOnScreen) {
             message.position -= V * dt;
             if (message.position + message.width >= 0) {
-                g.drawString(message.message, (int) message.position, height - MARGIN - 5, messageFont, CreepingLineStylesheet.main.text);
+                g.drawString(message.message, (int) message.position, height - BOTTOM - 5, messageFont, CreepingLineStylesheet.main.text);
             }
         }
         while (messagesOnScreen.size() > 0 && messagesOnScreen.getFirst().position + messagesOnScreen.getFirst().width < 0) {

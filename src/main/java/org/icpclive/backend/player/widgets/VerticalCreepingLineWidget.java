@@ -37,7 +37,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         this.logoTime = logoTime;
         this.clockTime = clockTime;
         this.logoChangeTime = logoChangeTime;
-        LOGO_V = 1. / logoChangeTime;
+        LOGO_V = 2. / logoChangeTime;
     }
 
     public int getHeightToDraw(Graphics2D g, String text, int y) {
@@ -51,7 +51,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     Message messageNow = new Message();
     Message messageNext = new Message();
     private static final int LOGO_WIDTH = 180;
-    private double logoVisible = 1;
+    private double logoOpacity = 1;
     private int logoState = 4;
     private long lastLogoIteration;
 
@@ -68,8 +68,8 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                 break;
             case 1:
                 if (lastLogoRotation + time / 2 >= System.currentTimeMillis()) {
-                    logoVisible -= dt * LOGO_V;
-                    logoVisible = Math.max(logoVisible, 0);
+                    logoOpacity -= dt * LOGO_V;
+                    logoOpacity = Math.max(logoOpacity, 0);
                 } else {
                     logoState = 2;
                 }
@@ -85,9 +85,9 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
                 logoState = 3;
                 break;
             case 3:
-                if (lastLogoRotation + (time + logoChangeTime) / 2 >= System.currentTimeMillis() || logoVisible < 1) {
-                    logoVisible += dt * LOGO_V;
-                    logoVisible = Math.min(logoVisible, 1);
+                if (lastLogoRotation + (time + logoChangeTime) / 2 >= System.currentTimeMillis() || logoOpacity < 1) {
+                    logoOpacity += dt * LOGO_V;
+                    logoOpacity = Math.min(logoOpacity, 1);
                 } else {
                     logoState = 4;
                 }
@@ -108,47 +108,49 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     private final int STANDINGS_PAGE = 4;
     private final double percent = 0.8;
 
-    private void drawInfo(AbstractGraphics g, Message message, boolean next, int width, int height) {
-        if (!STANDINGS_MESSAGE.equals(message.message)) {
-            drawTextToFit(g, message.message, 0, message.position, 0, 0, width, height,
-                    messageFont, CreepingLineStylesheet.main.text);
-            return;
-        }
-        standings = Preparation.eventsLoader.getContestData().getStandings();
-        int dx = width / STANDINGS_PAGE;
-        int start = next ? nextStandingsPosition : nowStandingsPosition;
-        for (int i = 0; i < STANDINGS_PAGE && start + i < standings.length; i++) {
-            drawTeamPane(g, standings[start + i], dx * i + 5, (int) message.position + 5,
-                    (int) (percent * height), 1);
+    private void drawInfo(Message message, boolean next, int width, int height) {
+        if (STANDINGS_MESSAGE.equals(message.message)) {
+            standings = Preparation.eventsLoader.getContestData().getStandings();
+            int dx = width / STANDINGS_PAGE;
+            int start = next ? nextStandingsPosition : nowStandingsPosition;
+            for (int i = 0; i < STANDINGS_PAGE && start + i < standings.length; i++) {
+                drawTeamPane(graphics, standings[start + i], dx * i + 5, (int) message.position + 5,
+                        (int) (percent * height), 1);
+            }
+        } else {
+            setFont(messageFont);
+            applyStyle(CreepingLineStylesheet.main);
+            graphics.drawTextThatFits(message.message, 0, (int) message.position, width, height, PlateStyle.Alignment.LEFT, MARGIN, true);
         }
     }
 
-    public void drawLogo(AbstractGraphics g, String currentLogo) {
+    public void drawLogo(String currentLogo) {
         if (currentLogo.equals(CLOCK)) {
             long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
             currentLogo = getTimeString(Math.abs(time));
         }
 
-        drawTextInRect(g, currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER,
-                messageFont, CreepingLineStylesheet.logo, logoVisible);
+        applyStyle(CreepingLineStylesheet.logo);
+        drawRectangle(0, 0, LOGO_WIDTH, HEIGHT);
+        setTextOpacity(logoOpacity);
+        drawTextThatFits(currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, true);
     }
 
     @Override
     public void paintImpl(AbstractGraphics gg, int width, int height) {
-        update();
-//        System.out.println(BASE_HEIGHT - HEIGHT - MARGIN);
-        AbstractGraphics g = gg.create(0, BASE_HEIGHT - HEIGHT - MARGIN, BASE_WIDTH, HEIGHT);
-        g.setFont(messageFont);
+        super.paintImpl(gg, width, height);
+
+        setGraphics(graphics.create(0, BASE_HEIGHT - HEIGHT - BOTTOM, BASE_WIDTH, HEIGHT));
+        setMaximumOpacity(1);
+        setVisibilityState(1);
+        setFont(messageFont);
         iterateLogo();
 
-        drawLogo(g, currentLogo);
+        drawLogo(currentLogo);
 
-        g = g.create(LOGO_WIDTH, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
-        //g.clip();
-        g.drawRect(0, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT, CreepingLineStylesheet.main.background, 1, PlateStyle.RectangleType.SOLID);
-        long time = System.currentTimeMillis();
-        int dt = (int) (time - last);
-        last = time;
+        graphics.translate(LOGO_WIDTH, 0);
+        applyStyle(CreepingLineStylesheet.main);
+        drawRectangle(0, 0, BASE_WIDTH - LOGO_WIDTH, HEIGHT);
 
         if (messagesQueue.size() > 0 && lastRotation + rotateTime < System.currentTimeMillis()) {
 //        if (lastRotation + rotateTime < System.currentTimeMillis()) {
@@ -157,10 +159,10 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
             nextStandingsPosition += STANDINGS_PAGE;
             if (STANDINGS_MESSAGE.equals(messageNow.message) &&
                     nextStandingsPosition < Math.min(STANDINGS_SIZE, standings == null ? STANDINGS_SIZE : standings.length)) {
-                messageNext = new Message(STANDINGS_MESSAGE, g, messageFont); // next message is still standings
+                messageNext = new Message(STANDINGS_MESSAGE, graphics, messageFont); // next message is still standings
             } else {
                 if (messagesQueue.size() > 0) {
-                    messageNext = new Message(messagesQueue.poll(), g, messageFont);
+                    messageNext = new Message(messagesQueue.poll(), graphics, messageFont);
                     inQueue.remove(messageNext.message);
                     if (STANDINGS_MESSAGE.equals(messageNext.message)) {
                         nextStandingsPosition = 0;
@@ -178,16 +180,11 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
             messageNow = new Message();
         } else {
             messageNow.position -= V * dt;
-            drawInfo(g, messageNow, false, width - LOGO_WIDTH, HEIGHT);
-//            drawTextToFit(g, messageNow.message, 0, messageNow.position, 0, 0, width - LOGO_WIDTH, HEIGHT,
-//                    messageFont, CreepingLineStylesheet.main.text);
+            drawInfo(messageNow, false, width - LOGO_WIDTH, HEIGHT);
         }
         if (messageNext.position + messageNext.heigth / 2 > HEIGHT / 2) {
             messageNext.position -= V * dt;
         }
-        drawInfo(g, messageNext, true, width - LOGO_WIDTH, HEIGHT);
-
-//        drawTextToFit(g, messageNext.message, 0, messageNext.position, 0, 0, width - LOGO_WIDTH, HEIGHT,
-//                messageFont, CreepingLineStylesheet.main.text);
+        drawInfo(messageNext, true, width - LOGO_WIDTH, HEIGHT);
     }
 }

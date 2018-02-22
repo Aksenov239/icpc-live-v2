@@ -17,7 +17,6 @@ import java.util.List;
 import static java.lang.Math.*;
 
 public class StatisticsWidget extends Widget {
-    private static final double V = 1e-3;
     public static final String HEADER = "STATISTICS";
 
     private final int leftX;
@@ -26,13 +25,11 @@ public class StatisticsWidget extends Widget {
     private final int width;
 
     private final int problemWidth;
-    private final Font font;
 
     ContestInfo info;
     private int[] solved;
     private int[] pending;
     private int[] wrong;
-    private int[] submitted;
 
     public StatisticsWidget(int leftX, int bottomY, int plateHeight, int width, long updateWait) {
         super(updateWait);
@@ -44,7 +41,7 @@ public class StatisticsWidget extends Widget {
         this.width = width;
         problemWidth = (int) round(PROBLEM_WIDTH * plateHeight);
 
-        font = Font.decode(MAIN_FONT + " "  + (int) (plateHeight * 0.7));
+        setFont(Font.decode(MAIN_FONT + " "  + (int) (plateHeight * 0.7)));
 
         setVisibilityState(0);
         setVisible(false);
@@ -64,23 +61,23 @@ public class StatisticsWidget extends Widget {
 
     @Override
     public void paintImpl(AbstractGraphics g, int screenWidth, int screenHeight) {
-        update();
-        updateVisibilityState();
+        super.paintImpl(g, screenWidth, screenHeight);
+
         if (visibilityState == 0) return;
 
         if (info == null) return;
         int height = plateHeight * (info.problemNumber + 1);
 
-        g = g.create();
-        g.translate(leftX, bottomY - height);
+
+        graphics.translate(leftX, bottomY - height);
 
         int headerWidth = 228;
 
-        g.drawRect(headerWidth, 0, width - headerWidth, plateHeight, StatisticsStylesheet.problemAlias.background, opacity,
-                PlateStyle.RectangleType.SOLID);
+        applyStyle(StatisticsStylesheet.problemAlias);
+        drawRectangle(headerWidth, 0, width - headerWidth, plateHeight);
 
-        drawTextInRect(g, HEADER, 0, 0, headerWidth, plateHeight, PlateStyle.Alignment.CENTER,
-                font, StatisticsStylesheet.header, visibilityState, 1, WidgetAnimation.NOT_ANIMATED);
+        applyStyle(StatisticsStylesheet.header);
+        drawRectangleWithText(HEADER, 0, 0, headerWidth, plateHeight, PlateStyle.Alignment.CENTER);
 
         List<ProblemInfo> problems = info.problems;
 
@@ -92,21 +89,18 @@ public class StatisticsWidget extends Widget {
             ProblemInfo problem = problems.get(i);
 
             PlateStyle style = StatisticsStylesheet.problemAlias;
-            if (wrong[i] > 0) {
-                style = StatisticsStylesheet.waProblem;
-            }
-            if (pending[i] > 0) {
-                style = StatisticsStylesheet.udProblem;
-            }
-            if (solved[i] > 0) {
-                style = StatisticsStylesheet.acProblem;
-            }
+//            if (wrong[i] > 0) {
+//                style = StatisticsStylesheet.waProblem;
+//            }
+//            if (pending[i] > 0) {
+//                style = StatisticsStylesheet.udProblem;
+//            }
+//            if (solved[i] > 0) {
+//                style = StatisticsStylesheet.acProblem;
+//            }
 
-            drawTextInRect(g, problem.letter, 0, y, problemWidth,
-                    plateHeight, PlateStyle.Alignment.CENTER, font,
-                    style, visibilityState,
-                    1, WidgetAnimation.NOT_ANIMATED);
-
+            applyStyle(style);
+            drawProblemPane(problem, 0, y, problemWidth, plateHeight);
 
             int maxNum = info.teamNumber + 3;
             int[] num = new int[]{solved[i], pending[i], wrong[i]};
@@ -138,15 +132,14 @@ public class StatisticsWidget extends Widget {
                     int w = (int) (fullWidth * len[j] / maxNum);
                     String text = "" + num[j];
 
-                    drawTextInRect(g, text, x, y,
-                            w, plateHeight, len[j] < 5 ? PlateStyle.Alignment.CENTER : PlateStyle.Alignment.RIGHT, font,
-                            styles[j],
-                            visibilityState, false, WidgetAnimation.NOT_ANIMATED, false);
-
+                    applyStyle(styles[j]);
+                    drawRectangleWithText(text, x, y, w, plateHeight,
+                            len[j] < 5 ? PlateStyle.Alignment.CENTER : PlateStyle.Alignment.RIGHT, false, false);
                     x += w;
                 }
             }
-            g.drawRect(x, y, width - x, plateHeight, StatisticsStylesheet.problemAlias.background, opacity, PlateStyle.RectangleType.SOLID);
+            applyStyle(StatisticsStylesheet.problemAlias);
+            drawRectangle(x, y, width - x, plateHeight);
             y += plateHeight;
         }
     }
@@ -159,7 +152,7 @@ public class StatisticsWidget extends Widget {
         solved = new int[info.getProblemsNumber()];
         pending = new int[info.getProblemsNumber()];
         wrong = new int[info.getProblemsNumber()];
-        submitted = new int[info.getProblemsNumber()];
+        int[] submitted = new int[info.getProblemsNumber()];
 
         for (TeamInfo teamInfo : info.getStandings()) {
             List<RunInfo>[] runs = teamInfo.getRuns();

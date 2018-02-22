@@ -43,7 +43,7 @@ public class CaptionWidget extends Widget {
         if (visibilityState > 0) {
             int x1;
             int x2;
-            int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.MARGIN);
+            int dx = 0;//(int) ((HEIGHT1 - HEIGHT2) * Widget.BOTTOM);
             if (alignment == PlateStyle.Alignment.LEFT) {
                 x1 = X_LEFT;
                 x2 = x1 + dx;

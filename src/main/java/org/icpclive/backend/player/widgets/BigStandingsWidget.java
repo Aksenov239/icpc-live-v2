@@ -28,8 +28,8 @@ public class BigStandingsWidget extends Widget {
     private static final int STAR_SIZE = 5;
 
     public static final String CURRENT_STANDINGS = "CURRENT STANDINGS";
-    public static final String OPTIMISTIC_STANDINGS = "Optimistic Standings";
-    public static final String FROZEN_STANDINGS = "Frozen Standings";
+    public static final String OPTIMISTIC_STANDINGS = "OPTIMISTIC";
+    public static final String FROZEN_STANDINGS = "FROZEN";
 
     private static int STANDING_TIME = 5000;
     private static int TOP_PAGE_STANDING_TIME = 10000;
@@ -159,12 +159,6 @@ public class BigStandingsWidget extends Widget {
         if (contestData == null) {
             return;
         }
-
-        if (controlled) {
-            update();
-        }
-
-        int dt = updateVisibilityState();
 
         if (!isVisible() && visibilityState == 0) {
             currentTeamPositions = null;

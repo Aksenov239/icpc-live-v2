@@ -8,7 +8,8 @@ import java.awt.*;
 public class QueueStylesheet extends Stylesheet {
     public static PlateStyle acProblem;
     public static PlateStyle waProblem;
-    public static PlateStyle udProblem;public static Color udTests;
+    public static PlateStyle udProblem;
+    public static Color udTests;
     public static PlateStyle frozenProblem;
     public static PlateStyle name;
 

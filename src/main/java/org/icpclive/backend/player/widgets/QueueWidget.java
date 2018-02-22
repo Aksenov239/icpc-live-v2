@@ -45,15 +45,20 @@ public class QueueWidget extends Widget {
     private NewBreakingNewsWidget breakingNews;
     private RunPlate breaking;
 
+    boolean firstOdd = true;
+
     private class RunPlate {
         double currentPosition;
         double desiredPosition;
         double visibilityState;
+        double currentOpacity = 1;
+        double desiredOpacity;
         RunInfo runInfo;
         boolean visible;
 
         RunPlate(RunInfo runInfo) {
             this.runInfo = runInfo;
+            firstOdd = !firstOdd;
         }
     }
 
@@ -97,11 +102,13 @@ public class QueueWidget extends Widget {
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
         super.paintImpl(g, width, height);
-        move(width, height, updateVisibilityState());
+        move();
         graphics.clip(baseX - width, baseY - height, 2 * width, height);
         List<RunPlate> list = new ArrayList<>(plates.values());
         Collections.sort(list, (o1, o2) -> -Double.compare(o1.desiredPosition, o2.desiredPosition));
+        boolean odd = firstOdd;
         for (RunPlate plate : list) {
+            odd = !odd;
             drawRun(baseX, baseY + (int) (plate.currentPosition * (plateHeight + spaceY)), plate);
         }
         if (breaking != null) {
@@ -110,8 +117,7 @@ public class QueueWidget extends Widget {
     }
 
 
-    @Override
-    protected void move(int width, int height, int dt) {
+    protected void move() {
         calculateQueue();
         if (info == null) return;
 
@@ -129,16 +135,21 @@ public class QueueWidget extends Widget {
                 } else {
                     plate.currentPosition += dp;
                 }
+            }
 
+            if (plate.currentOpacity < plate.desiredOpacity) {
+                plate.currentOpacity = Math.min(plate.currentOpacity + dt * 0.0005, plate.desiredOpacity);
+            } else {
+                plate.currentOpacity = Math.max(plate.currentOpacity - dt * 0.0005, plate.desiredOpacity);
             }
             if (plate.visible) {
                 plate.visibilityState = Math.min(plate.visibilityState + dt * 0.001, 1);
             } else {
                 plate.visibilityState = Math.max(plate.visibilityState - dt * 0.001, 0);
             }
-            if (plate.visibilityState == 0) {
-                plates.remove(plate.runInfo.getId());
-            }
+//            if (plate.visibilityState == 0) {
+//                plates.remove(plate.runInfo.getId());
+//            }
         }
 
     }
@@ -147,13 +158,13 @@ public class QueueWidget extends Widget {
         RunPlate plate = plates.get(r.getId());
         if (plate == null) {
             plate = new RunPlate(r);
+            System.out.println(r.getTeamId());
             plates.put(r.getId(), plate);
         }
         return plate;
     }
 
     private void drawRun(int x, int y, RunPlate plate) {
-
         boolean blinking = breakingNews.isVisible() && plate == breaking;
 
         setVisibilityState(plate.visibilityState);
@@ -181,12 +192,6 @@ public class QueueWidget extends Widget {
             progressWidth = (int) Math.round(statusWidth * runInfo.getPercentage());
         }
 
-//        if (plate.desiredPosition > 0) {
-//            return;
-//        }
-
-//        double v = odd ? 1 : 0.9;
-
         PlateStyle color = getTeamRankColor(team);
         applyStyle(color);
         drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y,
@@ -195,6 +200,7 @@ public class QueueWidget extends Widget {
         x += rankWidth + spaceX;
 
         applyStyle(teamColor);
+        setMaximumOpacity(plate.currentOpacity);
         drawRectangleWithText(name, x, y,
                 nameWidth, plateHeight, PlateStyle.Alignment.LEFT, blinking);
 
@@ -221,8 +227,8 @@ public class QueueWidget extends Widget {
                     plateHeight, PlateStyle.Alignment.CENTER, blinking);
 
             if (inProgress) {
-                graphics.drawRect(x, y, progressWidth, plateHeight, QueueStylesheet.udTests,
-                        visibilityState * plate.visibilityState, PlateStyle.RectangleType.SOLID);
+                setBackgroundColor(QueueStylesheet.udTests);
+                drawRectangle(x, y, progressWidth, plateHeight);
             }
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
                 drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
@@ -270,38 +276,41 @@ public class QueueWidget extends Widget {
             }
         }
 
-        int extra = firstToSolves.size() + queue.size() - MAX_QUEUE_SIZE;
-        if (extra > 0) {
-            queue.clear();
-
-            for (RunInfo r : info.getRuns()) {
-                if (r == null)
-                    continue;
-                if (r.getTime() >= info.getCurrentTime()) {
-                    continue;
-                }
-                if (breaking != null && breaking.runInfo == r) {
-                    continue;
-                }
-                if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
-                    continue;
-                }
-                if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
-                    if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
-                        extra--;
-                        continue;
-                    }
-                    queue.add(getRunPlate(r));
-                }
-            }
-        }
+//        int extra = firstToSolves.size() + queue.size() - MAX_QUEUE_SIZE;
+//        if (extra > 0) {
+//            queue.clear();
+//
+//            for (RunInfo r : info.getRuns()) {
+//                if (r == null)
+//                    continue;
+//                if (r.getTime() >= info.getCurrentTime()) {
+//                    continue;
+//                }
+//                if (breaking != null && breaking.runInfo == r) {
+//                    continue;
+//                }
+//                if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
+//                    continue;
+//                }
+//                if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
+//                    if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
+//                        extra--;
+//                        continue;
+//                    }
+//                    queue.add(getRunPlate(r));
+//                }
+//            }
+//        }
 
         for (RunPlate plate : plates.values()) {
             plate.visible = false;
             plate.desiredPosition = 0;
         }
         double pos = -queue.size();
+        boolean odd = queue.size() % 2 == 0;
         for (RunPlate plate : queue) {
+            odd = !odd;
+            plate.desiredOpacity = odd ? 1 : .9;
             plate.desiredPosition = pos - Y_SHIFT;
             plate.visible = true;
             pos += 1;
@@ -310,6 +319,8 @@ public class QueueWidget extends Widget {
         pos = -queue.size() - firstToSolves.size();
         if (queue.size() > 0) pos -= 0.5;
         for (RunPlate plate : firstToSolves) {
+            odd = !odd;
+            plate.desiredOpacity = odd ? 1 : .9;
             plate.desiredPosition = pos - Y_SHIFT;
             plate.visible = true;
             pos += 1;
@@ -318,6 +329,7 @@ public class QueueWidget extends Widget {
         pos -= firstToSolves.size() + 1;
         if (firstToSolves.size() > 0) pos -= 0.5;
         if (breaking != null) {
+            breaking.desiredOpacity = 1;
             breaking.desiredPosition = pos - Y_SHIFT;
             breaking.visible = true;
         }

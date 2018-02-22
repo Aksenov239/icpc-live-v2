@@ -256,7 +256,7 @@ public class GraphicsGL extends AbstractGraphics {
     }
 
     @Override
-    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin) {
+    public void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double margin, boolean scaleText) {
         x += x0;
         y += y0;
 
