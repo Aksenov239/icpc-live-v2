@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.Config;
 import org.icpclive.events.PCMS.PCMSEventsLoader;
-import org.icpclive.events.WF.WFEventsLoader;
+import org.icpclive.events.WF.old.WFEventsLoader;
 
 import java.io.IOException;
 import java.util.Properties;

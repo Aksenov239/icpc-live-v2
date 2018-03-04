@@ -1,4 +1,4 @@
-package org.icpclive.events.WF;
+package org.icpclive.events.WF.old;
 
 import org.icpclive.datapassing.StandingsData;
 import org.icpclive.events.ContestInfo;

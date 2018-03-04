@@ -1,4 +1,4 @@
-package org.icpclive.events.WF;
+package org.icpclive.events.WF.old;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
