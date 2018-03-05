@@ -1,4 +1,4 @@
-package org.icpclive.events.WF;
+package org.icpclive.events.WF.old;
 
 /**
  * Created by aksenov on 16.04.2015.

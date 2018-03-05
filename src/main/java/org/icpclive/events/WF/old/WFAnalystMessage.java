@@ -1,4 +1,4 @@
-package org.icpclive.events.WF;
+package org.icpclive.events.WF.old;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

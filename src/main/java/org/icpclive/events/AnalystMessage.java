@@ -1,6 +1,6 @@
 package org.icpclive.events;
 
-import org.icpclive.events.WF.WFAnalystMessage;
+import org.icpclive.events.WF.old.WFAnalystMessage;
 
 /**
  * @author egor@egork.net
