@@ -1,10 +1,11 @@
-package org.icpclive.events.WF.old;
+package org.icpclive.events.WF;
 
 import org.icpclive.datapassing.StandingsData;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.AnalystMessage;
 import org.icpclive.events.TeamInfo;
+import org.icpclive.events.WF.json.WFProblemInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,13 +16,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by aksenov on 05.05.2015.
  */
 public class WFContestInfo extends ContestInfo {
-    private WFRunInfo[] runs;
-    String[] languages;
-    private WFTeamInfo[] teamInfos;
-    public long[] timeFirstSolved;
-    private int maxRunId;
-    WFRunInfo[] firstSolvedRun;
-    private BlockingQueue<AnalystMessage> messageQueue = new LinkedBlockingQueue<>();
+    protected WFRunInfo[] runs;
+    public String[] languages;
+    public WFTeamInfo[] teamInfos;
+    protected long[] timeFirstSolved;
+    protected int maxRunId;
+    protected WFRunInfo[] firstSolvedRun;
+    protected BlockingQueue<AnalystMessage> messageQueue = new LinkedBlockingQueue<>();
 
     private WFTeamInfo[] standings = null;
 
@@ -35,7 +36,10 @@ public class WFContestInfo extends ContestInfo {
         firstSolvedRun = new WFRunInfo[problemsNumber];
     }
 
-    void recalcStandings() {
+    protected WFContestInfo() {
+    }
+
+    public void recalcStandings() {
         WFTeamInfo[] standings = new WFTeamInfo[teamNumber];
         int n = 0;
         Arrays.fill(timeFirstSolved, Integer.MAX_VALUE);
@@ -82,7 +86,7 @@ public class WFContestInfo extends ContestInfo {
         this.standings = standings;
     }
 
-    void recalcStandings(WFTeamInfo[] standings) {
+    public void recalcStandings(WFTeamInfo[] standings) {
         for (WFTeamInfo team : standings) {
             team.solved = 0;
             team.penalty = 0;
@@ -129,10 +133,10 @@ public class WFContestInfo extends ContestInfo {
     }
 
     public void addRun(WFRunInfo run) {
-//		System.err.println("add run: " + run);
+//		System.err.println("add runId: " + runId);
         if (!runExists(run.getId())) {
             runs[run.getId()] = run;
-            teamInfos[run.getTeamId()].addRun(run, run.getProblemNumber());
+            teamInfos[run.getTeamId()].addRun(run, run.getProblemId());
             maxRunId = Math.max(maxRunId, run.getId());
         }
     }
@@ -142,12 +146,12 @@ public class WFContestInfo extends ContestInfo {
     }
 
     public void addTest(WFTestCaseInfo test) {
-//		System.out.println("Adding test " + test.id + " to run " + test.run);
-        if (runExists(test.run)) {
-            WFRunInfo run = runs[test.run];
+//		System.out.println("Adding test " + test.id + " to runId " + test.runId);
+        if (runExists(test.runId)) {
+            WFRunInfo run = runs[test.runId];
             run.add(test);
             run.setLastUpdateTime(Math.max(run.getLastUpdateTime(), test.time));
-//			System.out.println("Run " + runs[test.run] + " passed " + runs[test.run].getPassedTestsNumber() + " tests");
+//			System.out.println("Run " + runs[test.runId] + " passed " + runs[test.runId].getPassedTestsNumber() + " tests");
         }
     }
 
@@ -183,6 +187,10 @@ public class WFContestInfo extends ContestInfo {
     @Override
     public RunInfo[] getRuns() {
         return runs;
+    }
+
+    public WFProblemInfo getProblemById(int id) {
+        return (WFProblemInfo) problems.get(id);
     }
 
     public WFTeamInfo getParticipantByHashTag(String hashTag) {

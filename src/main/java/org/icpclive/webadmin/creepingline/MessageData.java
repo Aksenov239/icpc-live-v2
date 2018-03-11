@@ -9,7 +9,7 @@ import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.AnalystMessage;
 import org.icpclive.events.EventsLoader;
-import org.icpclive.events.WF.WFAnalystMessage;
+import org.icpclive.events.WF.xml.WFAnalystMessage;
 import org.icpclive.webadmin.mainscreen.Advertisement;
 import org.icpclive.webadmin.mainscreen.Utils;
 import org.icpclive.webadmin.utils.SynchronizedBeanItemContainer;

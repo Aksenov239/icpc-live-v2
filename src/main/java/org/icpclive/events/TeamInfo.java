@@ -1,6 +1,7 @@
 package org.icpclive.events;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 public interface TeamInfo extends Comparable<TeamInfo> {
@@ -14,7 +15,7 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     String getAlias();
 
-    String getRegion();
+    HashSet<String> getGroups();
 
     int getPenalty();
 

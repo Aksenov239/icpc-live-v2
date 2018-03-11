@@ -262,7 +262,7 @@ public class NewTeamWidget extends Widget {
                             i == currentProblemId ? getTimeOpacity() : 1
                     );
                     //log.info(Arrays.toString(Preparation.eventsLoader.getContestData().firstTimeSolved()));
-                    if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemNumber()]) {
+                    if (run.getResult().equals("AC") && run.getTime() == Preparation.eventsLoader.getContestData().firstTimeSolved()[run.getProblemId()]) {
                         setGraphics(g);
                         drawStar(mainVideo.x + x - STAR_SIZE, (int) (mainVideo.y + y + STAR_SIZE), (int) STAR_SIZE);
                     }
@@ -312,7 +312,7 @@ public class NewTeamWidget extends Widget {
         if (doubleVideo) {
             smallVideo.loadNext(null);
         }
-        nextProblemId = run.getProblemNumber();
+        nextProblemId = run.getProblemId();
         teamId = run.getTeamId();
     }
 

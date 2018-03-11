@@ -5,6 +5,7 @@ import org.icpclive.events.TeamInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class PCMSTeamInfo implements TeamInfo {
     String alias;
@@ -16,14 +17,14 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     public PCMSTeamInfo(int id, String alias, String name, String shortName, String hashTag,
-                        String region, int problemsNumber) {
+                        HashSet<String> groups, int problemsNumber) {
         this(problemsNumber);
 
         this.id = id;
         this.alias = alias;
         this.name = name;
         this.shortName = shortName;
-        this.region = region;
+        this.groups = groups == null ? null : new HashSet<>(groups);
         this.hashTag = hashTag;
     }
 
@@ -33,7 +34,7 @@ public class PCMSTeamInfo implements TeamInfo {
 
     public PCMSTeamInfo(PCMSTeamInfo pcmsTeamInfo) {
         this(pcmsTeamInfo.id, pcmsTeamInfo.alias, pcmsTeamInfo.name,
-                pcmsTeamInfo.shortName, pcmsTeamInfo.hashTag, pcmsTeamInfo.region, pcmsTeamInfo.problemRuns.length);
+                pcmsTeamInfo.shortName, pcmsTeamInfo.hashTag, pcmsTeamInfo.groups, pcmsTeamInfo.problemRuns.length);
 
         for (int i = 0; i < pcmsTeamInfo.problemRuns.length; i++) {
             problemRuns[i].addAll(pcmsTeamInfo.problemRuns[i]);
@@ -89,8 +90,8 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     @Override
-    public String getRegion() {
-        return region;
+    public HashSet<String> getGroups() {
+        return groups;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class PCMSTeamInfo implements TeamInfo {
     @Override
     public PCMSTeamInfo copy() {
         return new PCMSTeamInfo(this.id, this.alias, this.name, this.shortName, this.hashTag,
-                this.region, problemRuns.length);
+                this.groups, problemRuns.length);
     }
 
     public String toString() {
@@ -129,7 +130,7 @@ public class PCMSTeamInfo implements TeamInfo {
 
     public String name;
     public String shortName;
-    public String region;
+    public HashSet<String> groups;
     public String hashTag;
 
     public int rank;

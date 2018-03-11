@@ -124,7 +124,7 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
                         RunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
                             container.addItemAt(0,
-                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemNumber() + 'A'), run.getTeamId() + 1, run.getTime(), run.getId()));
+                                    new BreakingNews(run.getResult(), "" + (char) (run.getProblemId() + 'A'), run.getTeamId() + 1, run.getTime(), run.getId()));
                         }
                         lastShowedRun++;
                     }

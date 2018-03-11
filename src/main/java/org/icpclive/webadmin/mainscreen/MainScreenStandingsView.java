@@ -144,7 +144,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
 
         standingsRegion = new OptionGroup();
         standingsRegion.addItem(StandingsData.ALL_REGIONS);
-        for (String region : ContestInfo.REGIONS) {
+        for (String region : ContestInfo.GROUPS) {
             standingsRegion.addItem(region);
         }
         standingsRegion.setValue(StandingsData.ALL_REGIONS);

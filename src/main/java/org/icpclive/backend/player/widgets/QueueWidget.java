@@ -172,7 +172,7 @@ public class QueueWidget extends Widget {
         RunInfo runInfo = plate.runInfo;
         TeamInfo team = info.getParticipant(runInfo.getTeamId());
         String name = team.getShortName();
-        ProblemInfo problem = info.problems.get(runInfo.getProblemNumber());
+        ProblemInfo problem = info.problems.get(runInfo.getProblemId());
         String result = runInfo.getResult();
 
         PlateStyle teamColor = QueueStylesheet.name;
@@ -230,11 +230,11 @@ public class QueueWidget extends Widget {
                 setBackgroundColor(QueueStylesheet.udTests);
                 drawRectangle(x, y, progressWidth, plateHeight);
             }
-            if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
+            if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemId()]) {
                 drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         } else {
-            if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemNumber()]) {
+            if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemId()]) {
                 drawStar(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
             }
         }
@@ -264,7 +264,7 @@ public class QueueWidget extends Widget {
                 continue;
             }
 
-            if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
+            if (r == info.firstSolvedRun()[r.getProblemId()]) {
                 if (r.getLastUpdateTime() > info.getCurrentTime() - FIRST_TO_SOLVE_WAIT_TIME) {
                     firstToSolves.add(getRunPlate(r));
                 }
@@ -289,7 +289,7 @@ public class QueueWidget extends Widget {
 //                if (breaking != null && breaking.runInfo == r) {
 //                    continue;
 //                }
-//                if (r == info.firstSolvedRun()[r.getProblemNumber()]) {
+//                if (r == info.firstSolvedRun()[r.getProblemId()]) {
 //                    continue;
 //                }
 //                if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {

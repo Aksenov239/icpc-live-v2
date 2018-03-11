@@ -11,7 +11,8 @@ public class Config {
 
     public static Properties loadProperties(String name) throws IOException {
         Properties properties = new Properties();
-        properties.load(new FileInputStream("config/" + name + ".properties"));
+//        properties.load(new FileInputStream("config/" + name + ".properties"));
+        properties.load(ClassLoader.getSystemResourceAsStream(name + ".properties"));
         return properties;
     }
 }
