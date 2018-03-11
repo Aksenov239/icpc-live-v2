@@ -158,7 +158,7 @@ public class QueueWidget extends Widget {
         RunPlate plate = plates.get(r.getId());
         if (plate == null) {
             plate = new RunPlate(r);
-            System.out.println(r.getTeamId());
+//            System.out.println(r.getTeamId());
             plates.put(r.getId(), plate);
         }
         return plate;
