@@ -6,7 +6,7 @@ import org.icpclive.webadmin.creepingline.MessageData;
 import org.icpclive.webadmin.ContextListener;
 import org.icpclive.webadmin.mainscreen.Polls.PollsData;
 import org.icpclive.webadmin.mainscreen.Utils;
-import org.icpclive.webadmin.mainscreen.Words.WordStatisticsData;
+import org.icpclive.webadmin.mainscreen.statistics.WordStatisticsData;
 import twitter4j.*;
 
 import java.io.IOException;

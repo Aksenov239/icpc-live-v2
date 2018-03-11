@@ -11,7 +11,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.icpclive.webadmin.ContextListener;
 import org.icpclive.webadmin.mainscreen.Polls.PollsData;
 import org.icpclive.webadmin.mainscreen.Utils;
-import org.icpclive.webadmin.mainscreen.Words.WordStatisticsData;
+import org.icpclive.webadmin.mainscreen.statistics.WordStatisticsData;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
