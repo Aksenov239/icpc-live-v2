@@ -1,5 +1,6 @@
 package org.icpclive.webadmin.mainscreen.BreakingNews;
 
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -16,6 +17,8 @@ import org.icpclive.webadmin.mainscreen.Utils;
 import org.icpclive.webadmin.utils.SynchronizedBeanItemContainer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class    MainScreenBreakingNews extends CustomComponent implements View {
@@ -103,6 +106,8 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
 
     public static Utils.StoppedThread getUpdaterThread() {
         return new Utils.StoppedThread(new Utils.StoppedRunnable() {
+            HashMap<Integer, BeanItem<BreakingNews>> hm = new HashMap<>();
+
             @Override
             public void run() {
                 while (!stop) {
@@ -123,8 +128,10 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
                     while (lastShowedRun <= contestInfo.getLastRunId()) {
                         RunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
-                            container.addItemAt(0,
+                            System.err.println("Add run " + run);
+                            BeanItem<BreakingNews> bi = container.addItemAt(0,
                                     new BreakingNews(run.getResult(), "" + (char) (run.getProblemId() + 'A'), run.getTeamId() + 1, run.getTime(), run.getId()));
+                            hm.put(run.getId(), bi);
                         }
                         lastShowedRun++;
                     }
@@ -135,12 +142,19 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
                         toDelete.add(container.getItemIds().get(i));
                     }
 
-                    toDelete.forEach(msg -> container.removeItem(msg));
+                    toDelete.forEach(container::removeItem);
 
                     for (int i = 0; i < container.getItemIds().size(); i++) {
+                        BreakingNews bn = container.getItemIds().get(i);
                         int runId = container.getItemIds().get(i).getRunId();
                         RunInfo run = contestInfo.getRun(runId);
-                        container.getItemIds().get(i).update(run);
+                        if (container.getItemIds().get(i).getOutcome().length() == 0 &&
+                                run.getResult().length() != 0) {
+                            System.err.println("Updated run " + run);
+                        }
+                        BeanItem<BreakingNews> bi = hm.get(runId);
+                        bi.getItemProperty("outcome").setValue(run.getResult());
+                        bi.getItemProperty("timestamp").setValue(run.getTime());
                     }
 
                     try {

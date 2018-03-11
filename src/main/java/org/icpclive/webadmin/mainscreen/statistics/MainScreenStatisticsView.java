@@ -1,4 +1,4 @@
-package org.icpclive.webadmin.mainscreen.Words;
+package org.icpclive.webadmin.mainscreen.statistics;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
@@ -20,7 +20,7 @@ public class MainScreenStatisticsView extends CustomComponent implements View {
 
     private static final Logger log = LogManager.getLogger(MainScreenStatisticsView.class);
 
-    /* Words statistics */
+    /* statistics statistics */
     Label wordStatus;
 
     Table words;
