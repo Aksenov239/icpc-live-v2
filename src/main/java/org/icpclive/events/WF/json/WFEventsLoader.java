@@ -109,7 +109,12 @@ public class WFEventsLoader extends EventsLoader {
             problemInfo.name = je.get("name").getAsString();
             problemInfo.id = je.get("ordinal").getAsInt();
             problemInfo.color = Color.decode(je.get("rgb").getAsString());
-            problemInfo.testCount = je.get("test_data_count").getAsInt();
+            if (je.get("test_data_count") == null) {
+                // TODO
+                problemInfo.testCount = 100;
+            } else {
+                problemInfo.testCount = je.get("test_data_count").getAsInt();
+            }
             problemInfo.letter = je.get("label").getAsString();
             problems[i] = problemInfo;
             contest.problemById.put(cdsId, problemInfo);
@@ -211,11 +216,22 @@ public class WFEventsLoader extends EventsLoader {
         if (!startTimeElement.isJsonNull()) {
             contestInfo.setStartTime(parseTime(startTimeElement.getAsString()));
         }
+        if (emulation) {
+            contestInfo.setStartTime(System.currentTimeMillis());
+        }
     }
 
     public void readState(JsonObject je) {
         String startTime = je.get("started").getAsString();
         contestInfo.setStartTime(parseTime(startTime));
+        if (emulation) {
+            contestInfo.setStartTime(System.currentTimeMillis());
+        }
+        if (je.get("ended").isJsonNull()) {
+            contestInfo.setStatus(ContestInfo.Status.RUNNING);
+        } else {
+            contestInfo.setStatus(ContestInfo.Status.OVER);
+        }
     }
 
     public void waitForEmulation(long time) {
@@ -284,7 +300,7 @@ public class WFEventsLoader extends EventsLoader {
 
             long start = System.currentTimeMillis();
             contestInfo.recalcStandings();
-            log.info("Standing are recalculated in " + (System.currentTimeMillis() - time) + " ms");
+            log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
         } else {
             runInfo.judged = false;
         }
@@ -335,7 +351,7 @@ public class WFEventsLoader extends EventsLoader {
                     }
 
                     JsonObject je = new Gson().fromJson(line, JsonObject.class);
-                    lastSavedEvent = je.get("id").getAsString();
+                    lastSavedEvent = je.get("id") == null ? lastSavedEvent : je.get("id").getAsString();
                     boolean update = !je.get("op").getAsString().equals("create");
                     String type = je.get("type").getAsString();
                     JsonObject json = je.get("data").getAsJsonObject();

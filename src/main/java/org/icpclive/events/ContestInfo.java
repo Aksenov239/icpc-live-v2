@@ -54,6 +54,7 @@ public abstract class ContestInfo {
     }
 
     public void setStartTime(long startTime) {
+        System.err.println("Set start time " + startTime);
         this.startTime = startTime;
     }
 
