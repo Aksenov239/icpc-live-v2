@@ -18,6 +18,38 @@ import java.util.stream.Stream;
 public class CreepingLineView extends CustomComponent implements View {
     public static final String NAME = "creepingLine";
 
+    Label creepingLineStatus;
+    Button showCreepingLine;
+    Button hideCreepingLine;
+
+    public Component creepingLineVisibility() {
+        creepingLineStatus = new Label(getVisibilityStatus());
+
+        showCreepingLine = createVisibilityButton("Show creeping line", true, 1);
+        hideCreepingLine = createVisibilityButton("Hide creeping line", false, 0);
+
+        CssLayout group = Utils.createGroupLayout(showCreepingLine, hideCreepingLine);
+        VerticalLayout panel = new VerticalLayout(creepingLineStatus, group);
+
+        Utils.setPanelDefaults(panel);
+
+        return panel;
+    }
+
+    public String getVisibilityStatus() {
+        return MessageData.getMessageData().isVisible() ? "Creeping line is shown"
+                : "Creeping line is not shown";
+    }
+
+    public Button createVisibilityButton(String label, boolean visibility, int status) {
+        Button button = new Button(label);
+        button.addClickListener(e -> {
+            MessageData.getMessageData().setVisible(visibility);
+            creepingLineStatus.setValue(getVisibilityStatus());
+        });
+        return button;
+    }
+
     final MessageData messageData;
     final MessageForm messageForm;
     final BeanItemContainer<Message> messageListContainer;
@@ -29,6 +61,9 @@ public class CreepingLineView extends CustomComponent implements View {
 //    Button newMessage;
 
     public CreepingLineView() {
+        Component creepingLineVisibility = creepingLineVisibility();
+
+
         messageData = MessageData.getMessageData();
         messageForm = new MessageForm(this);
 
@@ -141,7 +176,8 @@ public class CreepingLineView extends CustomComponent implements View {
 //        left.setExpandRatio(messageList, 1);
 //        left.setExpandRatio(messageFlow, 1);
 
-        HorizontalLayout mainLayout = new HorizontalLayout(left, messageForm);
+        HorizontalLayout mainLayout = new HorizontalLayout(left,
+                new VerticalLayout(creepingLineVisibility, messageForm));
         mainLayout.setSizeFull();
 //        messageForm.setWidth("50%");
 //        mainLayout.setExpandRatio(left, 1);

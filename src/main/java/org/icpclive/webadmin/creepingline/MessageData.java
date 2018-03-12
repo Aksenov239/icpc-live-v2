@@ -50,6 +50,7 @@ public class MessageData {
         }
         messageList = new BackUp<>(Message.class, backup);
         logosList = new BackUp<>(Advertisement.class, logoBackup);
+        isVisible = true;
         Utils.StoppedThread update = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
             public void run() {
@@ -104,6 +105,17 @@ public class MessageData {
     static BeanItemContainer<Message> messageFlow;
 
     public final BackUp<Advertisement> logosList;
+
+    private boolean isVisible;
+
+    public synchronized void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+        recache();
+    }
+
+    public synchronized boolean isVisible() {
+        return isVisible;
+    }
 
     private void recache() {
         Data.cache.refresh(CreepingLineData.class);
