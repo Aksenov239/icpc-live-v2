@@ -351,6 +351,11 @@ public class WFEventsLoader extends EventsLoader {
                     }
 
                     JsonObject je = new Gson().fromJson(line, JsonObject.class);
+                    if (je == null) {
+                        log.info("Non-json line");
+                        System.err.println("Non-json line");
+                        continue;
+                    }
                     lastSavedEvent = je.get("id") == null ? lastSavedEvent : je.get("id").getAsString();
                     boolean update = !je.get("op").getAsString().equals("create");
                     String type = je.get("type").getAsString();
