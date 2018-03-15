@@ -1,17 +1,18 @@
-package org.icpclive.events.WF.old;
+package org.icpclive.events.WF;
 
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
- * Created by aksenov on 17.04.2015.
+ * Created by Meepo on 3/5/2018.
  */
 public class WFTeamInfo implements TeamInfo {
 
-    private ArrayList<RunInfo>[] problem_runs;
+    protected ArrayList<RunInfo>[] problem_runs;
 
     public int id = -1;
     public int rank;
@@ -20,7 +21,7 @@ public class WFTeamInfo implements TeamInfo {
     public int solved;
     public int penalty;
     public long lastAccepted;
-    public String region;
+    public HashSet<String> groups;
 
     public String shortName;
 
@@ -31,6 +32,17 @@ public class WFTeamInfo implements TeamInfo {
         for (int i = 0; i < problems; i++) {
             problem_runs[i] = new ArrayList<>();
         }
+        groups = new HashSet<>();
+    }
+
+    public WFTeamInfo(WFTeamInfo teamInfo) {
+        this(teamInfo.getRuns().length);
+        id = teamInfo.id;
+        rank = teamInfo.rank;
+        name = teamInfo.name;
+
+        groups = new HashSet<>(teamInfo.groups);
+        shortName = teamInfo.shortName;
     }
 
     public WFTeamInfo copy() {
@@ -38,8 +50,7 @@ public class WFTeamInfo implements TeamInfo {
         teamInfo.id = id;
         teamInfo.rank = rank;
         teamInfo.name = name;
-
-        teamInfo.region = region;
+        teamInfo.groups = new HashSet<>(groups);
         teamInfo.shortName = shortName;
 
         return teamInfo;
@@ -71,8 +82,8 @@ public class WFTeamInfo implements TeamInfo {
     }
 
     @Override
-    public String getRegion() {
-        return region;
+    public HashSet getGroups() {
+        return groups;
     }
 
     @Override
@@ -97,7 +108,7 @@ public class WFTeamInfo implements TeamInfo {
         return hashTag;
     }
 
-    public void addRun(RunInfo run, int problemId){
+    public void addRun(RunInfo run, int problemId) {
         ArrayList<RunInfo> runs = problem_runs[problemId];
         synchronized (runs) {
             runs.add(run);
@@ -107,5 +118,4 @@ public class WFTeamInfo implements TeamInfo {
     public String toString() {
         return String.format("%03d", id + 1) + ". " + shortName;
     }
-
 }

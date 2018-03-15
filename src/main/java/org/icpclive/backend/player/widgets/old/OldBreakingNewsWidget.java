@@ -76,7 +76,7 @@ public class OldBreakingNewsWidget extends Widget {
             run = data.breakingNewsData.runId == -1 ? null :
                     Preparation.eventsLoader.getContestData().getRun(data.breakingNewsData.runId);
 
-            if (run == null || (run.getTeamId() != teamId || run.getProblemNumber() != problemId)) {
+            if (run == null || (run.getTeamId() != teamId || run.getProblemId() != problemId)) {
                 java.util.List<RunInfo> runs = team.getRuns()[problemId];
 
                 run = null;
@@ -99,7 +99,7 @@ public class OldBreakingNewsWidget extends Widget {
                 }
             } else {
                 if (run == null) {
-                    log.warn("Couldn't find run for team " + teamId + " and problem " + problemId);
+                    log.warn("Couldn't find runId for team " + teamId + " and problem " + problemId);
                     return;
                 }
                 url = TeamUrls.getUrl(run);
@@ -120,7 +120,7 @@ public class OldBreakingNewsWidget extends Widget {
             if (data.breakingNewsData.newsMessage.length() == 0) {
                 if (isLive && run == null) {
                     log.warn("Can't generate caption for team" + teamId + " problem " + problemId + ", " +
-                            "because video is live and don't know run id");
+                            "because video is live and don't know runId id");
                     return;
                 }
                 if (run.getResult().equals("AC")) {
@@ -201,7 +201,7 @@ public class OldBreakingNewsWidget extends Widget {
 
 //        log.debug(visibilityState + " " + opacity);
 
-        if (//run == null ||
+        if (//runId == null ||
                 video.getCurrentURL() != null) {
             int hh = (int) (video.getHeight() * opacity);
             video.draw(g, x, y + (video.getHeight() - hh) / 2, video.getWidth(), hh);

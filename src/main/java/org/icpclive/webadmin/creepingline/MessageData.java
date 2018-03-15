@@ -9,7 +9,7 @@ import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.AnalystMessage;
 import org.icpclive.events.EventsLoader;
-import org.icpclive.events.WF.WFAnalystMessage;
+import org.icpclive.events.WF.xml.WFAnalystMessage;
 import org.icpclive.webadmin.mainscreen.Advertisement;
 import org.icpclive.webadmin.mainscreen.Utils;
 import org.icpclive.webadmin.utils.SynchronizedBeanItemContainer;
@@ -50,6 +50,7 @@ public class MessageData {
         }
         messageList = new BackUp<>(Message.class, backup);
         logosList = new BackUp<>(Advertisement.class, logoBackup);
+        isVisible = true;
         Utils.StoppedThread update = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
             public void run() {
@@ -104,6 +105,17 @@ public class MessageData {
     static BeanItemContainer<Message> messageFlow;
 
     public final BackUp<Advertisement> logosList;
+
+    private boolean isVisible;
+
+    public synchronized void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+        recache();
+    }
+
+    public synchronized boolean isVisible() {
+        return isVisible;
+    }
 
     private void recache() {
         Data.cache.refresh(CreepingLineData.class);

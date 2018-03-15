@@ -5,7 +5,7 @@ public interface RunInfo extends Comparable<RunInfo> {
     boolean isAccepted();
     boolean isJudged();
     String getResult();
-    int getProblemNumber();
+    int getProblemId();
     int getTeamId();
     SmallTeamInfo getTeamInfoBefore();
     boolean isReallyUnknown();

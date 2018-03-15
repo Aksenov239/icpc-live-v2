@@ -1,4 +1,4 @@
-package org.icpclive.webadmin.mainscreen.Words;
+package org.icpclive.webadmin.mainscreen.statistics;
 
 /**
  * Created by Aksenov239 on 14.05.2017.

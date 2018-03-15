@@ -27,7 +27,7 @@ public abstract class ContestInfo {
 
     public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
     public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
-    public static final TreeSet<String> REGIONS = new TreeSet<>();
+    public static final TreeSet<String> GROUPS = new TreeSet<>();
 
     protected ContestInfo() {
     }
@@ -54,6 +54,7 @@ public abstract class ContestInfo {
     }
 
     public void setStartTime(long startTime) {
+        System.err.println("Set start time " + startTime);
         this.startTime = startTime;
     }
 
@@ -90,12 +91,12 @@ public abstract class ContestInfo {
 
     public abstract TeamInfo[] getStandings(StandingsData.OptimismLevel optimismLevel);
 
-    public TeamInfo[] getStandings(String region, StandingsData.OptimismLevel optimismLevel) {
-        if (StandingsData.ALL_REGIONS.equals(region)) {
+    public TeamInfo[] getStandings(String group, StandingsData.OptimismLevel optimismLevel) {
+        if (StandingsData.ALL_REGIONS.equals(group)) {
             return getStandings(optimismLevel);
         }
         TeamInfo[] infos = getStandings(optimismLevel);
-        return Stream.of(infos).filter(x -> region.equals(x.getRegion())).toArray(TeamInfo[]::new);
+        return Stream.of(infos).filter(x -> x.getGroups().contains(group)).toArray(TeamInfo[]::new);
     }
 
     public String[] getHashTags() {

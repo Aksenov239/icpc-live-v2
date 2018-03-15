@@ -4,6 +4,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.CreepingLineStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
+import org.icpclive.datapassing.Data;
 import org.icpclive.events.TeamInfo;
 
 import java.awt.*;
@@ -115,10 +116,11 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
             int start = next ? nextStandingsPosition : nowStandingsPosition;
             for (int i = 0; i < STANDINGS_PAGE && start + i < standings.length; i++) {
                 drawTeamPane(graphics, standings[start + i], dx * i + 5, (int) message.position + 5,
-                        (int) (percent * height), 1);
+                        (int) (percent * height), visibilityState);
             }
         } else {
             setFont(messageFont);
+            setTextOpacity(textOpacity);
             applyStyle(CreepingLineStylesheet.main);
             graphics.drawTextThatFits(message.message, 0, (int) message.position, width, height, PlateStyle.Alignment.LEFT, MARGIN, true);
         }
@@ -132,8 +134,14 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
 
         applyStyle(CreepingLineStylesheet.logo);
         drawRectangle(0, 0, LOGO_WIDTH, HEIGHT);
-        setTextOpacity(logoOpacity);
+        setTextOpacity(logoOpacity * textOpacity);
         drawTextThatFits(currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, true);
+    }
+
+    @Override
+    public void updateImpl(Data data) {
+        super.updateImpl(data);
+        setVisible(data.creepingLineData.isVisible);
     }
 
     @Override
@@ -142,7 +150,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
 
         setGraphics(graphics.create(0, BASE_HEIGHT - HEIGHT - BOTTOM, BASE_WIDTH, HEIGHT));
         setMaximumOpacity(1);
-        setVisibilityState(1);
+//        setVisibilityState(1);
         setFont(messageFont);
         iterateLogo();
 
