@@ -7,26 +7,25 @@ public class Message {
     private String message;
     private long creationTime;
     private long endTime;
-    private long time;
+    private long duration;
     private boolean isAdvertisement;
     private String source;
 
-
-    public Message(String message, long time, long duration, boolean isAdvertisement) {
+    public Message(String message, long creationTime, long duration, boolean isAdvertisement) {
         this.setMessage(message);
-        this.setCreationTime(time);
-        this.setEndTime(time + duration);
-        this.setTime(duration / 1000);
+        this.setCreationTime(creationTime);
+        this.setEndTime(creationTime + duration);
+        this.setDuration(duration / 1000);
         this.setIsAdvertisement(isAdvertisement);
     }
 
-    public Message(String message, long time, long duration, boolean isAdvertisement, String source) {
-        this(message, time, duration, isAdvertisement);
+    public Message(String message, long creationTime, long duration, boolean isAdvertisement, String source) {
+        this(message, creationTime, duration, isAdvertisement);
         this.source = source;
     }
 
-    public Message(String message, long time, long duration)    {
-        this(message, time, duration, false);
+    public Message(String message, long creationTime, long duration) {
+        this(message, creationTime, duration, false);
     }
 
     public String getMessage() {
@@ -53,12 +52,12 @@ public class Message {
         this.endTime = endTime;
     }
 
-    public long getTime() {
-        return time;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public boolean getIsAdvertisement() {

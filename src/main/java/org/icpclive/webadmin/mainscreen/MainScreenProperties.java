@@ -94,6 +94,10 @@ public class MainScreenProperties {
         pollTimeToShow = Integer.parseInt(properties.getProperty("poll.show.time", "20000"));
 
         wordTimeToShow = Integer.parseInt(properties.getProperty("word.statistics.word.show.time", "5000"));
+
+        maximumFlowSize = Integer.parseInt(properties.getProperty("creeping.line.maximum.flow", "30"));
+        messageLifespanCreepingLine = Integer.parseInt(properties.getProperty("creeping.line.message.lifespan",
+                "600000"));
     }
 
     public long overlayedDelay;
@@ -134,4 +138,8 @@ public class MainScreenProperties {
 
     // Memes
     public final int wordTimeToShow;
+
+    // Creeping line
+    public final int maximumFlowSize;
+    public final long messageLifespanCreepingLine;
 }

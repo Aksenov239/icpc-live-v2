@@ -7,10 +7,12 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
 import org.icpclive.webadmin.mainscreen.loaders.TwitterLoader;
 
+import java.util.ArrayList;
+
 /**
  * Created by Aksenov239 on 14.11.2015.
  */
-public class MessageForm extends FormLayout {
+public class MessageForm {
 
     final MessageData messageData;
     final CreepingLineView parent;
@@ -24,6 +26,16 @@ public class MessageForm extends FormLayout {
 
     final String[] timeBoxValues;
 
+    final ArrayList<Component> toHide = new ArrayList<>();
+
+    Component component;
+
+    public void setVisible(boolean visible) {
+        for (Component c : toHide) {
+            c.setVisible(visible);
+        }
+    }
+
     public MessageForm(CreepingLineView parent) {
         this.parent = parent;
 
@@ -34,16 +46,14 @@ public class MessageForm extends FormLayout {
             parent.messageList.setValue(null);
             this.edit(null);
         });
-        newMessage.setSizeUndefined();
-
-        form = new VerticalLayout();
+//        newMessage.setSizeUndefined();
 
         messageData = MessageData.getMessageData();
 
-        form.setVisible(false);
+//        form.setVisible(false);
 
-        form.setSizeUndefined();
-        form.setMargin(true);
+//        form.setSizeUndefined();
+//        form.setMargin(true);
 
         message = new TextField("Message:");
         timeBox = new ComboBox("Duration:");
@@ -82,7 +92,7 @@ public class MessageForm extends FormLayout {
 
             message.clear();
 
-            form.setVisible(false);
+            setVisible(false);
 
             parent.messageList.setValue(null);
 
@@ -98,13 +108,13 @@ public class MessageForm extends FormLayout {
         Button delete = new Button("Delete", event -> {
             messageData.removeMessage((Message) parent.messageList.getValue());
 
-            form.setVisible(false);
+            setVisible(false);
 
             Notification.show("Deleted", Type.TRAY_NOTIFICATION);
         });
 
         Button cancel = new Button("Cancel", event -> {
-            form.setVisible(false);
+            setVisible(false);
 
             parent.messageList.setValue(null);
 
@@ -114,30 +124,39 @@ public class MessageForm extends FormLayout {
         Button post = new Button("Tweet", event -> {
             TwitterLoader.getInstance().postMessage(message.getValue());
             message.clear();
-            form.setVisible(false);
+            setVisible(false);
 
             parent.messageList.setValue(null);
 
             Notification.show("Tweeted message", Type.TRAY_NOTIFICATION);
         });
 
-        HorizontalLayout actions = new HorizontalLayout(save, delete, cancel, post);
+        toHide.add(save);
+        toHide.add(delete);
+        toHide.add(cancel);
+        toHide.add(post);
+        toHide.add(message);
+        toHide.add(timeBox);
+        toHide.add(advertBox);
+
+        HorizontalLayout actions = new HorizontalLayout(newMessage, save, delete, cancel, post);
         actions.setSpacing(true);
 
-        form.addComponents(actions, message, timeBox, advertBox);
+        form = new VerticalLayout(actions, message, timeBox, advertBox);
         message.setSizeFull();
-        advertBox.setSizeUndefined();
+        timeBox.setSizeFull();
+//        advertBox.setSizeUndefined();
         form.setSizeFull();
         form.setSpacing(true);
 
-        addComponents(newMessage, form);
+        setVisible(false);
 
-        setSizeFull();
-        setVisible(true);
+        component = form;
     }
 
     public void edit(Message message) {
         messageObject = message;
+        setVisible(true);
         if (message != null) {
             this.message.setValue(message.getMessage());
             advertBox.setValue(message.getIsAdvertisement());
@@ -148,18 +167,17 @@ public class MessageForm extends FormLayout {
             timeBox.setValue(timeBoxValues[0]);
             advertBox.setValue(false);
         }
-        form.setVisible(true);
     }
 
     public void editFromFlow(Message message) {
         if (message == null) return;
         messageObject = null;
         this.message.clear();
-        timeBox.setVisible(true);
+//        timeBox.setVisible(true);
         timeBox.setValue(timeBoxValues[0]);
         this.message.setValue((message.getSource() == null || message.getSource().isEmpty() ? "" : message.getSource() + ": ") + message.getMessage());
         advertBox.setValue(message.getIsAdvertisement());
-        form.setVisible(true);
+        setVisible(true);
     }
 
 }

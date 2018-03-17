@@ -3,6 +3,7 @@ package org.icpclive.webadmin.creepingline;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.ui.AlignmentInfo;
 import com.vaadin.ui.*;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.webadmin.mainscreen.loaders.TwitterLoader;
@@ -56,23 +57,12 @@ public class CreepingLineView extends CustomComponent implements View {
     final BeanItemContainer<Message> messageFlowContainer;
     Table messageList;
     Table messageFlow;
-    ContestInfo contestInfo;
-
-//    Button newMessage;
 
     public CreepingLineView() {
         Component creepingLineVisibility = creepingLineVisibility();
 
-
         messageData = MessageData.getMessageData();
         messageForm = new MessageForm(this);
-
-//        newMessage = new Button("New Message");
-
-//        newMessage.addClickListener(event -> {
-//            messageList.setValue(null);
-//            messageForm.edit(null);
-//        });
 
         messageListContainer = messageData.messageList.getContainer();
         messageList = new Table();
@@ -90,7 +80,7 @@ public class CreepingLineView extends CustomComponent implements View {
         messageList.addValueChangeListener(event -> {
             //System.err.println(messageList.getValue());
             if (messageList.getValue() == null) {
-                messageForm.form.setVisible(false);
+                messageForm.setVisible(false);
                 return;
             }
             messageForm.edit((Message) messageList.getValue());
@@ -111,8 +101,7 @@ public class CreepingLineView extends CustomComponent implements View {
         messageFlow.setSelectable(true);
         messageFlow.setMultiSelect(false);
         messageFlow.setEditable(false);
-        messageFlow.setSizeFull();
-        messageFlow.setWidth("1800px");
+
         messageFlow.addValueChangeListener(event -> {
             if (messageFlow.getValue() != null) {
                 messageForm.editFromFlow((Message) messageFlow.getValue());
@@ -150,38 +139,57 @@ public class CreepingLineView extends CustomComponent implements View {
                     .forEach(MessageData::processTwitterMessage);
         });
 
-//        Button applySourceFilter = new Button("Apply filter");
-//        Button withdrawSourceFilter = new Button("Withdraw filter");
-//
-//        applySourceFilter.addClickListener(e -> {
-//            messageFlowContainer.removeAllContainerFilters();
-//            messageFlowContainer.addContainerFilter("source", sourceFilter.getValue(), true, true);
-//        });
+        HorizontalLayout buttonAndForm =
+                new HorizontalLayout(creepingLineVisibility, messageForm.component);
+        buttonAndForm.setSpacing(true);
+        messageForm.component.setSizeFull();
 
-//        withdrawSourceFilter.addClickListener(e -> {
-//            messageFlowContainer.removeAllContainerFilters();
-//        });
+        GridLayout messageFlowButtons = new GridLayout(3, 1);
+        messageFlowButtons.addComponent(sourceFilter, 0, 0);
+        messageFlowButtons.setComponentAlignment(sourceFilter,
+                new Alignment(AlignmentInfo.Bits.ALIGNMENT_HORIZONTAL_CENTER | AlignmentInfo.Bits.ALIGNMENT_BOTTOM));
+        messageFlowButtons.addComponent(load, 1, 0);
+        messageFlowButtons.setComponentAlignment(load,
+                new Alignment(AlignmentInfo.Bits.ALIGNMENT_HORIZONTAL_CENTER | AlignmentInfo.Bits.ALIGNMENT_BOTTOM));
+        messageFlowButtons.addComponent(loadButton, 2, 0);
+        messageFlowButtons.setComponentAlignment(loadButton,
+                new Alignment(AlignmentInfo.Bits.ALIGNMENT_HORIZONTAL_CENTER | AlignmentInfo.Bits.ALIGNMENT_BOTTOM));
 
-        Panel messageFlowPanel = new Panel(messageFlow);
-
-        VerticalLayout left = new VerticalLayout(messageList,
-                sourceFilter,
-                Utils.createGroupLayout(load, loadButton),
-        /*twitterQueryForm, twitterSearchForm,*/
-                messageFlowPanel
+        VerticalLayout messageFlowLayout = new VerticalLayout(
+                messageFlowButtons,
+                messageFlow
         );
-//        left.setSizeFull();
-        messageList.setSizeFull();
-//        messageFlowPanel.setSizeFull();
-//        left.setExpandRatio(messageList, 1);
-//        left.setExpandRatio(messageFlow, 1);
+        messageFlow.setSizeFull();
+        messageFlowLayout.setSizeFull();
 
-        HorizontalLayout mainLayout = new HorizontalLayout(left,
-                new VerticalLayout(creepingLineVisibility, messageForm));
+        VerticalLayout left = new VerticalLayout(creepingLineVisibility, messageFlowLayout);
+        left.setSizeFull();
+
+        VerticalLayout right = new VerticalLayout(messageForm.component, messageList);
+        messageList.setSizeFull();
+        right.setSizeFull();
+
+        HorizontalLayout mainLayout = new HorizontalLayout(left, right);
+        mainLayout.setExpandRatio(left, 0.6f);
+        mainLayout.setExpandRatio(right, 0.4f);
+
         mainLayout.setSizeFull();
-//        messageForm.setWidth("50%");
-//        mainLayout.setExpandRatio(left, 1);
-//        mainLayout.setExpandRatio(messageForm, 1);
+
+//        HorizontalLayout messageStorages =
+//                new HorizontalLayout(messageList, messageFlowLayout);
+//        messageStorages.setSizeFull();
+//
+//        messageList.setSizeFull();
+//        messageFlowLayout.setSizeFull();
+//        messageStorages.setExpandRatio(messageList, 0.4f);
+//        messageStorages.setExpandRatio(messageFlowLayout, 0.6f);
+//
+//        VerticalLayout mainLayout = new VerticalLayout(buttonAndForm,
+//                messageStorages);
+//        buttonAndForm.setSizeFull();
+//        mainLayout.setSizeFull();
+
+//        messageForm.form.setVisible(false);
 
         setCompositionRoot(mainLayout);
     }

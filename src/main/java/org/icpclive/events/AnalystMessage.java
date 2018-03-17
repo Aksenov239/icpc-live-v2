@@ -1,6 +1,6 @@
 package org.icpclive.events;
 
-import org.icpclive.events.WF.xml.WFAnalystMessage;
+import org.icpclive.events.WF.WFAnalystMessage;
 
 /**
  * @author egor@egork.net
@@ -10,7 +10,7 @@ public interface AnalystMessage {
 
     int getTeam();
 
-    int getTime();
+    long getTime();
 
     int getPriority();
 

@@ -10,10 +10,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.ProblemInfo;
-import org.icpclive.events.WF.WFContestInfo;
-import org.icpclive.events.WF.WFRunInfo;
-import org.icpclive.events.WF.WFTeamInfo;
-import org.icpclive.events.WF.WFTestCaseInfo;
+import org.icpclive.events.WF.*;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;

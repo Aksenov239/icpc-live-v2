@@ -10,15 +10,13 @@ import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
-import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.WF.WFRunInfo;
 import org.icpclive.events.WF.WFTeamInfo;
 import org.icpclive.events.WF.WFTestCaseInfo;
+import org.icpclive.events.WF.WFAnalystMessage;
 
 import java.awt.*;
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -32,12 +30,8 @@ public class WFEventsLoader extends EventsLoader {
     private static WFContestInfo contestInfo;
 
     private String url;
-    private String teamsInfoURL;
-    private String problemsInfoURL;
     private String login;
     private String password;
-
-    private HashMap<String, String> regionsMapping;
 
     private boolean emulation;
 
@@ -330,8 +324,12 @@ public class WFEventsLoader extends EventsLoader {
         contestInfo.addTest(testCaseInfo);
     }
 
-    public long readAnalystMessage(String json) {
-        return 0;
+    public WFAnalystMessage readAnalystMessage(JsonObject je) {
+        WFAnalystMessage message = new WFAnalystMessage();
+        message.setPriority(je.get("priority").getAsInt());
+        message.setMessage(je.get("text").getAsString());
+        message.setTime(parseRelativeTime(je.get("contest_time").getAsString()) + contestInfo.getStartTime());
+        return message;
     }
 
     public void run() {

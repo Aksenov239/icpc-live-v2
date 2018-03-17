@@ -121,7 +121,7 @@ public class BackUp<T> {
         return data.getItem(itemId);
     }
 
-    BeanItemContainer<T> data;
+    final BeanItemContainer<T> data;
     Path backupFile;
     //static final Gson gson = new GsonBuilder().create();
     static final Gson gson = new GsonBuilder()

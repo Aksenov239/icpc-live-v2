@@ -1,4 +1,4 @@
-package org.icpclive.events.WF.xml;
+package org.icpclive.events.WF;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +12,7 @@ public class WFAnalystMessage implements AnalystMessage {
 
     private int id = -1;
     private int team = -1;
-    private int time = -1;
+    private long time = -1;
     private int priority = -1;
     private int problem = -1;
     private int runId = -1;
@@ -60,11 +60,11 @@ public class WFAnalystMessage implements AnalystMessage {
     }
 
     @Override
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
