@@ -393,11 +393,11 @@ public class BigStandingsWidget extends Widget {
             }
             if (bright && statusColor == BigStandingsStylesheet.noProblem) {
                 applyStyle(statusColor.brighter());
-                if (odd) {
-                    setMaximumOpacity(maximumOpacity * .9);
-                }
             } else {
                 applyStyle(statusColor);
+            }
+            if (odd && status.length() == 0) {
+                setMaximumOpacity(maximumOpacity * .9);
             }
 
             if (status.startsWith("-")) status = "\u2212" + status.substring(1);
