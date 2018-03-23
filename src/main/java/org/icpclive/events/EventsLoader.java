@@ -9,7 +9,7 @@ import org.icpclive.events.WF.json.WFEventsLoader;
 import java.io.IOException;
 import java.util.Properties;
 
-public abstract class EventsLoader extends Thread {
+public abstract class EventsLoader implements Runnable {
     private static final Logger log = LogManager.getLogger(EventsLoader.class);
 
     private static EventsLoader instance;
@@ -27,8 +27,6 @@ public abstract class EventsLoader extends Thread {
                 } if ("PCMS".equals(standingsType)) {
                     instance = new PCMSEventsLoader();
                 }
-                instance.emulationSpeed = Double.parseDouble(properties.getProperty("emulation.speed", "1"));
-                instance.emulationStartTime = Long.parseLong(properties.getProperty("emulation.startTime", "0"));
             } catch (IOException e) {
                 log.error("error", e);
             }

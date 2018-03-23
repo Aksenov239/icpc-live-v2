@@ -1,6 +1,7 @@
 package org.icpclive.events;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.stream.Stream;
 import java.util.List;
 import java.util.TreeSet;
@@ -45,6 +46,7 @@ public abstract class ContestInfo {
     }
 
     public void setStatus(Status status) {
+        System.err.println("New status: " + status);
         lastTime = getCurrentTime();
         this.status = status;
     }
@@ -54,7 +56,7 @@ public abstract class ContestInfo {
     }
 
     public void setStartTime(long startTime) {
-        System.err.println("Set start time " + startTime);
+        System.err.println("Set start time " + new Date(startTime));
         this.startTime = startTime;
     }
 

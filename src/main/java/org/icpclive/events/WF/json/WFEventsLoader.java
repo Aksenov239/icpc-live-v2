@@ -46,6 +46,8 @@ public class WFEventsLoader extends EventsLoader {
 
             // in format https://example.com/api/contests/wf14/
             url = properties.getProperty("url");
+            emulationSpeed = Double.parseDouble(properties.getProperty("emulation.speed", "1"));
+            emulationStartTime = Long.parseLong(properties.getProperty("emulation.startTime", "0"));
 
             if (!(url.startsWith("http") || url.startsWith("https"))) {
                 emulation = true;
@@ -321,6 +323,7 @@ public class WFEventsLoader extends EventsLoader {
         testCaseInfo.runId = runInfo.id;
         testCaseInfo.total = contestInfo.getProblemById(runInfo.problemId).testCount;
 
+        System.err.println(runInfo);
         contestInfo.addTest(testCaseInfo);
     }
 
@@ -351,7 +354,7 @@ public class WFEventsLoader extends EventsLoader {
                     JsonObject je = new Gson().fromJson(line, JsonObject.class);
                     if (je == null) {
                         log.info("Non-json line");
-                        System.err.println("Non-json line");
+                        System.err.println("Non-json line: " + Arrays.toString(line.toCharArray()));
                         continue;
                     }
                     lastSavedEvent = je.get("id") == null ? lastSavedEvent : je.get("id").getAsString();

@@ -130,7 +130,7 @@ public class PCMSEventsLoader extends EventsLoader {
             try {
                 while (true) {
                     updateStatements();
-                    sleep(5000);
+                    Thread.sleep(5000);
                 }
             } catch (IOException | InterruptedException e) {
                 log.error("error", e);
