@@ -211,6 +211,9 @@ public class WFEventsLoader extends EventsLoader {
         JsonElement startTimeElement = je.get("start_time");
         if (!startTimeElement.isJsonNull()) {
             contestInfo.setStartTime(parseTime(startTimeElement.getAsString()));
+            contestInfo.setStatus(ContestInfo.Status.RUNNING);
+        } else {
+            contestInfo.setStatus(ContestInfo.Status.BEFORE);
         }
         if (emulation) {
             contestInfo.setStartTime(System.currentTimeMillis());
@@ -323,7 +326,7 @@ public class WFEventsLoader extends EventsLoader {
         testCaseInfo.runId = runInfo.id;
         testCaseInfo.total = contestInfo.getProblemById(runInfo.problemId).testCount;
 
-        System.err.println(runInfo);
+//        System.err.println(runInfo);
         contestInfo.addTest(testCaseInfo);
     }
 

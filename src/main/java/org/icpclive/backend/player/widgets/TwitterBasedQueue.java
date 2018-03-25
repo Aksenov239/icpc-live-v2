@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets;
 
 import org.apache.logging.log4j.LogManager;
+import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.TeamInfo;
@@ -19,7 +20,6 @@ public class TwitterBasedQueue extends Thread {
     private String mainHashTag;
     private Queue<Request> queue;
     private Set<String> inQueueHashtags;
-    private long sleepTime;
     private ContestInfo contestInfo;
     private long accountWaitTime;
     private int votesToShow;
@@ -28,9 +28,9 @@ public class TwitterBasedQueue extends Thread {
         Properties properties = new Properties();
         twitter = TwitterFactory.getSingleton();
         try {
-            properties.load(getClass().getResourceAsStream("/splitscreen.properties"));
+//            properties.load(getClass().getResourceAsStream("/splitscreen.properties"));
+            properties = Config.loadProperties("splitscreen");
             mainHashTag = properties.getProperty("main.hashtag");
-            sleepTime = Long.parseLong(properties.getProperty("hashtag.loader.sleep.time", "60000"));
             accountWaitTime = Long.parseLong(properties.getProperty("account.wait.time"));
             votesToShow = Integer.parseInt(properties.getProperty("votes.to.show"));
             queue = new ArrayDeque<>();
@@ -63,7 +63,7 @@ public class TwitterBasedQueue extends Thread {
 
         int threshold = currentThreshold();
         for (Request request1 : votesForTeam.keySet()) {
-            if (votesForTeam.getOrDefault(request1, 0) >= threshold) {
+            if (votesForTeam.get(request1) >= threshold) {
                 enqueue(request1);
                 votesForTeam.put(request1, 0);
             }
@@ -95,46 +95,7 @@ public class TwitterBasedQueue extends Thread {
 //            }
         }
     }
-
-//    private void step() throws TwitterException {
-//        query = new Query(mainHashTag);
-//        query.setCount(100);
-//        query.setSinceId(lastId);
-//        if (twitter == null) {
-//            twitter = TwitterFactory.getSingleton();
-//        }
-//        list = twitter.search(query).getTweets();
-//        for (Status status : list) {
-//            long timestamp = status.getCreatedAt().getTime();
-//            if (lastTweetFromUser.getOrDefault(status.getUser().getId(), 0L) + accountWaitTime > timestamp) {
-//                continue;
-//            }
-//            lastId = Math.max(status.getId(), lastId);
-//            for (HashtagEntity entity : status.getHashtagEntities()) {
-//                if (firstRun)
-//                    continue;
-//                String hashTag = entity.getText();
-//                TeamInfo teamInfo = contestInfo.getParticipantByHashTag(hashTag);
-//                if (teamInfo != null && !inQueueHashtags.contains(hashTag)) {
-//                    Request request = new Request(teamInfo.getId(),
-//                            status.getText().contains("camera") ? "camera" : "screen",
-//                            hashTag
-//                    );
-//                    System.err.println("Read request for team " + request.teamId + " " + request.type);
-//                    int total = votesForTeam.getOrDefault(request, 0) + 1;
-//                    lastRequest.put(request, status.getId());
-//                    if (total == currentThreshold()) {
-//                        enqueue(request);
-//                        total = 0;
-//                    }
-//                    votesForTeam.put(request, total);
-//                    break;
-//                }
-//            }
-//            lastTweetFromUser.put(status.getUser().getId(), timestamp);
-//        }
-//        firstRun = false;
-//    }
+//sp
 
     private synchronized void doOnStatus(Status status) {
         System.err.println(status);
@@ -172,7 +133,7 @@ public class TwitterBasedQueue extends Thread {
                 Request request = new Request(teamInfo.getId(),
                         type,
                         hashTag);
-                System.err.println("Read request for team " + request.teamId + " " + request.type);
+                System.err.println("Read request \"" + request.type + "\" for team " + request.teamId);
                 int total = votesForTeam.getOrDefault(request, 0) + 1;
                 System.err.println("It gets " + total + " votes.");
 
@@ -249,7 +210,7 @@ public class TwitterBasedQueue extends Thread {
     }
 
     public void acknowledge(Request request, Status statusTo) {
-        try {
+/*        try {
             String statusText =
                     "@" + statusTo.getUser().getScreenName() +
                             " Your vote for team " + contestInfo.getParticipant(request.teamId).getName() +
@@ -259,11 +220,11 @@ public class TwitterBasedQueue extends Thread {
             twitter.updateStatus(status);
         } catch (TwitterException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private synchronized void enqueue(Request request) {
-        try {
+/*        try {
             Status statusTo = lastTweet.get(request);
             String statusText =
                     "@" + statusTo.getUser().getScreenName()
@@ -277,7 +238,7 @@ public class TwitterBasedQueue extends Thread {
             System.err.println(statusText);
         } catch (TwitterException e) {
             e.printStackTrace();
-        }
+        }*/
         queue.add(request);
         inQueueHashtags.add(request.hashTag);
     }
@@ -299,7 +260,7 @@ public class TwitterBasedQueue extends Thread {
 
         public boolean equals(Object o) {
             Request request = (Request) o;
-            return request.teamId == teamId && request.type == type;
+            return request.teamId == teamId && request.type.equals(type);
         }
     }
 }

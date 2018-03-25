@@ -2,6 +2,7 @@ package org.icpclive.webadmin.mainscreen.loaders;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import org.icpclive.webadmin.creepingline.MessageData;
 import org.icpclive.webadmin.ContextListener;
 import org.icpclive.webadmin.mainscreen.Polls.PollsData;
@@ -43,11 +44,11 @@ public class TwitterLoader extends Utils.StoppedRunnable {
     }
 
     private TwitterLoader() {
-        Properties properties = new Properties();
         try {
-            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+            Properties properties = Config.loadProperties("mainscreen");
+//            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
             mainHashTag = properties.getProperty("twitter.hashtag");
-            pollHashTag = properties.getProperty("poll.hashtag");
+            pollHashTag = properties.getProperty("poll.hashtag", mainHashTag);
         } catch (IOException e) {
             logger.error("error", e);
         }
@@ -62,7 +63,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
     }
 
     public void doOnStatus(Status status) {
-//        System.err.println(status.getUser().getId() + " " + status.getText());
+        System.err.println(status.getUser().getId() + " " + status.getText());
         if (Arrays.stream(status.getHashtagEntities()).anyMatch(e -> ("#" + e.getText()).equals(mainHashTag))) {
             WordStatisticsData.vote(WordStatisticsData.TWEET_KEYWORD + " " + status.getText());
             MessageData.processTwitterMessage(status);
@@ -70,8 +71,11 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 
 //        System.err.println(status.getUser().getId() + " " + status.getText());
         if (status.getText().startsWith(pollHashTag + " ")) {
-            PollsData.vote("Twitter#" + status.getUser().getId(),
-                    "vote " + status.getText().substring(pollHashTag.length() + 1));
+            String text = status.getText().substring(pollHashTag.length() + 1);
+            if (!text.startsWith("vote")) {
+                text = "vote " + text;
+            }
+            PollsData.vote("Twitter#" + status.getUser().getId(), text);
         }
     }
 
@@ -113,6 +117,7 @@ public class TwitterLoader extends Utils.StoppedRunnable {
                     }
                 };
                 FilterQuery filterQuery = new FilterQuery();
+                System.err.println(mainHashTag);
                 filterQuery.track(mainHashTag, pollHashTag);
 
                 twitterStream.addListener(statusListener);

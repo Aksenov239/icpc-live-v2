@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.icpclive.events.WF.WFRunInfo;
+import org.icpclive.Config;
 
 /**
  * @author: pashka
@@ -36,7 +37,8 @@ public class SplitScreenWidget extends Widget {
     public void initialization() {
         Properties properties = new Properties();
         try {
-            properties.load(this.getClass().getClassLoader().getResourceAsStream("splitscreen.properties"));
+            properties = Config.loadProperties("splitscreen");
+//            properties.load(this.getClass().getClassLoader().getResourceAsStream("splitscreen.properties"));
         } catch (IOException e) {
             log.error("error", e);
         }
@@ -107,7 +109,7 @@ public class SplitScreenWidget extends Widget {
         System.err.println("Choosing replay");
         while (currentRunId <= contestInfo.getLastRunId() && replayRun == null) {
             WFRunInfo run = contestInfo.getRun(currentRunId);
-            if (run != null)
+//            if (run != null)
 //                System.err.println((long) (1000 * runId.time + " " + System.currentTimeMillis() + " " +
 //                        (long) (System.currentTimeMillis() - 1000 * runId.timestamp) + " " + runId + " " +
 //                        runId.isAccepted());
@@ -117,12 +119,16 @@ public class SplitScreenWidget extends Widget {
                     run.isAccepted()) {
                 replayRun = run;
             }
+            // TODO: because replays does not work we do not want to show the same team
+            if (replayRun != null && teamInUse(replayRun.getTeamId())) {
+                replayRun = null;
+            }
             currentRunId++;
         }
 
-        log.info("Found replay " + replayRun);
-        System.err.println("Found replay " + replayRun);
         if (replayRun != null) {
+            log.info("Found replay " + replayRun);
+            System.err.println("Found replay " + replayRun);
 //            TODO: while replay do not work
 //            teamInfoWidgets[widget].change(replayRun);
             teamInfoWidgets[widget].change(
