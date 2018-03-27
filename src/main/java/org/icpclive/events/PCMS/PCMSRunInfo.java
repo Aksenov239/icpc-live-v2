@@ -1,5 +1,7 @@
 package org.icpclive.events.PCMS;
 
+import org.icpclive.backend.Preparation;
+import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.SmallTeamInfo;
 import org.icpclive.events.RunInfo;
 
@@ -43,6 +45,11 @@ public class PCMSRunInfo implements RunInfo {
     @Override
     public String getResult() {
         return result;
+    }
+
+    @Override
+    public ProblemInfo getProblem() {
+        return Preparation.eventsLoader.getContestData().problems.get(getProblemId());
     }
 
     @Override
