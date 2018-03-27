@@ -2,6 +2,7 @@ package org.icpclive.backend.player.urls;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import org.icpclive.events.PCMS.PCMSTeamInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
@@ -20,9 +21,8 @@ public class TeamUrls {
     private TeamUrls() {} // utility only, do not create
 
     static {
-        Properties properties = new Properties();
         try {
-            properties.load(TeamUrls.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+            Properties properties = Config.loadProperties("mainscreen");
             TeamUrls.types = properties.getProperty("info.types", "screen;camera;info").split(";");
             TeamUrls.types = Arrays.copyOf(TeamUrls.types, TeamUrls.types.length + 1);
             TeamUrls.types[TeamUrls.types.length - 1] = "";
@@ -44,10 +44,10 @@ public class TeamUrls {
             int aliasId = Integer.parseInt(team.getAlias().substring(1));
             int hall = aliasId / 100;
             int place = aliasId % 100;
-            log.info("change " + hall + " " + place);
+            log.info("addView " + hall + " " + place);
             return String.format(urlTemplates.get(infoType), hall, place);
         } else if (team instanceof WFTeamInfo) {
-            log.info("change " + (team.getId() + 1) + " " + infoType);
+            log.info("addView " + (team.getId() + 1) + " " + infoType);
             return String.format(urlTemplates.get(infoType), team.getId() + 1);
         }
         return null;

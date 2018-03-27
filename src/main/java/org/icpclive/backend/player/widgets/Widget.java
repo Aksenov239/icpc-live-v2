@@ -38,6 +38,7 @@ public abstract class Widget {
     protected static final double PENALTY_WIDTH = 2.0;
     protected static final double PROBLEM_WIDTH = 1.2;
     protected static final double STATUS_WIDTH = 1.6;
+    protected static final double TIME_WIDTH = 2;
 
     protected static final int STAR_SIZE = 5;
 
@@ -45,7 +46,8 @@ public abstract class Widget {
 
     // Colors used in graphics
 
-    protected static final long BLINKING_PERIOD = 1000;
+    protected static final long BLINKING_PERIOD = 1500;
+    protected int sleepTime;
 
     protected static Color mergeColors(Color first, Color second) {
         int rgb = 0;
@@ -327,7 +329,7 @@ public abstract class Widget {
         int totalWidth = (int) round(height * total_width);
         int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
         x += rankWidth + spaceX;
         drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
         x += nameWidth + spaceX;
