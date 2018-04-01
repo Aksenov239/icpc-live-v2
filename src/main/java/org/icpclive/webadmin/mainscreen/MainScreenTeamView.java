@@ -17,6 +17,8 @@ import java.util.Set;
 public class MainScreenTeamView extends CustomComponent implements View {
     public static String NAME = "mainscreen-team";
 
+    public static final String STATISTICS_SHOW_TYPE = "stats";
+
     Label teamStatus;
     Button teamShow;
     Button teamHide;
@@ -29,11 +31,10 @@ public class MainScreenTeamView extends CustomComponent implements View {
     TextField sleepTime;
 
     final String[] types = TeamUrls.types;
-    ComboBox type;
+    OptionGroup typeSelection;
     //    ListSelect teamSelection;
     OptionGroup teamSelection;
     CheckBox stats;
-
 
     public static String getTeamStatus() {
         String status = MainScreenData.getMainScreenData().teamData.infoStatus();
@@ -60,14 +61,28 @@ public class MainScreenTeamView extends CustomComponent implements View {
         }
     }
 
+    private boolean localLoad(String type) {
+        return STATISTICS_SHOW_TYPE.equals(type) &&
+                TeamUrls.localUrlType.contains(type);
+    }
+
     public Component getControllerTeam() {
         teamStatus = new Label(getTeamStatus());
 
-        type = new ComboBox();
-        type.addItems(types);
-        type.setNullSelectionAllowed(false);
-        type.setValue(types[0]);
+        typeSelection = new OptionGroup();
+        typeSelection.addItem(STATISTICS_SHOW_TYPE);
+        for (String type : types) {
+            if (!type.equals("")) {
+                typeSelection.addItem(type);
+            }
+        }
+        typeSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 
+//        typeSelection.addValueChangeListener(event -> {
+//           if (typeSelection.getValue().equals("")) {
+//               stats.setValue(true);
+//           }
+//        });
 //        type.addValueChangeListener(event -> {
 //            setSleepTime();
 //            if (teamSelection.getValue() == null)
@@ -81,12 +96,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
 //            }
 //        });
 
-        //teamSelection = new ListSelect();
         //teamSelection.addItems(mainScreenData.teamStatus.teamNames);
-        //teamSelection.setNullSelectionAllowed(false);
-        //teamSelection.setHeight("100%");
-        //teamSelection.setSizeFull();
-        //teamSelection.setRows(mainScreenData.teamStatus.teamNames.length);
 
         automaticStatus = new Label(AUTOMATIC_STOPPED_STATUS, ContentMode.HTML);
         automatedShow = new Button("Show top teams");
@@ -121,6 +131,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         teamSelection = new OptionGroup();
         teamSelection.setHtmlContentAllowed(true);
+        teamSelection.addStyleName("team-optiongroup");
 
         Set<String> topTeamsIds = MainScreenProperties.topteamsids;
         for (TeamInfo team : MainScreenData.getProperties().teamInfos) {
@@ -135,60 +146,66 @@ public class MainScreenTeamView extends CustomComponent implements View {
         teamSelection.setWidth("100%");
 
         teamSelection.addValueChangeListener(event -> {
-            setSleepTime();
             if (mainScreenData.teamData.isVisible()) {
-                if (stats.getValue() && "".equals(type.getValue())) {
-                    return;
-                }
-
                 if (mainScreenData.teamData.inAutomaticShow()) {
                     Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                     return;
                 }
 
-                if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                    teamSelection.setValue(mainScreenData.teamData.getTeamString());
-                    Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
-
+                if (localLoad((String) typeSelection.getValue())) {
+                    mainScreenData.teamData.setSleepTime(0);
                 } else {
-                    mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+                    setSleepTime();
+                }
+                if (STATISTICS_SHOW_TYPE.equals(typeSelection.getValue())) {
+                    mainScreenData.teamData.setInfoManual(false, null, null);
+                    mainScreenData.teamStatsData.setVisible(stats.getValue(),
+                            (TeamInfo) teamSelection.getValue());
+                } else {
+                    String result = mainScreenData.teamData.setInfoManual(
+                            true, (String) typeSelection.getValue(), (TeamInfo) teamSelection.getValue());
+                    if (result == null) {
+                        teamSelection.setValue(mainScreenData.teamData.getTeamString());
+                        Notification.show("You need to wait " +
+                                MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
+                    } else {
+                        mainScreenData.teamStatsData.setVisible(stats.getValue(),
+                            (TeamInfo) teamSelection.getValue());
+                    };
+
                 }
             }
         });
 
         stats = new CheckBox("Statistics");
 
-        stats.addValueChangeListener(event -> {
-            setSleepTime();
-            if (!"".equals(type.getValue())) {
-                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
-            }
-        });
-
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
-            setSleepTime();
             if (mainScreenData.teamData.inAutomaticShow()) {
                 Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                 return;
             }
 
-            if ("".equals(type.getValue()) && stats.isEmpty()) {
-                Notification.show("Empty info should not be shown");
-                return;
-            }
-
-            if (!"screen".equals(type.getValue()) && !"camera".equals(type.getValue())) {
+            if (localLoad((String) typeSelection.getValue())) {
                 // TODO: rewrite in the client
                 mainScreenData.teamData.setSleepTime(0);
+            } else {
+                setSleepTime();
             }
 
-            if (stats.getValue()) {
+            if (stats.getValue() ||
+                    STATISTICS_SHOW_TYPE.equals(typeSelection.getValue())) {
                 mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
             }
 
-            if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first");
+            if (STATISTICS_SHOW_TYPE.equals(typeSelection.getValue())) {
+                mainScreenData.teamData.setInfoManual(false, null, null);
+            } else {
+                String result = mainScreenData.teamData.setInfoManual(
+                        true, (String) typeSelection.getValue(), (TeamInfo) teamSelection.getValue());
+                if (result != null) {
+                    Notification.show(result);
+                }
             }
         });
 
@@ -203,7 +220,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         });
 
         Component controlAutomaticGroup = createGroupLayout(automatedShow, automatedStop, automatedNumber);
-        Component controlGroup = createGroupLayout(stats, teamShow, teamHide, type);
+        Component controlGroup = new HorizontalLayout(typeSelection, stats, teamShow, teamHide);
         VerticalLayout result = new VerticalLayout(
                 automaticStatus,
                 controlAutomaticGroup,
@@ -212,7 +229,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 controlGroup,
                 teamSelection
         );
-        result.setSpacing(true);
+//        result.setSpacing(true);
         result.setSizeFull();
         result.setHeight("100%");
         result.setComponentAlignment(controlAutomaticGroup, Alignment.MIDDLE_CENTER);

@@ -24,7 +24,7 @@ public class SplitScreenData extends CachedData {
         Data.cache.refresh(SplitScreenData.class);
     }
 
-    public synchronized boolean setInfoVisible(int controllerId, boolean visible, String type, TeamInfo teamInfo) {
+    public synchronized String setInfoVisible(int controllerId, boolean visible, String type, TeamInfo teamInfo) {
         return controllerDatas[controllerId].setInfoManual(visible, type, teamInfo);
     }
 

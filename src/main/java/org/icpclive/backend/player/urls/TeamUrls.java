@@ -10,6 +10,7 @@ import org.icpclive.events.WF.WFTeamInfo;
 import org.icpclive.events.WF.json.WFEventsLoader;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Arrays;
 
@@ -17,6 +18,7 @@ public class TeamUrls {
     private static final Logger log = LogManager.getLogger(TeamUrls.class);
 
     public static String[] types;
+    public static HashSet<String> localUrlType;
     public static HashMap<String, String> urlTemplates;
 
     private TeamUrls() {} // utility only, do not create
@@ -25,12 +27,16 @@ public class TeamUrls {
         try {
             Properties properties = Config.loadProperties("mainscreen");
             TeamUrls.types = properties.getProperty("info.types", "screen;camera;info").split(";");
-            TeamUrls.types = Arrays.copyOf(TeamUrls.types, TeamUrls.types.length + 1);
-            TeamUrls.types[TeamUrls.types.length - 1] = "";
+            TeamUrls.types = Arrays.copyOf(TeamUrls.types, TeamUrls.types.length);
+//            TeamUrls.types[TeamUrls.types.length - 1] = "";
             TeamUrls.urlTemplates = new HashMap<>();
+            TeamUrls.localUrlType = new HashSet<>();
             for (int i = 0; i < TeamUrls.types.length; i++) {
                 String url = properties.getProperty("info." + TeamUrls.types[i], "");
                 TeamUrls.urlTemplates.put(TeamUrls.types[i], url);
+                if (!url.startsWith("http")) {
+                    localUrlType.add(TeamUrls.types[i]);
+                }
             }
             if (properties.get("info.record") != null) {
                 TeamUrls.urlTemplates.put("record", properties.getProperty("info.record"));
@@ -50,7 +56,7 @@ public class TeamUrls {
         } else if (team instanceof org.icpclive.events.WF.json.WFTeamInfo) {
             org.icpclive.events.WF.json.WFTeamInfo jsonTeam
                     = (org.icpclive.events.WF.json.WFTeamInfo) team;
-            log.info("change " + (jsonTeam.cdsId) + " " + infoType);
+            log.info("addView " + (jsonTeam.cdsId) + " " + infoType);
             return String.format(urlTemplates.get(infoType), jsonTeam.getUrlByType(infoType));
         } else if (team instanceof WFTeamInfo) {
             log.info("addView " + (team.getId() + 1) + " " + infoType);

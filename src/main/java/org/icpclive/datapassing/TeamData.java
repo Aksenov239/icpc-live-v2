@@ -103,23 +103,27 @@ public class TeamData extends CachedData {
         recache();
     }
 
-    public synchronized boolean setInfoManual(boolean visible, String type, TeamInfo teamInfo) {
+    public synchronized String setInfoManual(boolean visible, String type, TeamInfo teamInfo) {
         if (inAutomaticShow())
-            return false;
+            return "Please, stop the automatic mode";
         if (teamInfo == null && visible) {
-            return false;
+            return "Team is null";
         }
         if (visible && !"".equals(type)) {
-            if (((teamInfo.getId() == teamId && infoType.equals(type))
-                    || timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) && isVisible) {
-                return false;
+            if (isVisible) {
+                if (teamInfo.getId() == teamId && infoType.equals(type)) {
+                    return "This team and this type is currently shown";
+                }
+                if (timestamp + sleepTime > System.currentTimeMillis()) {
+                    return "Please wait " + sleepTime / 1000 + " seconds first";
+                }
             }
             setInfo(type, teamInfo);
         } else if (!visible) {
             hideInfo();
         }
 
-        return true;
+        return null;
     }
 
     public void setSleepTime(int sleepTime) {
