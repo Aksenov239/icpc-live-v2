@@ -1,8 +1,7 @@
 package org.icpclive.events.WF;
 
-import org.icpclive.events.RunInfo;
-import org.icpclive.events.SmallTeamInfo;
-import org.icpclive.events.TeamInfo;
+import org.icpclive.backend.Preparation;
+import org.icpclive.events.*;
 
 /**
  * Created by aksenov on 16.04.2015.
@@ -86,6 +85,11 @@ public class WFRunInfo implements RunInfo {
     @Override
     public String getResult() {
         return result;
+    }
+
+    @Override
+    public ProblemInfo getProblem() {
+        return Preparation.eventsLoader.getContestData().problems.get(getProblemId());
     }
 
     @Override

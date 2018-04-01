@@ -337,7 +337,7 @@ public class BigStandingsWidget extends Widget {
 
         PlateStyle rankStyle = getTeamRankColor(team);
         applyStyle(rankStyle);
-        drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y, rankWidth, plateHeight, PlateStyle.Alignment.CENTER);
+        drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y, rankWidth, plateHeight, PlateStyle.Alignment.CENTER, false, false);
 
         x += rankWidth;
 

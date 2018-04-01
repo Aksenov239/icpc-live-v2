@@ -6,7 +6,6 @@ import org.icpclive.backend.player.FramePlayer;
 import org.icpclive.backend.player.MemoryFilePlayer;
 import org.icpclive.backend.player.generator.ScreenGenerator;
 import org.icpclive.backend.player.generator.ScreenGeneratorGL;
-import org.icpclive.backend.player.generator.ScreenGeneratorSWT;
 import org.icpclive.backend.player.widgets.*;
 
 import javax.imageio.ImageIO;
@@ -59,8 +58,8 @@ public class Main {
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
         generator.addWidget(new NewTeamWidget(
-                Integer.parseInt(properties.getProperty("sleep.time")),
-                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
+                Integer.parseInt(properties.getProperty("sleep.time"))
+        ));
 
         generator.addWidget(new VerticalCreepingLineWidget(updateWait,
                 Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
