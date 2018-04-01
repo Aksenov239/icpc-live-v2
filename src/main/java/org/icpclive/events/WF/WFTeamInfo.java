@@ -82,7 +82,7 @@ public class WFTeamInfo implements TeamInfo {
     }
 
     @Override
-    public HashSet getGroups() {
+    public HashSet<String> getGroups() {
         return groups;
     }
 

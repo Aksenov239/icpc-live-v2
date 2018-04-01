@@ -237,6 +237,9 @@ public class TeamWidget extends Widget {
     }
 
     public void change(TeamInfo team, String infoType) {
+        System.err.println(
+                TeamUrls.getUrl(team, infoType) + " " + team.getName() + " " +
+                        team.getShortName() + " " + team.getId());
         mainVideo.change(TeamUrls.getUrl(team, infoType));
         if (!infoType.equals("camera")) {
             smallVideo.loadNext(TeamUrls.getUrl(team, "camera"));

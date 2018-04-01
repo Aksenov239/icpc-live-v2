@@ -6,6 +6,7 @@ import org.icpclive.events.PCMS.PCMSTeamInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 import org.icpclive.events.WF.WFTeamInfo;
+import org.icpclive.events.WF.json.WFEventsLoader;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -46,6 +47,11 @@ public class TeamUrls {
             int place = aliasId % 100;
             log.info("change " + hall + " " + place);
             return String.format(urlTemplates.get(infoType), hall, place);
+        } else if (team instanceof org.icpclive.events.WF.json.WFTeamInfo) {
+            org.icpclive.events.WF.json.WFTeamInfo jsonTeam
+                    = (org.icpclive.events.WF.json.WFTeamInfo) team;
+            log.info("change " + (jsonTeam.cdsId) + " " + infoType);
+            return String.format(urlTemplates.get(infoType), jsonTeam.getUrlByType(infoType));
         } else if (team instanceof WFTeamInfo) {
             log.info("change " + (team.getId() + 1) + " " + infoType);
             return String.format(urlTemplates.get(infoType), team.getId() + 1);

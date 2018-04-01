@@ -11,7 +11,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.WF.WFRunInfo;
-import org.icpclive.events.WF.WFTeamInfo;
+import org.icpclive.events.WF.json.WFTeamInfo;
 import org.icpclive.events.WF.WFTestCaseInfo;
 import org.icpclive.events.WF.WFAnalystMessage;
 
@@ -127,18 +127,18 @@ public class WFEventsLoader extends EventsLoader {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
         HashMap<String, WFTeamInfo> organizations = new HashMap<>();
-        contest.teamInfos = new WFTeamInfo[jsonOrganizations.size()];
+        contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonOrganizations.size()];
         for (int i = 0; i < jsonOrganizations.size(); i++) {
             JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
             WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
             // TODO
-            teamInfo.name = je.get("name").getAsString();;//je.get("formal_name").getAsString();
+            teamInfo.name = je.get("formal_name").getAsString();
             teamInfo.shortName = je.get("name").getAsString();
             organizations.put(je.get("id").getAsString(), teamInfo);
             contest.teamInfos[i] = teamInfo;
         }
 
-        Arrays.sort(contest.teamInfos, (WFTeamInfo a, WFTeamInfo b) -> a.name.compareTo(b.name));
+        Arrays.sort(contest.teamInfos, (a, b) -> a.name.compareTo(b.name));
         for (int i = 0; i < contest.teamInfos.length; i++) {
             contest.teamInfos[i].id = i;
         }
@@ -157,9 +157,10 @@ public class WFEventsLoader extends EventsLoader {
                 teamInfo.groups.add(group);
             }
 
-            String cdsId = je.get("id").getAsString();
-            contest.teamById.put(cdsId, teamInfo);
+            teamInfo.cdsId = je.get("id").getAsString();
+            contest.teamById.put(teamInfo.cdsId, teamInfo);
         }
+        Arrays.sort(contest.teamInfos, (a, b) -> a.id - b.id);
     }
 
     public void readLanguagesInfos(WFContestInfo contestInfo) throws IOException {
@@ -259,7 +260,7 @@ public class WFEventsLoader extends EventsLoader {
         WFProblemInfo problemInfo = contestInfo.problemById.get(je.get("problem_id").getAsString());
         run.problemId = problemInfo.id;
 
-        WFTeamInfo teamInfo = contestInfo.teamById.get(je.get("team_id").getAsString());
+        WFTeamInfo teamInfo = (WFTeamInfo) contestInfo.teamById.get(je.get("team_id").getAsString());
         run.teamId = teamInfo.id;
         run.team = teamInfo;
 
