@@ -134,6 +134,8 @@ public class WFEventsLoader extends EventsLoader {
             // TODO
             teamInfo.name = je.get("formal_name").getAsString();
             teamInfo.shortName = je.get("name").getAsString();
+            teamInfo.hashTag = je.get("twitter_hashtag") == null ?
+                    null : je.get("twitter_hashtag").getAsString();
             organizations.put(je.get("id").getAsString(), teamInfo);
             contest.teamInfos[i] = teamInfo;
         }

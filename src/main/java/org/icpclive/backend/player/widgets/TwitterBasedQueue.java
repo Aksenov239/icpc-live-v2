@@ -5,9 +5,14 @@ import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.TeamInfo;
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
 import twitter4j.*;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -17,6 +22,8 @@ public class TwitterBasedQueue extends Thread {
     private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(TwitterBasedQueue.class);
 
     private Twitter twitter;
+    private PircBotX twitch;
+    private String twitchChannel;
     private String mainHashTag;
     private Queue<Request> queue;
     private Set<String> inQueueHashtags;
@@ -71,10 +78,8 @@ public class TwitterBasedQueue extends Thread {
         return request;
     }
 
-    long lastId = 0;
-    Map<Long, Long> lastTweetFromUser = new HashMap<>();
+    Map<String, Long> lastVoteFromUser = new HashMap<>();
     Map<Request, Integer> votesForTeam = new HashMap<>();
-    Map<Request, Status> lastTweet = new HashMap<>();
 
     TwitterStream twitterStream;
 
@@ -88,96 +93,67 @@ public class TwitterBasedQueue extends Thread {
                 twitter = null;
                 log.error("error", e);
             }
-//            try {
-//                Thread.sleep(sleepTime);
-//            } catch (Exception e) {
-//                log.error("error", e);
-//            }
         }
+        startTwitchBot();
     }
 //sp
 
-    private synchronized void doOnStatus(Status status) {
-        System.err.println(status);
+    private synchronized void operate(String user, String text) {
+        System.err.println(user + " " + text);
 
-        long timestamp = status.getCreatedAt().getTime();
-        if (lastTweetFromUser.getOrDefault(status.getUser().getId(), 0L) + accountWaitTime > timestamp) {
+        long timestamp = System.currentTimeMillis();
+        if (lastVoteFromUser.getOrDefault(user, 0L) + accountWaitTime > timestamp) {
             return;
         }
 
-        lastTweetFromUser.put(status.getUser().getId(), timestamp);
+        lastVoteFromUser.put(user, timestamp);
 
-        lastId = Math.max(status.getId(), lastId);
-
-        String text = status.getText();
-        if (text.startsWith(mainHashTag + " show ")) {
-            int prefixLen = (mainHashTag + " show ").length();
-            String[] parts = text.substring(prefixLen).trim().split(" ");
-            if (parts.length > 2) {
-                return;
-            }
-            String type = "screen";
-            if (parts.length == 2) {
-                if (parts[0].equals("camera")) {
-                    type = "camera";
-                } else {
-                    if (!parts[0].equals("screen")) {
-                        return;
-                    }
+        String[] parts = text.trim().split(" ");
+        if (parts.length > 2) {
+            return;
+        }
+        String type = "screen";
+        if (parts.length == 2) {
+            if (parts[0].equals("camera")) {
+                type = "camera";
+            } else {
+                if (!parts[0].equals("screen")) {
+                    return;
                 }
-            }
-
-            String hashTag = parts[parts.length - 1].toLowerCase();
-            TeamInfo teamInfo = contestInfo.getParticipantByHashTag(hashTag);
-            if (teamInfo != null && !inQueueHashtags.contains(hashTag)) {
-                Request request = new Request(teamInfo.getId(),
-                        type,
-                        hashTag);
-                System.err.println("Read request \"" + request.type + "\" for team " + request.teamId);
-                int total = votesForTeam.getOrDefault(request, 0) + 1;
-                System.err.println("It gets " + total + " votes.");
-
-                lastTweet.put(request, status);
-
-                if (total == currentThreshold()) {
-                    System.err.println(request.teamId + " is in the queue.");
-                    enqueue(request);
-                    total = 0;
-                } else {
-                    acknowledge(request, status);
-                }
-                votesForTeam.put(request, total);
             }
         }
 
-//        for (HashtagEntity entity : status.getHashtagEntities()) {
-//            String hashTag = entity.getText();
-//            TeamInfo teamInfo = contestInfo.getParticipantByHashTag(hashTag);
-//            if (teamInfo != null && !inQueueHashtags.contains(hashTag)) {
-//                Request request = new Request(teamInfo.getId(),
-//                        status.getText().contains("camera") ? "camera" : "screen",
-//                        hashTag
-//                );
-//                System.err.println("Read request for team " + request.teamId + " " + request.type);
-//                int total = votesForTeam.getOrDefault(request, 0) + 1;
-//                System.err.println("It gets " + total + "votes.");
-//                lastRequest.put(request, status.getId());
-//                if (total == currentThreshold()) {
-//                    System.err.println(request.teamId + " is in the queue.");
-//                    enqueue(request);
-//                    total = 0;
-//                }
-//                votesForTeam.put(request, total);
-//                break;
-//            }
-//        }
+        String hashTag = parts[parts.length - 1].toLowerCase();
+        TeamInfo teamInfo = contestInfo.getParticipantByHashTag(hashTag);
+        System.err.println(teamInfo);
+        if (teamInfo != null && !inQueueHashtags.contains(hashTag)) {
+            Request request = new Request(teamInfo.getId(),
+                    type,
+                    hashTag);
+            System.err.println("Read request \"" + request.type + "\" for team " + request.teamId);
+            int total = votesForTeam.getOrDefault(request, 0) + 1;
+            System.err.println("It gets " + total + " votes.");
+
+            if (total == currentThreshold()) {
+                System.err.println(request.teamId + " is in the queue.");
+                enqueue(request);
+                total = 0;
+            }
+            votesForTeam.put(request, total);
+
+        }
     }
 
     private void step() {
         StatusListener statusListener = new StatusListener() {
             @Override
             public void onStatus(Status status) {
-                doOnStatus(status);
+                String text = status.getText();
+                int prefixLen = (mainHashTag + " show ").length();
+                if (text.startsWith(mainHashTag + " show ")) {
+                    operate("Twitter:" + status.getUser().getScreenName(),
+                            text.substring(prefixLen));
+                }
             }
 
             @Override
@@ -209,36 +185,59 @@ public class TwitterBasedQueue extends Thread {
         twitterStream.filter(fq);
     }
 
-    public void acknowledge(Request request, Status statusTo) {
-/*        try {
-            String statusText =
-                    "@" + statusTo.getUser().getScreenName() +
-                            " Your vote for team " + contestInfo.getParticipant(request.teamId).getName() +
-                            " is acknowledged. " + mainHashTag;
-            StatusUpdate status = new StatusUpdate(statusText);
-            status.setInReplyToStatusId(statusTo.getId());
-            twitter.updateStatus(status);
-        } catch (TwitterException e) {
+    private void startTwitchBot() {
+        Properties properties;
+        String url = null;
+        String username = null;
+        String password = null;
+        try {
+//            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+            properties = Config.loadProperties("mainscreen");
+            url = properties.getProperty("twitch.chat.server", "irc.chat.twitch.tv");
+            username = properties.getProperty("twitch.chat.username");
+            password = properties.getProperty("twitch.chat.password");
+            twitchChannel = properties.getProperty("twitch.chat.channel", "#" + username);
+        } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
+        Configuration.Builder configuration = new Configuration.Builder()
+                .setAutoNickChange(false)
+                .setOnJoinWhoEnabled(false)
+                .setCapEnabled(true)
+                .setName(username)
+                .setServerPassword(password)
+                .addServer(url)
+                .addListener(new ListenerAdapter() {
+                    @Override
+                    public void onMessage(MessageEvent event) throws Exception {
+                        String text = event.getMessage();
+                        int prefixLen = "!show ".length();
+                        if (text.startsWith("!show ")) {
+                            operate("Twitch:" + event.getUser().getNick(),
+                                    text.substring(prefixLen));
+                        }
+                    }
+                })
+                .setEncoding(Charset.forName("UTF-8"));
+
+        twitch = new PircBotX(configuration.addAutoJoinChannel(twitchChannel).buildConfiguration());
+        while (true) {
+            try {
+                System.err.println("Bot is started!");
+                twitch.startBot();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private synchronized void enqueue(Request request) {
-/*        try {
-            Status statusTo = lastTweet.get(request);
-            String statusText =
-                    "@" + statusTo.getUser().getScreenName()
-                            + " Added to automatic queue " + request.type
-                            + " for team " + contestInfo.getParticipant(request.teamId).getName()
-                            + ". See at http://icpclive.com. " + mainHashTag;
-            StatusUpdate status = new StatusUpdate(statusText);
-            status.setInReplyToStatusId(statusTo.getId());
-            twitter.updateStatus(status);
-
-            System.err.println(statusText);
-        } catch (TwitterException e) {
-            e.printStackTrace();
-        }*/
+//        twitch.send().message("#icpclive2", "hui");
+//        twitch.sendRaw().rawLine("Fuck1");
+//        twitch.sendRaw().rawLineNow("Fuck2");
+        twitch.sendIRC().message(twitchChannel, "Added to automatic queue " + request.type
+                + " for team " + contestInfo.getParticipant(request.teamId).getName()
+                + ". See at http://icpclive.com. " + mainHashTag);
         queue.add(request);
         inQueueHashtags.add(request.hashTag);
     }
