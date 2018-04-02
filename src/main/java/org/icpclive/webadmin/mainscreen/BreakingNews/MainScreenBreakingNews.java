@@ -26,10 +26,15 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
 
     public final static String NAME = "mainscreen-breaking-news";
 
+    TextField sleepTime;
+
     public MainScreenBreakingNews() {
         mainScreenData = MainScreenData.getMainScreenData();
 
         breakingNewsList = createBreakingNewsTable(container);
+
+        sleepTime = new TextField("Sleep time");
+        sleepTime.setValue("10000");
 
         breakingNewsForm = new BreakingNewsForm(this);
 
@@ -38,10 +43,16 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
         breakingNewsList.setSizeFull();
         left.setExpandRatio(breakingNewsList, 1);
 
-        HorizontalLayout mainLayout = new HorizontalLayout(left, breakingNewsForm);
+        VerticalLayout right = new VerticalLayout(sleepTime, breakingNewsForm);
+        right.setSizeFull();
+        breakingNewsForm.setSizeFull();
+        right.setExpandRatio(breakingNewsForm, 1);
+        right.setComponentAlignment(sleepTime, Alignment.MIDDLE_CENTER);
+
+        HorizontalLayout mainLayout = new HorizontalLayout(left, right);
         mainLayout.setSizeFull();
         mainLayout.setExpandRatio(left, 1);
-        mainLayout.setExpandRatio(breakingNewsForm, 1.6f);
+        mainLayout.setExpandRatio(right, 1.6f);
 
         setCompositionRoot(mainLayout);
     }

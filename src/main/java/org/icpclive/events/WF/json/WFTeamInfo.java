@@ -16,6 +16,10 @@ public class WFTeamInfo extends org.icpclive.events.WF.WFTeamInfo {
         super(problems);
     }
 
+    public String getAlias() {
+        return cdsId;
+    }
+
     public String getUrlByType(String type) {
         switch (type) {
             case "screen":
@@ -27,5 +31,9 @@ public class WFTeamInfo extends org.icpclive.events.WF.WFTeamInfo {
             default:
                 return "";
         }
+    }
+
+    public String toString() {
+        return cdsId + ". " + shortName;
     }
 }

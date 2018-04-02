@@ -116,7 +116,6 @@ public class QueueWidget extends Widget {
         }
     }
 
-
     protected void move() {
         calculateQueue();
         if (info == null) return;

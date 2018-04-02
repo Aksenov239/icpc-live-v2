@@ -49,4 +49,8 @@ public class WFContestInfo extends org.icpclive.events.WF.WFContestInfo {
         getProblemById(runInfo.problemId).submissions[runInfo.languageId]++;
         maxRunId++;
     }
+
+    public WFTeamInfo getTeamByCDSId(String cdsId) {
+        return teamById.get(cdsId);
+    }
 }

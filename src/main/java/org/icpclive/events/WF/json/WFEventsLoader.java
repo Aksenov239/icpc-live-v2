@@ -157,6 +157,11 @@ public class WFEventsLoader extends EventsLoader {
                 teamInfo.groups.add(group);
             }
 
+            teamInfo.screen = je.get("desktop").getAsJsonArray().
+                    get(0).getAsJsonObject().get("href").getAsString();
+            teamInfo.camera = je.get("webcam").getAsJsonArray().
+                    get(0).getAsJsonObject().get("href").getAsString();
+
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
         }

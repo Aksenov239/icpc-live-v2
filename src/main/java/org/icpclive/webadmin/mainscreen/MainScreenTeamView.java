@@ -76,6 +76,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 typeSelection.addItem(type);
             }
         }
+        typeSelection.select(STATISTICS_SHOW_TYPE);
         typeSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 
 //        typeSelection.addValueChangeListener(event -> {
@@ -220,7 +221,8 @@ public class MainScreenTeamView extends CustomComponent implements View {
         });
 
         Component controlAutomaticGroup = createGroupLayout(automatedShow, automatedStop, automatedNumber);
-        Component controlGroup = new HorizontalLayout(typeSelection, stats, teamShow, teamHide);
+        Component controlGroup = new HorizontalLayout(
+                createGroupLayout(typeSelection, stats), teamShow, teamHide);
         VerticalLayout result = new VerticalLayout(
                 automaticStatus,
                 controlAutomaticGroup,

@@ -113,7 +113,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
                         String result =
                                 mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), team);
                         if (result != null) {
-                            Notification.show(result, Notification.Type.WARNING_MESSAGE);
+                            Notification.show(result , Notification.Type.WARNING_MESSAGE);
                         }
                     } catch (NumberFormatException e) {
 

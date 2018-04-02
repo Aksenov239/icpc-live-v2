@@ -58,7 +58,7 @@ public class NewBreakingNewsWidget extends Widget {
             if (isVisible())
                 return;
 
-            video.sleepTime = data.teamData.sleepTime;
+            video.sleepTime = data.breakingNewsData.sleepTime;
 
             int teamId = data.breakingNewsData.teamId;
             int problemId = data.breakingNewsData.problemId;
