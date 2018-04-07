@@ -150,6 +150,9 @@ public class WFEventsLoader extends EventsLoader {
         contest.teamById = new HashMap<>();
         for (int i = 0; i < jsonTeams.size(); i++){
             JsonObject je = jsonTeams.get(i).getAsJsonObject();
+            if (je.get("organization_id").isJsonNull()) {
+                continue;
+            }
             WFTeamInfo teamInfo = organizations.get(je.get("organization_id").getAsString());
 
             JsonArray groups = je.get("group_ids").getAsJsonArray();
@@ -159,9 +162,11 @@ public class WFEventsLoader extends EventsLoader {
                 teamInfo.groups.add(group);
             }
 
-            teamInfo.screen = je.get("desktop").getAsJsonArray().
+            teamInfo.screen = je.get("desktop") == null ? null :
+                    je.get("desktop").getAsJsonArray().
                     get(0).getAsJsonObject().get("href").getAsString();
-            teamInfo.camera = je.get("webcam").getAsJsonArray().
+            teamInfo.camera = je.get("webcam") == null ? null :
+                    je.get("webcam").getAsJsonArray().
                     get(0).getAsJsonObject().get("href").getAsString();
 
             teamInfo.cdsId = je.get("id").getAsString();
