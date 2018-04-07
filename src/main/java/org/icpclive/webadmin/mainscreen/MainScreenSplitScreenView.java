@@ -58,7 +58,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
             return "Screen in automatic mode";
         }
         String status = MainScreenData.getMainScreenData().splitScreenData.infoStatus(controllerId);
-        return Utils.getTeamStatus(status);
+        return Utils.getTeamStatus(status, false);
     }
 
     private long[] lastChangeTimestamp = new long[4];

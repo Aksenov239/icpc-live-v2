@@ -25,6 +25,7 @@ public class TeamData extends CachedData {
         this.teamId = data.teamId;
         this.delay = data.delay;
         this.sleepTime = data.sleepTime;
+        this.withStats = data.withStats;
 
         return this;
     }
@@ -57,15 +58,19 @@ public class TeamData extends CachedData {
         return "You should close team view first!";
     }
 
-    public synchronized boolean automaticStart(int number) {
-        if (timestamp + MainScreenData.getProperties().sleepTime > System.currentTimeMillis() && isVisible) {
+    public synchronized boolean automaticStart(int number,
+                                               String type,
+                                               boolean stats) {
+        if (timestamp + sleepTime > System.currentTimeMillis() && isVisible) {
             return false;
         }
         TeamInfo[] currentStandings = EventsLoader.getInstance().getContestData().getStandings();
         teamsToShow = Arrays.copyOf(currentStandings, number);
         currentPosition = 0;
         isVisible = true;
-        setInfo(MainScreenData.getProperties().automatedInfo, teamsToShow[0]);
+        automaticType = type;
+        automaticStats = stats;
+        setInfo(automaticType, teamsToShow[0], automaticStats);
 //        timestamp = System.currentTimeMillis() + MainScreenData.getProperties().sleepTime;
         isAutomatic = true;
         return true;
@@ -77,16 +82,16 @@ public class TeamData extends CachedData {
         isAutomatic = false;
     }
 
-    private synchronized void setInfo(String type, TeamInfo teamInfo) {
+    private synchronized void setInfo(String type, TeamInfo teamInfo, boolean stats) {
         timestamp = System.currentTimeMillis();
         isVisible = true;
         infoType = type;
-        currentTeamValue = teamInfo.getName();
-        teamName = teamInfo.getName();
+        currentTeam = teamInfo;
         teamId = teamInfo.getId();
+        withStats = stats;
 
         lastStatus = currentStatus;
-        currentStatus = timestamp + "\n" + isVisible + "\n" + infoType + "\n" + teamName;
+        currentStatus = timestamp + "\n" + isVisible + "\n" + infoType + "\n" + currentTeam.getName();
 
         log.debug(teamInfo.getName() + " " + teamId + " " + type);
 
@@ -103,13 +108,16 @@ public class TeamData extends CachedData {
         recache();
     }
 
-    public synchronized String setInfoManual(boolean visible, String type, TeamInfo teamInfo) {
+    public synchronized String setInfoManual(boolean visible,
+                                             String type,
+                                             TeamInfo teamInfo,
+                                             boolean withStats) {
         if (inAutomaticShow())
             return "Please, stop the automatic mode";
         if (teamInfo == null && visible) {
             return "Team is null";
         }
-        if (visible && !"".equals(type)) {
+        if (visible) {
             if (isVisible) {
                 if (teamInfo.getId() == teamId && infoType.equals(type)) {
                     return "This team and this type is currently shown";
@@ -118,8 +126,8 @@ public class TeamData extends CachedData {
                     return "Please wait " + sleepTime / 1000 + " seconds first";
                 }
             }
-            setInfo(type, teamInfo);
-        } else if (!visible) {
+            setInfo(type, teamInfo, withStats);
+        } else {
             hideInfo();
         }
 
@@ -135,8 +143,8 @@ public class TeamData extends CachedData {
         return isVisible;
     }
 
-    public synchronized String getTeamString() {
-        return currentTeamValue;
+    public synchronized TeamInfo getTeam() {
+        return currentTeam;
     }
 
     public synchronized String infoStatus() {
@@ -171,10 +179,10 @@ public class TeamData extends CachedData {
         }
         if (timestamp + MainScreenData.getProperties().automatedShowTime < System.currentTimeMillis()) {
             if (currentPosition + 1 < teamsToShow.length) {
-                setInfo(MainScreenData.getProperties().automatedInfo, teamsToShow[++currentPosition]);
+                setInfo(automaticType, teamsToShow[++currentPosition], automaticStats);
             } else {
                 if (timestamp + MainScreenData.getProperties().automatedShowTime +
-                        MainScreenData.getProperties().sleepTime > System.currentTimeMillis()) {
+                        sleepTime > System.currentTimeMillis()) {
                     hideInfo();
                     isAutomatic = false;
                 }
@@ -186,13 +194,15 @@ public class TeamData extends CachedData {
     ;
     public boolean isVisible;
     public String infoType = "";
-    private String currentTeamValue;
-    private String teamName;
+    private TeamInfo currentTeam;
     private int teamId = -1;
+    private boolean withStats;
 
     private boolean isAutomatic;
     private TeamInfo[] teamsToShow;
     private int currentPosition;
+    private String automaticType;
+    private boolean automaticStats;
 
     public int sleepTime;
 
@@ -206,6 +216,7 @@ public class TeamData extends CachedData {
             jsonObject.addProperty("infoType", teamData.infoType);
             jsonObject.addProperty("teamId", teamData.teamId);
             jsonObject.addProperty("sleepTime", teamData.sleepTime);
+            jsonObject.addProperty("withStats", teamData.withStats);
 
             return jsonObject;
         }
@@ -224,6 +235,7 @@ public class TeamData extends CachedData {
             teamData.infoType = jsonObject.get("infoType").getAsString();
             teamData.teamId = jsonObject.get("teamId").getAsInt();
             teamData.sleepTime = jsonObject.get("sleepTime").getAsInt();
+            teamData.withStats = jsonObject.get("withStats").getAsBoolean();
 
             //log.info("Hello from TeamDataDeserializer!");
 
