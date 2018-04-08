@@ -14,6 +14,7 @@ import twitter4j.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Aksenov239 on 28.03.2016.
@@ -59,7 +60,7 @@ public class TwitterBasedQueue extends Thread {
     }
 
     public synchronized int currentThreshold() {
-        return Math.min(votesToShow, queue.size() / 2 + 1);
+        return Math.max(votesToShow, queue.size() / 2 + 1);
     }
 
     public synchronized Request nextRequest() {
@@ -208,13 +209,18 @@ public class TwitterBasedQueue extends Thread {
                 .setServerPassword(password)
                 .addServer(url)
                 .addListener(new ListenerAdapter() {
+                    AtomicLong lastTimestamp = new AtomicLong();
                     @Override
                     public void onMessage(MessageEvent event) throws Exception {
-                        String text = event.getMessage();
-                        int prefixLen = "!show ".length();
-                        if (text.startsWith("!show ")) {
-                            operate("Twitch:" + event.getUser().getNick(),
-                                    text.substring(prefixLen));
+                        long previousTimestamp = lastTimestamp.get();
+                        if (event.getTimestamp() > previousTimestamp + 50) {
+                            lastTimestamp.compareAndSet(previousTimestamp, event.getTimestamp());
+                            String text = event.getMessage();
+                            int prefixLen = "!show ".length();
+                            if (text.startsWith("!show ")) {
+                                operate("Twitch:" + event.getUser().getLogin(),
+                                        text.substring(prefixLen));
+                            }
                         }
                     }
                 })

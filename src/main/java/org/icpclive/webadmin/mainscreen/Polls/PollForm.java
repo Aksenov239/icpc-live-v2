@@ -185,8 +185,11 @@ public class PollForm extends FormLayout {
                 teamOptions.setValue(false);
                 optionsTable.removeAllItems();
                 synchronized (poll) {
-                    for (String option : poll.options.keySet()) {
-                        optionsTable.addItem(new Object[]{option}, option);
+                    Poll.Option[] options = poll.options;
+                    for (Poll.Option option : options) {
+                        optionsTable.addItem(
+                                new Object[]{option.option},
+                                option.option);
                     }
                 }
             }

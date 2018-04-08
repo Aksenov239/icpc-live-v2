@@ -39,6 +39,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
         this.clockTime = clockTime;
         this.logoChangeTime = logoChangeTime;
         LOGO_V = 2. / logoChangeTime;
+        setVisible(true);
     }
 
     public int getHeightToDraw(Graphics2D g, String text, int y) {
