@@ -281,6 +281,8 @@ public abstract class Widget {
     }
 
     protected void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, boolean scaleText) {
+        double textOpacity = getTextOpacity(visibilityState);
+        setTextOpacity(textOpacity);
         graphics.drawTextThatFits(text, x, y, width, height, alignment, MARGIN, scaleText);
     }
 

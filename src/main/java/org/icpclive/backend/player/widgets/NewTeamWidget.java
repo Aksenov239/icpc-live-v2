@@ -9,14 +9,12 @@ import org.icpclive.backend.player.widgets.stylesheets.QueueStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.ContestInfo;
-import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -79,7 +77,8 @@ public class NewTeamWidget extends Widget {
         }
         if (views.get(currentView).visibilityState <= 0) {
             System.err.println("Switch view");
-            views.get(currentView).mainVideo.stop();
+            if (views.get(currentView) != emptyView)
+                views.get(currentView).mainVideo.stop();
             currentView++;
             if (currentView == views.size()) {
                 views.add(emptyView);
@@ -105,8 +104,8 @@ public class NewTeamWidget extends Widget {
 
     class TeamStatusView extends Widget {
 
-        private static final int BIG_HEIGHT = 1295 * 9 / 16;//780;
-        private static final int BIG_X_RIGHT = 1883;//493;
+        private static final int BIG_HEIGHT = 1305 * 9 / 16;//780;
+        private static final int BIG_X_RIGHT = 1893;//493;
         private static final int BIG_Y = 52;
 
         private static final int TEAM_PANE_X = 30;
@@ -128,6 +127,7 @@ public class NewTeamWidget extends Widget {
         private String infoType;
 
         private final PlayerInImage mainVideo;
+        private final TeamStatsWidget stats;
         private final TeamInfo team;
         int timeToLive = Integer.MAX_VALUE;
 
@@ -143,10 +143,16 @@ public class NewTeamWidget extends Widget {
             problemWidth = (int) Math.round(PROBLEM_WIDTH * TEAM_PANE_HEIGHT);
             statusWidth = (int) Math.round(STATUS_WIDTH * TEAM_PANE_HEIGHT);
             timeWidth = (int) Math.round(TIME_WIDTH * TEAM_PANE_HEIGHT);
-
-            System.err.println("Load video: " + TeamUrls.getUrl(team, infoType));
-            mainVideo = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType));
             setFont(Font.decode(MAIN_FONT + " " + (int) (TEAM_PANE_HEIGHT * 0.7)));
+
+            if (team == null) {
+                mainVideo = null;
+                stats = null;
+            } else {
+                System.err.println("Load video: " + TeamUrls.getUrl(team, infoType));
+                mainVideo = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType));
+                stats = new TeamStatsWidget(team.getId());
+            }
         }
 
         @Override
@@ -161,10 +167,16 @@ public class NewTeamWidget extends Widget {
             }
             drawStatus();
             drawVideos();
+            drawInfo();
+        }
+
+        private void drawInfo() {
+            stats.setVisibilityState(visibilityState);
+            stats.paint(graphics, 1920, 1080);
         }
 
         private void drawVideos() {
-            graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, visibilityState * .9);
+            graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, opacity * .95);
         }
 
         private void drawStatus() {
@@ -184,9 +196,9 @@ public class NewTeamWidget extends Widget {
 
             applyStyle(teamColor);
             drawRectangleWithText(name, x, y,
-                    nameWidth + solvedWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.LEFT);
+                    nameWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.LEFT);
 
-            x += nameWidth + solvedWidth;
+            x += nameWidth;
 
             drawRectangleWithText("" + team.getSolvedProblemsNumber(), x, y,
                     problemWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
@@ -194,7 +206,7 @@ public class NewTeamWidget extends Widget {
             x += problemWidth;
 
             drawRectangleWithText("" + team.getPenalty(), x, y,
-                    statusWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
+                    statusWidth + solvedWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
 
 
             List<RunInfo> lastRuns = new ArrayList<>();
@@ -213,11 +225,16 @@ public class NewTeamWidget extends Widget {
 
             Collections.sort(lastRuns, (o1, o2) -> Long.compare(o1.getTime(), o2.getTime()));
 
+            boolean odd = false;
 
             for (RunInfo run : lastRuns) {
+                odd = !odd;
                 y += TEAM_PANE_HEIGHT;
                 x = TEAM_PANE_X + rankWidth + nameWidth + solvedWidth - timeWidth;
                 applyStyle(teamColor);
+                if (odd) {
+                    setMaximumOpacity(maximumOpacity * .9);
+                }
                 drawRectangleWithText("" + format(run.getTime()), x, y,
                         timeWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
                 x += timeWidth;
