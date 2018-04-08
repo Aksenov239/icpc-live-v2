@@ -137,13 +137,14 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         standingsShowTop2 = createStandingsControllerButton("Show two pages", true, StandingsData.StandingsType.TWO_PAGES, false);
         standingsShowAll = createStandingsControllerButton("Show all pages", true, StandingsData.StandingsType.ALL_PAGES, false);
         standingsHide = createStandingsControllerButton("Hide", false, StandingsData.StandingsType.HIDE, false);
-        standingsShowTop1Big = createStandingsControllerButton("Show first page. Big standings", true, StandingsData.StandingsType.ONE_PAGE, true);
-        standingsShowTop2Big = createStandingsControllerButton("Show two pages. Big standings", true, StandingsData.StandingsType.TWO_PAGES, true);
-        standingsShowAllBig = createStandingsControllerButton("Show all pages. Big standings", true, StandingsData.StandingsType.ALL_PAGES, true);
+        standingsShowTop1Big = createStandingsControllerButton("Show first page", true, StandingsData.StandingsType.ONE_PAGE, true);
+        standingsShowTop2Big = createStandingsControllerButton("Show two pages", true, StandingsData.StandingsType.TWO_PAGES, true);
+        standingsShowAllBig = createStandingsControllerButton("Show all pages", true, StandingsData.StandingsType.ALL_PAGES, true);
 
         CssLayout group = createGroupLayout(
-                standingsShowTop1, standingsShowTop2, standingsShowAll
-//               , standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig, standingsHide
+//                standingsShowTop1, standingsShowTop2, standingsShowAll,
+                standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig,
+                standingsHide
         );
 
         standingsRegion = new OptionGroup();
