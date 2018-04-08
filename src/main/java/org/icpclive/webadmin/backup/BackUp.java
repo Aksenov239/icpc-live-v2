@@ -7,6 +7,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.webadmin.ContextListener;
+import org.icpclive.webadmin.mainscreen.Polls.Poll;
 import org.icpclive.datapassing.TeamData;
 import org.icpclive.webadmin.mainscreen.Utils;
 import org.icpclive.webadmin.utils.SynchronizedBeanItemContainer;
@@ -127,6 +128,8 @@ public class BackUp<T> {
     static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataDeserializer())
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataSerializer())
+            .registerTypeAdapter(Poll.class, new Poll.PollSerializer())
+            .registerTypeAdapter(Poll.class, new Poll.PollDeserializer())
             .create();
     final Class<T> type;
 }

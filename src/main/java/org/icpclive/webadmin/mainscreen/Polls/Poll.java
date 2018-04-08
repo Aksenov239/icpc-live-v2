@@ -1,8 +1,10 @@
 package org.icpclive.webadmin.mainscreen.Polls;
 
+import com.google.gson.*;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -32,7 +34,7 @@ public class Poll {
     private String question;
     private String hashtag;
 
-    public TreeMap<String, Option> options; // Option to votes
+    public Option[] options; // Option to votes
     private HashSet<String> usersVoted;
     boolean teamOptions;
     int totalOptions = 0;
@@ -41,7 +43,6 @@ public class Poll {
     public Poll(String question, String hashtag, boolean teamOptions) {
         this.question = question;
         this.hashtag = hashtag;
-        options = new TreeMap<>();
         usersVoted = new HashSet<>();
         if (teamOptions) {
             ContestInfo contestInfo = null;
@@ -49,20 +50,30 @@ public class Poll {
                 contestInfo = EventsLoader.getInstance().getContestData();
             }
             this.teamOptions = true;
-            for (String option : contestInfo.getHashTags()) {
-                this.options.put(option, new Option(totalOptions++, option, 0));
+            String[] hashtags = contestInfo.getHashTags();
+            Arrays.sort(hashtags);
+            options = new Option[hashtags.length];
+            for (int i = 0; i < hashtags.length; i++) {
+                if (hashtags[i] != null) {
+                    options[i] = new Option(totalOptions++, hashtags[i], 0);
+                }
             }
+        } else {
+            options = new Option[0];
         }
     }
 
     public Poll(String question, String hashtag, String[] options) {
         this.question = question;
         this.hashtag = hashtag.toLowerCase();
-        this.options = new TreeMap<>();
+        this.options = new Option[options.length];
         this.usersVoted = new HashSet<>();
         totalOptions = 0;
-        for (String option : options) {
-            this.options.put(option.toLowerCase(), new Option(totalOptions++, option.toLowerCase(), 0));
+        for (int i = 0; i < options.length; i++) {
+            if (!options[i].startsWith("#")) {
+                options[i] = "#" + options[i];
+            }
+            this.options[i] = new Option(totalOptions++, options[i].toLowerCase(), 0);
         }
     }
 
@@ -82,39 +93,57 @@ public class Poll {
         this.hashtag = hashtag.toLowerCase();
     }
 
-    public synchronized void setOptions(String[] hashtags) {
-        for (int i = 0; i < hashtags.length; i++) {
-            hashtags[i] = hashtags[i].toLowerCase();
-        }
+    public void setOptions(String[] hashtags) {
+        synchronized (this) {
+            for (int i = 0; i < hashtags.length; i++) {
+                if (!hashtags[i].startsWith("#")) {
+                    hashtags[i] = "#" + hashtags[i];
+                }
+                hashtags[i] = hashtags[i].toLowerCase();
+            }
 
-        HashSet<String> currentOptions = new HashSet<>();
-        for (String hashtag : hashtags) {
-            currentOptions.add(hashtag);
-            if (!options.containsKey(hashtag)) {
-                options.put(hashtag, new Option(totalOptions++, hashtag, 0));
+            Option[] newOptions = new Option[hashtags.length];
+            for (int i = 0; i < newOptions.length; i++) {
+                int id = -1;
+                for (int j = 0; j < options.length; j++) {
+                    if (options[j].option.equals(hashtags[i])) {
+                        id = j;
+                        break;
+                    }
+                }
+                if (id != -1) {
+                    newOptions[i] = options[id];} else {
+                    newOptions[i] = new Option(i, hashtags[i], 0);
+                }
             }
-        }
-        HashSet<String> toRemove = new HashSet<>();
-        for (String hashtag : options.keySet()) {
-            if (!currentOptions.contains(hashtag)) {
-                toRemove.add(hashtag);
+
+            for (int i = 0; i < newOptions.length; i++) {
+                newOptions[i].id = i;
             }
+
+            options = newOptions;
+            totalOptions = newOptions.length;
         }
-        for (String remove : toRemove) {
-            options.remove(remove);
-        }
-        usersVoted.clear();
     }
 
-    public synchronized boolean updateIfOption(String user, String option) {
-        if (usersVoted.contains(user))
-            return true;
-        Option value = options.get(option);
-        if (value != null) {
-            value.votes++;
-            usersVoted.add(user);
+    public boolean updateIfOption(String user, String option) {
+        synchronized (this) {
+            option = option.toLowerCase();
+            if (usersVoted.contains(user))
+                return true;
+            Option value = null;
+            for (Option op : options) {
+                if (op.option.equals(option)) {
+                    value = op;
+                    break;
+                }
+            }
+            if (value != null) {
+                value.votes++;
+                usersVoted.add(user);
+            }
+            return value != null;
         }
-        return value != null;
     }
 
     public boolean getTeamOptions() {
@@ -125,16 +154,62 @@ public class Poll {
         this.teamOptions = teamOptions;
     }
 
-    public synchronized Option[] getData() {
-        Option[] result = new Option[options.size()];
-        int id = 0;
-        for (Option option : options.values()) {
-            result[id++] = option;
+    public Option[] getData() {
+        synchronized (this) {
+            return Arrays.copyOf(options, options.length);
         }
-        return result;
     }
 
     public String toString() {
         return "Poll: " + question + " " + hashtag + " " + options;
+    }
+
+    public static class PollSerializer implements JsonSerializer<Poll> {
+        @Override
+        public JsonElement serialize(Poll poll, Type type, JsonSerializationContext jsonSerializationContext) {
+            if (poll == null) {
+                return null;
+            }
+            synchronized (poll) {
+                final JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("question", poll.getQuestion());
+                jsonObject.addProperty("hashtag", poll.getHashtag());
+                jsonObject.addProperty("teamOptions", poll.getTeamOptions());
+                JsonArray optionsArray = new JsonArray();
+                for (Option options : poll.options) {
+                    JsonObject jsonOption = new JsonObject();
+                    jsonOption.addProperty("id", options.id);
+                    jsonOption.addProperty("option", options.option);
+                    jsonOption.addProperty("votes", options.votes);
+                    optionsArray.add(jsonOption);
+                }
+                jsonObject.add("options", optionsArray);
+                return jsonObject;
+            }
+        }
+    }
+
+    public static class PollDeserializer implements JsonDeserializer<Poll> {
+        @Override
+        public Poll deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContest) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            String question = jsonObject.get("question").getAsString();
+            String hashtag = jsonObject.get("hashtag").getAsString();
+            boolean teamOptions = jsonObject.get("teamOptions").getAsBoolean();
+
+            JsonArray optionsArray = jsonObject.get("options").getAsJsonArray();
+            Option[] options = new Option[optionsArray.size()];
+            for (int i = 0; i < options.length; i++) {
+                JsonObject jo = optionsArray.get(i).getAsJsonObject();
+                options[i] = new Option(
+                        jo.get("id").getAsInt(),
+                        jo.get("option").getAsString(),
+                        jo.get("votes").getAsInt()
+                );
+            }
+            Poll poll = new Poll(question, hashtag, teamOptions);
+            poll.options = options;
+            return poll;
+        }
     }
 }

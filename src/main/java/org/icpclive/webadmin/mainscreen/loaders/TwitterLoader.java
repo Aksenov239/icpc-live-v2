@@ -72,10 +72,9 @@ public class TwitterLoader extends Utils.StoppedRunnable {
 //        System.err.println(status.getUser().getId() + " " + status.getText());
         if (status.getText().startsWith(pollHashTag + " ")) {
             String text = status.getText().substring(pollHashTag.length() + 1);
-            if (!text.startsWith("vote")) {
-                text = "vote " + text;
+            if (text.startsWith("vote")) {
+                PollsData.vote("Twitter:" + status.getUser().getId(), text);
             }
-            PollsData.vote("Twitter#" + status.getUser().getId(), text);
         }
     }
 

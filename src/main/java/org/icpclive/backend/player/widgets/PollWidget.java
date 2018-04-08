@@ -121,8 +121,6 @@ public class PollWidget extends Widget {
                     o1.votes == o2.votes ? o1.option.compareTo(o2.option) : o2.votes - o1.votes
             );
             for (total = 0; total < topTeams && options[total].votes >= 0; total++) { }
-        } else {
-            Arrays.sort(options, (o1, o2) -> o1.id - o2.id);
         }
 
         percent = new double[total];

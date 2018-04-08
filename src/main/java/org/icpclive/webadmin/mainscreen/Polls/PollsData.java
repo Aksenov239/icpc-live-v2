@@ -2,9 +2,11 @@ package org.icpclive.webadmin.mainscreen.Polls;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import org.icpclive.webadmin.backup.BackUp;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,7 +32,8 @@ public class PollsData {
     public PollsData() {
         Properties properties = new Properties();
         try {
-            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
+            properties = Config.loadProperties("mainscreen");
+//            properties.load(getClass().getResourceAsStream("/mainscreen.properties"));
             backUpFile = properties.getProperty("polls.backup.file");
         } catch (IOException e) {
             log.error("error", e);
@@ -58,30 +61,28 @@ public class PollsData {
         pollsByHashtag.put(hashtag, poll);
     }
 
-    // Type is #ICPC2017 vote %poll% %option%
+    // Type is vote %poll% %option%
     public static void vote(String user, String message) {
-        String[] tokens = message.split(" ");
-
-        for (int i = 0; i < tokens.length; i++) {
-            tokens[i] = tokens[i].toLowerCase();
-        }
-
-        if (tokens.length == 0) {
+        if (message.startsWith("vote ")) {
+            message = message.substring("vote ".length());
+        } else {
             return;
         }
 
-        if (!tokens[0].equals("vote")) {
+        String[] tokens = message.toLowerCase().split(" ");
+
+        if (tokens.length != 2) {
             return;
         }
 
         Poll pollToUpdate = pollsByHashtag.get(
-                tokens[1].startsWith("#") ? tokens[1] : "#" + tokens[1]);
+                tokens[0].startsWith("#") ? tokens[0] : "#" + tokens[0]);
         
         if (pollToUpdate == null) {
             return;
         }
         System.err.println("Vote for " + message);
-        pollToUpdate.updateIfOption(user, tokens[2].startsWith("#") ? tokens[2] : "#" + tokens[2]);
+        pollToUpdate.updateIfOption(user, tokens[1].startsWith("#") ? tokens[1] : "#" + tokens[1]);
     }
 
 }

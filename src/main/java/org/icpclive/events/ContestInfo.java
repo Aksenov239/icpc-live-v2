@@ -108,7 +108,9 @@ public abstract class ContestInfo {
         ArrayList<String> hashtags = new ArrayList<>();
         TeamInfo[] infos = getStandings();
         for (TeamInfo teamInfo : infos) {
-            hashtags.add(teamInfo.getHashTag());
+            if (teamInfo.getHashTag() != null) {
+                hashtags.add(teamInfo.getHashTag());
+            }
         }
         return hashtags.toArray(new String[0]);
     }
