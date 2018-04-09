@@ -89,8 +89,8 @@ public class Main {
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
-        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
-        generator.addWidget(widget);
+//        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
+//        generator.addWidget(widget);
 
         generator.addWidget(new PollWidget(updateWait,
                 Integer.parseInt(properties.getProperty("poll.show.time", "20000")),

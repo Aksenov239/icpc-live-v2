@@ -12,10 +12,10 @@ import java.io.IOException;
 public class TeamStatsGenerator {
 
     public static void main(String[] args) throws IOException {
-        TeamStatsWidget generator = new TeamStatsWidget(0, 0);
+        OldTeamStatsWidget generator = new OldTeamStatsWidget(0, 0);
         for (int i = 1; ; i++) {
             generator.showTeam(i);
-            BufferedImage res = new BufferedImage(TeamStatsWidget.WIDTH, TeamStatsWidget.HEIGHT, BufferedImage.TYPE_INT_RGB);
+            BufferedImage res = new BufferedImage(OldTeamStatsWidget.WIDTH, OldTeamStatsWidget.HEIGHT, BufferedImage.TYPE_INT_RGB);
             Graphics2D g = (Graphics2D) res.getGraphics();
             g.drawImage(generator.getUnmovable(), 0, 0, null);
             g.drawImage(generator.getMovable(), generator.getUnmovable().getWidth(), 0, null);
