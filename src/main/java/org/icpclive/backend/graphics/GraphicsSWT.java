@@ -44,8 +44,10 @@ public class GraphicsSWT extends AbstractGraphics {
 
     @Override
     public void drawString(String text, int x, int y, Font font, Color color, double opacity) {
+        setTextColor(color, opacity);
+        setFont(font);
         g.setFont(font);
-        setFillColor(color, opacity);
+        g.setColor(textColor);
         g.drawString(text, x + x0, y + y0);
     }
 

@@ -280,6 +280,12 @@ public abstract class Widget {
         graphics.setTextColor(textColor, textOpacity);
     }
 
+    protected void drawText(String text, int x, int y) {
+        double textOpacity = getTextOpacity(visibilityState);
+        setTextOpacity(textOpacity);
+        graphics.drawString(text, x, y, font, textColor);
+    }
+
     protected void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, boolean scaleText) {
         double textOpacity = getTextOpacity(visibilityState);
         setTextOpacity(textOpacity);
@@ -382,7 +388,9 @@ public abstract class Widget {
         }
     }
 
-    protected abstract CachedData getCorrespondingData(Data data);
+    protected CachedData getCorrespondingData(Data data) {
+        return null;
+    }
 
     protected void updateImpl(Data data) {
     }
