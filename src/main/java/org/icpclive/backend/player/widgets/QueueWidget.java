@@ -253,10 +253,15 @@ public class QueueWidget extends Widget {
             RunInfo run = breakingNews.getRun();
             breaking = this.breaking = getRunPlate(run);
         }
-        List<RunPlate> firstToSolves = new ArrayList<>();
-        List<RunPlate> queue = new ArrayList<>();
+        Deque<RunPlate> firstToSolves = new ArrayDeque<>();
+        Deque<RunPlate> queue = new ArrayDeque<>();
 
-        for (RunInfo r : info.getRuns()) {
+        RunInfo[] runs = info.getRuns();
+        int lastId = info.getLastRunId();
+
+        // first, load first-to-solves
+        for (int i = lastId; i >= 0; i--) {
+            RunInfo r = runs[i];
             if (r == null)
                 continue;
             if (breaking != null && breaking.runInfo == r) {
@@ -264,42 +269,20 @@ public class QueueWidget extends Widget {
             }
 
             if (r == info.firstSolvedRun()[r.getProblemId()]) {
-                if (r.getLastUpdateTime() > info.getCurrentTime() - FIRST_TO_SOLVE_WAIT_TIME) {
-                    firstToSolves.add(getRunPlate(r));
+                if (r.getLastUpdateTime() > info.getTimeFromStart() - FIRST_TO_SOLVE_WAIT_TIME) {
+                    firstToSolves.addFirst(getRunPlate(r));
                 }
             } else {
-//                System.out.println(r.getLastUpdateTime() + " " + info.getCurrentTime());
-                if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
-                    queue.add(getRunPlate(r));
+                if (r.getLastUpdateTime() > info.getTimeFromStart() - WAIT_TIME) {
+                    queue.addFirst(getRunPlate(r));
                 }
             }
         }
 
-//        int extra = firstToSolves.size() + queue.size() - MAX_QUEUE_SIZE;
-//        if (extra > 0) {
-//            queue.clear();
-//
-//            for (RunInfo r : info.getRuns()) {
-//                if (r == null)
-//                    continue;
-//                if (r.getTime() >= info.getCurrentTime()) {
-//                    continue;
-//                }
-//                if (breaking != null && breaking.runInfo == r) {
-//                    continue;
-//                }
-//                if (r == info.firstSolvedRun()[r.getProblemId()]) {
-//                    continue;
-//                }
-//                if (r.getLastUpdateTime() > info.getCurrentTime() - WAIT_TIME) {
+        while (firstToSolves.size() + queue.size() > MAX_QUEUE_SIZE) {
+            queue.removeFirst();
+        }
 //                    if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
-//                        extra--;
-//                        continue;
-//                    }
-//                    queue.add(getRunPlate(r));
-//                }
-//            }
-//        }
 
         for (RunPlate plate : plates.values()) {
             plate.visible = false;
