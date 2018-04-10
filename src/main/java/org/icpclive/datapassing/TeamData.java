@@ -39,19 +39,25 @@ public class TeamData extends CachedData {
 
     public void switchOverlaysOff() {
         MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        boolean turnOff = false;
         if (mainScreenData.standingsData.isVisible) {
             mainScreenData.standingsData.hide();
+            turnOff = true;
         }
-//        MainScreenData.getMainScreenData().advertisementData.hide();
-//        MainScreenData.getMainScreenData().personData.hide();
         if (mainScreenData.statisticsData.isVisible()) {
             mainScreenData.statisticsData.hide();
+            turnOff = true;
         }
         if (mainScreenData.wordStatisticsData.isVisible) {
             mainScreenData.wordStatisticsData.hide();
+            turnOff = true;
         }
         if (mainScreenData.pollData.isVisible) {
             mainScreenData.pollData.hide();
+            turnOff = true;
+        }
+        if (turnOff) {
+            delay = MainScreenData.getProperties().overlayedDelay;
         }
     }
 
@@ -84,6 +90,7 @@ public class TeamData extends CachedData {
     }
 
     private synchronized void setInfo(String type, TeamInfo teamInfo, boolean stats) {
+        delay = 0;
         timestamp = System.currentTimeMillis();
         isVisible = true;
         infoType = type;
@@ -101,6 +108,7 @@ public class TeamData extends CachedData {
     }
 
     private synchronized void hideInfo() {
+        delay = 0;
         timestamp = System.currentTimeMillis();
         isVisible = false;
 

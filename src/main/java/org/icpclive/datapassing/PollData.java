@@ -50,7 +50,7 @@ public class PollData extends CachedData {
                 return error;
             }
             if (isVisible) {
-                return "Poll " + poll.getHashtag() + " is showed now";
+                return "Poll " + poll.getHashtag() + " is already shown now";
             }
             timestamp = System.currentTimeMillis();
             this.poll = poll;
