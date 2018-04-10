@@ -63,7 +63,6 @@ public class MainScreenData {
         standingsData.update();
         breakingNewsData.update();
         teamData.update();
-        pollData.update();
         wordStatisticsData.update();
     }
 

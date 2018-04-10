@@ -36,16 +36,6 @@ public class PollData extends CachedData {
         return null;
     }
 
-    public void update() {
-//        System.err.println("Update: " + System.currentTimeMillis() + " " + timestamp + " " + MainScreenData.getProperties().pollTimeToShow);
-        synchronized (this) {
-            if (isVisible && System.currentTimeMillis() > timestamp + MainScreenData.getProperties().pollTimeToShow) {
-                isVisible = false;
-                recache();
-            }
-        }
-    }
-
     public void hide() {
         synchronized (this) {
             isVisible = false;
@@ -73,10 +63,10 @@ public class PollData extends CachedData {
 
     public String toString() {
         return isVisible ? "Show poll " + poll.getHashtag() +
-                " for " +
-                (MainScreenData.getProperties().pollTimeToShow - (System.currentTimeMillis() - timestamp)) / 1000 +
-                " seconds more"
-                : "No poll to show";
+                " already for " +
+                (System.currentTimeMillis() - timestamp) / 1000 +
+                " seconds"
+                : "No poll is shown";
     }
 
     public void recache() {
