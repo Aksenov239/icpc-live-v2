@@ -1,13 +1,13 @@
 package org.icpclive.events;
 
+import org.icpclive.datapassing.StandingsData;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.stream.Stream;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
-
-import org.icpclive.datapassing.StandingsData;
+import java.util.stream.Stream;
 
 public abstract class ContestInfo {
     public int teamNumber;
@@ -60,6 +60,13 @@ public abstract class ContestInfo {
         this.startTime = startTime;
     }
 
+    public long getTimeFromStart() {
+        if (status == Status.BEFORE) {
+            return 0;
+        }
+        return (long) ((System.currentTimeMillis() - startTime) * EventsLoader.getInstance().getEmulationSpeed());
+    }
+
     public long getCurrentTime() {
         switch (status) {
             case BEFORE:
@@ -68,10 +75,7 @@ public abstract class ContestInfo {
                 return lastTime;
             case RUNNING:
                 return startTime == 0 ? 0 :
-                    (long) Math.min(
-                            ((System.currentTimeMillis() - startTime) * EventsLoader.getInstance().getEmulationSpeed()),
-                            ContestInfo.CONTEST_LENGTH
-                    );
+                        Math.min(getTimeFromStart(), ContestInfo.CONTEST_LENGTH);
             case OVER:
                 return ContestInfo.CONTEST_LENGTH;
             default:

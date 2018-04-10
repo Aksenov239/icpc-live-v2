@@ -133,7 +133,7 @@ public class WFContestInfo extends ContestInfo {
     }
 
     public void addRun(WFRunInfo run) {
-//		System.err.println("add runId: " + runId);
+//		System.err.println("add runId: " + run.getId());
         if (!runExists(run.getId())) {
             runs[run.getId()] = run;
             teamInfos[run.getTeamId()].addRun(run, run.getProblemId());
