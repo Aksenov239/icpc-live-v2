@@ -141,6 +141,7 @@ public class WFEventsLoader extends EventsLoader {
         }
 
         Arrays.sort(contest.teamInfos, (a, b) -> a.name.compareTo(b.name));
+
         for (int i = 0; i < contest.teamInfos.length; i++) {
             contest.teamInfos[i].id = i;
         }

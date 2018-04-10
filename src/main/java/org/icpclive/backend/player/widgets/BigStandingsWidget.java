@@ -298,7 +298,7 @@ public class BigStandingsWidget extends Widget {
             }
 
             for (Point star : stars) {
-                drawStar(star.x, star.y, STAR_SIZE);
+                drawStar(star.x, star.y, STAR_SIZE, getOpacity(visibilityState));
             }
 
         }/* else {
@@ -432,7 +432,7 @@ public class BigStandingsWidget extends Widget {
         }
 
         for (Point star : stars) {
-            drawStar(star.x, star.y, STAR_SIZE);
+            drawStar(star.x, star.y, STAR_SIZE, getOpacity(visibilityState));
         }
     }
 

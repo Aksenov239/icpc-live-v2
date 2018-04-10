@@ -102,6 +102,7 @@ public class QueueWidget extends Widget {
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
         super.paintImpl(g, width, height);
+        updateVisibilityState();
         move();
         graphics.clip(baseX - width, baseY - height, 2 * width, height);
         List<RunPlate> list = new ArrayList<>(plates.values());
@@ -137,14 +138,17 @@ public class QueueWidget extends Widget {
             }
 
             if (plate.currentOpacity < plate.desiredOpacity) {
-                plate.currentOpacity = Math.min(plate.currentOpacity + dt * 0.0005, plate.desiredOpacity);
+                plate.currentOpacity = getOpacity(visibilityState) *
+                        Math.min(plate.currentOpacity + dt * 0.0005, plate.desiredOpacity);
             } else {
-                plate.currentOpacity = Math.max(plate.currentOpacity - dt * 0.0005, plate.desiredOpacity);
+                plate.currentOpacity = getOpacity(visibilityState) *
+                        Math.max(plate.currentOpacity - dt * 0.0005, plate.desiredOpacity);
             }
             if (plate.visible) {
-                plate.visibilityState = Math.min(plate.visibilityState + dt * 0.001, 1);
+                plate.visibilityState = visibilityState * Math.min(plate.visibilityState + dt * 0.001, 1);
             } else {
-                plate.visibilityState = Math.max(plate.visibilityState - dt * 0.001, 0);
+                plate.visibilityState = visibilityState *
+                        Math.max(plate.visibilityState - dt * 0.001, 0);
             }
 //            if (plate.visibilityState == 0) {
 //                plates.remove(plate.runInfo.getId());
@@ -166,6 +170,7 @@ public class QueueWidget extends Widget {
     private void drawRun(int x, int y, RunPlate plate) {
         boolean blinking = breakingNews.isVisible() && plate == breaking;
 
+        double saveVisibilityState = visibilityState;
         setVisibilityState(plate.visibilityState);
 
         RunInfo runInfo = plate.runInfo;
@@ -234,14 +239,16 @@ public class QueueWidget extends Widget {
                 drawRectangle(x, y, progressWidth, plateHeight);
             }
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemId()]) {
-                drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
+                drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE,
+                        STAR_SIZE, getOpacity(visibilityState));
             }
         } else {
             if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemId()]) {
-                drawStar(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
+                drawStar(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE,
+                        STAR_SIZE, getOpacity(visibilityState));
             }
         }
-
+        setVisibilityState(saveVisibilityState);
     }
 
     private void calculateQueue() {

@@ -407,7 +407,7 @@ public abstract class Widget {
         return color;
     }
 
-    protected void drawStar(int x, int y, int size) {
+    protected void drawStar(int x, int y, int size, double opacity) {
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};
@@ -415,7 +415,7 @@ public abstract class Widget {
             xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
             yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
         }
-        graphics.fillPolygon(xx, yy, STAR_COLOR);
+        graphics.fillPolygon(xx, yy, STAR_COLOR, opacity);
     }
 
 }
