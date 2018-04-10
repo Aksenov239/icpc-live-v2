@@ -23,14 +23,15 @@ public class PollData extends CachedData {
     }
 
     public String checkOverlays() {
-        if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            return MainScreenData.getMainScreenData().teamData.getOverlayError();
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        if (mainScreenData.teamData.isVisible) {
+            return mainScreenData.teamData.getOverlayError();
         }
-        if (MainScreenData.getMainScreenData().statisticsData.isVisible()) {
-            return MainScreenData.getMainScreenData().standingsData.getOverlayError();
+        if (mainScreenData.statisticsData.isVisible()) {
+            return mainScreenData.standingsData.getOverlayError();
         }
-        if (MainScreenData.getMainScreenData().standingsData.isVisible) {
-            return MainScreenData.getMainScreenData().standingsData.getOverlayError();
+        if (mainScreenData.standingsData.isVisible) {
+            return mainScreenData.standingsData.getOverlayError();
         }
         return null;
     }

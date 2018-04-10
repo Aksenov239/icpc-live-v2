@@ -46,13 +46,14 @@ public class StandingsData extends CachedData {
 
     public void switchOverlaysOff() {
         if (isBig) {
-            if (MainScreenData.getMainScreenData().statisticsData.isVisible()) {
+            MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+            if (mainScreenData.statisticsData.isVisible()) {
                 delay = MainScreenData.getProperties().overlayedDelay;
-                MainScreenData.getMainScreenData().statisticsData.hide();
+                mainScreenData.statisticsData.hide();
             }
-            if (MainScreenData.getMainScreenData().pollData.isVisible) {
+            if (mainScreenData.pollData.isVisible) {
                 delay = MainScreenData.getProperties().overlayedDelay;
-                MainScreenData.getMainScreenData().pollData.hide();
+                mainScreenData.pollData.hide();
             }
         }
     }

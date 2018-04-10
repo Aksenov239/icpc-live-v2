@@ -38,19 +38,20 @@ public class TeamData extends CachedData {
     String lastStatus = "0\nfalse";
 
     public void switchOverlaysOff() {
-        if (MainScreenData.getMainScreenData().standingsData.isVisible) {
-            MainScreenData.getMainScreenData().standingsData.hide();
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        if (mainScreenData.standingsData.isVisible) {
+            mainScreenData.standingsData.hide();
         }
 //        MainScreenData.getMainScreenData().advertisementData.hide();
 //        MainScreenData.getMainScreenData().personData.hide();
-        if (MainScreenData.getMainScreenData().statisticsData.isVisible()) {
-            MainScreenData.getMainScreenData().statisticsData.hide();
+        if (mainScreenData.statisticsData.isVisible()) {
+            mainScreenData.statisticsData.hide();
         }
-        if (MainScreenData.getMainScreenData().wordStatisticsData.isVisible) {
-            MainScreenData.getMainScreenData().wordStatisticsData.hide();
+        if (mainScreenData.wordStatisticsData.isVisible) {
+            mainScreenData.wordStatisticsData.hide();
         }
-        if (MainScreenData.getMainScreenData().pollData.isVisible) {
-            MainScreenData.getMainScreenData().pollData.hide();
+        if (mainScreenData.pollData.isVisible) {
+            mainScreenData.pollData.hide();
         }
     }
 

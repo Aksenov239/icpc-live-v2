@@ -47,10 +47,14 @@ public class StatisticsData extends CachedData {
     }
 
     public void switchOverlaysOff() {
-        if (MainScreenData.getMainScreenData().standingsData.isVisible &&
-                MainScreenData.getMainScreenData().standingsData.isBig) {
-            MainScreenData.getMainScreenData().standingsData.hide();
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        if (mainScreenData.standingsData.isVisible &&
+                mainScreenData.standingsData.isBig) {
+            mainScreenData.standingsData.hide();
             delay = MainScreenData.getProperties().overlayedDelay;
+        }
+        if (MainScreenData.getMainScreenData().pollData.isVisible) {
+            mainScreenData.pollData.hide();
         }
     }
 
