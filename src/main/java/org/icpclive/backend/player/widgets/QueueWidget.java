@@ -273,7 +273,8 @@ public class QueueWidget extends Widget {
                     firstToSolves.addFirst(getRunPlate(r));
                 }
             } else {
-                if (r.getLastUpdateTime() > info.getTimeFromStart() - WAIT_TIME) {
+                if (r.getLastUpdateTime() > info.getTimeFromStart() - WAIT_TIME
+                        && queue.size() < MAX_QUEUE_SIZE) {
                     queue.addFirst(getRunPlate(r));
                 }
             }
