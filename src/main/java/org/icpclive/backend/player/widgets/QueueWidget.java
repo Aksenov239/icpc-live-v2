@@ -194,7 +194,7 @@ public class QueueWidget extends Widget {
         PlateStyle color = getTeamRankColor(team);
         applyStyle(color);
         drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y,
-                rankWidth, plateHeight, PlateStyle.Alignment.CENTER, blinking);
+                rankWidth, plateHeight, PlateStyle.Alignment.CENTER, blinking, false);
 
         x += rankWidth + spaceX;
 
@@ -222,6 +222,10 @@ public class QueueWidget extends Widget {
             }
 
             applyStyle(resultColor);
+            if (resultColor.background.equals(QueueStylesheet.frozenProblem.background)) {
+                setMaximumOpacity(plate.currentOpacity);
+            }
+
             drawRectangleWithText(result, x, y, statusWidth,
                     plateHeight, PlateStyle.Alignment.CENTER, blinking);
 
