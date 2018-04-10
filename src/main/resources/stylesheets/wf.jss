@@ -63,6 +63,8 @@ big.standings.frozen.heading.text=white.color
 big.standings.top.university.background=#08472D
 big.standings.top.university.text=white.color
 big.standings.finalists=0
+big.standings.top.region.background=#4d3300
+big.standings.top.region.text=white.color
 big.standings.star=star.color
 
 #breaking news

@@ -150,7 +150,8 @@ public class BigStandingsWidget extends Widget {
     }
 
     private List<Point> stars = new ArrayList<>();
-    private boolean[] topUniversity;
+    private HashSet<Integer> topUniversity;
+    private HashSet<Integer> topRegion;
 
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
@@ -173,7 +174,11 @@ public class BigStandingsWidget extends Widget {
         if (contestData == null || standings == null) return;
 
         HashSet<String> appearedUniversity = new HashSet<>();
-        topUniversity = new boolean[contestData.getTeamsNumber() + 1];
+        topUniversity = new HashSet<>();
+
+        HashSet<String> appearedRegion = new HashSet<>();
+        topRegion = new HashSet<>();
+
         RunInfo[] firstSolved = new RunInfo[contestData.getProblemsNumber()];
         for (TeamInfo team : standings) {
             String universityName = team.getShortName();
@@ -181,12 +186,24 @@ public class BigStandingsWidget extends Widget {
             if (lastDigit) {
                 universityName = universityName.substring(0, universityName.length() - 2);
             }
-            if (!appearedUniversity.contains(universityName) &&
-                    appearedUniversity.size() < BigStandingsStylesheet.finalists &&
-                    StandingsData.ALL_REGIONS.equals(region)) {
-                topUniversity[team.getId()] = true;
-                appearedUniversity.add(universityName);
+
+            if (team.getSolvedProblemsNumber() > 0) {
+                if (!appearedUniversity.contains(universityName) &&
+                        appearedUniversity.size() < BigStandingsStylesheet.finalists &&
+                        StandingsData.ALL_REGIONS.equals(region)) {
+                    topUniversity.add(team.getId());
+                    appearedUniversity.add(universityName);
+                }
+
+                for (String group : team.getGroups()) {
+                    if (!appearedRegion.contains(group) &&
+                            StandingsData.ALL_REGIONS.equals(region)) {
+                        appearedRegion.add(group);
+                        topRegion.add(team.getId());
+                    }
+                }
             }
+
             for (int p = 0; p < firstSolved.length; p++) {
                 for (RunInfo run : team.getRuns()[p]) {
                     if ("AC".equals(run.getResult()) &&
@@ -197,8 +214,6 @@ public class BigStandingsWidget extends Widget {
                 }
             }
         }
-
-        length = Math.min(contestData.getTeamsNumber(), standings.length);
 
         if (desiredTeamPositions == null || desiredTeamPositions.length != contestData.getTeamsNumber() + 1) {
             desiredTeamPositions = new double[contestData.getTeamsNumber() + 1];
@@ -286,10 +301,10 @@ public class BigStandingsWidget extends Widget {
                 drawStar(star.x, star.y, STAR_SIZE);
             }
 
-        } else {
+        }/* else {
             timer = -TOP_PAGE_STANDING_TIME;
             start = 0;
-        }
+        }*/
     }
 
     @Override
@@ -341,8 +356,10 @@ public class BigStandingsWidget extends Widget {
 
         x += rankWidth;
 
-        PlateStyle nameStyle = topUniversity[team.getId()] ? BigStandingsStylesheet.topUniversityTeam :
-                BigStandingsStylesheet.name;
+        PlateStyle nameStyle =
+                topUniversity.contains(team.getId()) ? BigStandingsStylesheet.topUniversityTeam :
+                topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
+                        BigStandingsStylesheet.name;
         if (bright) {
             nameStyle = nameStyle.brighter();
         }
