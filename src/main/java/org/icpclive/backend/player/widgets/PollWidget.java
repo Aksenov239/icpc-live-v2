@@ -18,7 +18,6 @@ public class PollWidget extends Widget {
     private final int leftX;
     private final int bottomY;
 
-    private long duration;
     private long lastVisibleChange;
     private int topTeams;
 
@@ -32,10 +31,9 @@ public class PollWidget extends Widget {
     private Poll.Option[] options;
     private double[] percent;
 
-    public PollWidget(long updateWait, long duration, int topTeams, int DX, int plateHeight,
+    public PollWidget(long updateWait, int topTeams, int plateHeight,
                       int width, int optionWidth, int minimalVoteWidth, int leftX, int bottomY) {
         super(updateWait);
-        this.duration = duration;
         this.topTeams = topTeams;
         this.width = width;
         this.plateHeight = plateHeight;

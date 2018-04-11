@@ -101,16 +101,14 @@ public class PollForm extends FormLayout {
         deletePoll = new Button("Delete");
         deletePoll.addClickListener(event -> {
             pollsData.removePoll(pollOnEdit);
-            editForm.setVisible(false);
-            newPoll.setVisible(true);
+            freePoll();
             Notification.show("The poll is deleted", Notification.Type.TRAY_NOTIFICATION);
         });
 
         cancelPoll = new Button("Cancel");
         cancelPoll.addClickListener(event -> {
             parent.pollTable.setValue(false);
-            editForm.setVisible(false);
-            newPoll.setVisible(true);
+            freePoll();
             Notification.show("The editing is canceled", Notification.Type.TRAY_NOTIFICATION);
         });
 
@@ -162,6 +160,12 @@ public class PollForm extends FormLayout {
 
         setSizeFull();
         setVisible(true);
+    }
+
+    public void freePoll() {
+        editForm.setVisible(false);
+        newPoll.setVisible(true);
+
     }
 
     public void edit(Poll poll) {

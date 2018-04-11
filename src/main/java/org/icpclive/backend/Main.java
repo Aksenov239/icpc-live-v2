@@ -93,14 +93,12 @@ public class Main {
 //        generator.addWidget(widget);
 
         generator.addWidget(new PollWidget(updateWait,
-                Integer.parseInt(properties.getProperty("poll.show.time", "20000")),
                 Integer.parseInt(properties.getProperty("poll.top.teams", "5")),
-                519,
                 50,
-                1371,
+                1301,
                 200,
                 80,
-                519, bottomY
+                578, bottomY
         ));
 
         generator.addWidget(new WordStatisticsWidget(updateWait,
