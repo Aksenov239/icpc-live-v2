@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.egork.teaminfo.data.Person;
 import net.egork.teaminfo.data.University;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -176,5 +177,17 @@ public class Utils {
             name = name.replace(UMLAUTS.charAt(i), WITHOUT.charAt(i));
         }
         return name;
+    }
+
+    public static boolean samePerson(Person first, Person second) {
+        if (first.getName().equals(second.getName()) || second.getAltNames().contains(first.getName())) {
+            return true;
+        }
+        for (String name : first.getAltNames()) {
+            if (name.equals(second.getName()) || second.getAltNames().contains(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
