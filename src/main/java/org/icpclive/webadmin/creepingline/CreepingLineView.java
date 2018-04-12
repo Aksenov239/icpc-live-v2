@@ -4,8 +4,10 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.AlignmentInfo;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import org.icpclive.events.ContestInfo;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 import org.icpclive.webadmin.mainscreen.loaders.TwitterLoader;
 import org.icpclive.webadmin.mainscreen.Utils;
 import twitter4j.TwitterException;
@@ -58,6 +60,51 @@ public class CreepingLineView extends CustomComponent implements View {
     Table messageList;
     Table messageFlow;
 
+    /* Fact data */
+    Label factStatus;
+    TextField factTitle;
+    TextField factText;
+    Button factShow;
+    Button factHide;
+
+    public Component getFactController() {
+        factStatus = new Label();
+        factTitle = new TextField("Title:");
+        factText = new TextField("Text:");
+        factShow = new Button("Show fact");
+        factHide = new Button("Hide fact");
+
+        factStatus.setValue(MainScreenData.getMainScreenData().factData.toString());
+
+        factShow.addClickListener(event -> {
+            String result =
+                    MainScreenData.getMainScreenData().
+                            factData.show(factTitle.getValue(), factText.getValue());
+            if (result != null) {
+                Notification.show(result, Notification.Type.WARNING_MESSAGE);
+            }
+        });
+
+        factHide.addClickListener(event -> {
+            MainScreenData.getMainScreenData().factData.hide();
+        });
+
+        HorizontalLayout actions = new HorizontalLayout(factShow, factHide);
+
+        VerticalLayout component = new VerticalLayout(
+                factStatus,
+                factTitle,
+                factText,
+                actions
+        );
+
+        component.setMargin(new MarginInfo(false, false, true, false));
+        factTitle.setSizeFull();
+        factText.setSizeFull();
+        return component;
+    }
+
+
     public CreepingLineView() {
         Component creepingLineVisibility = creepingLineVisibility();
 
@@ -104,7 +151,10 @@ public class CreepingLineView extends CustomComponent implements View {
 
         messageFlow.addValueChangeListener(event -> {
             if (messageFlow.getValue() != null) {
-                messageForm.editFromFlow((Message) messageFlow.getValue());
+                Message message = (Message) messageFlow.getValue();
+                factTitle.setValue(message.getSource());
+                factText.setValue(message.getMessage());
+                messageForm.editFromFlow(message);
             }
         });
         messageFlow.setImmediate(true);
@@ -165,7 +215,9 @@ public class CreepingLineView extends CustomComponent implements View {
         VerticalLayout left = new VerticalLayout(creepingLineVisibility, messageFlowLayout);
         left.setSizeFull();
 
-        VerticalLayout right = new VerticalLayout(messageForm.component, messageList);
+        Component factController = getFactController();
+        VerticalLayout right = new VerticalLayout(
+                factController, messageForm.component, messageList);
         messageList.setSizeFull();
         right.setSizeFull();
 
@@ -196,6 +248,7 @@ public class CreepingLineView extends CustomComponent implements View {
 
     public void refresh() {
         messageList.refreshRowCache();
+        factStatus.setValue(MainScreenData.getMainScreenData().factData.toString());
     }
 
     public void enter(ViewChangeEvent event) {

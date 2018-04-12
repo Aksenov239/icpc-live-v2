@@ -16,9 +16,13 @@ public class WordStatisticsData extends CachedData {
         return this;
     }
 
+    public String getOverlayError() {
+        return "You have to wait while word statistics is shown";
+    }
+
     public String checkOverlays() {
-        if (MainScreenData.getMainScreenData().breakingNewsData.isVisible) {
-            return MainScreenData.getMainScreenData().breakingNewsData.getOverlayError();
+        if (MainScreenData.getMainScreenData().factData.isVisible) {
+            return MainScreenData.getMainScreenData().factData.getOverlayError();
         }
         return null;
     }
@@ -35,6 +39,7 @@ public class WordStatisticsData extends CachedData {
         this.word = word;
         timestamp = System.currentTimeMillis();
         isVisible = true;
+        recache();
         return null;
     }
 
@@ -51,6 +56,7 @@ public class WordStatisticsData extends CachedData {
         long now = System.currentTimeMillis();
         if (now - timestamp >= properties.wordTimeToShow) {
             isVisible = false;
+            recache();
         }
         recache();
     }
@@ -60,10 +66,6 @@ public class WordStatisticsData extends CachedData {
                 " for " + Math.max(0, timestamp +
                 MainScreenData.getProperties().wordTimeToShow -
                 System.currentTimeMillis()) / 1000 + " more seconds" : "Word statistics is not shown";
-    }
-
-    public String getOverlayError() {
-        return "You have to wait while word statistics is shown";
     }
 
     public void recache() {

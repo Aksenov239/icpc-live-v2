@@ -55,6 +55,7 @@ public class MainScreenData {
         pollData = new PollData();
         wordStatisticsData = new WordStatisticsData();
         frameRateData = new FrameRateData();
+        factData = new FactData();
     }
 
     public void update() {
@@ -64,6 +65,7 @@ public class MainScreenData {
         breakingNewsData.update();
         teamData.update();
         wordStatisticsData.update();
+        factData.update();
     }
 
     private static MainScreenData mainScreenData;
@@ -86,6 +88,7 @@ public class MainScreenData {
     public PollData pollData;
     public WordStatisticsData wordStatisticsData;
     public FrameRateData frameRateData;
+    public FactData factData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

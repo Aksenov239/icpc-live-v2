@@ -100,6 +100,8 @@ public class MainScreenProperties {
 
         wordTimeToShow = Integer.parseInt(properties.getProperty("word.statistics.word.show.time", "5000"));
 
+        factTimeToShow = Integer.parseInt(properties.getProperty("fact.show.time", "10000"));
+
         maximumFlowSize = Integer.parseInt(properties.getProperty("creeping.line.maximum.flow", "30"));
         messageLifespanCreepingLine = Integer.parseInt(properties.getProperty("creeping.line.message.lifespan",
                 "600000"));
@@ -143,6 +145,9 @@ public class MainScreenProperties {
 
     // Memes
     public final int wordTimeToShow;
+
+    // Facts
+    public final int factTimeToShow;
 
     // Creeping line
     public final int maximumFlowSize;
