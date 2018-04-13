@@ -146,3 +146,9 @@ word.statistics.word.text=white.color
 
 #stats
 stats.background=main.color
+
+#fact
+fact.title.background=white.color
+fact.title.text=black.color
+fact.text.background=main.color
+fact.text.text=white.color

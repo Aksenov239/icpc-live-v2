@@ -107,6 +107,13 @@ public class Main {
                 200
         ));
 
+        generator.addWidget(new FactWidget(updateWait,
+                Widget.BASE_WIDTH - 500,
+                600,
+                450,
+                50
+        ));
+
         generator.addWidget(new TestFramesWidget());
 
         if (outputMode.equals("file")) {
