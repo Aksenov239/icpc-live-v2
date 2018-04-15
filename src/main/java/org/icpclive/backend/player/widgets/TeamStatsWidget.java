@@ -3,6 +3,7 @@ package org.icpclive.backend.player.widgets;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.egork.teaminfo.data.Achievement;
 import net.egork.teaminfo.data.Person;
 import net.egork.teaminfo.data.Record;
 import net.egork.teaminfo.data.University;
@@ -17,6 +18,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author egor@egork.net
@@ -30,18 +32,12 @@ public class TeamStatsWidget extends Widget {
     private static final int BASE_Y = 1007 - HEIGHT;
     private static final int LOGO_SIZE = 143;
     private static final int LOGO_X = 17;
-    private static final int AWARD_SIZE = 40;
     private static final int STATS_WIDTH = WIDTH - LOGO_SIZE - LOGO_X - LOGO_X;
 
     private static final double MOVE_SPEED = 2.0;
 
     private Record record;
     private BufferedImage logo;
-    private BufferedImage cupImage;
-    private BufferedImage regionalCupImage;
-    private BufferedImage goldMedalImage;
-    private BufferedImage silverMedalImage;
-    private BufferedImage bronzeMedalImage;
 
     private ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -50,11 +46,6 @@ public class TeamStatsWidget extends Widget {
 
     public TeamStatsWidget(int id) {
         try {
-            cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            regionalCupImage = getScaledInstance(ImageIO.read(new File("pics/regional.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
             System.out.println("teamData/" + id + ".json");
             logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
@@ -63,7 +54,8 @@ public class TeamStatsWidget extends Widget {
                     new PersonStatsPanel(5000, record.contestants[0], false),
                     new PersonStatsPanel(5000, record.contestants[1], false),
                     new PersonStatsPanel(5000, record.contestants[2], false),
-                    new PersonStatsPanel(5000, record.coach, true)
+                    new PersonStatsPanel(5000, record.coach, true),
+                    new AwardsPanel(5000, STATS_WIDTH, record.university)
             };
             fullPeriod = 0;
             fullWidth = 0;
@@ -83,7 +75,7 @@ public class TeamStatsWidget extends Widget {
 
     @Override
     protected void paintImpl(AbstractGraphics g, int ww, int hh) {
-        super.paintImpl(g, ww, hh);
+        setGraphics(g.create());
         if (visibilityState == 0) time = 0;
         time += dt;
         time %= fullPeriod;
@@ -91,15 +83,14 @@ public class TeamStatsWidget extends Widget {
         g.translate(BASE_X, BASE_Y);
         g.clip(0, 0, WIDTH, HEIGHT);
         setGraphics(g);
-        PlateStyle color = QueueStylesheet.name;
-        applyStyle(color);
-        drawRectangle(0, 0, WIDTH, HEIGHT);
-        g.drawImage(logo, LOGO_X, LOGO_X, LOGO_SIZE, LOGO_SIZE, opacity);
 
         int dx = 0;
         int tt = time;
-        for (StatsPanel panel : panels) {
-            if (tt < panel.pauseTime) break;
+        for (int i = 0; i < panels.length; i++) {
+            StatsPanel panel = panels[i];
+            if (tt < panel.pauseTime) {
+                break;
+            }
             tt -= panel.pauseTime;
             if (tt < panel.width / MOVE_SPEED) {
                 dx += tt * MOVE_SPEED;
@@ -109,31 +100,32 @@ public class TeamStatsWidget extends Widget {
             dx += panel.width;
         }
 
+        PlateStyle color = QueueStylesheet.name;
+        applyStyle(color);
+        drawRectangle(0, 0, WIDTH, HEIGHT);
+        g.drawImage(logo, LOGO_X, LOGO_X, LOGO_SIZE, LOGO_SIZE, opacity);
+
         g.translate(WIDTH - STATS_WIDTH, 0);
         g.clip(0, 0, STATS_WIDTH, HEIGHT);
 
         int x = 0;
         for (StatsPanel panel : panels) {
-            int l = x - dx;
-            int r = l + panel.width;
-            if (r < 0) {
-                l += fullWidth;
-                r += fullWidth;
+            int left = x - dx;
+            if (left + panel.width < 0) {
+                left += fullWidth;
             }
-            if (l < STATS_WIDTH && r >= 0) {
-                AbstractGraphics g1 = g.create();
-                g1.translate(l, 0);
-                panel.setVisibilityState(visibilityState);
-                panel.paintImpl(g1, 1920, 1080);
-            }
+            AbstractGraphics g1 = g.create();
+            g1.translate(left, 0);
+            panel.setVisibilityState(visibilityState);
+            panel.paintImpl(g1, 1920, 1080);
             x += panel.width;
         }
 
     }
 
     static class StatsPanel extends Widget {
-        private final int pauseTime;
-        private final int width;
+        protected final int pauseTime;
+        protected final int width;
 
         public StatsPanel(int pauseTime, int width) {
             this.pauseTime = pauseTime;
@@ -150,24 +142,24 @@ public class TeamStatsWidget extends Widget {
         public UnivsersityNamePanel(int pauseTime, int width, University university) {
             super(pauseTime, width);
             this.university = university;
+//            color = QueueStylesheet.waProblem.background;
         }
 
         @Override
         protected void paintImpl(AbstractGraphics g, int width, int height) {
             super.paintImpl(g, width, height);
             String[] parts = split(university.getFullName(), 40);
+            setTextColor(Color.WHITE);
             if (parts.length == 1) {
                 int y = 32;
                 setFont(NAME_FONT);
-                setTextColor(Color.WHITE);
-                drawTextThatFits(parts[0], 0, y, STATS_WIDTH, 60, PlateStyle.Alignment.LEFT, true);
+                drawText(parts[0], 0, 80);
             } else {
                 parts = split(university.getFullName(), 50);
-                int y = parts.length == 1 ? 32 : 12;
+                int y = parts.length == 1 ? 80 : 60;
                 setFont(NAME_FONT_SMALLER);
-                setTextColor(Color.WHITE);
                 for (int i = 0; i < parts.length; i++) {
-                    drawTextThatFits(parts[i], 0, y, STATS_WIDTH, 60, PlateStyle.Alignment.LEFT, true);
+                    drawText(parts[i], 0, y);
                     y += 52;
                 }
             }
@@ -178,40 +170,54 @@ public class TeamStatsWidget extends Widget {
 
         private static final Font NAME_FONT = Font.decode(MAIN_FONT + " " + 38);
         private static final Font TEXT_FONT = Font.decode("Open Sans 18");
-        private static final int ACHIEVEMENT_WIDTH = 360;
+        private static final Font RATING_FONT = Font.decode("Open Sans 18").deriveFont(Font.BOLD);
+        public static final int COLUMNS_SPACE = 30;
         private final Person person;
         private final boolean coach;
 
         public PersonStatsPanel(int pauseTime, Person person, boolean coach) {
             super(pauseTime, Math.max(Math.max(
-                    750,
-                    getStringWidth(NAME_FONT, person.getName() + (coach ? ", coach" : "")) + 50),
-                    (person.getAchievements().size() + 2) / 3 * ACHIEVEMENT_WIDTH
-                    ));
+                    500,
+                    getStringWidth(NAME_FONT, person.getName() + (coach ? ", coach" : ""))),
+                    getAchivementsWidth(person.getAchievements())
+            ) + 50);
             this.person = person;
             this.coach = coach;
         }
 
-        private static int getStringWidth(Font font, String string) {
-            return (int) font.getStringBounds(string, new FontRenderContext(new AffineTransform(), true, true)).getWidth();
+        private static int getAchivementsWidth(List<Achievement> achievements) {
+            int width = 0;
+            int maxWidth = 0;
+            for (int i = 0; i < achievements.size(); i++) {
+                String text = achievements.get(i).achievement;
+                maxWidth = Math.max(maxWidth, getStringWidth(TEXT_FONT, text));
+                if (i % 3 == 2 || i == achievements.size() - 1) {
+                    width += maxWidth + COLUMNS_SPACE;
+                    maxWidth = 0;
+                }
+            }
+            return width;
         }
 
         @Override
         protected void paintImpl(AbstractGraphics g, int width, int height) {
-            super.paintImpl(g, width, height);
+            setGraphics(g.create());
             setFont(NAME_FONT);
             setTextColor(Color.WHITE);
             drawText(person.getName() + (coach ? ", coach" : ""), 0, 48);
 
             int xx = 0;
             int yy = 80;
-            setFont(TEXT_FONT);
+            setTextOpacity(getTextOpacity(visibilityState));
             int rating = person.getTcRating();
             if (rating != -1) {
                 setTextColor(Color.WHITE);
-                drawText("TC: ", xx, yy);
-                xx += getStringWidth(TEXT_FONT, "TC: ");
+                setFont(TEXT_FONT);
+                String text = "TC: ";
+                drawText(text, xx, yy);
+                xx += getStringWidth(TEXT_FONT, text);
                 setTextColor(getTcColor(rating));
+                setFont(RATING_FONT);
                 drawText(Integer.toString(rating), xx, yy);
                 xx += getStringWidth(TEXT_FONT, Integer.toString(rating));
                 xx += 20;
@@ -219,9 +225,12 @@ public class TeamStatsWidget extends Widget {
             rating = person.getCfRating();
             if (rating != -1) {
                 setTextColor(Color.WHITE);
-                drawText("CF: ", xx, yy);
-                xx += getStringWidth(TEXT_FONT, "CF: ");
+                setFont(TEXT_FONT);
+                String text = "CF: ";
+                drawText(text, xx, yy);
+                xx += getStringWidth(TEXT_FONT, text);
                 setTextColor(getCfColor(rating));
+                setFont(RATING_FONT);
                 drawText(Integer.toString(rating), xx, yy);
                 xx += getStringWidth(TEXT_FONT, Integer.toString(rating));
                 xx += 20;
@@ -229,11 +238,106 @@ public class TeamStatsWidget extends Widget {
             xx = 0;
             yy += 27;
             setTextColor(Color.WHITE);
-            for (int i = 0; i < 6 && i < person.getAchievements().size(); i++) {
-                int cx = (i / 3) * ACHIEVEMENT_WIDTH;
-                int cy = 27 * (i % 3);
-                drawText(person.getAchievements().get(i).achievement, xx + cx, yy + cy);
+            setFont(TEXT_FONT);
+            int maxWidth = 0;
+            for (int i = 0; i < person.getAchievements().size(); i++) {
+                String text = person.getAchievements().get(i).achievement;
+                drawText(text, xx, yy + 25 * (i % 3));
+                maxWidth = Math.max(maxWidth, getStringWidth(TEXT_FONT, text));
+                if (i % 3 == 2) {
+                    xx += maxWidth + COLUMNS_SPACE;
+                    maxWidth = 0;
+                }
             }
+        }
+    }
+
+    static class AwardsPanel extends StatsPanel {
+
+        private static final int AWARD_SIZE = 70;
+        private static final int MEDAL_SIZE = 60;
+        public static final int SHIFT = 80;
+        private static final Color CUP_COLOR = new Color(0xd6d5cd);
+        private static final Color GOLD_COLOR = new Color(0xe9d61d);
+        private static final Color SILVER_COLOR = new Color(0xaaaaab);
+        private static final Color BRONZE_COLOR = new Color(0xad7329);
+        private final University university;
+
+        private static final Font CAPTION_FONT = Font.decode(MAIN_FONT + " " + 38);
+        private static final Font FINALS_FONT = Font.decode(MAIN_FONT + " " + 88);
+        private static final Font YEAR_FONT = Font.decode(MAIN_FONT + " " + 27);
+        private final BufferedImage cupImage;
+        private final BufferedImage regionalCupImage;
+        private final BufferedImage goldMedalImage;
+        private final BufferedImage silverMedalImage;
+        private final BufferedImage bronzeMedalImage;
+
+        public AwardsPanel(int pauseTime, int width, University university) throws IOException {
+            super(pauseTime, width);
+            cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            regionalCupImage = getScaledInstance(ImageIO.read(new File("pics/regional.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            this.university = university;
+        }
+
+        @Override
+        protected void paintImpl(AbstractGraphics g, int width, int height) {
+            setGraphics(g.create());
+            setFont(CAPTION_FONT);
+            setTextColor(Color.WHITE);
+            drawText("Finals", 0, 48);
+            setFont(FINALS_FONT);
+            setTextColor(Color.WHITE);
+            drawTextThatFits("" + university.getAppearances(), 0, 80, 100, 60, PlateStyle.Alignment.CENTER, false);
+
+            if (university.getRegionalChampionships() + university.getGold() + university.getSilver() + university.getGold() == 0) {
+                return;
+            }
+
+            setFont(CAPTION_FONT);
+            setTextColor(Color.WHITE);
+            drawText("Awards", 150, 48);
+            int x = 150;
+            for (int i = 0; i < university.getWins(); i++) {
+                drawImage(cupImage, x, 75, "" + university.getWinYears().get(i), CUP_COLOR);
+                x += SHIFT;
+            }
+            for (int i = 0; i < university.getRegionalChampionships() - university.getWins(); i++) {
+                drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(i), CUP_COLOR);
+                x += SHIFT;
+            }
+            int[] num = {university.getGold(), university.getSilver(), university.getBronze()};
+            BufferedImage[] img = {goldMedalImage, silverMedalImage, bronzeMedalImage};
+            Color[] colors = {GOLD_COLOR, SILVER_COLOR, BRONZE_COLOR};
+            List<Integer>[] years = new List[]{university.getGoldYears(), university.getSilverYears(), university.getBronzeYears()};
+            if (x + SHIFT * (university.getGold() + university.getSilver() + university.getBronze()) < this.width) {
+                for (int j = 0; j < 3; j++) {
+                    for (int i = 0; i < num[j]; i++) {
+                        drawImage(img[j], x, 75, "" + years[j].get(i), colors[j]);
+                        x += SHIFT;
+                    }
+                }
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    if (num[i] > 0) {
+                        drawImage(img[i], x, 75, "", colors[i]);
+                        x += 70;
+                        setFont(CAPTION_FONT);
+                        setTextColor(colors[i]);
+                        drawText("" + num[i], x, 130);
+                        x += getStringWidth(CAPTION_FONT, "" + num[i])  ;
+                    }
+                }
+            }
+        }
+
+        private void drawImage(BufferedImage image, int x, int y, String year, Color cupColor) {
+            graphics.drawImage(image, x + (AWARD_SIZE - image.getWidth()) / 2, y + (AWARD_SIZE - image.getHeight()) / 2, image.getWidth(), image.getHeight());
+            setTextColor(cupColor);
+            setFont(YEAR_FONT);
+            drawTextThatFits(year, x, y + AWARD_SIZE, AWARD_SIZE, 30, PlateStyle.Alignment.CENTER, false);
         }
     }
 
@@ -287,6 +391,10 @@ public class TeamStatsWidget extends Widget {
         System.arraycopy(ss, 0, res, 1, ss.length);
         res[0] = s.substring(0, i);
         return res;
+    }
+
+    private static int getStringWidth(Font font, String string) {
+        return (int) font.getStringBounds(string, new FontRenderContext(new AffineTransform(), true, true)).getWidth();
     }
 
     private static BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
