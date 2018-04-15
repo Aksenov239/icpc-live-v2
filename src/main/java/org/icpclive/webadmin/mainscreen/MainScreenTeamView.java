@@ -53,7 +53,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
     }
 
     private boolean localLoad(String type) {
-        return STATISTICS_SHOW_TYPE.equals(type) &&
+        return STATISTICS_SHOW_TYPE.equals(type) ||
                 TeamUrls.localUrlType.contains(type);
     }
 
