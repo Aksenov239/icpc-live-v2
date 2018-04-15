@@ -180,6 +180,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         VerticalLayout result = new VerticalLayout(
                 showStatus,
                 sleepTime,
+                typeSelection,
                 controlGroup,
                 teamSelection
         );
@@ -187,6 +188,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
         result.setSizeFull();
         result.setHeight("100%");
         result.setComponentAlignment(sleepTime, Alignment.MIDDLE_CENTER);
+        result.setComponentAlignment(typeSelection, Alignment.MIDDLE_CENTER);
         result.setComponentAlignment(controlGroup, Alignment.MIDDLE_CENTER);
 
         return result;
