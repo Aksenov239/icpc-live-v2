@@ -34,7 +34,6 @@ public class MainScreenTeamView extends CustomComponent implements View {
     OptionGroup typeSelection;
     //    ListSelect teamSelection;
     OptionGroup teamSelection;
-    CheckBox stats;
 
     public String getStatus() {
         if (mainScreenData.teamData.inAutomaticShow()) {
@@ -83,7 +82,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
             if (mainScreenData.teamData.automaticStart(
                     (int) automatedNumber.getValue(),
                     (String) typeSelection.getValue(),
-                    stats.getValue())) {
+                    true)) {
                 Notification.show(automatedNumber.getValue() + " first teams are in automatic show", Type.TRAY_NOTIFICATION);
             } else {
                 Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
@@ -127,29 +126,19 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 } else {
                     setSleepTime();
                 }
-                if (STATISTICS_SHOW_TYPE.equals(typeSelection.getValue())) {
-                    mainScreenData.teamData.setInfoManual(false, null, null, true);
-                    mainScreenData.teamStatsData.setVisible(stats.getValue(),
-                            (TeamInfo) teamSelection.getValue());
-                } else {
-                    String result = mainScreenData.teamData.setInfoManual(
-                            true, (String) typeSelection.getValue(),
-                            (TeamInfo) teamSelection.getValue(),
-                            stats.getValue());
-                    if (result != null) {
-                        teamSelection.setValue(mainScreenData.teamData.getTeam());
-                        Notification.show(result, Type.WARNING_MESSAGE);
-                        return;
-                    } else {
-                        mainScreenData.teamStatsData.setVisible(stats.getValue(),
-                            (TeamInfo) teamSelection.getValue());
-                    };
-
+                String type = STATISTICS_SHOW_TYPE.equals(typeSelection.getValue()) ? "" :
+                        (String) typeSelection.getValue();
+                String result = mainScreenData.teamData.setInfoManual(
+                        true, type,
+                        (TeamInfo) teamSelection.getValue(),
+                        false);
+                if (result != null) {
+                    teamSelection.setValue(mainScreenData.teamData.getTeam());
+                    Notification.show(result, Type.WARNING_MESSAGE);
+                    return;
                 }
             }
         });
-
-        stats = new CheckBox("Statistics");
 
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
@@ -165,20 +154,12 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 setSleepTime();
             }
 
-            if (stats.getValue() ||
-                    STATISTICS_SHOW_TYPE.equals(typeSelection.getValue())) {
-                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
-            }
-
-            if (STATISTICS_SHOW_TYPE.equals(typeSelection.getValue())) {
-                mainScreenData.teamData.setInfoManual(false, null, null, true);
-            } else {
-                String result = mainScreenData.teamData.setInfoManual(
-                        true, (String) typeSelection.getValue(),
-                        (TeamInfo) teamSelection.getValue(), stats.getValue());
-                if (result != null) {
-                    Notification.show(result, Type.WARNING_MESSAGE);
-                }
+            String type = STATISTICS_SHOW_TYPE.equals(typeSelection.getValue()) ?
+                    "" : (String) typeSelection.getValue();
+            String result = mainScreenData.teamData.setInfoManual(
+                    true, type, (TeamInfo) teamSelection.getValue(), true);
+            if (result != null) {
+                Notification.show(result, Type.WARNING_MESSAGE);
             }
         });
         teamShow.setStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -194,20 +175,17 @@ public class MainScreenTeamView extends CustomComponent implements View {
         });
 
         Component controlAutomaticGroup = createGroupLayout(automatedNumber, automatedShow);
-        Component settingsGroup = createGroupLayout(typeSelection, stats);
         Component controlManualGroup = createGroupLayout(teamShow, teamHide);
         Component controlGroup = new HorizontalLayout(controlManualGroup, controlAutomaticGroup);
         VerticalLayout result = new VerticalLayout(
                 showStatus,
                 sleepTime,
-                settingsGroup,
                 controlGroup,
                 teamSelection
         );
 //        result.setSpacing(true);
         result.setSizeFull();
         result.setHeight("100%");
-        result.setComponentAlignment(settingsGroup, Alignment.MIDDLE_CENTER);
         result.setComponentAlignment(sleepTime, Alignment.MIDDLE_CENTER);
         result.setComponentAlignment(controlGroup, Alignment.MIDDLE_CENTER);
 
