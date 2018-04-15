@@ -187,7 +187,9 @@ public class MessageData {
     }
 
     private void recache() {
-        Data.cache.refresh(CreepingLineData.class);
+        synchronized (messageList.getContainer()) {
+            Data.cache.refresh(CreepingLineData.class);
+        }
     }
 
     public void addLogo(Advertisement logo) {

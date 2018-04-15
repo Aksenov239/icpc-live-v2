@@ -111,8 +111,7 @@ public class BackUp<T> {
 
     public List<T> getData() {
         synchronized (data) {
-            List<T> copy = new ArrayList<>(data.getItemIds());
-            return copy;
+            return new ArrayList<>(data.getItemIds());
         }
     }
 
