@@ -152,6 +152,8 @@ public class PollForm extends FormLayout {
         optionsManager.setSpacing(true);
 
         editForm.addComponents(actions, question, hashtag, teamOptions, optionsManager);
+        question.setSizeFull();
+        hashtag.setSizeFull();
         editForm.setSizeFull();
         editForm.setSpacing(true);
         editForm.setVisible(false);

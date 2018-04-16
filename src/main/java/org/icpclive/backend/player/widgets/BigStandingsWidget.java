@@ -135,6 +135,7 @@ public class BigStandingsWidget extends Widget {
     private long lastChange;
 
     protected void updateImpl(Data data) {
+        contestData = Preparation.eventsLoader.getContestData();
         if (data.standingsData.isStandingsVisible() && data.standingsData.isBig()) {
             if (lastChange != data.standingsData.getStandingsTimestamp()) {
                 if (!isVisible()) {
@@ -358,8 +359,8 @@ public class BigStandingsWidget extends Widget {
 
         PlateStyle nameStyle =
                 topUniversity.contains(team.getId()) ? BigStandingsStylesheet.topUniversityTeam :
-                topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
-                        BigStandingsStylesheet.name;
+                        topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
+                                BigStandingsStylesheet.name;
         if (bright) {
             nameStyle = nameStyle.brighter();
         }
