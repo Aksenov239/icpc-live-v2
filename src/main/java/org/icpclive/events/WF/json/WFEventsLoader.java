@@ -210,7 +210,6 @@ public class WFEventsLoader extends EventsLoader {
         Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
 
         for (int i = 0; i < contest.teamInfos.length; i++) {
-            System.out.println(contest.teamInfos[i]);
             contest.teamInfos[i].id = i;
         }
     }
@@ -241,6 +240,21 @@ public class WFEventsLoader extends EventsLoader {
         readTeamInfos(contestInfo);
         contestInfo.initializationFinish();
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
+
+        contestInfo.recalcStandings();
+        this.contestInfo = contestInfo;
+    }
+
+    public void reinitialize() throws IOException {
+        WFContestInfo contestInfo = new WFContestInfo();
+        readGroupsInfo(contestInfo);
+        readLanguagesInfos(contestInfo);
+        readProblemInfos(contestInfo);
+        readTeamInfos(contestInfo);
+        contestInfo.initializationFinish();
+
+        contestInfo.setStatus(ContestInfo.Status.RUNNING);
+        contestInfo.setStartTime(this.contestInfo.getStartTime());
 
         contestInfo.recalcStandings();
         this.contestInfo = contestInfo;
@@ -412,6 +426,7 @@ public class WFEventsLoader extends EventsLoader {
                         new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
                                 "utf-8"));
 
+                boolean initialized = false;
                 while (true) {
                     String line = br.readLine();
                     if (line == null) {
@@ -444,10 +459,15 @@ public class WFEventsLoader extends EventsLoader {
                             break;
                         case "runs":
                             readRun(json, update);
+                        case "problems":
+                            if (!update && !initialized) {
+                                reinitialize();
+                                initialized = true;
+                            }
                         default:
                     }
                 }
-            } catch(IOException e){
+            } catch(Throwable e){
                 log.error("error", e);
                 try {
                     Thread.sleep(2000);
