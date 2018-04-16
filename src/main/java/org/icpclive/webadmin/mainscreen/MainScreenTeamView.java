@@ -90,7 +90,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
             }
         });
         automatedNumber = new ComboBox();
-        automatedNumber.addItems(3, 4, 5, 8, 10, 12, 15, 20);
+        automatedNumber.addItems(3, 4, 5, 8, 10, 12, 15, 20, 100);
         automatedNumber.setNullSelectionAllowed(false);
         automatedNumber.setValue(10);
 

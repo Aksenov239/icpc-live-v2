@@ -218,6 +218,7 @@ public class GraphicsSWT extends AbstractGraphics {
         transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
         g.setTransform(transform);
         g.drawString(text, 0, 0);
+//        g.drawString("" + textColor.getAlpha(), 0, 0);
         g.dispose();
         g = saved;
     }

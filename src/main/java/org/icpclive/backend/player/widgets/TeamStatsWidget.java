@@ -3,13 +3,11 @@ package org.icpclive.backend.player.widgets;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.egork.teaminfo.data.Achievement;
-import net.egork.teaminfo.data.Person;
-import net.egork.teaminfo.data.Record;
-import net.egork.teaminfo.data.University;
+import net.egork.teaminfo.data.*;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.QueueStylesheet;
+import org.icpclive.events.TeamInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,6 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ public class TeamStatsWidget extends Widget {
     private static final int LOGO_X = 17;
     private static final int STATS_WIDTH = WIDTH - LOGO_SIZE - LOGO_X - LOGO_X;
 
-    private static final double MOVE_SPEED = 2.0;
+    private static final double MOVE_SPEED = 1.5;
 
     private Record record;
     private BufferedImage logo;
@@ -44,13 +43,16 @@ public class TeamStatsWidget extends Widget {
 
     private StatsPanel[] panels;
 
-    public TeamStatsWidget(int id) {
+    public TeamStatsWidget(TeamInfo teamInfo) {
         try {
+            int id = teamInfo.getId();
             record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
+            record.university.setHashTag(teamInfo.getHashTag());
+            record.university.setFullName(teamInfo.getName());
             System.out.println("teamData/" + id + ".json");
             logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
             panels = new StatsPanel[]{
-                    new UnivsersityNamePanel(10000, STATS_WIDTH, record.university),
+                    new UnivsersityNamePanel(10000, STATS_WIDTH, record.university, record.team),
                     new PersonStatsPanel(5000, record.contestants[0], false),
                     new PersonStatsPanel(5000, record.contestants[1], false),
                     new PersonStatsPanel(5000, record.contestants[2], false),
@@ -137,32 +139,37 @@ public class TeamStatsWidget extends Widget {
 
         private static final Font NAME_FONT = Font.decode(MAIN_FONT + " " + 60);
         private static final Font NAME_FONT_SMALLER = Font.decode(MAIN_FONT + " " + 48);
+        private static final Font TEXT_FONT = Font.decode(MAIN_FONT + " " + 28);
         private final University university;
+        private final Team team;
 
-        public UnivsersityNamePanel(int pauseTime, int width, University university) {
+        public UnivsersityNamePanel(int pauseTime, int width, University university, Team team) {
             super(pauseTime, width);
             this.university = university;
-//            color = QueueStylesheet.waProblem.background;
+            this.team = team;
         }
 
         @Override
         protected void paintImpl(AbstractGraphics g, int width, int height) {
             super.paintImpl(g, width, height);
-            String[] parts = split(university.getFullName(), 40);
+            List<String> parts = split(university.getFullName(), NAME_FONT, this.width - 50);
             setTextColor(Color.WHITE);
-            if (parts.length == 1) {
+            if (parts.size() == 1) {
                 int y = 32;
                 setFont(NAME_FONT);
-                drawText(parts[0], 0, 80);
+                drawText(parts.get(0), 0, 80);
             } else {
-                parts = split(university.getFullName(), 50);
-                int y = parts.length == 1 ? 80 : 60;
+                parts = split(university.getFullName(), NAME_FONT_SMALLER, this.width - 50);
+                int y = parts.size() == 1 ? 80 : 60;
                 setFont(NAME_FONT_SMALLER);
-                for (int i = 0; i < parts.length; i++) {
-                    drawText(parts[i], 0, y);
+                for (int i = 0; i < parts.size(); i++) {
+                    drawText(parts.get(i), 0, y);
                     y += 52;
                 }
             }
+            setFont(TEXT_FONT);
+            String text = team.getName() + " | " + university.getHashTag() + " | " + String.join(" | ", team.getRegionals()) + " | " + university.getRegion();
+            drawText(text, 0, 150);
         }
     }
 
@@ -379,17 +386,19 @@ public class TeamStatsWidget extends Widget {
         return new Color(0x808080);
     }
 
-    private static String[] split(String s, int max) {
-        if (s.length() <= max) return new String[]{s};
-        int i = max;
-        s = s + " ";
-        while (s.charAt(i) != ' ' || s.charAt(i + 1) == '-') {
-            i--;
+    private static List<String> split(String s, Font font, int max) {
+        List<String> res = new ArrayList<>();
+        String last = null;
+        for (String word : s.split(" ")) {
+            String next = last == null ? word : last + " " + word;
+            if (getStringWidth(font, next) <= max) {
+                last = next;
+            } else {
+                res.add(last);
+                last = word;
+            }
         }
-        String[] ss = split(s.substring(i + 1), max);
-        String[] res = new String[ss.length + 1];
-        System.arraycopy(ss, 0, res, 1, ss.length);
-        res[0] = s.substring(0, i);
+        res.add(last);
         return res;
     }
 
