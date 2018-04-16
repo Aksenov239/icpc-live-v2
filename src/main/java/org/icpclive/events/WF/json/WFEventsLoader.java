@@ -152,6 +152,9 @@ public class WFEventsLoader extends EventsLoader {
                         while (bTo < b.length() && Character.isDigit(b.charAt(bTo))) {
                             bTo++;
                         }
+                        if (aTo != bTo) {
+                            return Integer.compare(aTo, bTo);
+                        }
                         return new BigInteger(a.substring(i, aTo)).compareTo(new BigInteger(b.substring(i, bTo)));
                     }
                 }
@@ -175,12 +178,6 @@ public class WFEventsLoader extends EventsLoader {
                     null : je.get("twitter_hashtag").getAsString();
             organizations.put(je.get("id").getAsString(), teamInfo);
             contest.teamInfos[i] = teamInfo;
-        }
-
-        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
-
-        for (int i = 0; i < contest.teamInfos.length; i++) {
-            contest.teamInfos[i].id = i;
         }
 
         JsonArray jsonTeams = new Gson().fromJson(
@@ -210,7 +207,11 @@ public class WFEventsLoader extends EventsLoader {
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
         }
-        Arrays.sort(contest.teamInfos, (a, b) -> a.id - b.id);
+        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
+
+        for (int i = 0; i < contest.teamInfos.length; i++) {
+            contest.teamInfos[i].id = i;
+        }
     }
 
     public void readLanguagesInfos(WFContestInfo contestInfo) throws IOException {
@@ -239,6 +240,21 @@ public class WFEventsLoader extends EventsLoader {
         readTeamInfos(contestInfo);
         contestInfo.initializationFinish();
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
+
+        contestInfo.recalcStandings();
+        this.contestInfo = contestInfo;
+    }
+
+    public void reinitialize() throws IOException {
+        WFContestInfo contestInfo = new WFContestInfo();
+        readGroupsInfo(contestInfo);
+        readLanguagesInfos(contestInfo);
+        readProblemInfos(contestInfo);
+        readTeamInfos(contestInfo);
+        contestInfo.initializationFinish();
+
+        contestInfo.setStatus(ContestInfo.Status.RUNNING);
+        contestInfo.setStartTime(this.contestInfo.getStartTime());
 
         contestInfo.recalcStandings();
         this.contestInfo = contestInfo;
@@ -347,7 +363,8 @@ public class WFEventsLoader extends EventsLoader {
         }
         String verdict = verdictElement.getAsString();
 
-        long time = parseRelativeTime(je.get("end_contest_time").getAsString());
+        long time = je.get("end_contest_time").isJsonNull() ? 0 :
+                parseRelativeTime(je.get("end_contest_time").getAsString());
         waitForEmulation(time);
 
         if (runInfo.time <= ContestInfo.FREEZE_TIME) {
@@ -409,6 +426,7 @@ public class WFEventsLoader extends EventsLoader {
                         new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
                                 "utf-8"));
 
+                boolean initialized = false;
                 while (true) {
                     String line = br.readLine();
                     if (line == null) {
@@ -441,10 +459,15 @@ public class WFEventsLoader extends EventsLoader {
                             break;
                         case "runs":
                             readRun(json, update);
+                        case "problems":
+                            if (!update && !initialized) {
+                                reinitialize();
+                                initialized = true;
+                            }
                         default:
                     }
                 }
-            } catch(IOException e){
+            } catch(Throwable e){
                 log.error("error", e);
                 try {
                     Thread.sleep(2000);
