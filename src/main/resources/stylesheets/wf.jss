@@ -90,6 +90,8 @@ creeping.line.main.style=solid
 creeping.line.logo.background=accent.color
 creeping.line.logo.text=white.color
 creeping.line.logo.style=solid
+creeping.line.logo.before.background=#ADADAD
+creeping.line.logo.before.text=black.color
 
 #team
 team.replay.background=red.color

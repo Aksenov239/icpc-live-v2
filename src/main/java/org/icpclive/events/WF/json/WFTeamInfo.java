@@ -26,7 +26,7 @@ public class WFTeamInfo extends org.icpclive.events.WF.WFTeamInfo {
                 return screen;
             case "camera":
                 return camera;
-            case "info":
+            case "video":
                 return cdsId;
             default:
                 return "";
