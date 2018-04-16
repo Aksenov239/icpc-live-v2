@@ -43,7 +43,6 @@ public class VideoVLCWidget extends PlayerWidget {
                 return;
             }
             nextPlayer = new PlayerInImage(width, height, null, url);
-            nextPlayer.setVolume(0);
             nextImage = nextPlayer.getImage();
             nextUrl = url;
 //        });
@@ -56,16 +55,18 @@ public class VideoVLCWidget extends PlayerWidget {
             return;
         }
         JComponent component = player.getComponent();
+
+        PlayerInImage oldPlayer = player;
+
         player.setComponent(null);
         nextPlayer.setComponent(component);
         inChange = true;
-        player.stop();
 
         player = nextPlayer;
-        player.setVolume(100);
         image = nextImage;
         currentUrl = nextUrl;
 
+        oldPlayer.stop();
         nextPlayer = null;
         nextImage = null;
         nextUrl = null;

@@ -183,7 +183,7 @@ public class WFEventsLoader extends EventsLoader {
         JsonArray jsonTeams = new Gson().fromJson(
                 readJsonArray(url + "/teams"), JsonArray.class);
         contest.teamById = new HashMap<>();
-        for (int i = 0; i < jsonTeams.size(); i++){
+        for (int i = 0; i < jsonTeams.size(); i++) {
             JsonObject je = jsonTeams.get(i).getAsJsonObject();
             if (je.get("organization_id").isJsonNull()) {
                 continue;
@@ -199,18 +199,17 @@ public class WFEventsLoader extends EventsLoader {
 
             teamInfo.screen = je.get("desktop") == null ? null :
                     je.get("desktop").getAsJsonArray().
-                    get(0).getAsJsonObject().get("href").getAsString();
+                            get(0).getAsJsonObject().get("href").getAsString();
             teamInfo.camera = je.get("webcam") == null ? null :
                     je.get("webcam").getAsJsonArray().
-                    get(0).getAsJsonObject().get("href").getAsString();
+                            get(0).getAsJsonObject().get("href").getAsString();
 
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
         }
-        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
+        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo) a).cdsId, ((WFTeamInfo) b).cdsId));
 
         for (int i = 0; i < contest.teamInfos.length; i++) {
-            System.out.println(contest.teamInfos[i]);
             contest.teamInfos[i].id = i;
         }
     }
@@ -241,6 +240,21 @@ public class WFEventsLoader extends EventsLoader {
         readTeamInfos(contestInfo);
         contestInfo.initializationFinish();
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
+
+        contestInfo.recalcStandings();
+        this.contestInfo = contestInfo;
+    }
+
+    public void reinitialize() throws IOException {
+        WFContestInfo contestInfo = new WFContestInfo();
+        readGroupsInfo(contestInfo);
+        readLanguagesInfos(contestInfo);
+        readProblemInfos(contestInfo);
+        readTeamInfos(contestInfo);
+        contestInfo.initializationFinish();
+
+        contestInfo.setStatus(ContestInfo.Status.RUNNING);
+        contestInfo.setStartTime(this.contestInfo.getStartTime());
 
         contestInfo.recalcStandings();
         this.contestInfo = contestInfo;
@@ -340,6 +354,11 @@ public class WFEventsLoader extends EventsLoader {
 
         WFRunInfo runInfo = contestInfo.runBySubmissionId.get(je.get("submission_id").getAsString());
 
+        if (runInfo == null) {
+            System.err.println("FAIL! " + je);
+            return;
+        }
+
         contestInfo.runByJudgementId.put(cdsId, runInfo);
 
         JsonElement verdictElement = je.get("judgement_type_id");
@@ -412,6 +431,8 @@ public class WFEventsLoader extends EventsLoader {
                         new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
                                 "utf-8"));
 
+                boolean initialized = false;
+                initialize();
                 while (true) {
                     String line = br.readLine();
                     if (line == null) {
@@ -444,10 +465,15 @@ public class WFEventsLoader extends EventsLoader {
                             break;
                         case "runs":
                             readRun(json, update);
+                        case "problems":
+                            if (!update && !initialized) {
+                                reinitialize();
+                                initialized = true;
+                            }
                         default:
                     }
                 }
-            } catch(IOException e){
+            } catch (Throwable e) {
                 log.error("error", e);
                 try {
                     Thread.sleep(2000);
@@ -460,7 +486,7 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
-        // public static ArrayBlockingQueue<RunInfo> getAllRuns() {
+    // public static ArrayBlockingQueue<RunInfo> getAllRuns() {
 
     static Map<String, String> shortNames = new HashMap<>();
 

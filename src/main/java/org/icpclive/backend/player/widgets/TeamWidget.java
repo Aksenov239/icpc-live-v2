@@ -110,13 +110,13 @@ public class TeamWidget extends Widget {
         if (team != null && mainVideo.getCurrentURL() != null) {
             mainVideo.paint(g, width, height);
         }
-        if (mainVideo.inChange) {
-            team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
-            currentProblemId = nextProblemId;
+//        if (mainVideo.inChange) {
+//            team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+//            currentProblemId = nextProblemId;
 //            log.info(this + " " + inChange);
-            mainVideo.inChange = false;
-            smallVideo.switchToNext();
-        }
+//            mainVideo.inChange = false;
+//            smallVideo.switchToNext();
+//        }
 
         if (mainVideo.getCurrentURL() == null || mainVideo.getCurrentURL().contains("info")) {
             return;
@@ -242,7 +242,7 @@ public class TeamWidget extends Widget {
         System.err.println(
                 TeamUrls.getUrl(team, infoType) + " " + team.getName() + " " +
                         team.getShortName() + " " + team.getId());
-        mainVideo.change(TeamUrls.getUrl(team, infoType));
+        mainVideo.loadNext(TeamUrls.getUrl(team, infoType));
         if (!infoType.equals("camera")) {
             smallVideo.loadNext(TeamUrls.getUrl(team, "camera"));
         } else {
@@ -253,17 +253,23 @@ public class TeamWidget extends Widget {
     }
 
     public void change(RunInfo run) {
-        mainVideo.change(TeamUrls.getUrl(run));
+        mainVideo.loadNext(TeamUrls.getUrl(run));
         smallVideo.loadNext(null);
         nextProblemId = run.getProblemId();
         teamId = run.getTeamId();
     }
 
     public void change(RunInfo run, TeamInfo teamInfo) {
-        mainVideo.change(TeamUrls.getUrl(teamInfo, "camera"));
+        mainVideo.loadNext(TeamUrls.getUrl(teamInfo, "camera"));
         smallVideo.loadNext(null);
         nextProblemId = run.getProblemId();
         teamId = run.getTeamId();
+    }
+
+    public void switchNext() {
+        mainVideo.switchToNext();
+        smallVideo.switchToNext();
+        team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
     }
 
     @Override
