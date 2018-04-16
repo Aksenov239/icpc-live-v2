@@ -65,8 +65,7 @@ public class PollWidget extends Widget {
 
     @Override
     protected void paintImpl(AbstractGraphics g, int screenWidth, int screenHeight) {
-        update();
-        updateVisibilityState();
+        super.paintImpl(g, screenWidth, screenHeight);
 
         if (visibilityState == 0) return;
 

@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BackUp<T> {
@@ -110,7 +111,7 @@ public class BackUp<T> {
 
     public List<T> getData() {
         synchronized (data) {
-            return data.getItemIds();
+            return new ArrayList<>(data.getItemIds());
         }
     }
 

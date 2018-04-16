@@ -133,7 +133,7 @@ public class Poll {
                 return true;
             Option value = null;
             for (Option op : options) {
-                if (op.option.equals(option)) {
+                if (op.option.equalsIgnoreCase(option)) {
                     value = op;
                     break;
                 }

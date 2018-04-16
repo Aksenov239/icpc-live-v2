@@ -9,6 +9,7 @@ public class FactData extends CachedData {
     @Override
     public FactData initialize() {
         FactData factData = MainScreenData.getMainScreenData().factData;
+        timestamp = factData.timestamp;
         isVisible = factData.isVisible;
         factTitle = factData.factTitle;
         factText = factData.factText;
@@ -43,6 +44,7 @@ public class FactData extends CachedData {
 
     public synchronized void hide() {
         isVisible = false;
+        timestamp = System.currentTimeMillis();
         recache();
     }
 
@@ -53,8 +55,7 @@ public class FactData extends CachedData {
 
         if (System.currentTimeMillis() - timestamp >
                 MainScreenData.getProperties().factTimeToShow) {
-            isVisible = false;
-            recache();
+            hide();
         }
     }
 
