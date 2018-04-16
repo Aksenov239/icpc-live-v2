@@ -49,11 +49,11 @@ public abstract class Widget {
     protected static final long BLINKING_PERIOD = 1500;
     protected int sleepTime;
 
-    protected static Color mergeColors(Color first, Color second) {
+    protected static Color mergeColors(Color first, Color second, double v) {
         int rgb = 0;
         for (int i = 0; i < 3; i++) {
-            rgb |= ((((first.getRGB() >> (8 * i)) & 255) * 2 +
-                    ((second.getRGB() >> (8 * i)) & 255)) / 3) << (8 * i);
+            rgb |= (int)(((first.getRGB() >> (8 * i)) & 255) * (1 - v) +
+                    ((second.getRGB() >> (8 * i)) & 255) * v) << (8 * i);
         }
         return new Color(rgb);
     }
@@ -77,7 +77,7 @@ public abstract class Widget {
         this.updateWait = updateWait;
     }
 
-    int dt;
+    int dt = 40;
 
     protected void paintImpl(AbstractGraphics g, int width, int height) {
         setGraphics(g.create());
@@ -280,15 +280,15 @@ public abstract class Widget {
         graphics.setTextColor(textColor, textOpacity);
     }
 
+    protected void drawText(String text, int x, int y, double opacity) {
+        graphics.drawString(text, x, y, font, textColor, opacity);
+    }
+
     protected void drawText(String text, int x, int y) {
-        double textOpacity = getTextOpacity(visibilityState);
-        setTextOpacity(textOpacity);
-        graphics.drawString(text, x, y, font, textColor);
+        graphics.drawString(text, x, y, font, textColor, textOpacity);
     }
 
     protected void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, boolean scaleText) {
-        double textOpacity = getTextOpacity(visibilityState);
-        setTextOpacity(textOpacity);
         graphics.drawTextThatFits(text, x, y, width, height, alignment, MARGIN, scaleText);
     }
 

@@ -194,8 +194,11 @@ public class WFEventsLoader extends EventsLoader {
     private void initialize() throws IOException {
         WFContestInfo contestInfo = new WFContestInfo();
         readGroupsInfo(contestInfo);
+        System.err.println("Groups");
         readLanguagesInfos(contestInfo);
+        System.err.println("lanugage");
         readProblemInfos(contestInfo);
+        System.err.println("problem");
         readTeamInfos(contestInfo);
         contestInfo.initializationFinish();
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
@@ -247,10 +250,17 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
+    boolean firstRun = true;
+
     public void waitForEmulation(long time) {
         if (emulation) {
             try {
+//                if (firstRun) {
+//                    contestInfo.setStartTime((long) (contestInfo.getStartTime() - emulationStartTime * 60000 / emulationSpeed));
+//                    firstRun = false;
+//                }
                 long dt = (long) ((time - contestInfo.getCurrentTime()) / emulationSpeed);
+                //System.err.println("wait for " + dt + " ms");
                 if (dt > 0) Thread.sleep(dt);
             } catch (InterruptedException e) {
                 log.error("error", e);
