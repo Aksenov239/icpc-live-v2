@@ -124,6 +124,15 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     private static int compareAsNumbers(String a, String b) {
+        if (a == null) {
+            if (b == null) {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else if (b == null) {
+            return 1;
+        }
         for (int i = 0; i < Math.min(a.length(), b.length()); i++) {
             if (a.charAt(i) != b.charAt(i)) {
                 boolean aDigit = Character.isDigit(a.charAt(i));
