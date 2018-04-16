@@ -10,13 +10,13 @@ import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
-import org.icpclive.events.WF.WFRunInfo;
-import org.icpclive.events.WF.json.WFTeamInfo;
-import org.icpclive.events.WF.WFTestCaseInfo;
 import org.icpclive.events.WF.WFAnalystMessage;
+import org.icpclive.events.WF.WFRunInfo;
+import org.icpclive.events.WF.WFTestCaseInfo;
 
 import java.awt.*;
 import java.io.*;
+import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -123,6 +123,43 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
+    private static int compareAsNumbers(String a, String b) {
+        for (int i = 0; i < Math.min(a.length(), b.length()); i++) {
+            if (a.charAt(i) != b.charAt(i)) {
+                boolean aDigit = Character.isDigit(a.charAt(i));
+                boolean bDigit = Character.isDigit(b.charAt(i));
+                if (!aDigit) {
+                    if (!bDigit) {
+                        return Character.compare(a.charAt(i), b.charAt(i));
+                    } else {
+                        if (i > 0 && Character.isDigit(a.charAt(i - 1))) {
+                            return -1;
+                        }
+                        return Character.compare(a.charAt(i), b.charAt(i));
+                    }
+                } else {
+                    if (!bDigit) {
+                        if (i > 0 && Character.isDigit(a.charAt(i - 1))) {
+                            return 1;
+                        }
+                        return Character.compare(a.charAt(i), b.charAt(i));
+                    } else {
+                        int aTo = i + 1;
+                        while (aTo < a.length() && Character.isDigit(a.charAt(aTo))) {
+                            aTo++;
+                        }
+                        int bTo = i + 1;
+                        while (bTo < b.length() && Character.isDigit(b.charAt(bTo))) {
+                            bTo++;
+                        }
+                        return new BigInteger(a.substring(i, aTo)).compareTo(new BigInteger(b.substring(i, bTo)));
+                    }
+                }
+            }
+        }
+        return Integer.compare(a.length(), b.length());
+    }
+
     private void readTeamInfos(WFContestInfo contest) throws IOException {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
@@ -140,7 +177,7 @@ public class WFEventsLoader extends EventsLoader {
             contest.teamInfos[i] = teamInfo;
         }
 
-        Arrays.sort(contest.teamInfos, (a, b) -> a.name.compareTo(b.name));
+        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
 
         for (int i = 0; i < contest.teamInfos.length; i++) {
             contest.teamInfos[i].id = i;
