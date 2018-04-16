@@ -349,7 +349,8 @@ public class WFEventsLoader extends EventsLoader {
         }
         String verdict = verdictElement.getAsString();
 
-        long time = parseRelativeTime(je.get("end_contest_time").getAsString());
+        long time = je.get("end_contest_time").isJsonNull() ? 0 :
+                parseRelativeTime(je.get("end_contest_time").getAsString());
         waitForEmulation(time);
 
         if (runInfo.time <= ContestInfo.FREEZE_TIME) {
