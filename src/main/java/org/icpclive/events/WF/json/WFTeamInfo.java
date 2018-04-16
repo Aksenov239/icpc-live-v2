@@ -23,9 +23,9 @@ public class WFTeamInfo extends org.icpclive.events.WF.WFTeamInfo {
     public String getUrlByType(String type) {
         switch (type) {
             case "screen":
-                return screen;
+                return cdsId;//screen;
             case "camera":
-                return camera;
+                return cdsId;//camera;
             case "video":
                 return cdsId;
             default:
