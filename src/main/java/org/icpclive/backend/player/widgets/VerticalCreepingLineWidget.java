@@ -133,7 +133,11 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
             currentLogo = getTimeString(Math.abs(time));
         }
 
-        applyStyle(CreepingLineStylesheet.logo);
+        if (Preparation.eventsLoader.getContestData().getCurrentTime() <= 0) {
+            applyStyle(CreepingLineStylesheet.logoBefore);
+        } else {
+            applyStyle(CreepingLineStylesheet.logo);
+        }
         drawRectangle(0, 0, LOGO_WIDTH, HEIGHT);
         setTextOpacity(logoOpacity * textOpacity);
         drawTextThatFits(currentLogo, 0, 0, LOGO_WIDTH, HEIGHT, PlateStyle.Alignment.CENTER, true);
