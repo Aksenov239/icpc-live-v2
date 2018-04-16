@@ -117,7 +117,7 @@ public class SplitScreenWidget extends Widget {
                     run.time + relevanceTime > contestInfo.getCurrentTime() &&
 //                    runId.getLastUpdateTime() + relevanceTime > System.currentTimeMillis() &&
                     run.isAccepted()) {
-//                replayRun = run;
+                replayRun = run;
             }
             // TODO: because replays does not work we do not want to show the same team
             if (replayRun != null && teamInUse(replayRun.getTeamId())) {
