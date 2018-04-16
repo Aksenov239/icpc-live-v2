@@ -9,6 +9,7 @@ import org.icpclive.backend.player.widgets.stylesheets.QueueStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.ContestInfo;
+import org.icpclive.events.EventsLoader;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 
@@ -35,6 +36,7 @@ public class NewTeamWidget extends Widget {
     }
 
     public void updateImpl(Data data) {
+        timeToSwitch = data.teamData.sleepTime;
         if (!data.teamData.isVisible) {
             setVisible(false);
             if (views.get(currentView) != emptyView) {
@@ -62,7 +64,6 @@ public class NewTeamWidget extends Widget {
                 String infoType = data.teamData.infoType;
                 addView(team, infoType);
             }
-            timeToSwitch = data.teamData.sleepTime;
         }
     }
 
@@ -77,7 +78,7 @@ public class NewTeamWidget extends Widget {
         }
         if (views.get(currentView).visibilityState <= 0) {
             System.err.println("Switch view");
-            if (views.get(currentView) != emptyView)
+            if (views.get(currentView).mainVideo != null)
                 views.get(currentView).mainVideo.stop();
             currentView++;
             if (currentView == views.size()) {
@@ -91,6 +92,7 @@ public class NewTeamWidget extends Widget {
     public void addView(TeamInfo team, String infoType) {
         System.err.println("Add view " + team + " " + infoType);
         if (views.size() > 0) {
+            System.out.println("Time to switch: " + timeToSwitch);
             views.get(currentView).timeToLive = timeToSwitch; // FIX!!!
         }
         views.add(new TeamStatusView(team, infoType, sleepTime));
@@ -118,6 +120,7 @@ public class NewTeamWidget extends Widget {
         private final int problemWidth;
         private final int statusWidth;
         private final int timeWidth;
+        private final int penaltyWidth;
 
         private int width;
         private int height;
@@ -140,18 +143,22 @@ public class NewTeamWidget extends Widget {
             nameWidth = (int) Math.round(NAME_WIDTH * TEAM_PANE_HEIGHT);
             rankWidth = (int) Math.round(RANK_WIDTH * TEAM_PANE_HEIGHT);
             solvedWidth = (int) Math.round(PROBLEM_WIDTH * TEAM_PANE_HEIGHT);
-            problemWidth = (int) Math.round(PROBLEM_WIDTH * TEAM_PANE_HEIGHT);
+            problemWidth = (int) Math.round(TOTAL_WIDTH * TEAM_PANE_HEIGHT);
             statusWidth = (int) Math.round(STATUS_WIDTH * TEAM_PANE_HEIGHT);
             timeWidth = (int) Math.round(TIME_WIDTH * TEAM_PANE_HEIGHT);
+            penaltyWidth = (int) Math.round(PENALTY_WIDTH * TEAM_PANE_HEIGHT);
             setFont(Font.decode(MAIN_FONT + " " + (int) (TEAM_PANE_HEIGHT * 0.7)));
 
             if (team == null) {
                 mainVideo = null;
                 stats = null;
+            } else if (infoType.equals("")) {
+                mainVideo = null;
+                stats = new TeamStatsWidget(team);
             } else {
                 System.err.println("Load video: " + TeamUrls.getUrl(team, infoType));
                 mainVideo = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType));
-                stats = new TeamStatsWidget(team.getId());
+                stats = new TeamStatsWidget(team);
             }
         }
 
@@ -165,9 +172,13 @@ public class NewTeamWidget extends Widget {
             if (visibilityState == 0) {
                 return;
             }
-            drawStatus();
-            drawVideos();
-            drawInfo();
+            if (mainVideo != null) {
+                drawVideos();
+                drawStatus();
+            }
+            if (stats != null) {
+                drawInfo();
+            }
         }
 
         private void drawInfo() {
@@ -184,7 +195,9 @@ public class NewTeamWidget extends Widget {
 
             PlateStyle teamColor = QueueStylesheet.name;
 
-            int x = TEAM_PANE_X;
+            int baseX = BIG_X_RIGHT;
+
+            int x = baseX - rankWidth - nameWidth - solvedWidth - penaltyWidth;
             int y = TEAM_PANE_Y;
 
             PlateStyle color = getTeamRankColor(team);
@@ -201,12 +214,12 @@ public class NewTeamWidget extends Widget {
             x += nameWidth;
 
             drawRectangleWithText("" + team.getSolvedProblemsNumber(), x, y,
-                    problemWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
+                    solvedWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
 
-            x += problemWidth;
+            x += solvedWidth;
 
             drawRectangleWithText("" + team.getPenalty(), x, y,
-                    statusWidth + solvedWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
+                    penaltyWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
 
 
             List<RunInfo> lastRuns = new ArrayList<>();
@@ -230,7 +243,7 @@ public class NewTeamWidget extends Widget {
             for (RunInfo run : lastRuns) {
                 odd = !odd;
                 y += TEAM_PANE_HEIGHT;
-                x = TEAM_PANE_X + rankWidth + nameWidth + solvedWidth - timeWidth;
+                x = baseX - timeWidth - problemWidth - statusWidth;
                 applyStyle(teamColor);
                 if (odd) {
                     setMaximumOpacity(maximumOpacity * .9);
@@ -265,6 +278,9 @@ public class NewTeamWidget extends Widget {
                 }
 
                 applyStyle(resultColor);
+                if (odd && resultColor.background.equals(QueueStylesheet.frozenProblem.background)) {
+                    setMaximumOpacity(maximumOpacity * .9);
+                }
                 drawRectangleWithText(result, x, y, statusWidth,
                         TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
 
@@ -272,9 +288,9 @@ public class NewTeamWidget extends Widget {
                     setBackgroundColor(QueueStylesheet.udTests);
                     drawRectangle(x, y, progressWidth, TEAM_PANE_HEIGHT);
                 }
-//                if (plate.runInfo == info.firstSolvedRun()[runInfo.getProblemId()]) {
-//                    drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE);
-//                }
+                if (run == EventsLoader.getInstance().getContestData().firstSolvedRun()[run.getProblemId()]) {
+                    drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE, 1);
+                }
             }
 
 

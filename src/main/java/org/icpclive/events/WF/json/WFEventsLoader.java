@@ -10,13 +10,13 @@ import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
-import org.icpclive.events.WF.WFRunInfo;
-import org.icpclive.events.WF.json.WFTeamInfo;
-import org.icpclive.events.WF.WFTestCaseInfo;
 import org.icpclive.events.WF.WFAnalystMessage;
+import org.icpclive.events.WF.WFRunInfo;
+import org.icpclive.events.WF.WFTestCaseInfo;
 
 import java.awt.*;
 import java.io.*;
+import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -123,6 +123,46 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
+    private static int compareAsNumbers(String a, String b) {
+        for (int i = 0; i < Math.min(a.length(), b.length()); i++) {
+            if (a.charAt(i) != b.charAt(i)) {
+                boolean aDigit = Character.isDigit(a.charAt(i));
+                boolean bDigit = Character.isDigit(b.charAt(i));
+                if (!aDigit) {
+                    if (!bDigit) {
+                        return Character.compare(a.charAt(i), b.charAt(i));
+                    } else {
+                        if (i > 0 && Character.isDigit(a.charAt(i - 1))) {
+                            return -1;
+                        }
+                        return Character.compare(a.charAt(i), b.charAt(i));
+                    }
+                } else {
+                    if (!bDigit) {
+                        if (i > 0 && Character.isDigit(a.charAt(i - 1))) {
+                            return 1;
+                        }
+                        return Character.compare(a.charAt(i), b.charAt(i));
+                    } else {
+                        int aTo = i + 1;
+                        while (aTo < a.length() && Character.isDigit(a.charAt(aTo))) {
+                            aTo++;
+                        }
+                        int bTo = i + 1;
+                        while (bTo < b.length() && Character.isDigit(b.charAt(bTo))) {
+                            bTo++;
+                        }
+                        if (aTo != bTo) {
+                            return Integer.compare(aTo, bTo);
+                        }
+                        return new BigInteger(a.substring(i, aTo)).compareTo(new BigInteger(b.substring(i, bTo)));
+                    }
+                }
+            }
+        }
+        return Integer.compare(a.length(), b.length());
+    }
+
     private void readTeamInfos(WFContestInfo contest) throws IOException {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
@@ -138,12 +178,6 @@ public class WFEventsLoader extends EventsLoader {
                     null : je.get("twitter_hashtag").getAsString();
             organizations.put(je.get("id").getAsString(), teamInfo);
             contest.teamInfos[i] = teamInfo;
-        }
-
-        Arrays.sort(contest.teamInfos, (a, b) -> a.name.compareTo(b.name));
-
-        for (int i = 0; i < contest.teamInfos.length; i++) {
-            contest.teamInfos[i].id = i;
         }
 
         JsonArray jsonTeams = new Gson().fromJson(
@@ -173,7 +207,12 @@ public class WFEventsLoader extends EventsLoader {
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
         }
-        Arrays.sort(contest.teamInfos, (a, b) -> a.id - b.id);
+        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
+
+        for (int i = 0; i < contest.teamInfos.length; i++) {
+            System.out.println(contest.teamInfos[i]);
+            contest.teamInfos[i].id = i;
+        }
     }
 
     public void readLanguagesInfos(WFContestInfo contestInfo) throws IOException {
@@ -194,8 +233,11 @@ public class WFEventsLoader extends EventsLoader {
     private void initialize() throws IOException {
         WFContestInfo contestInfo = new WFContestInfo();
         readGroupsInfo(contestInfo);
+        System.err.println("Groups");
         readLanguagesInfos(contestInfo);
+        System.err.println("lanugage");
         readProblemInfos(contestInfo);
+        System.err.println("problem");
         readTeamInfos(contestInfo);
         contestInfo.initializationFinish();
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
@@ -247,10 +289,17 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
+    boolean firstRun = true;
+
     public void waitForEmulation(long time) {
         if (emulation) {
             try {
+//                if (firstRun) {
+//                    contestInfo.setStartTime((long) (contestInfo.getStartTime() - emulationStartTime * 60000 / emulationSpeed));
+//                    firstRun = false;
+//                }
                 long dt = (long) ((time - contestInfo.getCurrentTime()) / emulationSpeed);
+                //System.err.println("wait for " + dt + " ms");
                 if (dt > 0) Thread.sleep(dt);
             } catch (InterruptedException e) {
                 log.error("error", e);
