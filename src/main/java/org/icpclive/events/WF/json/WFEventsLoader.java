@@ -124,15 +124,6 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     private static int compareAsNumbers(String a, String b) {
-        if (a == null) {
-            if (b == null) {
-                return 0;
-            } else {
-                return -1;
-            }
-        } else if (b == null) {
-            return 1;
-        }
         for (int i = 0; i < Math.min(a.length(), b.length()); i++) {
             if (a.charAt(i) != b.charAt(i)) {
                 boolean aDigit = Character.isDigit(a.charAt(i));
@@ -161,6 +152,9 @@ public class WFEventsLoader extends EventsLoader {
                         while (bTo < b.length() && Character.isDigit(b.charAt(bTo))) {
                             bTo++;
                         }
+                        if (aTo != bTo) {
+                            return Integer.compare(aTo, bTo);
+                        }
                         return new BigInteger(a.substring(i, aTo)).compareTo(new BigInteger(b.substring(i, bTo)));
                     }
                 }
@@ -184,12 +178,6 @@ public class WFEventsLoader extends EventsLoader {
                     null : je.get("twitter_hashtag").getAsString();
             organizations.put(je.get("id").getAsString(), teamInfo);
             contest.teamInfos[i] = teamInfo;
-        }
-
-        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
-
-        for (int i = 0; i < contest.teamInfos.length; i++) {
-            contest.teamInfos[i].id = i;
         }
 
         JsonArray jsonTeams = new Gson().fromJson(
@@ -219,7 +207,12 @@ public class WFEventsLoader extends EventsLoader {
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
         }
-        Arrays.sort(contest.teamInfos, (a, b) -> a.id - b.id);
+        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo)a).cdsId, ((WFTeamInfo)b).cdsId));
+
+        for (int i = 0; i < contest.teamInfos.length; i++) {
+            System.out.println(contest.teamInfos[i]);
+            contest.teamInfos[i].id = i;
+        }
     }
 
     public void readLanguagesInfos(WFContestInfo contestInfo) throws IOException {
