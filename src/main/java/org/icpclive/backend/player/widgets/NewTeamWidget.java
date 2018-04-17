@@ -12,6 +12,7 @@ import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
+import org.icpclive.events.WF.json.WFEventsLoader;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -131,7 +132,7 @@ public class NewTeamWidget extends Widget {
 
         private final PlayerInImage mainVideo;
         private final TeamStatsWidget stats;
-        private final TeamInfo team;
+        private TeamInfo team;
         int timeToLive = Integer.MAX_VALUE;
 
         public TeamStatusView(TeamInfo team, String infoType, int sleepTime) {
@@ -169,6 +170,7 @@ public class NewTeamWidget extends Widget {
             if (team == null) {
                 return;
             }
+            team = EventsLoader.getInstance().getContestData().getParticipant(team.getId());
             if (visibilityState == 0) {
                 return;
             }

@@ -7,6 +7,7 @@ import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.TeamStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
+import org.icpclive.events.EventsLoader;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 
@@ -125,6 +126,8 @@ public class TeamWidget extends Widget {
         if (smallVideo != null && smallVideo.getCurrentURL() != null) {
             smallVideo.paintImpl(g, width, height);
         }
+
+        team = EventsLoader.getInstance().getContestData().getParticipant(team.getId());
 
         int x = mainVideo.x;
         int y = mainVideo.y;
