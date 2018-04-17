@@ -27,7 +27,7 @@ import java.util.*;
 public class WFEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(WFEventsLoader.class);
 
-    private static WFContestInfo contestInfo;
+    private static volatile WFContestInfo contestInfo;
 
     private String url;
     private String login;
