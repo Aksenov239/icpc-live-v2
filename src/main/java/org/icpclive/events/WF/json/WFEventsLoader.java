@@ -229,7 +229,7 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
-    private void initialize() throws IOException {
+    private WFContestInfo initialize() throws IOException {
         WFContestInfo contestInfo = new WFContestInfo();
         readGroupsInfo(contestInfo);
         System.err.println("Groups");
@@ -242,7 +242,7 @@ public class WFEventsLoader extends EventsLoader {
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
 
         contestInfo.recalcStandings();
-        this.contestInfo = contestInfo;
+        return contestInfo;
     }
 
     public void reinitialize() throws IOException {
@@ -427,17 +427,22 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void run() {
-        String lastSavedEvent = null;
+        String abortedEvent = null;
+        String lastEvent = null;
         while (true) {
             try {
                 String url = this.url + "/event-feed"
-                        + (lastSavedEvent == null ? "" : "?since_id=" + lastSavedEvent);
+                        + (abortedEvent == null ? "" : "?since_id=" + abortedEvent);
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
                                 "utf-8"));
+                abortedEvent = lastEvent;
+                lastEvent = null;
 
-                boolean initialized = false;
-                initialize();
+                WFContestInfo contestInfo = initialize();
+                if (abortedEvent == null) {
+                    this.contestInfo = contestInfo;
+                }
                 while (true) {
                     String line = br.readLine();
                     if (line == null) {
@@ -450,7 +455,12 @@ public class WFEventsLoader extends EventsLoader {
                         System.err.println("Non-json line: " + Arrays.toString(line.toCharArray()));
                         continue;
                     }
-//                    lastSavedEvent = je.get("id") == null ? lastSavedEvent : je.get("id").getAsString();
+                    String id = je.get("id").getAsString();
+
+                    if (id.equals(abortedEvent)) {
+                        this.contestInfo = contestInfo;
+                    }
+                    lastEvent = id;
                     boolean update = !je.get("op").getAsString().equals("create");
                     String type = je.get("type").getAsString();
                     JsonObject json = je.get("data").getAsJsonObject();
@@ -471,9 +481,8 @@ public class WFEventsLoader extends EventsLoader {
                         case "runs":
                             readRun(json, update);
                         case "problems":
-                            if (!update && !initialized) {
-                                reinitialize();
-                                initialized = true;
+                            if (!update) {
+                                throw new Exception();
                             }
                         default:
                     }
