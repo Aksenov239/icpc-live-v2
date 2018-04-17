@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.icpclive.events.TeamInfo;
 import org.icpclive.webadmin.mainscreen.MainScreenData;
 import org.icpclive.events.EventsLoader;
+import org.icpclive.webadmin.mainscreen.MainScreenTeamView;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -99,7 +100,8 @@ public class TeamData extends CachedData {
         withStats = stats;
 
         lastStatus = currentStatus;
-        currentStatus = timestamp + "\n" + isVisible + "\n" + infoType + "\n" + currentTeam.getName();
+        currentStatus = timestamp + "\n" + isVisible + "\n" +
+                (infoType.equals("") ? MainScreenTeamView.STATISTICS_SHOW_TYPE : infoType) + "\n" + currentTeam.getName();
 
         log.debug(teamInfo.getName() + " " + teamId + " " + type);
 
