@@ -431,11 +431,9 @@ public class WFEventsLoader extends EventsLoader {
         String lastEvent = null;
         boolean initialized = false;
         while (true) {
-            try {
-                String url = this.url + "/event-feed";
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
-                                "utf-8"));
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(Preparation.openAuthorizedStream(this.url + "/event-feed", login, password),
+                            "utf-8"))) {
                 String abortedEvent = lastEvent;
                 lastEvent = null;
 
