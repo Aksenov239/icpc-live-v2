@@ -55,7 +55,7 @@ public class WFEventsLoader extends EventsLoader {
                 emulationSpeed = 1;
             }
 
-            initialize();
+            contestInfo = initialize();
         } catch (IOException e) {
             log.error("error", e);
         }
