@@ -387,7 +387,7 @@ public class WFEventsLoader extends EventsLoader {
 
             long start = System.currentTimeMillis();
             contestInfo.recalcStandings();
-            contestInfo.checkStandings(url, login, password);
+//            contestInfo.checkStandings(url, login, password);
             log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
         } else {
             runInfo.judged = false;
@@ -449,7 +449,7 @@ public class WFEventsLoader extends EventsLoader {
                     if (line == null) {
                         break;
                     }
-                    System.err.println(line);
+//                    System.err.println(line);
 
                     JsonObject je = new Gson().fromJson(line, JsonObject.class);
                     if (je == null) {
