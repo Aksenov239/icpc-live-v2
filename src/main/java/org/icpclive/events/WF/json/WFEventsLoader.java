@@ -428,28 +428,25 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void run() {
-        String abortedEvent = null;
         String lastEvent = null;
         while (true) {
             try {
-                String url = this.url + "/event-feed"
-                        + (abortedEvent == null ? "" : "?since_id=" + abortedEvent);
+                String url = this.url + "/event-feed";
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
                                 "utf-8"));
-                abortedEvent = lastEvent;
+                String abortedEvent = lastEvent;
                 lastEvent = null;
 
                 WFContestInfo contestInfo = initialize();
                 if (abortedEvent == null) {
-                    this.contestInfo = contestInfo;
+                    WFEventsLoader.contestInfo = contestInfo;
                 }
                 while (true) {
                     String line = br.readLine();
                     if (line == null) {
                         break;
                     }
-//                    System.err.println(line);
 
                     JsonObject je = new Gson().fromJson(line, JsonObject.class);
                     if (je == null) {
@@ -460,7 +457,7 @@ public class WFEventsLoader extends EventsLoader {
                     String id = je.get("id").getAsString();
 
                     if (id.equals(abortedEvent)) {
-                        this.contestInfo = contestInfo;
+                        WFEventsLoader.contestInfo = contestInfo;
                     }
                     lastEvent = id;
                     boolean update = !je.get("op").getAsString().equals("create");
@@ -484,7 +481,7 @@ public class WFEventsLoader extends EventsLoader {
                             readRun(contestInfo, json, update);
                         case "problems":
                             if (!update) {
-                                throw new Exception();
+                                throw new Exception("Problems weren't loaded, exception to restart feed");
                             }
                         default:
                     }
