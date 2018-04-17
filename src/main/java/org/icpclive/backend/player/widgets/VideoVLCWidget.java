@@ -128,7 +128,7 @@ public class VideoVLCWidget extends PlayerWidget {
 
     public boolean readyToShow() {
 //        checkEDT();
-        return ready;
+        return ready && !isBlack(image);
     }
 
     public String getCurrentURL() {

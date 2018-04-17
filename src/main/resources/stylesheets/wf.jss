@@ -62,9 +62,11 @@ big.standings.frozen.heading.background=yellow.color
 big.standings.frozen.heading.text=white.color
 big.standings.top.university.background=#08472D
 big.standings.top.university.text=white.color
+big.standings.top.university.opacity=0.9
 big.standings.finalists=0
 big.standings.top.region.background=#4d3300
 big.standings.top.region.text=white.color
+big.standings.top.region.opacity=0.9
 big.standings.star=star.color
 
 #breaking news
@@ -72,7 +74,7 @@ breaking.news.caption.background=accent.color
 breaking.news.caption.text=white.color
 
 #caption
-caption.main.background=additional.color
+caption.main.background=accent.color
 caption.main.text=white.color
 caption.description.background=main.color
 caption.description.text=white.color
@@ -91,7 +93,7 @@ creeping.line.logo.background=accent.color
 creeping.line.logo.text=white.color
 creeping.line.logo.style=solid
 creeping.line.logo.before.background=additional.color
-creeping.line.logo.before.text=black.color
+creeping.line.logo.before.text=white.color
 
 #team
 team.replay.background=red.color
