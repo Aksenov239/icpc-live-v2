@@ -481,6 +481,7 @@ public class WFEventsLoader extends EventsLoader {
                             break;
                         case "runs":
                             readRun(contestInfo, json, update);
+                            break;
                         case "problems":
                             if (!update && !initialized) {
                                 initialized = true;
