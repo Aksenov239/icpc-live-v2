@@ -6,6 +6,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.themes.ValoTheme;
 import org.icpclive.webadmin.creepingline.MessageData;
 
 /**
@@ -18,6 +19,7 @@ public class MainScreenView extends CustomComponent implements View {
     Label advertisementStatus;
     TextField advertisementText;
     Button addAdvertisement;
+    Button editAdvertisement;
     Button removeAdvertisement;
     Button discardAdvertisement;
     Button showAdvertisement;
@@ -32,10 +34,12 @@ public class MainScreenView extends CustomComponent implements View {
         advertisementText = new TextField("Advertisement text: ");
 
         createAddAdvertisementButton();
+        createEditAdvertisementButton();
         createRemoveAdvertisementButton();
         createDiscardAdvertisementButton();
 
-        CssLayout groupAdd = Utils.createGroupLayout(advertisementText, addAdvertisement, removeAdvertisement, discardAdvertisement);
+        CssLayout groupAdd = Utils.createGroupLayout(advertisementText,
+                addAdvertisement, editAdvertisement, removeAdvertisement, discardAdvertisement);
 
         advertisements = createAdvertisementTable(mainScreenData.advertisementData.getContainer());
         advertisements.addValueChangeListener(event -> {
@@ -43,12 +47,11 @@ public class MainScreenView extends CustomComponent implements View {
                 setDefaultValues();
                 return;
             }
-            addAdvertisement.setCaption(addButtonStatuses[1]);
+            editAdvertisement.setVisible(true);
             removeAdvertisement.setVisible(true);
             discardAdvertisement.setVisible(true);
             advertisementText.setValue(((Advertisement) advertisements.getValue()).getAdvertisement());
         });
-
 
         createShowAdvertisementButton();
         createHideAdvertisementButton();
@@ -165,7 +168,7 @@ public class MainScreenView extends CustomComponent implements View {
 
     private void setDefaultValues() {
         advertisements.setValue(null);
-        addAdvertisement.setCaption(addButtonStatuses[0]);
+        editAdvertisement.setVisible(false);
         removeAdvertisement.setVisible(false);
         discardAdvertisement.setVisible(false);
     }
@@ -182,22 +185,28 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     private void createAddAdvertisementButton() {
-        addAdvertisement = new Button(addButtonStatuses[0]);
+        addAdvertisement = new Button("Add new");
         addAdvertisement.addClickListener(event -> {
-            if (addAdvertisement.getCaption().equals(addButtonStatuses[0])) {
-                mainScreenData.advertisementData.addAdvertisement(new Advertisement(advertisementText.getValue()));
-            } else {
-                mainScreenData.advertisementData.setValue(advertisements.getValue(), advertisementText.getValue());
-                setDefaultValues();
-            }
+            mainScreenData.advertisementData.addAdvertisement(new Advertisement(advertisementText.getValue()));
             advertisementText.clear();
-
             advertisements.refreshRowCache();
+            setDefaultValues();
+        });
+        addAdvertisement.setStyleName(ValoTheme.BUTTON_PRIMARY);
+    }
+
+    public void createEditAdvertisementButton() {
+        editAdvertisement = new Button("Edit");
+        editAdvertisement.addClickListener(event -> {
+            mainScreenData.advertisementData.setValue(advertisements.getValue(), advertisementText.getValue());
+            advertisementText.clear();
+            advertisements.refreshRowCache();
+            setDefaultValues();
         });
     }
 
     private void createRemoveAdvertisementButton() {
-        removeAdvertisement = new Button("Remove selected");
+        removeAdvertisement = new Button("Remove");
         removeAdvertisement.addClickListener(event -> {
             if (advertisements.getValue() != null) {
                 mainScreenData.advertisementData.removeAdvertisement((Advertisement) advertisements.getValue());
@@ -251,7 +260,7 @@ public class MainScreenView extends CustomComponent implements View {
     TextField profession;
     Button addPersonButton;
     Person lastPerson;
-    String[] addPersonButtonStatus = {"Add new", "Edit"};
+    Button editPersonButton;
     Button removePersonButton;
     Button discardPersonButton;
 
@@ -281,10 +290,12 @@ public class MainScreenView extends CustomComponent implements View {
         person.setMargin(new MarginInfo(false, true, false, false));
 
         createAddPersonButton();
+        createEditPersonButton();
         createRemovePersonButton();
         createDiscardPersonButton();
 
-        Component buttonPersonsControl = Utils.createGroupLayout(addPersonButton, removePersonButton, discardPersonButton);
+        Component buttonPersonsControl = Utils.createGroupLayout(addPersonButton,
+                editPersonButton, removePersonButton, discardPersonButton);
 
         HorizontalLayout personsControl = new HorizontalLayout(
                 person,
@@ -315,9 +326,10 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     public void setPersonFormDefault() {
+        editPersonButton.setVisible(false);
         removePersonButton.setVisible(false);
         discardPersonButton.setVisible(false);
-        addPersonButton.setCaption(addPersonButtonStatus[0]);
+        editPersonButton.setVisible(false);
         persons[0].setValue(null);
         persons[1].setValue(null);
         name.clear();
@@ -340,18 +352,22 @@ public class MainScreenView extends CustomComponent implements View {
     }
 
     public void createAddPersonButton() {
-        addPersonButton = new Button(addPersonButtonStatus[0]);
+        addPersonButton = new Button("Add new");
         addPersonButton.addClickListener(event -> {
-            if (addPersonButton.getCaption().equals(addPersonButtonStatus[0])) {
-                mainScreenData.personData.addPerson(new Person(name.getValue(), profession.getValue()));
-                setPersonFormDefault();
-            } else {
-                if (lastPerson != null) {
-                    mainScreenData.personData.setValue(lastPerson, "name", name.getValue());
-                    mainScreenData.personData.setValue(lastPerson, "position", profession.getValue());
-                }
-                setPersonFormDefault();
+            mainScreenData.personData.addPerson(new Person(name.getValue(), profession.getValue()));
+            setPersonFormDefault();
+        });
+        addPersonButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+    }
+
+    public void createEditPersonButton() {
+        editPersonButton = new Button("Edit");
+        editPersonButton.addClickListener(event -> {
+            if (lastPerson != null) {
+                mainScreenData.personData.setValue(lastPerson, "name", name.getValue());
+                mainScreenData.personData.setValue(lastPerson, "position", profession.getValue());
             }
+            setPersonFormDefault();
         });
     }
 
@@ -388,7 +404,7 @@ public class MainScreenView extends CustomComponent implements View {
             lastPerson = (Person) table.getValue();
             name.setValue(lastPerson.getName());
             profession.setValue(lastPerson.getPosition());
-            addPersonButton.setCaption(addPersonButtonStatus[1]);
+            editPersonButton.setVisible(true);
             removePersonButton.setVisible(true);
             discardPersonButton.setVisible(true);
         });
