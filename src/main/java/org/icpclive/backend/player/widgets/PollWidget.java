@@ -18,7 +18,6 @@ public class PollWidget extends Widget {
     private final int leftX;
     private final int bottomY;
 
-    private long duration;
     private long lastVisibleChange;
     private int topTeams;
 
@@ -32,10 +31,9 @@ public class PollWidget extends Widget {
     private Poll.Option[] options;
     private double[] percent;
 
-    public PollWidget(long updateWait, long duration, int topTeams, int DX, int plateHeight,
+    public PollWidget(long updateWait, int topTeams, int plateHeight,
                       int width, int optionWidth, int minimalVoteWidth, int leftX, int bottomY) {
         super(updateWait);
-        this.duration = duration;
         this.topTeams = topTeams;
         this.width = width;
         this.plateHeight = plateHeight;
@@ -67,8 +65,7 @@ public class PollWidget extends Widget {
 
     @Override
     protected void paintImpl(AbstractGraphics g, int screenWidth, int screenHeight) {
-        update();
-        updateVisibilityState();
+        super.paintImpl(g, screenWidth, screenHeight);
 
         if (visibilityState == 0) return;
 
@@ -121,8 +118,6 @@ public class PollWidget extends Widget {
                     o1.votes == o2.votes ? o1.option.compareTo(o2.option) : o2.votes - o1.votes
             );
             for (total = 0; total < topTeams && options[total].votes >= 0; total++) { }
-        } else {
-            Arrays.sort(options, (o1, o2) -> o1.id - o2.id);
         }
 
         percent = new double[total];

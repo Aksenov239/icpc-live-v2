@@ -7,6 +7,7 @@ import org.icpclive.backend.player.generator.ScreenGeneratorSWT;
 import org.icpclive.backend.player.widgets.old.ClockWidget;
 import org.icpclive.backend.player.widgets.SplitScreenWidget;
 import org.icpclive.backend.player.widgets.Widget;
+import org.icpclive.Config;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,9 +58,10 @@ public class SplitScreen {
     }
 
     private Properties readProperties() {
-        Properties properties = new Properties();
+        Properties properties;
         try {
-            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("splitscreen.properties"));
+            properties = Config.loadProperties("splitscreen");
+//            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("splitscreen.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,9 +69,10 @@ public class SplitScreen {
     }
 
     private Properties readMainProperties() {
-        Properties properties = new Properties();
+        Properties properties;
         try {
-            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
+            properties = Config.loadProperties("mainscreen");
+//            properties.load(ScreenGeneratorGL.class.getClassLoader().getResourceAsStream("mainscreen.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

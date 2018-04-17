@@ -32,7 +32,7 @@ public class MemoryFilePlayer extends Player {
 
 //        new Thread() {
 //            @Override
-//            public void run() {
+//            public void runId() {
 //                while (true) {
 //                    repaint();
 //                }

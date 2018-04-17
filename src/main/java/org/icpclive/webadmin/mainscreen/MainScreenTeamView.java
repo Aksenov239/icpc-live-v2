@@ -17,39 +17,31 @@ import java.util.Set;
 public class MainScreenTeamView extends CustomComponent implements View {
     public static String NAME = "mainscreen-team";
 
-    Label teamStatus;
+    public static final String STATISTICS_SHOW_TYPE = "stats";
+
+    Label showStatus;
+
     Button teamShow;
     Button teamHide;
+
     final String AUTOMATIC_STOPPED_STATUS = "Not automated<br><br>";
-    Label automaticStatus;
     Button automatedShow;
-    Button automatedStop;
     ComboBox automatedNumber;
 
     TextField sleepTime;
 
     final String[] types = TeamUrls.types;
-    ComboBox type;
+    OptionGroup typeSelection;
     //    ListSelect teamSelection;
     OptionGroup teamSelection;
-    CheckBox stats;
 
-
-    public static String getTeamStatus() {
-        String status = MainScreenData.getMainScreenData().teamData.infoStatus();
-        return Utils.getTeamStatus(status);
-//        String[] z = status.split("\n");
-//
-//        if (z[1].equals("true")) {
-//            for (String type1 : TeamWidget.types) {
-//                if (type1.equals(z[2])) {
-//                    return "Now showing " + z[2] + " of team " + z[3] + " for " + (System.currentTimeMillis() - Long.parseLong(z[0])) / 1000 + " seconds";
-//                }
-//            }
-//            return "Some error happened";
-//        } else {
-//            return "No team view is shown";
-//        }
+    public String getStatus() {
+        if (mainScreenData.teamData.inAutomaticShow()) {
+            return mainScreenData.teamData.automaticStatus();
+        } else {
+            String status = MainScreenData.getMainScreenData().teamData.infoStatus();
+            return Utils.getTeamStatus(status, true);
+        }
     }
 
     private void setSleepTime() {
@@ -60,35 +52,26 @@ public class MainScreenTeamView extends CustomComponent implements View {
         }
     }
 
+    private boolean localLoad(String type) {
+        return STATISTICS_SHOW_TYPE.equals(type) ||
+                TeamUrls.localUrlType.contains(type);
+    }
+
     public Component getControllerTeam() {
-        teamStatus = new Label(getTeamStatus());
+        showStatus = new Label(getStatus(), ContentMode.HTML);
 
-        type = new ComboBox();
-        type.addItems(types);
-        type.setNullSelectionAllowed(false);
-        type.setValue(types[0]);
+        typeSelection = new OptionGroup();
+        typeSelection.addItem(STATISTICS_SHOW_TYPE);
+        for (String type : types) {
+            if (!type.equals("")) {
+                typeSelection.addItem(type);
+            }
+        }
+        typeSelection.select(STATISTICS_SHOW_TYPE);
+        typeSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 
-//        type.addValueChangeListener(event -> {
-//            setSleepTime();
-//            if (teamSelection.getValue() == null)
-//                return;
-//            if (mainScreenData.teamData.isVisible() &&
-//                    !mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-//                type.setValue(mainScreenData.teamData.infoType);
 //                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
-//            } else {
-//                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
-//            }
-//        });
 
-        //teamSelection = new ListSelect();
-        //teamSelection.addItems(mainScreenData.teamStatus.teamNames);
-        //teamSelection.setNullSelectionAllowed(false);
-        //teamSelection.setHeight("100%");
-        //teamSelection.setSizeFull();
-        //teamSelection.setRows(mainScreenData.teamStatus.teamNames.length);
-
-        automaticStatus = new Label(AUTOMATIC_STOPPED_STATUS, ContentMode.HTML);
         automatedShow = new Button("Show top teams");
         automatedShow.addClickListener(event -> {
             setSleepTime();
@@ -96,21 +79,17 @@ public class MainScreenTeamView extends CustomComponent implements View {
                 Notification.show("Automatic show is already on", Type.WARNING_MESSAGE);
                 return;
             }
-            if (mainScreenData.teamData.automaticStart((int) automatedNumber.getValue())) {
+            if (mainScreenData.teamData.automaticStart(
+                    (int) automatedNumber.getValue(),
+                    (String) typeSelection.getValue(),
+                    true)) {
                 Notification.show(automatedNumber.getValue() + " first teams are in automatic show", Type.TRAY_NOTIFICATION);
             } else {
                 Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
             }
         });
-        automatedStop = new Button("Stop automatic");
-        automatedStop.addClickListener(event -> {
-            if (!mainScreenData.teamData.inAutomaticShow()) {
-                return;
-            }
-            mainScreenData.teamData.automaticStop();
-        });
         automatedNumber = new ComboBox();
-        automatedNumber.addItems(3, 4, 5, 8, 10, 12, 15, 20);
+        automatedNumber.addItems(3, 4, 5, 8, 10, 12, 15, 20, 100);
         automatedNumber.setNullSelectionAllowed(false);
         automatedNumber.setValue(10);
 
@@ -121,6 +100,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
         teamSelection = new OptionGroup();
         teamSelection.setHtmlContentAllowed(true);
+        teamSelection.addStyleName("team-optiongroup");
 
         Set<String> topTeamsIds = MainScreenProperties.topteamsids;
         for (TeamInfo team : MainScreenData.getProperties().teamInfos) {
@@ -135,89 +115,80 @@ public class MainScreenTeamView extends CustomComponent implements View {
         teamSelection.setWidth("100%");
 
         teamSelection.addValueChangeListener(event -> {
-            setSleepTime();
             if (mainScreenData.teamData.isVisible()) {
-                if (stats.getValue() && "".equals(type.getValue())) {
-                    return;
-                }
-
                 if (mainScreenData.teamData.inAutomaticShow()) {
                     Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                     return;
                 }
 
-                if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                    teamSelection.setValue(mainScreenData.teamData.getTeamString());
-                    Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);
-
+                if (localLoad((String) typeSelection.getValue())) {
+                    mainScreenData.teamData.setSleepTime(0);
                 } else {
-                    mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+                    setSleepTime();
                 }
-            }
-        });
-
-        stats = new CheckBox("Statistics");
-
-        stats.addValueChangeListener(event -> {
-            setSleepTime();
-            if (!"".equals(type.getValue())) {
-                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
+                String type = STATISTICS_SHOW_TYPE.equals(typeSelection.getValue()) ? "" :
+                        (String) typeSelection.getValue();
+                String result = mainScreenData.teamData.setInfoManual(
+                        true, type,
+                        (TeamInfo) teamSelection.getValue(),
+                        false);
+                if (result != null) {
+                    teamSelection.setValue(mainScreenData.teamData.getTeam());
+                    Notification.show(result, Type.WARNING_MESSAGE);
+                    return;
+                }
             }
         });
 
         teamShow = new Button("Show info");
         teamShow.addClickListener(event -> {
-            setSleepTime();
             if (mainScreenData.teamData.inAutomaticShow()) {
                 Notification.show("You need to stop automatic show first", Type.WARNING_MESSAGE);
                 return;
             }
 
-            if ("".equals(type.getValue()) && stats.isEmpty()) {
-                Notification.show("Empty info should not be shown");
-                return;
-            }
-
-            if (!"screen".equals(type.getValue()) && !"camera".equals(type.getValue())) {
+            if (localLoad((String) typeSelection.getValue())) {
                 // TODO: rewrite in the client
                 mainScreenData.teamData.setSleepTime(0);
+            } else {
+                setSleepTime();
             }
 
-            if (stats.getValue()) {
-                mainScreenData.teamStatsData.setVisible(stats.getValue(), (TeamInfo) teamSelection.getValue());
-            }
-
-            if (!mainScreenData.teamData.setInfoManual(true, (String) type.getValue(), (TeamInfo) teamSelection.getValue())) {
-                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first");
+            String type = STATISTICS_SHOW_TYPE.equals(typeSelection.getValue()) ?
+                    "" : (String) typeSelection.getValue();
+            String result = mainScreenData.teamData.setInfoManual(
+                    true, type, (TeamInfo) teamSelection.getValue(), true);
+            if (result != null) {
+                Notification.show(result, Type.WARNING_MESSAGE);
             }
         });
+        teamShow.setStyleName(ValoTheme.BUTTON_PRIMARY);
 
-        teamHide = new Button("Hide info");
+        teamHide = new Button("Stop");
         teamHide.addClickListener(event -> {
             if (mainScreenData.teamData.inAutomaticShow()) {
-                Notification.show("You need to stop automatic show first");
-                return;
+                mainScreenData.teamData.automaticStop();
+            } else {
+                mainScreenData.teamData.setInfoManual(false, null, null, false);
+                mainScreenData.teamStatsData.setVisible(false, null);
             }
-            mainScreenData.teamData.setInfoManual(false, null, null);
-            mainScreenData.teamStatsData.setVisible(false, null);
         });
 
-        Component controlAutomaticGroup = createGroupLayout(automatedShow, automatedStop, automatedNumber);
-        Component controlGroup = createGroupLayout(stats, teamShow, teamHide, type);
+        Component controlAutomaticGroup = createGroupLayout(automatedNumber, automatedShow);
+        Component controlManualGroup = createGroupLayout(teamShow, teamHide);
+        Component controlGroup = new HorizontalLayout(controlManualGroup, controlAutomaticGroup);
         VerticalLayout result = new VerticalLayout(
-                automaticStatus,
-                controlAutomaticGroup,
+                showStatus,
                 sleepTime,
-                teamStatus,
+                typeSelection,
                 controlGroup,
                 teamSelection
         );
-        result.setSpacing(true);
+//        result.setSpacing(true);
         result.setSizeFull();
         result.setHeight("100%");
-        result.setComponentAlignment(controlAutomaticGroup, Alignment.MIDDLE_CENTER);
         result.setComponentAlignment(sleepTime, Alignment.MIDDLE_CENTER);
-        result.setComponentAlignment(teamStatus, Alignment.MIDDLE_CENTER);
+        result.setComponentAlignment(typeSelection, Alignment.MIDDLE_CENTER);
         result.setComponentAlignment(controlGroup, Alignment.MIDDLE_CENTER);
 
         return result;
@@ -237,10 +208,7 @@ public class MainScreenTeamView extends CustomComponent implements View {
     }
 
     public void refresh() {
-        teamStatus.setValue(getTeamStatus());
-        String automatic = mainScreenData.teamData.automaticStatus();
-        automaticStatus.setValue(automatic.length() == 0 ? AUTOMATIC_STOPPED_STATUS : automatic);
-//        mainScreenData.update();
+        showStatus.setValue(getStatus());
     }
 
     public void enter(ViewChangeEvent event) {

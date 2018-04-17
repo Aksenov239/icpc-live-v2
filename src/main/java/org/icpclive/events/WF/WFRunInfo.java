@@ -1,8 +1,7 @@
 package org.icpclive.events.WF;
 
-import org.icpclive.events.RunInfo;
-import org.icpclive.events.SmallTeamInfo;
-import org.icpclive.events.TeamInfo;
+import org.icpclive.backend.Preparation;
+import org.icpclive.events.*;
 
 /**
  * Created by aksenov on 16.04.2015.
@@ -10,33 +9,42 @@ import org.icpclive.events.TeamInfo;
 public class WFRunInfo implements RunInfo {
     public int id;
     public boolean judged;
-    public String result = "";
-    public String language;
-    public int problem;
-    public int teamId;
-    public long time;
-    private long lastUpdateTime;
-    private int passed;
-    private int total;
-    private SmallTeamInfo teamInfoBefore;
-    public TeamInfo team;
     public boolean reallyUnknown;
 
+    public String result = "";
+    public int languageId;
+    public int problemId;
+    public int passed;
+    public int total;
+    public long time;
+    public long lastUpdateTime;
+
+    public int teamId;
+    public SmallTeamInfo teamInfoBefore;
+    public TeamInfo team;
+
     public WFRunInfo() {
-//        lastUpdateTime = System.currentTimeMillis();
     }
 
     public WFRunInfo(WFRunInfo another) {
         this.id = another.id;
         this.judged = another.judged;
         this.result = another.result;
-        this.language = another.language;
-        this.problem = another.problem;
+        this.languageId = another.languageId;
+        this.problemId = another.problemId;
         this.teamId = another.teamId;
         this.time = another.time;
         this.passed = another.getPassedTestsNumber();
         this.total = another.getTotalTestsNumber();
         this.lastUpdateTime = another.getLastUpdateTime();
+    }
+
+    public void add(WFTestCaseInfo test) {
+        if (total == 0) {
+            total = test.total;
+        }
+        passed = test.id;
+        lastUpdateTime = Math.max(lastUpdateTime, test.time);
     }
 
     @Override
@@ -50,14 +58,6 @@ public class WFRunInfo implements RunInfo {
 
     public void setTeamInfoBefore(SmallTeamInfo teamInfoBefore) {
         this.teamInfoBefore = teamInfoBefore;
-    }
-
-    public void add(WFTestCaseInfo test) {
-        if (total == 0) {
-            total = test.total;
-        }
-        passed = test.id;
-        lastUpdateTime = Math.max(lastUpdateTime, test.time);
     }
 
     public int getPassedTestsNumber() {
@@ -88,8 +88,13 @@ public class WFRunInfo implements RunInfo {
     }
 
     @Override
-    public int getProblemNumber() {
-        return problem;
+    public ProblemInfo getProblem() {
+        return Preparation.eventsLoader.getContestData().problems.get(getProblemId());
+    }
+
+    @Override
+    public int getProblemId() {
+        return problemId;
     }
 
     @Override
@@ -118,6 +123,6 @@ public class WFRunInfo implements RunInfo {
     public String toString() {
         String teamName = "" + teamId;
         if (team != null) teamName = team.getShortName();
-        return teamName + " " + (char) ('A' + problem) + " " + result;
+        return teamName + " " + (char) ('A' + problemId) + " " + result;
     }
 }

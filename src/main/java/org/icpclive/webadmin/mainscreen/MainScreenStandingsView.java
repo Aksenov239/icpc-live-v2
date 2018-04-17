@@ -3,11 +3,12 @@ package org.icpclive.webadmin.mainscreen;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
 import org.icpclive.datapassing.StandingsData;
+import org.icpclive.events.ContestInfo;
 
 import static org.icpclive.webadmin.mainscreen.Utils.createGroupLayout;
 import static org.icpclive.webadmin.mainscreen.Utils.setPanelDefaults;
-import org.icpclive.events.ContestInfo;
 
 public class MainScreenStandingsView extends CustomComponent implements View {
     public static String NAME = "mainscreen-standings";
@@ -136,18 +137,23 @@ public class MainScreenStandingsView extends CustomComponent implements View {
         standingsShowTop2 = createStandingsControllerButton("Show two pages", true, StandingsData.StandingsType.TWO_PAGES, false);
         standingsShowAll = createStandingsControllerButton("Show all pages", true, StandingsData.StandingsType.ALL_PAGES, false);
         standingsHide = createStandingsControllerButton("Hide", false, StandingsData.StandingsType.HIDE, false);
-        standingsShowTop1Big = createStandingsControllerButton("Show first page. Big standings", true, StandingsData.StandingsType.ONE_PAGE, true);
-        standingsShowTop2Big = createStandingsControllerButton("Show two pages. Big standings", true, StandingsData.StandingsType.TWO_PAGES, true);
-        standingsShowAllBig = createStandingsControllerButton("Show all pages. Big standings", true, StandingsData.StandingsType.ALL_PAGES, true);
+        standingsShowTop1Big = createStandingsControllerButton("Show first page", true, StandingsData.StandingsType.ONE_PAGE, true);
+        standingsShowTop2Big = createStandingsControllerButton("Show two pages", true, StandingsData.StandingsType.TWO_PAGES, true);
+        standingsShowAllBig = createStandingsControllerButton("Show all pages", true, StandingsData.StandingsType.ALL_PAGES, true);
 
-        CssLayout group = createGroupLayout(standingsShowTop1, standingsShowTop2, standingsShowAll, standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig, standingsHide);
+        CssLayout group = createGroupLayout(
+//                standingsShowTop1, standingsShowTop2, standingsShowAll,
+                standingsShowTop1Big, standingsShowTop2Big, standingsShowAllBig,
+                standingsHide
+        );
 
         standingsRegion = new OptionGroup();
         standingsRegion.addItem(StandingsData.ALL_REGIONS);
-        for (String region : ContestInfo.REGIONS) {
+        for (String region : ContestInfo.GROUPS) {
             standingsRegion.addItem(region);
         }
         standingsRegion.setValue(StandingsData.ALL_REGIONS);
+        standingsRegion.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 
         standingsRegion.addValueChangeListener(e -> {
             if (mainScreenData.standingsData.isVisible) {
@@ -164,6 +170,7 @@ public class MainScreenStandingsView extends CustomComponent implements View {
             standingsOptimismLevel.addItem(type);
         }
         standingsOptimismLevel.setValue(StandingsData.OptimismLevel.NORMAL);
+        standingsOptimismLevel.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 
         standingsOptimismLevel.addValueChangeListener(e -> {
             String outcome = mainScreenData.standingsData.setStandingsVisible(

@@ -44,8 +44,10 @@ public class GraphicsSWT extends AbstractGraphics {
 
     @Override
     public void drawString(String text, int x, int y, Font font, Color color, double opacity) {
+        setTextColor(color, opacity);
+        setFont(font);
         g.setFont(font);
-        setFillColor(color, opacity);
+        g.setColor(textColor);
         g.drawString(text, x + x0, y + y0);
     }
 
@@ -216,6 +218,7 @@ public class GraphicsSWT extends AbstractGraphics {
         transform.concatenate(AffineTransform.getScaleInstance(textScale, 1));
         g.setTransform(transform);
         g.drawString(text, 0, 0);
+//        g.drawString("" + textColor.getAlpha(), 0, 0);
         g.dispose();
         g = saved;
     }

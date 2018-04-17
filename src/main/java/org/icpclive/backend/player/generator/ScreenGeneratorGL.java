@@ -112,9 +112,9 @@ public class ScreenGeneratorGL implements ScreenGenerator {
     }
 
     private void draw() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
-        image = gc.createCompatibleVolatileImage(width, height, VolatileImage.TRANSLUCENT);
+//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
+//        image = gc.createCompatibleVolatileImage(width, height, VolatileImage.TRANSLUCENT);
         Graphics2D g2 = (Graphics2D) image.getGraphics();
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

@@ -39,7 +39,7 @@ public class Utils {
         }
     }
 
-    public static String getTeamStatus(String status) {
+    public static String getTeamStatus(String status, boolean html) {
         String[] z = status.split("\0");
         String[] current = z[0].split("\n");
         String[] last = z[1].split("\n");
@@ -50,15 +50,17 @@ public class Utils {
                     long currentTime = System.currentTimeMillis() - Long.parseLong(current[0]);
                     if (currentTime > MainScreenData.getProperties().sleepTime) {
                         return "Now showing " + current[2] + " of team " + current[3] + " for " +
-                                (currentTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds";
+                                (currentTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds" +
+                                (html ? "<br><br>" : "");
                     } else {
                         String result = "buffering " + current[2] + " of team " + current[3] + " for " + currentTime / 1000 + " seconds";
                         if (last[1].equals("false")) {
-                            return "Now " + result;
+                            return "Now " + result + (html ? "<br><br>" : "");
                         }
                         long lastTime = System.currentTimeMillis() - Long.parseLong(last[0]);
                         return "Now showing " + last[2] + " of team " + last[3] + " for " +
-                                (lastTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds \n while " + result;
+                                (lastTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds" +
+                                (html ? "<br>" : "\n") + "while " + result + (html ? "<br>" : " ");
                     }
                 }
             }
@@ -67,7 +69,7 @@ public class Utils {
             if (MainScreenData.getMainScreenData().teamStatsData.isVisible) {
                 return "Not showing team view of team " + MainScreenData.getMainScreenData().teamStatsData.getTeamString() + ", but probably team stats is shown.";
             }
-            return "No team view is shown";
+            return "No team view is shown" + (html ? "<br><br>" : "");
         }
     }
 }

@@ -1,24 +1,29 @@
 package org.icpclive.webadmin.creepingline;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.vaadin.data.util.BeanItemContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
+import org.icpclive.backend.Preparation;
 import org.icpclive.datapassing.CreepingLineData;
+import org.icpclive.datapassing.Data;
+import org.icpclive.events.EventsLoader;
+import org.icpclive.events.WF.json.WFEventsLoader;
+import org.icpclive.events.WF.WFAnalystMessage;
 import org.icpclive.webadmin.ContextListener;
 import org.icpclive.webadmin.backup.BackUp;
-import org.icpclive.datapassing.Data;
-import org.icpclive.events.AnalystMessage;
-import org.icpclive.events.EventsLoader;
-import org.icpclive.events.WF.WFAnalystMessage;
 import org.icpclive.webadmin.mainscreen.Advertisement;
+import org.icpclive.webadmin.mainscreen.MainScreenData;
 import org.icpclive.webadmin.mainscreen.Utils;
 import org.icpclive.webadmin.utils.SynchronizedBeanItemContainer;
 import twitter4j.Status;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Aksenov239 on 14.11.2015.
@@ -27,7 +32,7 @@ public class MessageData {
     private static final Logger log = LogManager.getLogger(MessageData.class);
 
     private static MessageData messageData;
-    private static HashSet<String> existingMessages;
+    private static Set<String> existingMessages;
 
     public static MessageData getMessageData() {
         if (messageData == null) {
@@ -50,11 +55,30 @@ public class MessageData {
         }
         messageList = new BackUp<>(Message.class, backup);
         logosList = new BackUp<>(Advertisement.class, logoBackup);
-        Utils.StoppedThread update = new Utils.StoppedThread(new Utils.StoppedRunnable() {
+        isVisible = true;
+        Utils.StoppedThread messageListUpdater = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
             public void run() {
                 while (!stop) {
-                    tick();
+                    messageList.getData().forEach(msg -> {
+                        if (msg.getEndTime() < System.currentTimeMillis()) {
+                            removeMessage(msg);
+                        }
+                    });
+
+                    List<Message> toDelete = new ArrayList<>();
+                    messageFlow.getItemIds().forEach(msg -> {
+                        if (msg.getEndTime() < System.currentTimeMillis()) {
+                            toDelete.add(msg);
+                        }
+                    });
+                    int maxMessagesInFlow = MainScreenData.getProperties().maximumFlowSize;
+                    List<Message> messages = messageFlow.getItemIds();
+                    for (int i = maxMessagesInFlow; i < messages.size(); i++) {
+                        toDelete.add(messages.get(i));
+                    }
+                    toDelete.forEach(messageFlow::removeItem);
+
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
@@ -63,27 +87,71 @@ public class MessageData {
                 }
             }
         });
-        update.start();
-        ContextListener.addThread(update);
-        messageFlow = new SynchronizedBeanItemContainer<>(Message.class);
+        messageListUpdater.start();
+        ContextListener.addThread(messageListUpdater);
         existingMessages = new HashSet<>();
         EventsLoader eventsLoader = EventsLoader.getInstance();
+
         Utils.StoppedThread analytics = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             @Override
             public void run() {
+                Properties properties = null;
                 while (true) {
-                    final BlockingQueue<AnalystMessage> q = eventsLoader.getContestData().getAnalystMessages();
                     try {
-                        AnalystMessage e = q.poll(5000, TimeUnit.MILLISECONDS);
-                        if (e == null) continue;
-                        if (e.getCategory() == WFAnalystMessage.WFAnalystMessageCategory.HUMAN || e.getPriority() <= 1) {
-                            addMessageToFlow(new Message(e.getMessage(), e.getTime() * 1000, 0, false, "Analytics"));
-                        }
-                    } catch (InterruptedException e1) {
+                        properties = Config.loadProperties("events");
+                    } catch (IOException e) {
+                        log.error("Properties cannot be loaded", e);
                         try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            break;
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e1) {
+                            log.error(e1);
+                        }
+                    }
+
+                    if (!(eventsLoader instanceof WFEventsLoader)) {
+                        return;
+                    }
+
+                    WFEventsLoader wfEventsLoader = (WFEventsLoader) eventsLoader;
+                    while (eventsLoader.getContestData() == null) {
+                    }
+
+                    String url = properties.getProperty("analytics.url", null);
+                    if (url == null) {
+                        log.info("There is no analytics feed");
+                        return;
+                    }
+                    String login = properties.getProperty("analytics.login", "");
+                    String password = properties.getProperty("analytics.password", "");
+
+                    try {
+                        BufferedReader br = new BufferedReader(
+                                new InputStreamReader(
+                                        Preparation.openAuthorizedStream(url, login, password), "UTF-8"));
+
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            JsonObject je = new Gson().fromJson(line, JsonObject.class);
+                            WFAnalystMessage message =
+                                    wfEventsLoader.readAnalystMessage(je.get("data").getAsJsonObject());
+                            long endTime = message.getTime() + MainScreenData.getProperties().messageLifespanCreepingLine;
+                            if (message.getPriority() <= 3 &&
+                                    endTime > System.currentTimeMillis()) {
+                                System.err.println("Analytics message: " + line);
+                                addMessageToFlow(new Message(message.getMessage(),
+                                        message.getTime(),
+                                        MainScreenData.getProperties().messageLifespanCreepingLine,
+                                        false,
+                                        "Analytics"));
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        log.error(e);
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e1) {
+                            log.error(e1);
                         }
                     }
                 }
@@ -96,17 +164,33 @@ public class MessageData {
     public static void processTwitterMessage(Status status) {
         Message message = new Message(
                 status.getText(),
-                System.currentTimeMillis(), 0, false, "@" + status.getUser().getScreenName());
+                System.currentTimeMillis(),
+                MainScreenData.getProperties().messageLifespanCreepingLine,
+                false, "@" + status.getUser().getScreenName());
         addMessageToFlow(message);
     }
 
     final BackUp<Message> messageList;
-    static BeanItemContainer<Message> messageFlow;
+    final static BeanItemContainer<Message> messageFlow =
+            new SynchronizedBeanItemContainer<>(Message.class);
 
     public final BackUp<Advertisement> logosList;
 
+    private boolean isVisible;
+
+    public synchronized void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+        recache();
+    }
+
+    public synchronized boolean isVisible() {
+        return isVisible;
+    }
+
     private void recache() {
-        Data.cache.refresh(CreepingLineData.class);
+        synchronized (messageList.getContainer()) {
+            Data.cache.refresh(CreepingLineData.class);
+        }
     }
 
     public void addLogo(Advertisement logo) {
@@ -136,37 +220,14 @@ public class MessageData {
     }
 
     public static void addMessageToFlow(Message message) {
-        // messageList.addBean(message);
-        synchronized (messageFlow) {
-//            System.err.println(existingMessages);
-            if (!existingMessages.contains(message.getMessage())) {
-                messageFlow.addItemAt(0, message);
-                existingMessages.add(message.getMessage());
-            }
-            int toRemove = 200;
-            if (messageFlow.size() > 2 * toRemove) {
-                while (messageFlow.size() > toRemove) {
-                    messageFlow.removeItem(messageFlow.getIdByIndex(toRemove));
-                    existingMessages.remove(message.getMessage());
-                }
-            }
+        if (!existingMessages.contains(message.getMessage())) {
+            messageFlow.addItemAt(0, message);
+            existingMessages.add(message.getMessage());
         }
-//        recache();
     }
 
     public List<Message> getMessages() {
         return messageList.getData();
-    }
-
-    public void tick() {
-        List<Message> toDelete = new ArrayList<Message>();
-        messageList.getData().forEach(msg -> {
-            if (msg.getEndTime() < System.currentTimeMillis()) {
-                toDelete.add(msg);
-            }
-        });
-        toDelete.forEach(msg -> messageList.removeItem(msg));
-        fireListeners();
     }
 
     public void fireListeners() {

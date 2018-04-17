@@ -3,6 +3,7 @@ package org.icpclive.datapassing;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import elemental.html.FormData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +28,7 @@ public class Data extends CachedData {
     public PollData pollData;
     public WordStatisticsData wordStatisticsData;
     public FrameRateData frameRateData;
+    public FactData factData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -55,6 +57,7 @@ public class Data extends CachedData {
             pollData = (PollData) cache.get(PollData.class);
             wordStatisticsData = (WordStatisticsData) cache.get(WordStatisticsData.class);
             frameRateData = (FrameRateData) cache.get(FrameRateData.class);
+            factData = (FactData) cache.get(FactData.class);
             //cameraData = (CameraData) cache.get(CameraData.class);
             //log.debug(teamData);
         } catch (Exception e) {

@@ -24,16 +24,16 @@ public class SplitScreenData extends CachedData {
         Data.cache.refresh(SplitScreenData.class);
     }
 
-    public synchronized boolean setInfoVisible(int controllerId, boolean visible, String type, TeamInfo teamInfo) {
-        return controllerDatas[controllerId].setInfoManual(visible, type, teamInfo);
+    public synchronized String setInfoVisible(int controllerId, boolean visible, String type, TeamInfo teamInfo) {
+        return controllerDatas[controllerId].setInfoManual(visible, type, teamInfo, false);
     }
 
     public synchronized boolean isVisible(int controllerId) {
         return controllerDatas[controllerId].isVisible();
     }
 
-    public synchronized String getTeamString(int controllerId) {
-        return controllerDatas[controllerId].getTeamString();
+    public synchronized TeamInfo getTeam(int controllerId) {
+        return controllerDatas[controllerId].getTeam();
     }
 
     public synchronized String infoStatus(int controllerId) {

@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -87,11 +88,13 @@ public class PCMSEventsLoader extends EventsLoader {
             String hashTag = participant.attr("hashtag");
 
             if (region != null || region.length() != 0) {
-                PCMSContestInfo.REGIONS.add(region);
+                PCMSContestInfo.GROUPS.add(region);
             }
+            HashSet<String> groups = new HashSet<>();
+            groups.add(region);
             PCMSTeamInfo team = new PCMSTeamInfo(
                     id, alias, participantName, shortName,
-                    hashTag, region, initial.getProblemsNumber());
+                    hashTag, groups, initial.getProblemsNumber());
             if (team.shortName.length() != 0) {
                 initial.addTeamStandings(team);
                 id++;
@@ -127,7 +130,7 @@ public class PCMSEventsLoader extends EventsLoader {
             try {
                 while (true) {
                     updateStatements();
-                    sleep(5000);
+                    Thread.sleep(5000);
                 }
             } catch (IOException | InterruptedException e) {
                 log.error("error", e);

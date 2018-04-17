@@ -6,7 +6,6 @@ import org.icpclive.backend.player.FramePlayer;
 import org.icpclive.backend.player.MemoryFilePlayer;
 import org.icpclive.backend.player.generator.ScreenGenerator;
 import org.icpclive.backend.player.generator.ScreenGeneratorGL;
-import org.icpclive.backend.player.generator.ScreenGeneratorSWT;
 import org.icpclive.backend.player.widgets.*;
 
 import javax.imageio.ImageIO;
@@ -59,8 +58,8 @@ public class Main {
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
         generator.addWidget(new NewTeamWidget(
-                Integer.parseInt(properties.getProperty("sleep.time")),
-                Boolean.parseBoolean(properties.getProperty("team.double.video", "false"))));
+                Integer.parseInt(properties.getProperty("sleep.time"))
+        ));
 
         generator.addWidget(new VerticalCreepingLineWidget(updateWait,
                 Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
@@ -90,24 +89,29 @@ public class Main {
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
 
-        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
-        generator.addWidget(widget);
+//        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
+//        generator.addWidget(widget);
 
         generator.addWidget(new PollWidget(updateWait,
-                Integer.parseInt(properties.getProperty("poll.show.time", "20000")),
                 Integer.parseInt(properties.getProperty("poll.top.teams", "5")),
-                519,
                 50,
-                1371,
+                1301,
                 200,
                 80,
-                519, bottomY
+                578, bottomY
         ));
 
         generator.addWidget(new WordStatisticsWidget(updateWait,
                 600,
                 400,
                 200
+        ));
+
+        generator.addWidget(new FactWidget(updateWait,
+                Widget.BASE_WIDTH - 500,
+                600,
+                450,
+                50
         ));
 
         generator.addWidget(new TestFramesWidget());

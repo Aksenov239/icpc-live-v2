@@ -57,7 +57,7 @@ public class MainScreenPollView extends CustomComponent implements View {
         pollTable.setMultiSelect(false);
         pollTable.addValueChangeListener(event -> {
             if (pollTable.getValue() == null) {
-                pollForm.editForm.setVisible(false);
+                pollForm.freePoll();
             } else {
                 pollForm.edit((Poll) pollTable.getValue());
             }

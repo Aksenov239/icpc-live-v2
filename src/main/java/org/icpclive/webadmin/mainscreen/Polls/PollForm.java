@@ -101,16 +101,14 @@ public class PollForm extends FormLayout {
         deletePoll = new Button("Delete");
         deletePoll.addClickListener(event -> {
             pollsData.removePoll(pollOnEdit);
-            editForm.setVisible(false);
-            newPoll.setVisible(true);
+            freePoll();
             Notification.show("The poll is deleted", Notification.Type.TRAY_NOTIFICATION);
         });
 
         cancelPoll = new Button("Cancel");
         cancelPoll.addClickListener(event -> {
             parent.pollTable.setValue(false);
-            editForm.setVisible(false);
-            newPoll.setVisible(true);
+            freePoll();
             Notification.show("The editing is canceled", Notification.Type.TRAY_NOTIFICATION);
         });
 
@@ -154,6 +152,8 @@ public class PollForm extends FormLayout {
         optionsManager.setSpacing(true);
 
         editForm.addComponents(actions, question, hashtag, teamOptions, optionsManager);
+        question.setSizeFull();
+        hashtag.setSizeFull();
         editForm.setSizeFull();
         editForm.setSpacing(true);
         editForm.setVisible(false);
@@ -162,6 +162,12 @@ public class PollForm extends FormLayout {
 
         setSizeFull();
         setVisible(true);
+    }
+
+    public void freePoll() {
+        editForm.setVisible(false);
+        newPoll.setVisible(true);
+
     }
 
     public void edit(Poll poll) {
@@ -185,8 +191,11 @@ public class PollForm extends FormLayout {
                 teamOptions.setValue(false);
                 optionsTable.removeAllItems();
                 synchronized (poll) {
-                    for (String option : poll.options.keySet()) {
-                        optionsTable.addItem(new Object[]{option}, option);
+                    Poll.Option[] options = poll.options;
+                    for (Poll.Option option : options) {
+                        optionsTable.addItem(
+                                new Object[]{option.option},
+                                option.option);
                     }
                 }
             }

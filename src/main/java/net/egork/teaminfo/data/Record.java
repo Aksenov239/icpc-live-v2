@@ -10,20 +10,20 @@ import java.io.PrintWriter;
  */
 public class Record {
     public final int id;
-    public final University university;
+    public University university;
     public final Team team;
-    public final Person coach;
+    public Person coach;
     public final Person[] contestants = new Person[3];
 
     @JsonCreator
     public Record(@JsonProperty("id") int id) {
         this.id = id;
-        university = new University();
+//        university = new University();
         team = new Team();
-        coach = new Person();
-        for (int i = 0; i < 3; i++) {
-            contestants[i] = new Person();
-        }
+//        coach = new Person();
+//        for (int i = 0; i < 3; i++) {
+//            contestants[i] = new Person();
+//        }
     }
 
     public void print(PrintWriter out) {

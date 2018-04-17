@@ -55,15 +55,18 @@ public class VideoVLCWidget extends PlayerWidget {
             return;
         }
         JComponent component = player.getComponent();
+
+        PlayerInImage oldPlayer = player;
+
         player.setComponent(null);
         nextPlayer.setComponent(component);
         inChange = true;
-        player.stop();
 
         player = nextPlayer;
         image = nextImage;
         currentUrl = nextUrl;
 
+        oldPlayer.stop();
         nextPlayer = null;
         nextImage = null;
         nextUrl = null;
@@ -125,7 +128,7 @@ public class VideoVLCWidget extends PlayerWidget {
 
     public boolean readyToShow() {
 //        checkEDT();
-        return ready;
+        return ready && !isBlack(image);
     }
 
     public String getCurrentURL() {

@@ -1,12 +1,13 @@
 package org.icpclive.events;
 
+import org.icpclive.datapassing.StandingsData;
+
 import java.util.ArrayList;
-import java.util.stream.Stream;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
-
-import org.icpclive.datapassing.StandingsData;
+import java.util.stream.Stream;
 
 public abstract class ContestInfo {
     public int teamNumber;
@@ -27,7 +28,7 @@ public abstract class ContestInfo {
 
     public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
     public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
-    public static final TreeSet<String> REGIONS = new TreeSet<>();
+    public static final TreeSet<String> GROUPS = new TreeSet<>();
 
     protected ContestInfo() {
     }
@@ -45,6 +46,7 @@ public abstract class ContestInfo {
     }
 
     public void setStatus(Status status) {
+        System.err.println("New status: " + status);
         lastTime = getCurrentTime();
         this.status = status;
     }
@@ -54,7 +56,15 @@ public abstract class ContestInfo {
     }
 
     public void setStartTime(long startTime) {
+        System.err.println("Set start time " + new Date(startTime));
         this.startTime = startTime;
+    }
+
+    public long getTimeFromStart() {
+        if (status == Status.BEFORE) {
+            return 0;
+        }
+        return (long) ((System.currentTimeMillis() - startTime) * EventsLoader.getInstance().getEmulationSpeed());
     }
 
     public long getCurrentTime() {
@@ -65,10 +75,7 @@ public abstract class ContestInfo {
                 return lastTime;
             case RUNNING:
                 return startTime == 0 ? 0 :
-                    (long) Math.min(
-                            ((System.currentTimeMillis() - startTime) * EventsLoader.getInstance().getEmulationSpeed()),
-                            ContestInfo.CONTEST_LENGTH
-                    );
+                        Math.min(getTimeFromStart(), ContestInfo.CONTEST_LENGTH);
             case OVER:
                 return ContestInfo.CONTEST_LENGTH;
             default:
@@ -90,12 +97,12 @@ public abstract class ContestInfo {
 
     public abstract TeamInfo[] getStandings(StandingsData.OptimismLevel optimismLevel);
 
-    public TeamInfo[] getStandings(String region, StandingsData.OptimismLevel optimismLevel) {
-        if (StandingsData.ALL_REGIONS.equals(region)) {
+    public TeamInfo[] getStandings(String group, StandingsData.OptimismLevel optimismLevel) {
+        if (StandingsData.ALL_REGIONS.equals(group)) {
             return getStandings(optimismLevel);
         }
         TeamInfo[] infos = getStandings(optimismLevel);
-        return Stream.of(infos).filter(x -> region.equals(x.getRegion())).toArray(TeamInfo[]::new);
+        return Stream.of(infos).filter(x -> x.getGroups().contains(group)).toArray(TeamInfo[]::new);
     }
 
     public String[] getHashTags() {
@@ -105,7 +112,9 @@ public abstract class ContestInfo {
         ArrayList<String> hashtags = new ArrayList<>();
         TeamInfo[] infos = getStandings();
         for (TeamInfo teamInfo : infos) {
-            hashtags.add(teamInfo.getHashTag());
+            if (teamInfo.getHashTag() != null) {
+                hashtags.add(teamInfo.getHashTag());
+            }
         }
         return hashtags.toArray(new String[0]);
     }

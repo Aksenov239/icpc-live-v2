@@ -1,6 +1,7 @@
 package org.icpclive.events;
 
 import java.util.List;
+import java.util.HashSet;
 
 /**
  * Created by Aksenov239 on 19.03.2016.
@@ -36,7 +37,7 @@ public class SmallTeamInfo implements TeamInfo {
         return null;
     }
 
-    public String getRegion() {
+    public HashSet<String> getGroups() {
         return null;
     }
 

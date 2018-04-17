@@ -143,6 +143,16 @@ public class BreakingNewsForm extends FormLayout {
 //                int problemId = problem.getValue().charAt(0) - 'A';
                 updateMessageField();
 
+                if (TeamUrls.localUrlType.contains(types.getValue())) {
+                    try {
+                        parent.mainScreenData.breakingNewsData.sleepTime =
+                                Integer.parseInt(parent.sleepTime.getValue());
+                    } catch (Throwable t) {
+                        parent.mainScreenData.breakingNewsData.sleepTime =
+                                MainScreenData.getProperties().sleepTime;
+                    }
+                }
+
                 String outcome = parent.mainScreenData.breakingNewsData.setNewsVisible(
                         true, (String) types.getValue(), isLive.getValue(), messageToShow.getValue(),
                         teamId, problemId, currentRunId

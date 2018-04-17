@@ -58,7 +58,7 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
             return "Screen in automatic mode";
         }
         String status = MainScreenData.getMainScreenData().splitScreenData.infoStatus(controllerId);
-        return Utils.getTeamStatus(status);
+        return Utils.getTeamStatus(status, false);
     }
 
     private long[] lastChangeTimestamp = new long[4];
@@ -110,8 +110,10 @@ public class MainScreenSplitScreenView extends com.vaadin.ui.CustomComponent imp
                         if (team == null) {
                             Notification.show("There is no team with id " + teamId);
                         }
-                        if (!mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), team)) {
-                            Notification.show("You need to wait 30 seconds first", Notification.Type.WARNING_MESSAGE);
+                        String result =
+                                mainScreenData.splitScreenData.setInfoVisible(id, true, (String) types[id].getValue(), team);
+                        if (result != null) {
+                            Notification.show(result , Notification.Type.WARNING_MESSAGE);
                         }
                     } catch (NumberFormatException e) {
 

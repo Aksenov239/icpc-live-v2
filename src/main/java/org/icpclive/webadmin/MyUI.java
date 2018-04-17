@@ -21,7 +21,7 @@ import org.icpclive.webadmin.mainscreen.MainScreenStandingsView;
 import org.icpclive.webadmin.mainscreen.MainScreenTeamView;
 import org.icpclive.webadmin.mainscreen.MainScreenView;
 import org.icpclive.webadmin.mainscreen.Polls.MainScreenPollView;
-import org.icpclive.webadmin.mainscreen.Words.MainScreenStatisticsView;
+import org.icpclive.webadmin.mainscreen.statistics.MainScreenStatisticsView;
 
 import javax.servlet.annotation.WebServlet;
 

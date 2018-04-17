@@ -1,5 +1,7 @@
 package org.icpclive.events.PCMS;
 
+import org.icpclive.backend.Preparation;
+import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.SmallTeamInfo;
 import org.icpclive.events.RunInfo;
 
@@ -21,7 +23,7 @@ public class PCMSRunInfo implements RunInfo {
     PCMSRunInfo(RunInfo run) {
         this.judged = run.isJudged();
         this.result = run.getResult();
-        this.problem = run.getProblemNumber();
+        this.problem = run.getProblemId();
         this.time = run.getTime();
         this.lastUpdateTimestamp = run.getLastUpdateTime();
         this.teamId = run.getTeamId();
@@ -46,7 +48,12 @@ public class PCMSRunInfo implements RunInfo {
     }
 
     @Override
-    public int getProblemNumber() {
+    public ProblemInfo getProblem() {
+        return Preparation.eventsLoader.getContestData().problems.get(getProblemId());
+    }
+
+    @Override
+    public int getProblemId() {
         return problem;
     }
 

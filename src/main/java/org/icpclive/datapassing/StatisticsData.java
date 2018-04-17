@@ -40,16 +40,22 @@ public class StatisticsData extends CachedData {
         if (MainScreenData.getMainScreenData().teamData.isVisible) {
             return MainScreenData.getMainScreenData().teamData.getOverlayError();
         }
-        if (MainScreenData.getMainScreenData().pollData.isVisible) {
-            return MainScreenData.getMainScreenData().pollData.getOverlayError();
-        }
         return null;
     }
 
     public void switchOverlaysOff() {
-        if (MainScreenData.getMainScreenData().standingsData.isVisible &&
-                MainScreenData.getMainScreenData().standingsData.isBig) {
-            MainScreenData.getMainScreenData().standingsData.hide();
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        boolean turnOff = false;
+        if (mainScreenData.standingsData.isVisible &&
+                mainScreenData.standingsData.isBig) {
+            mainScreenData.standingsData.hide();
+            turnOff = true;
+        }
+        if (MainScreenData.getMainScreenData().pollData.isVisible) {
+            mainScreenData.pollData.hide();
+            turnOff = true;
+        }
+        if (turnOff) {
             delay = MainScreenData.getProperties().overlayedDelay;
         }
     }

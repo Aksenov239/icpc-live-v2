@@ -38,6 +38,7 @@ public abstract class Widget {
     protected static final double PENALTY_WIDTH = 2.0;
     protected static final double PROBLEM_WIDTH = 1.2;
     protected static final double STATUS_WIDTH = 1.6;
+    protected static final double TIME_WIDTH = 2;
 
     protected static final int STAR_SIZE = 5;
 
@@ -45,13 +46,14 @@ public abstract class Widget {
 
     // Colors used in graphics
 
-    protected static final long BLINKING_PERIOD = 1000;
+    protected static final long BLINKING_PERIOD = 1500;
+    protected int sleepTime;
 
-    protected static Color mergeColors(Color first, Color second) {
+    protected static Color mergeColors(Color first, Color second, double v) {
         int rgb = 0;
         for (int i = 0; i < 3; i++) {
-            rgb |= ((((first.getRGB() >> (8 * i)) & 255) * 2 +
-                    ((second.getRGB() >> (8 * i)) & 255)) / 3) << (8 * i);
+            rgb |= (int)(((first.getRGB() >> (8 * i)) & 255) * (1 - v) +
+                    ((second.getRGB() >> (8 * i)) & 255) * v) << (8 * i);
         }
         return new Color(rgb);
     }
@@ -75,7 +77,7 @@ public abstract class Widget {
         this.updateWait = updateWait;
     }
 
-    int dt;
+    int dt = 40;
 
     protected void paintImpl(AbstractGraphics g, int width, int height) {
         setGraphics(g.create());
@@ -278,6 +280,14 @@ public abstract class Widget {
         graphics.setTextColor(textColor, textOpacity);
     }
 
+    protected void drawText(String text, int x, int y, double opacity) {
+        graphics.drawString(text, x, y, font, textColor, opacity);
+    }
+
+    protected void drawText(String text, int x, int y) {
+        graphics.drawString(text, x, y, font, textColor, textOpacity);
+    }
+
     protected void drawTextThatFits(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, boolean scaleText) {
         graphics.drawTextThatFits(text, x, y, width, height, alignment, MARGIN, scaleText);
     }
@@ -327,7 +337,7 @@ public abstract class Widget {
         int totalWidth = (int) round(height * total_width);
         int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
         x += rankWidth + spaceX;
         drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
         x += nameWidth + spaceX;
@@ -378,7 +388,9 @@ public abstract class Widget {
         }
     }
 
-    protected abstract CachedData getCorrespondingData(Data data);
+    protected CachedData getCorrespondingData(Data data) {
+        return null;
+    }
 
     protected void updateImpl(Data data) {
     }
@@ -395,7 +407,7 @@ public abstract class Widget {
         return color;
     }
 
-    protected void drawStar(int x, int y, int size) {
+    protected void drawStar(int x, int y, int size, double opacity) {
         int[] xx = new int[10];
         int[] yy = new int[10];
         double[] d = {size, size * 2};
@@ -403,7 +415,7 @@ public abstract class Widget {
             xx[i] = (int) (x + Math.sin(Math.PI * i / 5) * d[i % 2]);
             yy[i] = (int) (y + Math.cos(Math.PI * i / 5) * d[i % 2]);
         }
-        graphics.fillPolygon(xx, yy, STAR_COLOR);
+        graphics.fillPolygon(xx, yy, STAR_COLOR, opacity);
     }
 
 }

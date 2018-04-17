@@ -10,7 +10,7 @@ public interface AnalystMessage {
 
     int getTeam();
 
-    int getTime();
+    long getTime();
 
     int getPriority();
 

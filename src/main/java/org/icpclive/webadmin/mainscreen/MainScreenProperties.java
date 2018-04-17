@@ -10,7 +10,10 @@ import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.events.EventsLoader;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainScreenProperties {
     private static final Logger log = LogManager.getLogger(MainScreenProperties.class);
@@ -33,15 +36,16 @@ public class MainScreenProperties {
         automatedInfo = properties.getProperty("automated.info");
         EventsLoader loader = EventsLoader.getInstance();
 
-        String topteamsfilename = properties.getProperty("top.teams.file");
+        String topteams = properties.getProperty("top.teams", "");
         topteamsids = new HashSet<>();
-        //try {
-        // topteamsids = Files.lines(Paths.get(topteamsfilename)).mapToInt(Integer::parseInt).collect(Collectors.toSet());
-        //          Files.lines(Paths.get(topteamsfilename)).
-        //                forEach(topteamsids::add);
-        //  } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+//        try {
+//            topteamsids = Files.lines(Paths.get(topteamsfilename)).mapToInt(Integer::parseInt)
+//                 .collect(Collectors.toSet());
+//            Files.lines(Paths.get(topteamsfilename)).forEach(topteamsids::add);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        Arrays.stream(topteams.split(",")).forEach(topteamsids::add);
 
         Utils.StoppedThread loaderThread = new Utils.StoppedThread(new Utils.StoppedRunnable() {
             public void run() {
@@ -66,7 +70,8 @@ public class MainScreenProperties {
 //            }
 //        }
 //        teamInfos = Arrays.copyOf(teamInfos, l);
-        Arrays.sort(teamInfos);
+        Arrays.sort(teamInfos, (a, b) ->
+            Integer.parseInt(a.getAlias()) - Integer.parseInt(b.getAlias()));
 
         loaderThread.start();
 
@@ -94,6 +99,12 @@ public class MainScreenProperties {
         pollTimeToShow = Integer.parseInt(properties.getProperty("poll.show.time", "20000"));
 
         wordTimeToShow = Integer.parseInt(properties.getProperty("word.statistics.word.show.time", "5000"));
+
+        factTimeToShow = Integer.parseInt(properties.getProperty("fact.show.time", "10000"));
+
+        maximumFlowSize = Integer.parseInt(properties.getProperty("creeping.line.maximum.flow", "30"));
+        messageLifespanCreepingLine = Integer.parseInt(properties.getProperty("creeping.line.message.lifespan",
+                "600000"));
     }
 
     public long overlayedDelay;
@@ -134,4 +145,11 @@ public class MainScreenProperties {
 
     // Memes
     public final int wordTimeToShow;
+
+    // Facts
+    public final int factTimeToShow;
+
+    // Creeping line
+    public final int maximumFlowSize;
+    public final long messageLifespanCreepingLine;
 }

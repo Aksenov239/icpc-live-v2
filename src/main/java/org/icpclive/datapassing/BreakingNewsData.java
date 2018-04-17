@@ -18,6 +18,7 @@ public class BreakingNewsData extends CachedData {
         this.infoType = data.infoType;
         this.newsMessage = data.newsMessage;
         this.delay = data.delay;
+        this.sleepTime = data.sleepTime;
         return this;
     }
 
@@ -26,14 +27,6 @@ public class BreakingNewsData extends CachedData {
     }
 
     public String checkOverlays() {
-        if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            if (!"".equals(MainScreenData.getMainScreenData().teamData.infoType)) {
-                return MainScreenData.getMainScreenData().teamData.getOverlayError();
-            }
-        }
-//        if (MainScreenData.getMainScreenData().teamStatsData.isVisible()) {
-//            return MainScreenData.getMainScreenData().teamStatsData.getOverlayError();
-//        }
         if (MainScreenData.getMainScreenData().wordStatisticsData.isVisible) {
             return MainScreenData.getMainScreenData().wordStatisticsData.getOverlayError();
         }
@@ -124,6 +117,7 @@ public class BreakingNewsData extends CachedData {
     public String infoType;
     public boolean isLive;
     public String newsMessage;
+    public int sleepTime;
 
     private static int lastShowedRun = 0;
 

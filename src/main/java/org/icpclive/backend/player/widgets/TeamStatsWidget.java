@@ -3,304 +3,366 @@ package org.icpclive.backend.player.widgets;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.egork.teaminfo.data.Person;
-import net.egork.teaminfo.data.Record;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.egork.teaminfo.data.*;
 import org.icpclive.backend.graphics.AbstractGraphics;
-import org.icpclive.backend.player.widgets.stylesheets.TeamStatsStylesheet;
-import org.icpclive.datapassing.CachedData;
-import org.icpclive.datapassing.Data;
+import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
+import org.icpclive.backend.player.widgets.stylesheets.QueueStylesheet;
+import org.icpclive.events.TeamInfo;
+import org.icpclive.events.WF.json.WFTeamInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author egor@egork.net
  */
-public class TeamStatsWidget extends RotatableWidget {
+public class TeamStatsWidget extends Widget {
 
     private static final int AWARD_HEIGHT = 55;
+    private static final int WIDTH = 1305;
+    private static final int HEIGHT = 177;
+    private static final int BASE_X = 1893 - WIDTH;
+    private static final int BASE_Y = 1007 - HEIGHT;
+    private static final int LOGO_SIZE = 143;
+    private static final int LOGO_X = 17;
+    private static final int STATS_WIDTH = WIDTH - LOGO_SIZE - LOGO_X - LOGO_X;
 
-    private static Logger log = LogManager.getLogger(TeamStatsWidget.class);
+    private static final double MOVE_SPEED = 1.5;
 
-    private static final int X = 519;
-    private static final int Y = 794;
-    private static final int MARGIN = 2;
-    static final int WIDTH = 1371;
-    private static final int LEFT_WIDTH = WIDTH / 2;
-    static final int HEIGHT = 200;
-    private static final int INITIAL_SHIFT = WIDTH + MARGIN;
-    private static final int PERSON_WIDTH = 1066;
-    private static final int PERSON_SHIFT = PERSON_WIDTH + MARGIN;
-    private static final int BOTTOM_WIDTH = WIDTH + 3 * PERSON_WIDTH + 4 * MARGIN + WIDTH;
-    private static final int LOGO_SIZE = 110;
-    private static final int LOGO_X = 20;
-    private static final int LOGO_Y = 70;
-    private static final int[] SHIFTS = new int[]{0, INITIAL_SHIFT, INITIAL_SHIFT + PERSON_SHIFT,
-            INITIAL_SHIFT + PERSON_SHIFT * 2, INITIAL_SHIFT + PERSON_SHIFT * 3};
-    private static final int SHOW_TIME = 5000;
-    private static final int SHIFT_SPEED = 1800; //pixels in second
-    private static final int FADE_TIME = 1000;
-    private static final int UNIVERSITY_NAME_X = 20;
-    private static final int UNIVERSITY_NAME_Y = 50;
-    private static final Color UNIVERSITY_NAME_COLOR = new Color(0xaaaacc);
-    private static final Font UNIVERSITY_NAME = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
-    private static final int TEAM_INFO_X = 145;
-    private static final int TEAM_INFO_Y = 94;
-    private static final Font TEAM_INFO = Font.decode(MAIN_FONT + " " + 24);
-    private static final Color TOP_FOREGROUND = Color.WHITE;
-    private static final Color NAME_COLOR = Color.WHITE;
-    private static final Color TOP_BACKGROUND = TeamStatsStylesheet.background;
-    private static final Color BOTTOM_BACKGROUND = TeamStatsStylesheet.background;
-
-    private static final int WF_CAPTION_X = 20;
-    private static final int WF_CAPTION_Y = 50;
-    private static final Color WF_CAPTION_COLOR = new Color(0xaaaacc);
-    private static final Font WF_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
-
-    private static final int AWARDS_CAPTION_X = 150;
-    private static final int AWARDS_CAPTION_Y = 50;
-    private static final Color AWARDS_CAPTION_COLOR = new Color(0xaaaacc);
-    private static final Font AWARDS_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
-
-    private static final Color REGION_CAPTION_COLOR = new Color(0xaaaacc);
-    private static final Font REGION_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 24);
-
-    private static final int AWARDS_X = 150;
-    private static final int AWARDS_Y = 70;
-
-    private static final int WF_X = 20;
-    private static final int WF_Y = 114;
-    private static final Color WF_COLOR = Color.WHITE;
-    private static final Font WF_FONT = Font.decode(MAIN_FONT + " " + 50).deriveFont(Font.BOLD);
-
-    private static final int PERSON_CIRCLE_X = 30;
-    private static final int PERSON_CIRCLE_Y = 28;
-    private static final int PERSON_CIRCLE_DIAMETER = 24;
-    private static final int PERSON_NAME_X = 63;
-    private static final int PERSON_NAME_Y = 50;
-    private static final Color PERSON_NAME_COLOR = Color.WHITE;
-    private static final Font PERSON_NAME_FONT = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
-    private static final int PERSON_RATING_Y = 86;
-    private static final Font RATING_FONT = Font.decode(MAIN_FONT + " " + 24).deriveFont(Font.BOLD);
-    private static final int RATING_SPACE = 18;
-    private static final int TOP_ACHIEVEMENT_Y = 114;
-    private static final int ACHIEVEMENT_DY = 30;
-    private static final int ACHIEVEMENT_WIDTH = 314;
-    private static final Color ACHIEVEMENT_COLOR = new Color(0xEFDFED);
-    private static final Font ACHIEVEMENT_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 18);
-    private static final int AWARD_SIZE = 40;
-    private BufferedImage cupImage;
-    private BufferedImage regionalCupImage;
-    private BufferedImage goldMedalImage;
-    private BufferedImage silverMedalImage;
-    private BufferedImage bronzeMedalImage;
+    private Record record;
+    private BufferedImage logo;
 
     private ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public TeamStatsWidget(long updateWait, long sleepTime) {
-        super(updateWait, X, Y, WIDTH, MARGIN, SHIFTS, SHOW_TIME, SHIFT_SPEED, FADE_TIME);
+    private StatsPanel[] panels;
+
+    public TeamStatsWidget(TeamInfo teamInfo) {
         try {
-            cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            regionalCupImage = getScaledInstance(ImageIO.read(new File("pics/regional.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
-            bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze_medal.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            int id = Integer.parseInt(((WFTeamInfo) teamInfo).cdsId);
+            record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
+            record.university.setHashTag(teamInfo.getHashTag());
+            record.university.setFullName(teamInfo.getName());
+            try {
+                logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+            } catch (Exception e) {
+                logo = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            }
+            panels = new StatsPanel[]{
+                    new UnivsersityNamePanel(10000, STATS_WIDTH, record.university, record.team),
+                    new PersonStatsPanel(5000, record.contestants[0], false),
+                    new PersonStatsPanel(5000, record.contestants[1], false),
+                    new PersonStatsPanel(5000, record.contestants[2], false),
+                    new PersonStatsPanel(5000, record.coach, true),
+                    new AwardsPanel(5000, STATS_WIDTH, record.university)
+            };
+            fullPeriod = 0;
+            fullWidth = 0;
+            for (StatsPanel panel : panels) {
+                fullPeriod += panel.pauseTime;
+                fullPeriod += panel.width / MOVE_SPEED;
+                fullWidth += panel.width;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.sleepTime = sleepTime;
     }
 
-    private long sleepTime;
-    private long lastUpdateTimestamp;
-    private long lastUpdateLocalTimestamp = Long.MAX_VALUE / 2;
-    private boolean previousVisible;
+    private int time;
+    private int fullPeriod;
+    private int fullWidth;
 
-    public void updateImpl(Data data) {
-        sleepTime = data.teamData.sleepTime;
-        if (data.teamStatsData.timestamp > lastUpdateTimestamp) {
-            lastUpdateTimestamp = data.teamStatsData.timestamp;
-            setVisible(data.teamStatsData.isVisible);
-            lastUpdateLocalTimestamp = System.currentTimeMillis();
-            if (!isVisible()) {
-                hide();
-                previousVisible = false;
+    @Override
+    protected void paintImpl(AbstractGraphics g, int ww, int hh) {
+        setGraphics(g.create());
+        if (visibilityState == 0) time = 0;
+        time += dt;
+        time %= fullPeriod;
+        g = g.create();
+        g.translate(BASE_X, BASE_Y);
+        g.clip(0, 0, WIDTH, HEIGHT);
+        setGraphics(g);
+
+        int dx = 0;
+        int tt = time;
+        for (int i = 0; i < panels.length; i++) {
+            StatsPanel panel = panels[i];
+            if (tt < panel.pauseTime) {
+                break;
             }
-        }
-        if (isVisible() && lastUpdateLocalTimestamp + sleepTime < System.currentTimeMillis()) {
-            showTeam(data.teamStatsData.getTeamId() + 1);
-            if (previousVisible) {
-                setFaded();
+            tt -= panel.pauseTime;
+            if (tt < panel.width / MOVE_SPEED) {
+                dx += tt * MOVE_SPEED;
+                break;
             }
-            lastUpdateLocalTimestamp = Long.MAX_VALUE / 2;
-            previousVisible = true;
+            tt -= panel.width / MOVE_SPEED;
+            dx += panel.width;
         }
+
+        PlateStyle color = QueueStylesheet.name;
+        applyStyle(color);
+        drawRectangle(0, 0, WIDTH, HEIGHT);
+        g.drawImage(logo, LOGO_X + (LOGO_SIZE - logo.getWidth()) / 2, LOGO_X + (LOGO_SIZE - logo.getHeight()) / 2, logo.getWidth(), logo.getHeight(), opacity);
+
+        g.translate(WIDTH - STATS_WIDTH, 0);
+        g.clip(0, 0, STATS_WIDTH, HEIGHT);
+
+        int x = 0;
+        for (StatsPanel panel : panels) {
+            int left = x - dx;
+            if (left + panel.width < 0) {
+                left += fullWidth;
+            }
+            AbstractGraphics g1 = g.create();
+            g1.translate(left, 0);
+            panel.setVisibilityState(visibilityState);
+            panel.paintImpl(g1, 1920, 1080);
+            x += panel.width;
+        }
+
     }
 
-    void showTeam(int id) {
-        try {
-            Record record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
-            System.out.println("teamData/" + id + ".json");
-            BufferedImage logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-            VolatileImage unmovable = prepareLeftPlaque(record, logo);
-            VolatileImage movable = prepareRightPlaque(record);
-            setUnmovable(unmovable);
-            setMovable(movable);
-            start();
-        } catch (IOException e) {
-//            log.error("Can't load team info for team " + id, e);
-            throw new RuntimeException(e);
-        }
-    }
+    static class StatsPanel extends Widget {
+        protected final int pauseTime;
+        protected final int width;
 
-    private VolatileImage prepareRightPlaque(Record record) {
-        VolatileImage image = createVolatileImage(BOTTOM_WIDTH, HEIGHT);
-        Graphics2D g = (Graphics2D) image.getGraphics();
-
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-
-        g.setColor(WF_CAPTION_COLOR);
-        g.setFont(WF_CAPTION_FONT);
-        g.drawString("Finals", WF_CAPTION_X, WF_CAPTION_Y);
-
-        g.setColor(WF_COLOR);
-        g.setFont(WF_FONT);
-        g.drawString("" + record.university.getAppearances(), WF_X, WF_Y);
-
-        if (record.university.getGold() + record.university.getSilver() + record.university.getBronze() + record.university.getRegionalChampionships() > 0) {
-            g.setColor(AWARDS_CAPTION_COLOR);
-            g.setFont(AWARDS_CAPTION_FONT);
-            g.drawString("Awards", AWARDS_CAPTION_X, AWARDS_CAPTION_Y);
-            BufferedImage[] images = new BufferedImage[]{cupImage, regionalCupImage, goldMedalImage, silverMedalImage, bronzeMedalImage};
-            int[] num = new int[]{record.university.getWins(), record.university.getRegionalChampionships() - record.university.getWins(),
-                    record.university.getGold(),
-                    record.university.getSilver(), record.university.getBronze()};
-            int[] dx = new int[images.length];
-            for (int i = 0; i < images.length; i++) {
-                dx[i] = images[i].getWidth() + 1;
-            }
-            int x = AWARDS_X;
-            int y = AWARDS_Y;
-
-            int[] additional = new int[5];
-            try {
-                Scanner in = new Scanner(new File("additional_awards.txt"));
-                while (in.hasNext()) {
-                    String s = in.next();
-                    String[] p = new String[]{"win", "regional", "gold", "silver", "bronze"};
-                    for (int i = 0; i < p.length; i++) {
-                        if (s.equals(p[i])) {
-                            additional[i]++;
-                        }
-                    }
-                }
-            } catch (FileNotFoundException e) {
-            }
-            for (int i = 0; i < num.length; i++) {
-                num[i] += additional[i];
-            }
-
-
-            for (int i = 0; i < images.length; i++) {
-                for (int j = 0; j < num[i]; j++) {
-                    if (j == num[i] - 1 && additional[j] > 0) {
-                        BufferedImage scaledImage = getScaledInstance(images[i], AWARD_SIZE * 3 / 2, AWARD_SIZE * 3 / 2, null, false);
-                        g.drawImage(scaledImage, x, y - AWARD_SIZE / 2, null);
-                        x += scaledImage.getWidth() - images[i].getWidth();
-                    } else {
-                        g.drawImage(images[i], x, y + (i == 1 ? -1 : 0), null);
-                        x += dx[i];
-                    }
-                }
-                if (i == 1) {
-                    if (num[0] + num[1] > 0) {
-                        x = AWARDS_X;
-                        y += 50;
-                    }
-                } else {
-                    if (num[i] > 0) {
-                        x += 1.5 * images[i].getWidth() - dx[i];
-                    }
-                }
-            }
-        }
-        int x = INITIAL_SHIFT;
-        Person[] persons = {record.coach, record.contestants[0], record.contestants[1], record.contestants[2]};
-        for (int i = 0; i < 4; i++) {
-            g.setColor(BOTTOM_BACKGROUND);
-            g.fillRect(x, 0, i == 3 ? WIDTH : PERSON_WIDTH, HEIGHT);
-            drawPersonProfile(g, x, persons[i], i == 0);
-            x += PERSON_WIDTH + MARGIN;
-        }
-        return image;
-    }
-
-    private void drawPersonProfile(Graphics2D g, int x, Person person, boolean isCoach) {
-        g.setColor(NAME_COLOR);
-        g.fillOval(x + PERSON_CIRCLE_X, PERSON_CIRCLE_Y, PERSON_CIRCLE_DIAMETER, PERSON_CIRCLE_DIAMETER);
-        g.setFont(PERSON_NAME_FONT);
-        g.setColor(PERSON_NAME_COLOR);
-        g.drawString(person.getName() + (isCoach ? ", Coach" : ", Contestant"), x + PERSON_NAME_X, PERSON_NAME_Y);
-        g.setFont(RATING_FONT);
-        int xx = x + PERSON_NAME_X;
-        if (person.getTcRating() != -1) {
-            g.setColor(NAME_COLOR);
-            FontMetrics fontMetrics = g.getFontMetrics();
-            g.drawString("TC: ", xx, PERSON_RATING_Y);
-            xx += fontMetrics.stringWidth("TC: ");
-            g.setColor(getTcColor(person.getTcRating()));
-            g.drawString(Integer.toString(person.getTcRating()), xx, PERSON_RATING_Y);
-            xx += fontMetrics.stringWidth(Integer.toString(person.getTcRating()));
-            xx += RATING_SPACE;
-        }
-        if (person.getCfRating() != -1) {
-            g.setColor(NAME_COLOR);
-            FontMetrics fontMetrics = g.getFontMetrics();
-            g.drawString("CF: ", xx, PERSON_RATING_Y);
-            xx += fontMetrics.stringWidth("CF: ");
-            g.setColor(getCfColor(person.getCfRating()));
-            g.drawString(Integer.toString(person.getCfRating()), xx, PERSON_RATING_Y);
-        }
-        g.setColor(ACHIEVEMENT_COLOR);
-        g.setFont(ACHIEVEMENT_CAPTION_FONT);
-        for (int i = 0; i < 6 && i < person.getAchievements().size(); i++) {
-            int cx = x + PERSON_NAME_X + (i / 3) * ACHIEVEMENT_WIDTH;
-            int cy = TOP_ACHIEVEMENT_Y + ACHIEVEMENT_DY * (i % 3);
-            g.drawString(prepareAchievement(g, person.getAchievements().get(i).achievement, ACHIEVEMENT_WIDTH - RATING_SPACE)
-                    , cx, cy);
+        public StatsPanel(int pauseTime, int width) {
+            this.pauseTime = pauseTime;
+            this.width = width;
         }
     }
 
-    private String prepareAchievement(Graphics2D g, String achievement, int maxWidth) {
-        if (g.getFontMetrics().stringWidth(achievement) <= maxWidth) {
-            return achievement;
+    static class UnivsersityNamePanel extends StatsPanel {
+
+        private static final Font NAME_FONT = Font.decode(MAIN_FONT + " " + 60);
+        private static final Font NAME_FONT_SMALLER = Font.decode(MAIN_FONT + " " + 48);
+        private static final Font TEXT_FONT = Font.decode(MAIN_FONT + " " + 28);
+        private final University university;
+        private final Team team;
+
+        public UnivsersityNamePanel(int pauseTime, int width, University university, Team team) {
+            super(pauseTime, Math.max(width, getStringWidth(TEXT_FONT, getInfoText(team, university)) + 50));
+            this.university = university;
+            this.team = team;
         }
-        int yearAt = achievement.indexOf("(");
-        String years = achievement.substring(yearAt);
-        years = years.substring(1, years.length() - 1);
-        String[] tokens = years.split(", ");
-        int times = 0;
-        for (String token : tokens) {
-            if (token.length() == 4) {
-                times++;
+
+        @Override
+        protected void paintImpl(AbstractGraphics g, int width, int height) {
+            setGraphics(g.create());
+            List<String> parts = split(university.getFullName(), NAME_FONT, this.width - 50);
+            setTextColor(Color.WHITE);
+            if (parts.size() == 1) {
+                int y = 32;
+                setFont(NAME_FONT);
+                drawText(parts.get(0), 0, 80);
             } else {
-                times += Integer.parseInt(token.substring(5)) - Integer.parseInt(token.substring(0, 4)) + 1;
+                parts = split(university.getFullName(), NAME_FONT_SMALLER, this.width - 50);
+                int y = parts.size() == 1 ? 80 : 60;
+                setFont(NAME_FONT_SMALLER);
+                for (int i = 0; i < parts.size(); i++) {
+                    drawText(parts.get(i), 0, y);
+                    y += 52;
+                }
             }
+            setFont(TEXT_FONT);
+            String text = getInfoText(team, university);
+            drawText(text, 0, parts.size() == 1 ? 130 : 160);
         }
-        return achievement.substring(0, yearAt) + "(" + times + ")";
+
+        private static String getInfoText(Team team, University university) {
+            String text = team.getName();
+            if (university.getHashTag() != null)
+                text += " | " + university.getHashTag();
+//            if (!team.getRegionals().isEmpty())
+//                text += " | " + String.join(" | ", team.getRegionals());
+//            text += " | " + university.getRegion();
+            return text;
+        }
     }
 
-    private Color getTcColor(int tcRating) {
+    static class PersonStatsPanel extends StatsPanel {
+
+        private static final Font NAME_FONT = Font.decode(MAIN_FONT + " " + 38);
+        private static final Font TEXT_FONT = Font.decode("Open Sans 18");
+        private static final Font RATING_FONT = Font.decode("Open Sans 18").deriveFont(Font.BOLD);
+        public static final int COLUMNS_SPACE = 30;
+        private final Person person;
+        private final boolean coach;
+
+        public PersonStatsPanel(int pauseTime, Person person, boolean coach) {
+            super(pauseTime, Math.max(Math.max(
+                    500,
+                    getStringWidth(NAME_FONT, person.getName() + (coach ? ", coach" : ""))),
+                    getAchivementsWidth(person.getAchievements())
+            ) + 50);
+            this.person = person;
+            this.coach = coach;
+        }
+
+        private static int getAchivementsWidth(List<Achievement> achievements) {
+            int width = 0;
+            int maxWidth = 0;
+            for (int i = 0; i < achievements.size(); i++) {
+                String text = achievements.get(i).achievement;
+                maxWidth = Math.max(maxWidth, getStringWidth(TEXT_FONT, text));
+                if (i % 3 == 2 || i == achievements.size() - 1) {
+                    width += maxWidth + COLUMNS_SPACE;
+                    maxWidth = 0;
+                }
+            }
+            return width;
+        }
+
+        @Override
+        protected void paintImpl(AbstractGraphics g, int width, int height) {
+            setGraphics(g.create());
+            setFont(NAME_FONT);
+            setTextColor(Color.WHITE);
+            drawText(person.getName() + (coach ? ", coach" : ""), 0, 48);
+
+            int xx = 0;
+            int yy = 80;
+            setTextOpacity(getTextOpacity(visibilityState));
+            int rating = person.getTcRating();
+            if (rating != -1) {
+                setTextColor(Color.WHITE);
+                setFont(TEXT_FONT);
+                String text = "TC: ";
+                drawText(text, xx, yy);
+                xx += getStringWidth(TEXT_FONT, text);
+                setTextColor(getTcColor(rating));
+                setFont(RATING_FONT);
+                drawText(Integer.toString(rating), xx, yy);
+                xx += getStringWidth(TEXT_FONT, Integer.toString(rating));
+                xx += 20;
+            }
+            rating = person.getCfRating();
+            if (rating != -1) {
+                setTextColor(Color.WHITE);
+                setFont(TEXT_FONT);
+                String text = "CF: ";
+                drawText(text, xx, yy);
+                xx += getStringWidth(TEXT_FONT, text);
+                setTextColor(getCfColor(rating));
+                setFont(RATING_FONT);
+                drawText(Integer.toString(rating), xx, yy);
+                xx += getStringWidth(TEXT_FONT, Integer.toString(rating));
+                xx += 20;
+            }
+            xx = 0;
+            yy += 27;
+            setTextColor(Color.WHITE);
+            setFont(TEXT_FONT);
+            int maxWidth = 0;
+            for (int i = 0; i < person.getAchievements().size(); i++) {
+                String text = person.getAchievements().get(i).achievement;
+                drawText(text, xx, yy + 25 * (i % 3));
+                maxWidth = Math.max(maxWidth, getStringWidth(TEXT_FONT, text));
+                if (i % 3 == 2) {
+                    xx += maxWidth + COLUMNS_SPACE;
+                    maxWidth = 0;
+                }
+            }
+        }
+    }
+
+    static class AwardsPanel extends StatsPanel {
+
+        private static final int AWARD_SIZE = 70;
+        private static final int MEDAL_SIZE = 60;
+        public static final int SHIFT = 80;
+        private static final Color CUP_COLOR = new Color(0xd6d5cd);
+        private static final Color GOLD_COLOR = new Color(0xe9d61d);
+        private static final Color SILVER_COLOR = new Color(0xaaaaab);
+        private static final Color BRONZE_COLOR = new Color(0xad7329);
+        private final University university;
+
+        private static final Font CAPTION_FONT = Font.decode(MAIN_FONT + " " + 38);
+        private static final Font FINALS_FONT = Font.decode(MAIN_FONT + " " + 88);
+        private static final Font YEAR_FONT = Font.decode(MAIN_FONT + " " + 27);
+        private final BufferedImage cupImage;
+        private final BufferedImage regionalCupImage;
+        private final BufferedImage goldMedalImage;
+        private final BufferedImage silverMedalImage;
+        private final BufferedImage bronzeMedalImage;
+
+        public AwardsPanel(int pauseTime, int width, University university) throws IOException {
+            super(pauseTime, width);
+            cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            regionalCupImage = getScaledInstance(ImageIO.read(new File("pics/regional.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            this.university = university;
+        }
+
+        @Override
+        protected void paintImpl(AbstractGraphics g, int width, int height) {
+            setGraphics(g.create());
+            setFont(CAPTION_FONT);
+            setTextColor(Color.WHITE);
+            drawText("Finals", 0, 48);
+            setFont(FINALS_FONT);
+            setTextColor(Color.WHITE);
+            drawTextThatFits("" + university.getAppearances(), 0, 80, 100, 60, PlateStyle.Alignment.CENTER, false);
+
+            if (university.getRegionalChampionships() + university.getGold() + university.getSilver() + university.getGold() == 0) {
+                return;
+            }
+
+            setFont(CAPTION_FONT);
+            setTextColor(Color.WHITE);
+            drawText("Awards", 150, 48);
+            int x = 150;
+            for (int i = 0; i < university.getWins(); i++) {
+                drawImage(cupImage, x, 75, "" + university.getWinYears().get(i), CUP_COLOR);
+                x += SHIFT;
+            }
+            for (int i = 0; i < university.getRegionalChampionships() - university.getWins(); i++) {
+                drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(i), CUP_COLOR);
+                x += SHIFT;
+            }
+            int[] num = {university.getGold(), university.getSilver(), university.getBronze()};
+            BufferedImage[] img = {goldMedalImage, silverMedalImage, bronzeMedalImage};
+            Color[] colors = {GOLD_COLOR, SILVER_COLOR, BRONZE_COLOR};
+            List<Integer>[] years = new List[]{university.getGoldYears(), university.getSilverYears(), university.getBronzeYears()};
+            if (x + SHIFT * (university.getGold() + university.getSilver() + university.getBronze()) < this.width) {
+                for (int j = 0; j < 3; j++) {
+                    for (int i = 0; i < num[j]; i++) {
+                        drawImage(img[j], x, 75, "" + years[j].get(i), colors[j]);
+                        x += SHIFT;
+                    }
+                }
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    if (num[i] > 0) {
+                        drawImage(img[i], x, 75, "", colors[i]);
+                        x += 70;
+                        setFont(CAPTION_FONT);
+                        setTextColor(colors[i]);
+                        drawText("" + num[i], x, 130);
+                        x += getStringWidth(CAPTION_FONT, "" + num[i]);
+                    }
+                }
+            }
+        }
+
+        private void drawImage(BufferedImage image, int x, int y, String year, Color cupColor) {
+            graphics.drawImage(image, x + (AWARD_SIZE - image.getWidth()) / 2, y + (AWARD_SIZE - image.getHeight()) / 2, image.getWidth(), image.getHeight());
+            setTextColor(cupColor);
+            setFont(YEAR_FONT);
+            drawTextThatFits(year, x, y + AWARD_SIZE, AWARD_SIZE, 30, PlateStyle.Alignment.CENTER, false);
+        }
+    }
+
+    private static Color getTcColor(int tcRating) {
         if (tcRating >= 2200) {
             return new Color(0xED1F24);
         }
@@ -316,7 +378,7 @@ public class TeamStatsWidget extends RotatableWidget {
         return new Color(0x808080);
     }
 
-    private Color getCfColor(int tcRating) {
+    private static Color getCfColor(int tcRating) {
         if (tcRating >= 2400) {
             return new Color(0xED1F24);
         }
@@ -338,96 +400,27 @@ public class TeamStatsWidget extends RotatableWidget {
         return new Color(0x808080);
     }
 
-    private VolatileImage prepareLeftPlaque(Record record, BufferedImage logo) {
-        VolatileImage image = createVolatileImage(LEFT_WIDTH, HEIGHT);
-        Graphics2D g = (Graphics2D) image.getGraphics();
-
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-
-        g.drawImage(logo, LOGO_X, LOGO_Y, null);
-        g.setColor(TOP_FOREGROUND);
-        g.setFont(UNIVERSITY_NAME);
-        g.setColor(UNIVERSITY_NAME_COLOR);
-        String[] parts = split(record.university.getFullName(), 40);
-        int dy = 0;
-        if (parts.length == 1) {
-            g.drawString(parts[0], UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
-        } else {
-            g.drawString(parts[0], UNIVERSITY_NAME_X, UNIVERSITY_NAME_Y);
-            for (int i = 1; i < parts.length; i++) {
-                dy += 40;
-                g.drawString(parts[i], TEAM_INFO_X, UNIVERSITY_NAME_Y + dy);
+    private static List<String> split(String s, Font font, int max) {
+        List<String> res = new ArrayList<>();
+        String last = null;
+        for (String word : s.split(" ")) {
+            String next = last == null ? word : last + " " + word;
+            if (getStringWidth(font, next) <= max) {
+                last = next;
+            } else {
+                res.add(last);
+                last = word;
             }
         }
-        g.setColor(Color.WHITE);
-        g.setFont(TEAM_INFO);
-        if (parts.length > 2) {
-            g.drawString(
-                    record.team.getName() + " | " + "#" + record.university.getHashTag(),
-                    TEAM_INFO_X, TEAM_INFO_Y + dy
-            );
-        } else if (parts.length > 1) {
-            g.drawString(
-                    record.team.getName(), //record.team.getRegionals().iterator().next() + " | " +
-                    TEAM_INFO_X, TEAM_INFO_Y + dy
-            );
-            g.drawString(
-                    "#" + record.university.getHashTag() + " | " + record.university.getRegion(),
-                    TEAM_INFO_X, TEAM_INFO_Y + 40 + dy
-            );
-        } else {
-            g.drawString(
-                    record.team.getName(), //record.team.getRegionals().iterator().next() + " | " +
-                    TEAM_INFO_X, TEAM_INFO_Y + dy
-            );
-            g.drawString(
-                    "#" + record.university.getHashTag(),
-                    TEAM_INFO_X, TEAM_INFO_Y + 40 + dy
-            );
-            g.drawString(
-                    record.university.getRegion(),
-                    TEAM_INFO_X, TEAM_INFO_Y + 80 + dy
-            );
-        }
-        return image;
-    }
-
-    private String[] split(String s, int max) {
-        if (s.length() <= max) return new String[]{s};
-        int i = max;
-        s = s + " ";
-        while (s.charAt(i) != ' ' || s.charAt(i + 1) == '-') {
-            i--;
-        }
-        String[] ss = split(s.substring(i + 1), max);
-        String[] res = new String[ss.length + 1];
-        System.arraycopy(ss, 0, res, 1, ss.length);
-        res[0] = s.substring(0, i);
+        res.add(last);
         return res;
     }
 
-    private VolatileImage createVolatileImage(int width, int height) {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
-        VolatileImage image = gc.createCompatibleVolatileImage(width, height, Transparency.TRANSLUCENT);
-        Graphics2D g = image.createGraphics();
-        g.setColor(TeamStatsStylesheet.background);
-        g.fillRect(0, 0, width, height);
-        return image;
+    private static int getStringWidth(Font font, String string) {
+        return (int) font.getStringBounds(string, new FontRenderContext(new AffineTransform(), true, true)).getWidth();
     }
 
-    public void paintImpl(AbstractGraphics g, int width, int height) {
-        update();
-        super.paintImpl(g, width, height);
-    }
-
-    public CachedData getCorrespondingData(Data data) {
-        return data.teamData;
-    }
-
-
-    private BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
+    private static BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
         int type = (img.getTransparency() == Transparency.OPAQUE)
                 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
 
@@ -445,7 +438,6 @@ public class TeamStatsWidget extends RotatableWidget {
                 w = targetWidth;
                 h = targetHeight;
             }
-
             do {
                 if (higherQuality && w > targetWidth) {
                     w /= 2;
@@ -453,20 +445,17 @@ public class TeamStatsWidget extends RotatableWidget {
                         w = targetWidth;
                     }
                 }
-
                 if (higherQuality && h > targetHeight) {
                     h /= 2;
                     if (h < targetHeight) {
                         h = targetHeight;
                     }
                 }
-
                 BufferedImage tmp = new BufferedImage(Math.max(w, 1), Math.max(h, 1), type);
                 Graphics2D g2 = tmp.createGraphics();
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
                 g2.drawImage(ret, 0, 0, w, h, null);
                 g2.dispose();
-
                 ret = tmp;
             } while (w != targetWidth || h != targetHeight);
         } else {
@@ -474,4 +463,5 @@ public class TeamStatsWidget extends RotatableWidget {
         }
         return ret;
     }
+
 }

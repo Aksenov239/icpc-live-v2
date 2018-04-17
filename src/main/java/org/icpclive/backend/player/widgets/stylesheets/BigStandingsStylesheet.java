@@ -18,6 +18,7 @@ public class BigStandingsStylesheet extends Stylesheet {
     public static PlateStyle frozenHeading;
     public static PlateStyle topUniversityTeam;
     public static int finalists;
+    public static PlateStyle topRegionTeam;
     public static Color star;
 
     static {
@@ -33,6 +34,7 @@ public class BigStandingsStylesheet extends Stylesheet {
         frozenHeading = new PlateStyle("big.standings.frozen.heading");
         topUniversityTeam = new PlateStyle("big.standings.top.university");
         finalists = Integer.parseInt(properties.getProperty("big.standings.finalists", "0"));
+        topRegionTeam = new PlateStyle("big.standings.top.region");
         star = Color.decode(styles.getOrDefault("big.standings.star", "#FFFFA0"));
     }
 }

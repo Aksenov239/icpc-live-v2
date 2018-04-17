@@ -7,6 +7,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.webadmin.ContextListener;
+import org.icpclive.webadmin.mainscreen.Polls.Poll;
 import org.icpclive.datapassing.TeamData;
 import org.icpclive.webadmin.mainscreen.Utils;
 import org.icpclive.webadmin.utils.SynchronizedBeanItemContainer;
@@ -17,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BackUp<T> {
@@ -47,7 +49,7 @@ public class BackUp<T> {
 //        //TODO Add this thread to contextListener queue
 //        new Timer().scheduleAtFixedRate(
 //                new TimerTask() {
-//                    public void run() {
+//                    public void runId() {
 //                        backup();
 //                    }
 //                },
@@ -109,7 +111,7 @@ public class BackUp<T> {
 
     public List<T> getData() {
         synchronized (data) {
-            return data.getItemIds();
+            return new ArrayList<>(data.getItemIds());
         }
     }
 
@@ -121,12 +123,14 @@ public class BackUp<T> {
         return data.getItem(itemId);
     }
 
-    BeanItemContainer<T> data;
+    final BeanItemContainer<T> data;
     Path backupFile;
     //static final Gson gson = new GsonBuilder().create();
     static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataDeserializer())
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataSerializer())
+            .registerTypeAdapter(Poll.class, new Poll.PollSerializer())
+            .registerTypeAdapter(Poll.class, new Poll.PollDeserializer())
             .create();
     final Class<T> type;
 }

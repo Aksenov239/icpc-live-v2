@@ -58,7 +58,7 @@ public class NewBreakingNewsWidget extends Widget {
             if (isVisible())
                 return;
 
-            video.sleepTime = data.teamData.sleepTime;
+            video.sleepTime = data.breakingNewsData.sleepTime;
 
             int teamId = data.breakingNewsData.teamId;
             int problemId = data.breakingNewsData.problemId;
@@ -70,7 +70,7 @@ public class NewBreakingNewsWidget extends Widget {
             run = data.breakingNewsData.runId == -1 ? null :
                     Preparation.eventsLoader.getContestData().getRun(data.breakingNewsData.runId);
 
-            if (run == null || (run.getTeamId() != teamId || run.getProblemNumber() != problemId)) {
+            if (run == null || (run.getTeamId() != teamId || run.getProblemId() != problemId)) {
                 java.util.List<RunInfo> runs = team.getRuns()[problemId];
 
                 run = null;
@@ -93,7 +93,7 @@ public class NewBreakingNewsWidget extends Widget {
                 }
             } else {
                 if (run == null) {
-                    log.warn("Couldn't find run for team " + teamId + " and problem " + problemId);
+                    log.warn("Couldn't find runId for team " + teamId + " and problem " + problemId);
                     return;
                 }
                 url = TeamUrls.getUrl(run);
@@ -114,7 +114,7 @@ public class NewBreakingNewsWidget extends Widget {
             if (data.breakingNewsData.newsMessage.length() == 0) {
                 if (isLive && run == null) {
                     log.warn("Can't generate caption for team" + teamId + " problem " + problemId + ", " +
-                            "because video is live and don't know run id");
+                            "because video is live and don't know runId id");
                     return;
                 }
                 if (run.getResult().equals("AC")) {
@@ -200,9 +200,10 @@ public class NewBreakingNewsWidget extends Widget {
 
 //        log.debug(visibilityState + " " + opacity);
 
-        if (//run == null ||
-                video.getCurrentURL() != null) {
+        if (//runId == null ||
+                video.getCurrentURL() != null && video.readyToShow()) {
             int hh = video.height;//(int) (video.height * opacity);
+
             video.draw(g, x, y + (video.height - hh) / 2, video.width, hh, opacity);
         }
 

@@ -1,5 +1,8 @@
 package net.egork.teaminfo.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author egor@egork.net
  */
@@ -11,11 +14,17 @@ public class University {
     private String url;
     private String myIcpcId;
     private int appearances = -1;
+    private List<Integer> appYears = new ArrayList<>();
     private int wins = -1;
+    private List<Integer> winYears = new ArrayList<>();
     private int gold = -1;
+    private List<Integer> goldYears = new ArrayList<>();
     private int silver = -1;
+    private List<Integer> silverYears = new ArrayList<>();
     private int bronze = -1;
+    private List<Integer> bronzeYears = new ArrayList<>();
     private int regionalChampionships = 0;
+    private List<Integer> regYears = new ArrayList<>();
 
     public String getFullName() {
         return fullName;
@@ -113,6 +122,54 @@ public class University {
         this.myIcpcId = myIcpcId;
     }
 
+    public List<Integer> getAppYears() {
+        return appYears;
+    }
+
+    public void setAppYears(List<Integer> appYears) {
+        this.appYears = appYears;
+    }
+
+    public List<Integer> getWinYears() {
+        return winYears;
+    }
+
+    public void setWinYears(List<Integer> winYears) {
+        this.winYears = winYears;
+    }
+
+    public List<Integer> getGoldYears() {
+        return goldYears;
+    }
+
+    public void setGoldYears(List<Integer> goldYears) {
+        this.goldYears = goldYears;
+    }
+
+    public List<Integer> getSilverYears() {
+        return silverYears;
+    }
+
+    public void setSilverYears(List<Integer> silverYears) {
+        this.silverYears = silverYears;
+    }
+
+    public List<Integer> getBronzeYears() {
+        return bronzeYears;
+    }
+
+    public void setBronzeYears(List<Integer> bronzeYears) {
+        this.bronzeYears = bronzeYears;
+    }
+
+    public List<Integer> getRegYears() {
+        return regYears;
+    }
+
+    public void setRegYears(List<Integer> regYears) {
+        this.regYears = regYears;
+    }
+
     public void updateFrom(University university) {
         if (university.fullName != null) {
             fullName = university.fullName;
@@ -149,6 +206,24 @@ public class University {
         }
         if (university.myIcpcId != null) {
             myIcpcId = university.myIcpcId;
+        }
+        if (!university.getAppYears().isEmpty()) {
+            setAppYears(university.getAppYears());
+        }
+        if (!university.getWinYears().isEmpty()) {
+            setWinYears(university.getWinYears());
+        }
+        if (!university.getGoldYears().isEmpty()) {
+            setGoldYears(university.getGoldYears());
+        }
+        if (!university.getSilverYears().isEmpty()) {
+            setSilverYears(university.getSilverYears());
+        }
+        if (!university.getBronzeYears().isEmpty()) {
+            setBronzeYears(university.getBronzeYears());
+        }
+        if (!university.getRegYears().isEmpty()) {
+            setRegYears(university.getRegYears());
         }
     }
 }

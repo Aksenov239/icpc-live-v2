@@ -49,7 +49,9 @@ public class StatisticsWidget extends Widget {
 
     @Override
     protected void updateImpl(Data data) {
-        calculateStatistics();
+        if (data.statisticsData.isVisible()) {
+            calculateStatistics();
+        }
         setVisible(data.statisticsData.isVisible());
         lastUpdate = System.currentTimeMillis();
     }

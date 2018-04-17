@@ -25,7 +25,7 @@ public class Preparation {
 
     public static void prepareEventsLoader() {
         eventsLoader = EventsLoader.getInstance();
-        eventsLoader.start();
+        new Thread(eventsLoader, "Event Loader").start();
     }
 
     public static DataLoader dataLoader;
