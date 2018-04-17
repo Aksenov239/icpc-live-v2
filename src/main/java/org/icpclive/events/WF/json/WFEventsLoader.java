@@ -429,6 +429,7 @@ public class WFEventsLoader extends EventsLoader {
 
     public void run() {
         String lastEvent = null;
+        boolean initialized = false;
         while (true) {
             try {
                 String url = this.url + "/event-feed";
@@ -442,6 +443,7 @@ public class WFEventsLoader extends EventsLoader {
                 if (abortedEvent == null) {
                     WFEventsLoader.contestInfo = contestInfo;
                 }
+
                 while (true) {
                     String line = br.readLine();
                     if (line == null) {
@@ -480,7 +482,8 @@ public class WFEventsLoader extends EventsLoader {
                         case "runs":
                             readRun(contestInfo, json, update);
                         case "problems":
-                            if (!update) {
+                            if (!update && !initialized) {
+                                initialized = true;
                                 throw new Exception("Problems weren't loaded, exception to restart feed");
                             }
                         default:
