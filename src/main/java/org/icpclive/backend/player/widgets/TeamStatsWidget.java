@@ -8,6 +8,7 @@ import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.QueueStylesheet;
 import org.icpclive.events.TeamInfo;
+import org.icpclive.events.WF.json.WFTeamInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -45,12 +46,15 @@ public class TeamStatsWidget extends Widget {
 
     public TeamStatsWidget(TeamInfo teamInfo) {
         try {
-            int id = teamInfo.getId();
+            int id = Integer.parseInt(((WFTeamInfo) teamInfo).cdsId);
             record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
             record.university.setHashTag(teamInfo.getHashTag());
             record.university.setFullName(teamInfo.getName());
-            System.out.println("teamData/" + id + ".json");
-            logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+            try {
+                logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+            } catch (Exception e) {
+                logo = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            }
             panels = new StatsPanel[]{
                     new UnivsersityNamePanel(10000, STATS_WIDTH, record.university, record.team),
                     new PersonStatsPanel(5000, record.contestants[0], false),
@@ -105,7 +109,7 @@ public class TeamStatsWidget extends Widget {
         PlateStyle color = QueueStylesheet.name;
         applyStyle(color);
         drawRectangle(0, 0, WIDTH, HEIGHT);
-        g.drawImage(logo, LOGO_X, LOGO_X, LOGO_SIZE, LOGO_SIZE, opacity);
+        g.drawImage(logo, LOGO_X + (LOGO_SIZE - logo.getWidth()) / 2, LOGO_X + (LOGO_SIZE - logo.getHeight()) / 2, logo.getWidth(), logo.getHeight(), opacity);
 
         g.translate(WIDTH - STATS_WIDTH, 0);
         g.clip(0, 0, STATS_WIDTH, HEIGHT);
@@ -144,14 +148,14 @@ public class TeamStatsWidget extends Widget {
         private final Team team;
 
         public UnivsersityNamePanel(int pauseTime, int width, University university, Team team) {
-            super(pauseTime, width);
+            super(pauseTime, Math.max(width, getStringWidth(TEXT_FONT, getInfoText(team, university)) + 50));
             this.university = university;
             this.team = team;
         }
 
         @Override
         protected void paintImpl(AbstractGraphics g, int width, int height) {
-            super.paintImpl(g, width, height);
+            setGraphics(g.create());
             List<String> parts = split(university.getFullName(), NAME_FONT, this.width - 50);
             setTextColor(Color.WHITE);
             if (parts.size() == 1) {
@@ -168,8 +172,18 @@ public class TeamStatsWidget extends Widget {
                 }
             }
             setFont(TEXT_FONT);
-            String text = team.getName() + " | " + university.getHashTag() + " | " + String.join(" | ", team.getRegionals()) + " | " + university.getRegion();
-            drawText(text, 0, 150);
+            String text = getInfoText(team, university);
+            drawText(text, 0, parts.size() == 1 ? 130 : 160);
+        }
+
+        private static String getInfoText(Team team, University university) {
+            String text = team.getName();
+            if (university.getHashTag() != null)
+                text += " | " + university.getHashTag();
+//            if (!team.getRegionals().isEmpty())
+//                text += " | " + String.join(" | ", team.getRegionals());
+//            text += " | " + university.getRegion();
+            return text;
         }
     }
 
@@ -334,7 +348,7 @@ public class TeamStatsWidget extends Widget {
                         setFont(CAPTION_FONT);
                         setTextColor(colors[i]);
                         drawText("" + num[i], x, 130);
-                        x += getStringWidth(CAPTION_FONT, "" + num[i])  ;
+                        x += getStringWidth(CAPTION_FONT, "" + num[i]);
                     }
                 }
             }

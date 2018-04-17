@@ -363,6 +363,8 @@ public class WFEventsLoader extends EventsLoader {
 
         JsonElement verdictElement = je.get("judgement_type_id");
         if (verdictElement.isJsonNull()) {
+            runInfo.judged = false;
+            runInfo.result = "";
             waitForEmulation(parseRelativeTime(je.get("start_contest_time").getAsString()));
             return;
         }
@@ -445,7 +447,7 @@ public class WFEventsLoader extends EventsLoader {
                         System.err.println("Non-json line: " + Arrays.toString(line.toCharArray()));
                         continue;
                     }
-                    lastSavedEvent = je.get("id") == null ? lastSavedEvent : je.get("id").getAsString();
+//                    lastSavedEvent = je.get("id") == null ? lastSavedEvent : je.get("id").getAsString();
                     boolean update = !je.get("op").getAsString().equals("create");
                     String type = je.get("type").getAsString();
                     JsonObject json = je.get("data").getAsJsonObject();

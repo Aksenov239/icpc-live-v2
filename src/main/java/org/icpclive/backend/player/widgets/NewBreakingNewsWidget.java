@@ -201,8 +201,9 @@ public class NewBreakingNewsWidget extends Widget {
 //        log.debug(visibilityState + " " + opacity);
 
         if (//runId == null ||
-                video.getCurrentURL() != null) {
+                video.getCurrentURL() != null && video.readyToShow()) {
             int hh = video.height;//(int) (video.height * opacity);
+
             video.draw(g, x, y + (video.height - hh) / 2, video.width, hh, opacity);
         }
 
