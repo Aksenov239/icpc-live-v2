@@ -277,7 +277,7 @@ public class WFEventsLoader extends EventsLoader {
         return ((h * 60 + m) * 60 + s) * 1000 + ms;
     }
 
-    public void readContest(JsonObject je) {
+    public void readContest(WFContestInfo contestInfo, JsonObject je) {
         JsonElement startTimeElement = je.get("start_time");
         if (!startTimeElement.isJsonNull()) {
             contestInfo.setStartTime(parseTime(startTimeElement.getAsString()));
@@ -293,7 +293,7 @@ public class WFEventsLoader extends EventsLoader {
                 (int) parseTime(je.get("duration").getAsString());
     }
 
-    public void readState(JsonObject je) {
+    public void readState(WFContestInfo contestInfo, JsonObject je) {
         String startTime = je.get("started").getAsString();
         contestInfo.setStartTime(parseTime(startTime));
         if (emulation) {
@@ -324,7 +324,7 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
-    public void readSubmission(JsonObject je, boolean update) {
+    public void readSubmission(WFContestInfo contestInfo, JsonObject je, boolean update) {
         waitForEmulation(parseRelativeTime(je.get("contest_time").getAsString()));
         if (update) {
             return;
@@ -352,7 +352,7 @@ public class WFEventsLoader extends EventsLoader {
         contestInfo.runBySubmissionId.put(cdsId, run);
     }
 
-    public void readJudgement(JsonObject je) {
+    public void readJudgement(WFContestInfo contestInfo, JsonObject je) {
         String cdsId = je.get("id").getAsString();
 
         WFRunInfo runInfo = contestInfo.runBySubmissionId.get(je.get("submission_id").getAsString());
@@ -395,7 +395,7 @@ public class WFEventsLoader extends EventsLoader {
         runInfo.setLastUpdateTime(time);
     }
 
-    public void readRun(JsonObject je, boolean update) {
+    public void readRun(WFContestInfo contestInfo, JsonObject je, boolean update) {
         WFRunInfo runInfo = contestInfo.runByJudgementId.get(je.get("judgement_id").getAsString());
 
         long time = parseRelativeTime(je.get("contest_time").getAsString());
@@ -467,19 +467,19 @@ public class WFEventsLoader extends EventsLoader {
 
                     switch (type) {
                         case "contests":
-                            readContest(json);
+                            readContest(contestInfo, json);
                             break;
                         case "state":
-                            readState(json);
+                            readState(contestInfo, json);
                             break;
                         case "submissions":
-                            readSubmission(json, update);
+                            readSubmission(contestInfo, json, update);
                             break;
                         case "judgements":
-                            readJudgement(json);
+                            readJudgement(contestInfo, json);
                             break;
                         case "runs":
-                            readRun(json, update);
+                            readRun(contestInfo, json, update);
                         case "problems":
                             if (!update) {
                                 throw new Exception();
