@@ -385,10 +385,10 @@ public class WFEventsLoader extends EventsLoader {
 
             runInfo.judged = true;
 
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             contestInfo.recalcStandings();
 //            contestInfo.checkStandings(url, login, password);
-            log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
+//            log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
         } else {
             runInfo.judged = false;
         }
