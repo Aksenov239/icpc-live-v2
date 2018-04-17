@@ -288,9 +288,9 @@ public class WFEventsLoader extends EventsLoader {
         if (emulation) {
             contestInfo.setStartTime(System.currentTimeMillis());
         }
-        WFContestInfo.FREEZE_TIME = (int) parseTime(je.get("scoreboard_freeze_duration").getAsString());
+        WFContestInfo.FREEZE_TIME = (int) parseRelativeTime(je.get("scoreboard_freeze_duration").getAsString());
         WFContestInfo.CONTEST_LENGTH =
-                (int) parseTime(je.get("duration").getAsString());
+                (int) parseRelativeTime(je.get("duration").getAsString());
     }
 
     public void readState(WFContestInfo contestInfo, JsonObject je) {
@@ -387,6 +387,7 @@ public class WFEventsLoader extends EventsLoader {
 
             long start = System.currentTimeMillis();
             contestInfo.recalcStandings();
+            contestInfo.checkStandings(url, login, password);
             log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
         } else {
             runInfo.judged = false;
@@ -448,6 +449,7 @@ public class WFEventsLoader extends EventsLoader {
                     if (line == null) {
                         break;
                     }
+                    System.err.println(line);
 
                     JsonObject je = new Gson().fromJson(line, JsonObject.class);
                     if (je == null) {
