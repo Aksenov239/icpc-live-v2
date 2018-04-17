@@ -67,6 +67,7 @@ public class SplitScreenWidget extends Widget {
         }
 
         usersQueue = TwitterBasedQueue.getInstance();
+        currentRunId = 1;
     }
 
     public SplitScreenWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
@@ -101,7 +102,6 @@ public class SplitScreenWidget extends Widget {
     private int currentPlace = 0;
     private int predefinedTeam = 0;
     private boolean[] allRuns = new boolean[1000000];
-    private int prefixRun = 1;
 
     protected void chooseNewStream(int widget) {
         teamInfoWidgets[widget].switchNext();
@@ -110,7 +110,6 @@ public class SplitScreenWidget extends Widget {
         RunInfo replayRun = null;
         // TODO: when frozen always switch onto teamId screen
         System.err.println("Choosing new stream for widget " + widget);
-        currentRunId = 1;
         while (allRuns[currentRunId]) {
             currentRunId++;
         }
