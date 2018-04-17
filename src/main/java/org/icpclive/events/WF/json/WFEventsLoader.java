@@ -288,6 +288,9 @@ public class WFEventsLoader extends EventsLoader {
         if (emulation) {
             contestInfo.setStartTime(System.currentTimeMillis());
         }
+        WFContestInfo.FREEZE_TIME = (int) parseTime(je.get("scoreboard_freeze_duration").getAsString());
+        WFContestInfo.CONTEST_LENGTH =
+                (int) parseTime(je.get("duration").getAsString());
     }
 
     public void readState(JsonObject je) {
