@@ -475,6 +475,7 @@ public class WFEventsLoader extends EventsLoader {
                         default:
                     }
                 }
+                return;
             } catch (Throwable e) {
                 log.error("error", e);
                 try {
