@@ -55,7 +55,7 @@ public class WFEventsLoader extends EventsLoader {
                 emulationSpeed = 1;
             }
 
-            initialize();
+            contestInfo = initialize();
         } catch (IOException e) {
             log.error("error", e);
         }
@@ -385,10 +385,10 @@ public class WFEventsLoader extends EventsLoader {
 
             runInfo.judged = true;
 
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             contestInfo.recalcStandings();
 //            contestInfo.checkStandings(url, login, password);
-            log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
+//            log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
         } else {
             runInfo.judged = false;
         }
@@ -431,11 +431,9 @@ public class WFEventsLoader extends EventsLoader {
         String lastEvent = null;
         boolean initialized = false;
         while (true) {
-            try {
-                String url = this.url + "/event-feed";
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
-                                "utf-8"));
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(Preparation.openAuthorizedStream(this.url + "/event-feed", login, password),
+                            "utf-8"))) {
                 String abortedEvent = lastEvent;
                 lastEvent = null;
 

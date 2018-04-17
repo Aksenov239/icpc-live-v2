@@ -44,14 +44,16 @@ public class MainGenTeamOverlays {
 //        ));
         ContestInfo data = EventsLoader.getInstance().getContestData();
         for (TeamInfo team : data.getStandings()) {
+            int id = Integer.parseInt(((WFTeamInfo)team).cdsId);
+            if (id != 2) continue;
             ScreenGenerator generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH, null);
             Widget widget = new TeamStatsWidget(team);
             widget.setVisibilityState(1);
             generator.addWidget(widget);
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             generator.draw(image.createGraphics());
-            System.out.println(((WFTeamInfo)team).cdsId + " " + ((WFTeamInfo) team).shortName);
-            ImageIO.write(image, "png", new File("teamOverlays/" + ((WFTeamInfo)team).cdsId + ".png"));
+            System.out.println(id + " " + ((WFTeamInfo) team).shortName);
+            ImageIO.write(image, "png", new File("teamOverlays/" + id + ".png"));
 //            return;
         }
     }
