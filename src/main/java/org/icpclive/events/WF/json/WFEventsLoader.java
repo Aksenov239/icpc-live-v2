@@ -395,7 +395,7 @@ public class WFEventsLoader extends EventsLoader {
         runInfo.setLastUpdateTime(time);
     }
 
-    public void readRun(WFContestInfo , JsonObject je, boolean update) {
+    public void readRun(WFContestInfo contestInfo, JsonObject je, boolean update) {
         WFRunInfo runInfo = contestInfo.runByJudgementId.get(je.get("judgement_id").getAsString());
 
         long time = parseRelativeTime(je.get("contest_time").getAsString());
