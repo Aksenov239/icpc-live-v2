@@ -325,9 +325,27 @@ public class TeamStatsWidget extends Widget {
                 drawImage(cupImage, x, 75, "" + university.getWinYears().get(i), CUP_COLOR);
                 x += SHIFT;
             }
-            for (int i = 0; i < university.getRegionalChampionships() - university.getWins(); i++) {
-                drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(i), CUP_COLOR);
-                x += SHIFT;
+            if (university.getWins() > 0 && university.getRegionalChampionships() > university.getWins()) {
+                x += 20;
+            }
+            {
+                int num = university.getRegionalChampionships() - university.getWins();
+                if (num > 5) {
+                    drawImage(regionalCupImage, x, 75, "", CUP_COLOR);
+                    x += 80;
+                    setFont(CAPTION_FONT);
+                    setTextColor(CUP_COLOR);
+                    drawText("" + university.getRegionalChampionships(), x, 130);
+                    x += getStringWidth(CAPTION_FONT, "" + university.getRegionalChampionships());
+                } else {
+                    for (int i = 0; i < num; i++) {
+                        drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(i), CUP_COLOR);
+                        x += SHIFT;
+                    }
+                }
+            }
+            if (university.getRegionalChampionships() > 0) {
+                x += 20;
             }
             int[] num = {university.getGold(), university.getSilver(), university.getBronze()};
             BufferedImage[] img = {goldMedalImage, silverMedalImage, bronzeMedalImage};

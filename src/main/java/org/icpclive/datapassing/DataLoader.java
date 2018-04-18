@@ -164,9 +164,7 @@ public class DataLoader {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                         PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))
                 ) {
-                    while (!socket.isClosed())
-
-                    {
+                    while (!socket.isClosed()) {
                         writer.println("ready");
                         writer.flush();
                         if (writer.checkError()) {
@@ -185,7 +183,7 @@ public class DataLoader {
                     log.error("error", e);
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(500);
                 } catch (Exception e) {
                     log.error("error", e);
                 }

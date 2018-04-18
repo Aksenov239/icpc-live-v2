@@ -96,8 +96,8 @@ public class VideoVLCWidget extends PlayerWidget {
     public boolean isBlack(BufferedImage image) {
         Random rnd = new Random();
         for (int i = 0; i < 20; i++) {
-            if (image.getRGB(rnd.nextInt(image.getWidth()),
-                    rnd.nextInt(image.getHeight())) != 0) {
+            if ((image.getRGB(rnd.nextInt(image.getWidth()),
+                    rnd.nextInt(image.getHeight())) & 0xffffff) != 0) {
                 return false;
             }
         }

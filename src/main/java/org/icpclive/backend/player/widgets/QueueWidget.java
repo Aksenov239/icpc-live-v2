@@ -21,7 +21,7 @@ public class QueueWidget extends Widget {
 
     private static final long WAIT_TIME = 60000;
     private static final long FIRST_TO_SOLVE_WAIT_TIME = 120000;
-    private static final int MAX_QUEUE_SIZE = 16;
+    private static final int MAX_QUEUE_SIZE = 24;
 
     static double Y_SHIFT;
 

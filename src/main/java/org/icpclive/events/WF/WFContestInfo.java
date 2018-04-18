@@ -57,6 +57,9 @@ public class WFContestInfo extends ContestInfo {
                 for (RunInfo run : runs) {
                     WFRunInfo wfrun = (WFRunInfo) run;
                     if ("AC".equals(run.getResult())) {
+                        if (!run.isJudged()) {
+                            System.err.println("!!!");
+                        }
                         team.solved++;
                         int time = (int) (wfrun.getTime() / 60000);
                         team.penalty += wrong * 20 + time;
