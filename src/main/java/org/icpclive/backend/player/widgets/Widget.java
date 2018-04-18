@@ -379,7 +379,7 @@ public abstract class Widget {
                 lastTimestamp = System.currentTimeMillis();
             }
 
-            if (lastChangeTimestamp + correspondingData.delay < System.currentTimeMillis()) {
+            if (lastTimestamp + correspondingData.delay < System.currentTimeMillis()) {
                 currentData = data;
             }
             ;
