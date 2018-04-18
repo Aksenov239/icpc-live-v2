@@ -93,10 +93,10 @@ public class TeamStatsWidget extends Widget {
 
             panels = new StatsPanel[]{
                     new UnivsersityNamePanel(10000, STATS_WIDTH, record.university, record.team),
-//                    new PersonStatsPanel(5000, record.contestants[0], false),
-//                    new PersonStatsPanel(5000, record.contestants[1], false),
-//                    new PersonStatsPanel(5000, record.contestants[2], false),
-//                    new PersonStatsPanel(5000, record.coach, true),
+                    new PersonStatsPanel(5000, record.contestants[0], false),
+                    new PersonStatsPanel(5000, record.contestants[1], false),
+                    new PersonStatsPanel(5000, record.contestants[2], false),
+                    new PersonStatsPanel(5000, record.coach, true),
                     new AwardsPanel(5000, STATS_WIDTH, record.university, id)
             };
             fullPeriod = 0;
