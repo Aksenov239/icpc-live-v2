@@ -187,9 +187,11 @@ public class MessageData {
         return isVisible;
     }
 
-    private void recache() {
+    public void recache() {
         synchronized (messageList.getContainer()) {
-            Data.cache.refresh(CreepingLineData.class);
+            synchronized (logosList.getContainer()) {
+                Data.cache.refresh(CreepingLineData.class);
+            }
         }
     }
 

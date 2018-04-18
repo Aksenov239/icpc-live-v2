@@ -115,6 +115,7 @@ public class DataLoader {
                 if (send) {
                     String data = getDataFrontend();
 //                    log.info(data);
+//                    System.err.println(getDataFrontend());
                     pw.println(getDataFrontend());
                     pw.flush();
                     ntries = 0;

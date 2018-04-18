@@ -7,6 +7,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
+import org.icpclive.webadmin.creepingline.Message;
 import org.icpclive.webadmin.creepingline.MessageData;
 
 /**
@@ -124,6 +125,7 @@ public class MainScreenView extends CustomComponent implements View {
             }
             creepingLineLogoText.clear();
             creepingLineLogos.refreshRowCache();
+            MessageData.getMessageData().recache();
         });
     }
 
@@ -138,6 +140,7 @@ public class MainScreenView extends CustomComponent implements View {
             }
             creepingLineLogoText.setValue("");
             setCreepingLineLogoDefaultValues();
+            MessageData.getMessageData().recache();
         });
         removeCreepingLineLogoButton.setVisible(false);
     }
