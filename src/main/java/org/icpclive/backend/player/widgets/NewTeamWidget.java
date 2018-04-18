@@ -189,8 +189,12 @@ public class NewTeamWidget extends Widget {
         }
 
         private void drawVideos() {
-            if (!mainVideo.isBlack())
-                graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, opacity);
+            if (!mainVideo.isBlack()) {
+                applyStyle(QueueStylesheet.name);
+                drawRectangle(BIG_X_RIGHT - width, BIG_Y, width, height);
+                int BORDER = 0;
+                graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width + BORDER, BIG_Y + BORDER, width - 2 * BORDER, height - 2 * BORDER, opacity);
+            }
         }
 
         private void drawStatus() {

@@ -17,8 +17,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -152,6 +151,12 @@ public class TeamStatsWidget extends Widget {
             super(pauseTime, Math.max(width, getStringWidth(TEXT_FONT, getInfoText(team, university)) + 50));
             this.university = university;
             this.team = team;
+            List<String> ss = new ArrayList<>(team.getRegionals());
+            Collections.sort(ss, (o1, o2) -> getNum(o1) - getNum(o2));
+            if (team.getRegionals().size() > 2) {
+                ss = ss.subList(0, 2);
+            }
+            team.setRegionals(ss);
         }
 
         @Override
@@ -182,8 +187,8 @@ public class TeamStatsWidget extends Widget {
             if (university.getHashTag() != null)
                 text += " | " + university.getHashTag();
             if (!team.getRegionals().isEmpty())
-//                text += " | " + String.join(" | ", team.getRegionals());
-                text += " | " + getBest(team.getRegionals());
+                text += " | " + String.join(" | ", team.getRegionals());
+//                text += " | " + getBest(team.getRegionals());
             text += " | " + university.getRegion();
             return text;
         }
