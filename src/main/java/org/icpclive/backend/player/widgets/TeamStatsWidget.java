@@ -34,7 +34,7 @@ public class TeamStatsWidget extends Widget {
     private static final int LOGO_X = 17;
     private static final int STATS_WIDTH = WIDTH - LOGO_SIZE - LOGO_X - LOGO_X;
 
-    private static final double MOVE_SPEED = 1.5;
+    private static final double MOVE_SPEED = 0.5;
 
     private Record record;
     private BufferedImage logo;
@@ -148,7 +148,7 @@ public class TeamStatsWidget extends Widget {
         private final Team team;
 
         public UnivsersityNamePanel(int pauseTime, int width, University university, Team team) {
-            super(pauseTime, Math.max(width, getStringWidth(TEXT_FONT, getInfoText(team, university)) + 50));
+            super(pauseTime, width);
             this.university = university;
             this.team = team;
             List<String> ss = new ArrayList<>(team.getRegionals());
@@ -161,25 +161,29 @@ public class TeamStatsWidget extends Widget {
 
         @Override
         protected void paintImpl(AbstractGraphics g, int width, int height) {
-            setGraphics(g.create());
-            List<String> parts = split(university.getFullName(), NAME_FONT, this.width - 50);
-            setTextColor(Color.WHITE);
-            if (parts.size() == 1) {
-                int y = 32;
-                setFont(NAME_FONT);
-                drawText(parts.get(0), 0, 80);
-            } else {
-                parts = split(university.getFullName(), NAME_FONT_SMALLER, this.width - 50);
-                int y = parts.size() == 1 ? 80 : 60;
-                setFont(NAME_FONT_SMALLER);
-                for (int i = 0; i < parts.size(); i++) {
-                    drawText(parts.get(i), 0, y);
-                    y += 52;
+            try {
+                setGraphics(g.create());
+                List<String> parts = split(university.getFullName(), NAME_FONT, this.width - 50);
+                setTextColor(Color.WHITE);
+                if (parts.size() == 1) {
+                    int y = 32;
+                    setFont(NAME_FONT);
+                    drawText(parts.get(0), 0, 80);
+                } else {
+                    parts = split(university.getFullName(), NAME_FONT_SMALLER, this.width - 50);
+                    int y = parts.size() == 1 ? 80 : 60;
+                    setFont(NAME_FONT_SMALLER);
+                    for (int i = 0; i < parts.size(); i++) {
+                        drawText(parts.get(i), 0, y);
+                        y += 52;
+                    }
                 }
+                setFont(TEXT_FONT);
+                String text = getInfoText(team, university);
+                drawText(text, 0, parts.size() == 1 ? 130 : 160);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            setFont(TEXT_FONT);
-            String text = getInfoText(team, university);
-            drawText(text, 0, parts.size() == 1 ? 130 : 160);
         }
 
         private static String getInfoText(Team team, University university) {
