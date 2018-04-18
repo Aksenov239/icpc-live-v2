@@ -163,14 +163,14 @@ public class TeamStatsWidget extends Widget {
         protected void paintImpl(AbstractGraphics g, int width, int height) {
             try {
                 setGraphics(g.create());
-                List<String> parts = split(university.getFullName(), NAME_FONT, this.width - 50);
+                List<String> parts = split(university.getFullName(), NAME_FONT, STATS_WIDTH - 50);
                 setTextColor(Color.WHITE);
                 if (parts.size() == 1) {
                     int y = 32;
                     setFont(NAME_FONT);
                     drawText(parts.get(0), 0, 80);
                 } else {
-                    parts = split(university.getFullName(), NAME_FONT_SMALLER, this.width - 50);
+                    parts = split(university.getFullName(), NAME_FONT_SMALLER, STATS_WIDTH - 50);
                     int y = parts.size() == 1 ? 80 : 60;
                     setFont(NAME_FONT_SMALLER);
                     for (int i = 0; i < parts.size(); i++) {
