@@ -141,7 +141,7 @@ public class ScreenGeneratorGL implements ScreenGenerator {
                 if (widget != null) widget.paint(g, width, height);
             }
         }
-
+        // draw semi-transparent pixel in top left corner to workaround famous OpenGL feature
         g.drawRect(0, 0, 1, 1, Color.WHITE, .5, PlateStyle.RectangleType.SOLID);
 
         g2.dispose();

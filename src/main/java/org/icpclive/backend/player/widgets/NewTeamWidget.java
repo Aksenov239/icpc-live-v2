@@ -153,12 +153,18 @@ public class NewTeamWidget extends Widget {
             if (team == null) {
                 mainVideo = null;
                 stats = null;
-            } else if (infoType.equals("")) {
+            } else if (infoType.equals("") || infoType.equals("stats")) {
                 mainVideo = null;
                 stats = new TeamStatsWidget(team);
             } else {
                 System.err.println("Load video: " + TeamUrls.getUrl(team, infoType));
-                mainVideo = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType));
+                PlayerInImage video = null;
+                try {
+                    video = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType));;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mainVideo = video;
                 stats = new TeamStatsWidget(team);
             }
         }
@@ -189,8 +195,12 @@ public class NewTeamWidget extends Widget {
         }
 
         private void drawVideos() {
-            if (!mainVideo.isBlack())
-                graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, opacity * .95);
+            if (!mainVideo.isBlack()) {
+                applyStyle(QueueStylesheet.name);
+                drawRectangle(BIG_X_RIGHT - width, BIG_Y, width, height);
+                int BORDER = 0;
+                graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width + BORDER, BIG_Y + BORDER, width - 2 * BORDER, height - 2 * BORDER, opacity);
+            }
         }
 
         private void drawStatus() {

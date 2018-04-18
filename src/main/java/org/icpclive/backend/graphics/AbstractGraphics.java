@@ -92,6 +92,9 @@ public abstract class AbstractGraphics {
         setTextColor(color);
     }
 
+    public void drawGradientRect(int x, int y, int width, int height, double opacity, Color left, Color right) {
+    }
+
     public abstract Rectangle2D getStringBounds(String text, Font font);
 
     public abstract void clip(int x, int y, int width, int height);

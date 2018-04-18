@@ -17,7 +17,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -34,7 +34,7 @@ public class TeamStatsWidget extends Widget {
     private static final int LOGO_X = 17;
     private static final int STATS_WIDTH = WIDTH - LOGO_SIZE - LOGO_X - LOGO_X;
 
-    private static final double MOVE_SPEED = 1.5;
+    private static final double MOVE_SPEED = 0.5;
 
     private Record record;
     private BufferedImage logo;
@@ -148,42 +148,76 @@ public class TeamStatsWidget extends Widget {
         private final Team team;
 
         public UnivsersityNamePanel(int pauseTime, int width, University university, Team team) {
-            super(pauseTime, Math.max(width, getStringWidth(TEXT_FONT, getInfoText(team, university)) + 50));
+            super(pauseTime, width);
             this.university = university;
             this.team = team;
+            List<String> ss = new ArrayList<>(team.getRegionals());
+            Collections.sort(ss, (o1, o2) -> getNum(o1) - getNum(o2));
+            if (team.getRegionals().size() > 2) {
+                ss = ss.subList(0, 2);
+            }
+            team.setRegionals(ss);
         }
 
         @Override
         protected void paintImpl(AbstractGraphics g, int width, int height) {
-            setGraphics(g.create());
-            List<String> parts = split(university.getFullName(), NAME_FONT, this.width - 50);
-            setTextColor(Color.WHITE);
-            if (parts.size() == 1) {
-                int y = 32;
-                setFont(NAME_FONT);
-                drawText(parts.get(0), 0, 80);
-            } else {
-                parts = split(university.getFullName(), NAME_FONT_SMALLER, this.width - 50);
-                int y = parts.size() == 1 ? 80 : 60;
-                setFont(NAME_FONT_SMALLER);
-                for (int i = 0; i < parts.size(); i++) {
-                    drawText(parts.get(i), 0, y);
-                    y += 52;
+            try {
+                setGraphics(g.create());
+                List<String> parts = split(university.getFullName(), NAME_FONT, STATS_WIDTH - 50);
+                setTextColor(Color.WHITE);
+                if (parts.size() == 1) {
+                    int y = 32;
+                    setFont(NAME_FONT);
+                    drawText(parts.get(0), 0, 80);
+                } else {
+                    parts = split(university.getFullName(), NAME_FONT_SMALLER, STATS_WIDTH - 50);
+                    int y = parts.size() == 1 ? 80 : 60;
+                    setFont(NAME_FONT_SMALLER);
+                    for (int i = 0; i < parts.size(); i++) {
+                        drawText(parts.get(i), 0, y);
+                        y += 52;
+                    }
                 }
+                setFont(TEXT_FONT);
+                String text = getInfoText(team, university);
+                drawText(text, 0, parts.size() == 1 ? 130 : 160);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            setFont(TEXT_FONT);
-            String text = getInfoText(team, university);
-            drawText(text, 0, parts.size() == 1 ? 130 : 160);
         }
 
         private static String getInfoText(Team team, University university) {
             String text = team.getName();
             if (university.getHashTag() != null)
                 text += " | " + university.getHashTag();
-//            if (!team.getRegionals().isEmpty())
-//                text += " | " + String.join(" | ", team.getRegionals());
-//            text += " | " + university.getRegion();
+            if (!team.getRegionals().isEmpty())
+                text += " | " + String.join(" | ", team.getRegionals());
+//                text += " | " + getBest(team.getRegionals());
+            text += " | " + university.getRegion();
             return text;
+        }
+
+        private static String getBest(Collection<String> regionals) {
+            String best = null;
+            for (String regional : regionals) {
+                if (best == null || getNum(regional) < getNum(best)) {
+                    best = regional;
+                }
+            }
+            return best;
+        }
+
+        private static int getNum(String s) {
+            s = s + ".100.";
+            int l = 0;
+            while (!Character.isDigit(s.charAt(l))) {
+                l++;
+            }
+            int r = l;
+            while (Character.isDigit(s.charAt(r))) {
+                r++;
+            }
+            return Integer.parseInt(s.substring(l, r));
         }
     }
 
