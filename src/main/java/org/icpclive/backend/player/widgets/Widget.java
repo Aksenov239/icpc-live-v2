@@ -13,6 +13,7 @@ import org.icpclive.events.TeamInfo;
 
 import java.awt.*;
 
+import static java.lang.Math.rint;
 import static java.lang.Math.round;
 
 /**
@@ -249,6 +250,17 @@ public abstract class Widget {
 
         g.drawTextInRect(text, x, y, width, height, alignment, font, plateStyle,
                 opacity, textOpacity, MARGIN, scale);
+    }
+
+    protected void drawGradientRectangleWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Color colorLeft, Color colorRight) {
+        graphics.drawGradientRect(x, y, width, height, opacity, colorLeft, colorRight);
+        double textOpacity = getTextOpacity(visibilityState);
+        if (text == null) {
+            text = "NULL";
+        }
+        if (textOpacity == 0) return;
+        setTextOpacity(textOpacity);
+        drawTextThatFits(text, x, y, width, height, alignment, true);
     }
 
     protected void drawRectangleWithText(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment) {

@@ -361,6 +361,9 @@ public class BigStandingsWidget extends Widget {
                 topUniversity.contains(team.getId()) ? BigStandingsStylesheet.topUniversityTeam :
                         topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
                                 BigStandingsStylesheet.name;
+
+        PlateStyle problemsColor = BigStandingsStylesheet.problems;
+
         if (bright) {
             nameStyle = nameStyle.brighter();
         }
@@ -369,15 +372,16 @@ public class BigStandingsWidget extends Widget {
         if (odd) {
             setMaximumOpacity(maximumOpacity * .9);
         }
-        drawRectangleWithText(name, x, y, nameWidth, plateHeight, PlateStyle.Alignment.LEFT);
+//        drawRectangleWithText(name, x, y, nameWidth, plateHeight, PlateStyle.Alignment.LEFT);
+        drawGradientRectangleWithText(name, x, y, nameWidth, plateHeight, PlateStyle.Alignment.LEFT,
+                nameStyle.background, problemsColor.background);
 
         x += nameWidth;
 
-        PlateStyle problemsColor = BigStandingsStylesheet.problems;
         if (bright) {
             problemsColor = problemsColor.brighter();
         }
-        setBackgroundColor(problemsColor.background);
+        applyStyle(problemsColor);
         drawRectangleWithText("" + team.getSolvedProblemsNumber(), x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
 
         x += totalWidth;
