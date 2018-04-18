@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -180,10 +181,34 @@ public class TeamStatsWidget extends Widget {
             String text = team.getName();
             if (university.getHashTag() != null)
                 text += " | " + university.getHashTag();
-//            if (!team.getRegionals().isEmpty())
+            if (!team.getRegionals().isEmpty())
 //                text += " | " + String.join(" | ", team.getRegionals());
-//            text += " | " + university.getRegion();
+                text += " | " + getBest(team.getRegionals());
+            text += " | " + university.getRegion();
             return text;
+        }
+
+        private static String getBest(Collection<String> regionals) {
+            String best = null;
+            for (String regional : regionals) {
+                if (best == null || getNum(regional) < getNum(best)) {
+                    best = regional;
+                }
+            }
+            return best;
+        }
+
+        private static int getNum(String s) {
+            s = s + ".100.";
+            int l = 0;
+            while (!Character.isDigit(s.charAt(l))) {
+                l++;
+            }
+            int r = l;
+            while (Character.isDigit(s.charAt(r))) {
+                r++;
+            }
+            return Integer.parseInt(s.substring(l, r));
         }
     }
 

@@ -190,7 +190,7 @@ public class NewTeamWidget extends Widget {
 
         private void drawVideos() {
             if (!mainVideo.isBlack())
-                graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, opacity * .95);
+                graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, opacity);
         }
 
         private void drawStatus() {
