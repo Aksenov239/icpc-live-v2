@@ -57,9 +57,9 @@ public class Main {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-        generator.addWidget(new NewTeamWidget(
-                Integer.parseInt(properties.getProperty("sleep.time"))
-        ));
+        generator.addWidget(new NewTeamWidget(500));
+//                Integer.parseInt(properties.getProperty("sleep.time"))
+//        ));
 
         generator.addWidget(new VerticalCreepingLineWidget(updateWait,
                 Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),

@@ -4,6 +4,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.Widget;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
+import org.icpclive.events.WF.json.WFEventsLoader;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -13,12 +14,9 @@ import sun.awt.image.SunVolatileImage;
 import sun.java2d.Surface;
 import sun.java2d.opengl.OGLRenderQueue;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
@@ -29,7 +27,7 @@ import java.util.Properties;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 
 public class ScreenGeneratorGL implements ScreenGenerator {
-//    private final WritableRaster raster;
+    //    private final WritableRaster raster;
     protected List<Widget> widgets = new ArrayList<>();
     protected int width;
     protected int height;
@@ -51,7 +49,7 @@ public class ScreenGeneratorGL implements ScreenGenerator {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
         image = gc.createCompatibleVolatileImage(width, height, VolatileImage.TRANSLUCENT);
-        surface = ((SunVolatileImage)image).getDestSurface();
+        surface = ((SunVolatileImage) image).getDestSurface();
 
         System.out.println("LWJGL Version " + Version.getVersion() + " is working.");
         OGLRenderQueue.getInstance().flushAndInvokeNow(() -> {
@@ -138,9 +136,12 @@ public class ScreenGeneratorGL implements ScreenGenerator {
             g.drawImage(background, 0, 0, width, height);
         }
 
-        for (Widget widget : widgets) {
-            if (widget != null) widget.paint(g, width, height);
+        synchronized (WFEventsLoader.GLOBAL_LOCK) {
+            for (Widget widget : widgets) {
+                if (widget != null) widget.paint(g, width, height);
+            }
         }
+
         g.drawRect(0, 0, 1, 1, Color.WHITE, .5, PlateStyle.RectangleType.SOLID);
 
         g2.dispose();

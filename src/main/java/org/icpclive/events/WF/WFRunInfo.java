@@ -53,7 +53,7 @@ public class WFRunInfo implements RunInfo {
     }
 
     public void setLastUpdateTime(long lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
+        this.lastUpdateTime = Math.max(this.lastUpdateTime, lastUpdateTime); // ?????
     }
 
     public void setTeamInfoBefore(SmallTeamInfo teamInfoBefore) {

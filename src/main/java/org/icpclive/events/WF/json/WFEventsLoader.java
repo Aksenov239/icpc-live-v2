@@ -26,6 +26,7 @@ import java.util.*;
  */
 public class WFEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(WFEventsLoader.class);
+    public static final Object GLOBAL_LOCK = new Object();
 
     private static volatile WFContestInfo contestInfo;
 
@@ -365,14 +366,18 @@ public class WFEventsLoader extends EventsLoader {
 
         contestInfo.runByJudgementId.put(cdsId, runInfo);
 
+
         JsonElement verdictElement = je.get("judgement_type_id");
+        String verdict = verdictElement.isJsonNull() ? "" : verdictElement.getAsString();
+
+        log.info("Judging " + contestInfo.getParticipant(runInfo.getTeamId()) + " " + verdict);
+
         if (verdictElement.isJsonNull()) {
             runInfo.judged = false;
             runInfo.result = "";
             waitForEmulation(parseRelativeTime(je.get("start_contest_time").getAsString()));
             return;
         }
-        String verdict = verdictElement.getAsString();
 
         long time = je.get("end_contest_time").isJsonNull() ? 0 :
                 parseRelativeTime(je.get("end_contest_time").getAsString());
@@ -383,7 +388,6 @@ public class WFEventsLoader extends EventsLoader {
                     contestInfo.getParticipant(runInfo.teamId).getSmallTeamInfo());
 
             runInfo.result = verdict;
-
             runInfo.judged = true;
 
 //            long start = System.currentTimeMillis();
@@ -398,6 +402,7 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void readRun(WFContestInfo contestInfo, JsonObject je, boolean update) {
+
         WFRunInfo runInfo = contestInfo.runByJudgementId.get(je.get("judgement_id").getAsString());
 
         long time = parseRelativeTime(je.get("contest_time").getAsString());
@@ -465,28 +470,30 @@ public class WFEventsLoader extends EventsLoader {
                     String type = je.get("type").getAsString();
                     JsonObject json = je.get("data").getAsJsonObject();
 
-                    switch (type) {
-                        case "contests":
-                            readContest(contestInfo, json);
-                            break;
-                        case "state":
-                            readState(contestInfo, json);
-                            break;
-                        case "submissions":
-                            readSubmission(contestInfo, json, update);
-                            break;
-                        case "judgements":
-                            readJudgement(contestInfo, json);
-                            break;
-                        case "runs":
-                            readRun(contestInfo, json, update);
-                            break;
-                        case "problems":
-                            if (!update && !initialized) {
-                                initialized = true;
-                                throw new Exception("Problems weren't loaded, exception to restart feed");
-                            }
-                        default:
+                    synchronized (GLOBAL_LOCK) {
+                        switch (type) {
+                            case "contests":
+                                readContest(contestInfo, json);
+                                break;
+                            case "state":
+                                readState(contestInfo, json);
+                                break;
+                            case "submissions":
+                                readSubmission(contestInfo, json, update);
+                                break;
+                            case "judgements":
+                                readJudgement(contestInfo, json);
+                                break;
+                            case "runs":
+                                readRun(contestInfo, json, update);
+                                break;
+                            case "problems":
+                                if (!update && !initialized) {
+                                    initialized = true;
+                                    throw new Exception("Problems weren't loaded, exception to restart feed");
+                                }
+                            default:
+                        }
                     }
                 }
                 return;
