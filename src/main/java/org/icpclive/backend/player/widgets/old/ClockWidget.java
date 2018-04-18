@@ -97,6 +97,10 @@ public class ClockWidget extends Widget {
     }
 
     public static String getTimeString(long time) {
+        if (time == 0) {
+            return "PAUSED";
+        }
+        time /= 1000;
         int h = (int) (time / 3600);
         int m = (int) (time % 3600 / 60);
         int s = (int) (time % 60);
