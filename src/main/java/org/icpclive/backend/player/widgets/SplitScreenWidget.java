@@ -1,5 +1,6 @@
 package org.icpclive.backend.player.widgets;
 
+import org.icpclive.Config;
 import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.urls.TeamUrls;
@@ -8,12 +9,10 @@ import org.icpclive.datapassing.Data;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 import org.icpclive.events.WF.WFContestInfo;
+import org.icpclive.events.WF.WFRunInfo;
 
 import java.io.IOException;
 import java.util.Properties;
-
-import org.icpclive.events.WF.WFRunInfo;
-import org.icpclive.Config;
 
 /**
  * @author: pashka
@@ -68,6 +67,7 @@ public class SplitScreenWidget extends Widget {
         }
 
         usersQueue = TwitterBasedQueue.getInstance();
+        currentRunId = 1;
     }
 
     public SplitScreenWidget(long updateWait, int width, int height, double aspectRatio, int sleepTime) {
@@ -101,29 +101,43 @@ public class SplitScreenWidget extends Widget {
 
     private int currentPlace = 0;
     private int predefinedTeam = 0;
+    private boolean[] allRuns = new boolean[1000000];
 
     protected void chooseNewStream(int widget) {
+        teamInfoWidgets[widget].switchNext();
+
         WFContestInfo contestInfo = (WFContestInfo) Preparation.eventsLoader.getContestData();
         RunInfo replayRun = null;
         // TODO: when frozen always switch onto teamId screen
         System.err.println("Choosing new stream for widget " + widget);
-        while (currentRunId <= contestInfo.getLastRunId() && replayRun == null) {
-            WFRunInfo run = contestInfo.getRun(currentRunId);
+        while (allRuns[currentRunId]) {
+            currentRunId++;
+        }
+        int runId = currentRunId;
+        while (runId <= contestInfo.getLastRunId() && replayRun == null) {
+            WFRunInfo run = contestInfo.getRun(runId);
 //            if (run != null)
 //                System.err.println((long) (1000 * runId.time + " " + System.currentTimeMillis() + " " +
 //                        (long) (System.currentTimeMillis() - 1000 * runId.timestamp) + " " + runId + " " +
 //                        runId.isAccepted());
-            if (run != null &&
-                    run.time + relevanceTime > contestInfo.getCurrentTime() &&
+            if (run != null) {
+                if (run.time + relevanceTime > contestInfo.getCurrentTime() &&
 //                    runId.getLastUpdateTime() + relevanceTime > System.currentTimeMillis() &&
-                    run.isAccepted()) {
-//                replayRun = run;
+                        run.isAccepted() &&
+                        !allRuns[runId]) {
+                    replayRun = run;
+                    allRuns[runId] = true;
+                } else {
+                    if (run.isJudged() || run.time >= WFContestInfo.FREEZE_TIME) {
+                        allRuns[runId] = true;
+                    }
+                }
             }
             // TODO: because replays does not work we do not want to show the same team
             if (replayRun != null && teamInUse(replayRun.getTeamId())) {
                 replayRun = null;
             }
-            currentRunId++;
+            runId++;
         }
 
         if (replayRun != null) {
@@ -172,7 +186,6 @@ public class SplitScreenWidget extends Widget {
             }
         }
         //log.info("Choose " + teamId + " for " + widget + " with mode " + mode);
-        teamInfoWidgets[widget].switchNext();
         teamInfoWidgets[widget].change(
                 contestInfo.getParticipant(teamId),
                 infoType

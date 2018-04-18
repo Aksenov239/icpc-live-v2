@@ -27,14 +27,6 @@ public class BreakingNewsData extends CachedData {
     }
 
     public String checkOverlays() {
-        if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            if (!"".equals(MainScreenData.getMainScreenData().teamData.infoType)) {
-                return MainScreenData.getMainScreenData().teamData.getOverlayError();
-            }
-        }
-//        if (MainScreenData.getMainScreenData().teamStatsData.isVisible()) {
-//            return MainScreenData.getMainScreenData().teamStatsData.getOverlayError();
-//        }
         if (MainScreenData.getMainScreenData().wordStatisticsData.isVisible) {
             return MainScreenData.getMainScreenData().wordStatisticsData.getOverlayError();
         }

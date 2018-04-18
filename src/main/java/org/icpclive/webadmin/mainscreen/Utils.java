@@ -45,26 +45,27 @@ public class Utils {
         String[] last = z[1].split("\n");
 
         if (current[1].equals("true")) {
+            boolean hasThisType = MainScreenTeamView.STATISTICS_SHOW_TYPE.equals(current[2]);
             for (String type1 : TeamUrls.types) {
-                if (type1.equals(current[2])) {
-                    long currentTime = System.currentTimeMillis() - Long.parseLong(current[0]);
-                    if (currentTime > MainScreenData.getProperties().sleepTime) {
-                        return "Now showing " + current[2] + " of team " + current[3] + " for " +
-                                (currentTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds" +
-                                (html ? "<br><br>" : "");
-                    } else {
-                        String result = "buffering " + current[2] + " of team " + current[3] + " for " + currentTime / 1000 + " seconds";
-                        if (last[1].equals("false")) {
-                            return "Now " + result + (html ? "<br><br>" : "");
-                        }
-                        long lastTime = System.currentTimeMillis() - Long.parseLong(last[0]);
-                        return "Now showing " + last[2] + " of team " + last[3] + " for " +
-                                (lastTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds" +
-                                (html ? "<br>" : "\n") + "while " + result + (html ? "<br>" : " ");
-                    }
-                }
+                hasThisType |= type1.equals(current[2]);
             }
-            return "Some error happened";
+            if (!hasThisType) {
+                return "Type " + current[2] + " does not exist";
+            }
+            long currentTime = System.currentTimeMillis() - Long.parseLong(current[0]);
+            if (currentTime > MainScreenData.getProperties().sleepTime) {
+                return "Now showing " + current[2] + " of team " + current[3] + " for " +
+                        (currentTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds" +
+                        (html ? "<br><br>" : "");
+            } else {
+                String result = "buffering " + current[2] + " of team " + current[3] + " for " + currentTime / 1000 + " seconds";                 if (last[1].equals("false")) {
+                    return "Now " + result + (html ? "<br><br>" : "");
+                }
+                long lastTime = System.currentTimeMillis() - Long.parseLong(last[0]);
+                return "Now showing " + last[2] + " of team " + last[3] + " for " +
+                        (lastTime - MainScreenData.getProperties().sleepTime) / 1000 + " seconds" +
+                        (html ? "<br>" : "\n") + "while " + result + (html ? "<br>" : " ");
+            }
         } else {
             if (MainScreenData.getMainScreenData().teamStatsData.isVisible) {
                 return "Not showing team view of team " + MainScreenData.getMainScreenData().teamStatsData.getTeamString() + ", but probably team stats is shown.";

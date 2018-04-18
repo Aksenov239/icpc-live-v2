@@ -55,6 +55,8 @@ public class MainScreenProperties {
 
         ContextListener.addThread(loaderThread);
 
+        loaderThread.start();
+
         ContestInfo tmpContestInfo;
         while ((tmpContestInfo = loader.getContestData()) == null) {
         }
@@ -72,8 +74,6 @@ public class MainScreenProperties {
 //        teamInfos = Arrays.copyOf(teamInfos, l);
         Arrays.sort(teamInfos, (a, b) ->
             Integer.parseInt(a.getAlias()) - Integer.parseInt(b.getAlias()));
-
-        loaderThread.start();
 
         cameraNumber = Integer.parseInt(properties.getProperty("camera.number", "0"));
 

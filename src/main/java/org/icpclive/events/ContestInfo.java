@@ -61,9 +61,9 @@ public abstract class ContestInfo {
     }
 
     public long getTimeFromStart() {
-        if (status == Status.BEFORE) {
-            return 0;
-        }
+//        if (status == Status.BEFORE) {
+//            return 0;
+//        }
         return (long) ((System.currentTimeMillis() - startTime) * EventsLoader.getInstance().getEmulationSpeed());
     }
 

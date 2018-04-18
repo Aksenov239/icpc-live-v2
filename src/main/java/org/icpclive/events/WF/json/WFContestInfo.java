@@ -1,8 +1,17 @@
 package org.icpclive.events.WF.json;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import org.icpclive.backend.Preparation;
+import org.icpclive.events.SmallTeamInfo;
+import org.icpclive.events.TeamInfo;
 import org.icpclive.events.WF.WFRunInfo;
 import org.icpclive.events.WF.WFTeamInfo;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
 /**
@@ -52,5 +61,37 @@ public class WFContestInfo extends org.icpclive.events.WF.WFContestInfo {
 
     public WFTeamInfo getTeamByCDSId(String cdsId) {
         return teamById.get(cdsId);
+    }
+
+    public void checkStandings(String url, String login, String password) {
+        try {
+            TeamInfo[] standings = getStandings();
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    Preparation.openAuthorizedStream(url + "/scoreboard", login, password)
+            ));
+            String json = "";
+            String line;
+            while ((line = br.readLine()) != null) {
+                json += line.trim();
+            }
+
+            JsonArray jsonTeams = new Gson().fromJson(json, JsonArray.class);
+            for (int i = 0; i < jsonTeams.size(); i++) {
+                JsonObject je = jsonTeams.get(i).getAsJsonObject();
+                String id = je.get("team_id").getAsString();
+                JsonObject score = je.get("score").getAsJsonObject();
+                int num_solved = score.get("num_solved").getAsInt();
+                int total_time = score.get("total_time").getAsInt();
+                TeamInfo team = getTeamByCDSId(id);
+                if (team.getSolvedProblemsNumber() != num_solved ||
+                        team.getPenalty() != total_time) {
+                    System.err.println("Incorrect for team " + team);
+                    return;
+                }
+            }
+            System.err.println("Correct scoreboard");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

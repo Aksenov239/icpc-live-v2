@@ -126,7 +126,8 @@ public class MessageData {
 
                     try {
                         BufferedReader br = new BufferedReader(
-                                new InputStreamReader(Preparation.openAuthorizedStream(url, login, password)));
+                                new InputStreamReader(
+                                        Preparation.openAuthorizedStream(url, login, password), "UTF-8"));
 
                         String line;
                         while ((line = br.readLine()) != null) {

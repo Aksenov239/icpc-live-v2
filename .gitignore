@@ -33,3 +33,5 @@ config/*.properties
 # Log
 
 log/
+
+teamData/*.png

@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Random;
 
 /**
  * @author: pashka
@@ -27,6 +28,7 @@ public class PlayerInImage {
     private final MediaPlayerFactory factory;
     private final MediaPlayer mediaPlayer;
     private boolean stopped;
+    private boolean ready;
 
     public PlayerInImage(int width, int height, JComponent frame, String media) {
         this.media = media;
@@ -86,6 +88,21 @@ public class PlayerInImage {
 
     public BufferedImage getImage() {
         return image;
+    }
+
+    Random rnd = new Random();
+    public boolean isBlack() {
+        if (ready) return false;
+        for (int i = 0; i < 20; i++) {
+            int rgb = image.getRGB(rnd.nextInt(image.getWidth()),
+                    rnd.nextInt(image.getHeight()));
+            if ((rgb & 0xffffff) != 0) {
+//                System.out.println(Integer.toBinaryString(rgb));
+                ready = true;
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setVolume(int volume) {

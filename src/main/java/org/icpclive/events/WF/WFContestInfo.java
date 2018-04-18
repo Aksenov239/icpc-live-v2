@@ -150,7 +150,9 @@ public class WFContestInfo extends ContestInfo {
         if (runExists(test.runId)) {
             WFRunInfo run = runs[test.runId];
             run.add(test);
-            run.setLastUpdateTime(Math.max(run.getLastUpdateTime(), test.time));
+            if (!run.isJudged()) {
+                run.setLastUpdateTime(Math.max(run.getLastUpdateTime(), test.time));
+            }
 //			System.out.println("Run " + runs[test.runId] + " passed " + runs[test.runId].getPassedTestsNumber() + " tests");
         }
     }

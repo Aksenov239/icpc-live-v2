@@ -27,7 +27,7 @@ import java.util.*;
 public class WFEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(WFEventsLoader.class);
 
-    private static WFContestInfo contestInfo;
+    private static volatile WFContestInfo contestInfo;
 
     private String url;
     private String login;
@@ -55,7 +55,7 @@ public class WFEventsLoader extends EventsLoader {
                 emulationSpeed = 1;
             }
 
-            initialize();
+            contestInfo = initialize();
         } catch (IOException e) {
             log.error("error", e);
         }
@@ -229,7 +229,7 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
-    private void initialize() throws IOException {
+    private WFContestInfo initialize() throws IOException {
         WFContestInfo contestInfo = new WFContestInfo();
         readGroupsInfo(contestInfo);
         System.err.println("Groups");
@@ -242,7 +242,7 @@ public class WFEventsLoader extends EventsLoader {
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
 
         contestInfo.recalcStandings();
-        this.contestInfo = contestInfo;
+        return contestInfo;
     }
 
     public void reinitialize() throws IOException {
@@ -277,7 +277,7 @@ public class WFEventsLoader extends EventsLoader {
         return ((h * 60 + m) * 60 + s) * 1000 + ms;
     }
 
-    public void readContest(JsonObject je) {
+    public void readContest(WFContestInfo contestInfo, JsonObject je) {
         JsonElement startTimeElement = je.get("start_time");
         if (!startTimeElement.isJsonNull()) {
             contestInfo.setStartTime(parseTime(startTimeElement.getAsString()));
@@ -288,9 +288,13 @@ public class WFEventsLoader extends EventsLoader {
         if (emulation) {
             contestInfo.setStartTime(System.currentTimeMillis());
         }
+        WFContestInfo.CONTEST_LENGTH =
+                (int) parseRelativeTime(je.get("duration").getAsString());
+        WFContestInfo.FREEZE_TIME = WFContestInfo.CONTEST_LENGTH -
+                (int) parseRelativeTime(je.get("scoreboard_freeze_duration").getAsString());
     }
 
-    public void readState(JsonObject je) {
+    public void readState(WFContestInfo contestInfo, JsonObject je) {
         String startTime = je.get("started").getAsString();
         contestInfo.setStartTime(parseTime(startTime));
         if (emulation) {
@@ -321,7 +325,7 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
-    public void readSubmission(JsonObject je, boolean update) {
+    public void readSubmission(WFContestInfo contestInfo, JsonObject je, boolean update) {
         waitForEmulation(parseRelativeTime(je.get("contest_time").getAsString()));
         if (update) {
             return;
@@ -349,7 +353,7 @@ public class WFEventsLoader extends EventsLoader {
         contestInfo.runBySubmissionId.put(cdsId, run);
     }
 
-    public void readJudgement(JsonObject je) {
+    public void readJudgement(WFContestInfo contestInfo, JsonObject je) {
         String cdsId = je.get("id").getAsString();
 
         WFRunInfo runInfo = contestInfo.runBySubmissionId.get(je.get("submission_id").getAsString());
@@ -363,6 +367,8 @@ public class WFEventsLoader extends EventsLoader {
 
         JsonElement verdictElement = je.get("judgement_type_id");
         if (verdictElement.isJsonNull()) {
+            runInfo.judged = false;
+            runInfo.result = "";
             waitForEmulation(parseRelativeTime(je.get("start_contest_time").getAsString()));
             return;
         }
@@ -380,9 +386,10 @@ public class WFEventsLoader extends EventsLoader {
 
             runInfo.judged = true;
 
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             contestInfo.recalcStandings();
-            log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
+//            contestInfo.checkStandings(url, login, password);
+//            log.info("Standing are recalculated in " + (System.currentTimeMillis() - start) + " ms");
         } else {
             runInfo.judged = false;
         }
@@ -390,7 +397,7 @@ public class WFEventsLoader extends EventsLoader {
         runInfo.setLastUpdateTime(time);
     }
 
-    public void readRun(JsonObject je, boolean update) {
+    public void readRun(WFContestInfo contestInfo, JsonObject je, boolean update) {
         WFRunInfo runInfo = contestInfo.runByJudgementId.get(je.get("judgement_id").getAsString());
 
         long time = parseRelativeTime(je.get("contest_time").getAsString());
@@ -422,17 +429,20 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void run() {
-        String lastSavedEvent = null;
+        String lastEvent = null;
+        boolean initialized = false;
         while (true) {
-            try {
-                String url = this.url + "/event-feed"
-                        + (lastSavedEvent == null ? "" : "?since_id=" + lastSavedEvent);
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(Preparation.openAuthorizedStream(url, login, password),
-                                "utf-8"));
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(Preparation.openAuthorizedStream(this.url + "/event-feed", login, password),
+                            "utf-8"))) {
+                String abortedEvent = lastEvent;
+                lastEvent = null;
 
-                boolean initialized = false;
-                initialize();
+                WFContestInfo contestInfo = initialize();
+                if (abortedEvent == null) {
+                    WFEventsLoader.contestInfo = contestInfo;
+                }
+
                 while (true) {
                     String line = br.readLine();
                     if (line == null) {
@@ -445,34 +455,41 @@ public class WFEventsLoader extends EventsLoader {
                         System.err.println("Non-json line: " + Arrays.toString(line.toCharArray()));
                         continue;
                     }
-                    lastSavedEvent = je.get("id") == null ? lastSavedEvent : je.get("id").getAsString();
+                    String id = je.get("id").getAsString();
+
+                    if (id.equals(abortedEvent)) {
+                        WFEventsLoader.contestInfo = contestInfo;
+                    }
+                    lastEvent = id;
                     boolean update = !je.get("op").getAsString().equals("create");
                     String type = je.get("type").getAsString();
                     JsonObject json = je.get("data").getAsJsonObject();
 
                     switch (type) {
                         case "contests":
-                            readContest(json);
+                            readContest(contestInfo, json);
                             break;
                         case "state":
-                            readState(json);
+                            readState(contestInfo, json);
                             break;
                         case "submissions":
-                            readSubmission(json, update);
+                            readSubmission(contestInfo, json, update);
                             break;
                         case "judgements":
-                            readJudgement(json);
+                            readJudgement(contestInfo, json);
                             break;
                         case "runs":
-                            readRun(json, update);
+                            readRun(contestInfo, json, update);
+                            break;
                         case "problems":
                             if (!update && !initialized) {
-                                reinitialize();
                                 initialized = true;
+                                throw new Exception("Problems weren't loaded, exception to restart feed");
                             }
                         default:
                     }
                 }
+                return;
             } catch (Throwable e) {
                 log.error("error", e);
                 try {

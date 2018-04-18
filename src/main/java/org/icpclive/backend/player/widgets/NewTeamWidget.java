@@ -12,6 +12,7 @@ import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
+import org.icpclive.events.WF.json.WFEventsLoader;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class NewTeamWidget extends Widget {
         for (TeamStatusView view : views) {
             view.paintImpl(g, width, height);
         }
-        if (views.get(currentView).timeToLive <= 0) {
+        if (views.get(currentView).timeToLive <= 0 && views.get(currentView).isVisible()) {
             views.get(currentView).setVisible(false);
         }
         if (views.get(currentView).visibilityState <= 0) {
@@ -92,8 +93,8 @@ public class NewTeamWidget extends Widget {
     public void addView(TeamInfo team, String infoType) {
         System.err.println("Add view " + team + " " + infoType);
         if (views.size() > 0) {
-            System.out.println("Time to switch: " + timeToSwitch);
             views.get(currentView).timeToLive = timeToSwitch; // FIX!!!
+            System.err.println("TTL " + timeToSwitch);
         }
         views.add(new TeamStatusView(team, infoType, sleepTime));
     }
@@ -131,7 +132,7 @@ public class NewTeamWidget extends Widget {
 
         private final PlayerInImage mainVideo;
         private final TeamStatsWidget stats;
-        private final TeamInfo team;
+        private TeamInfo team;
         int timeToLive = Integer.MAX_VALUE;
 
         public TeamStatusView(TeamInfo team, String infoType, int sleepTime) {
@@ -169,6 +170,7 @@ public class NewTeamWidget extends Widget {
             if (team == null) {
                 return;
             }
+            team = EventsLoader.getInstance().getContestData().getParticipant(team.getId());
             if (visibilityState == 0) {
                 return;
             }
@@ -187,7 +189,8 @@ public class NewTeamWidget extends Widget {
         }
 
         private void drawVideos() {
-            graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, opacity * .95);
+            if (!mainVideo.isBlack())
+                graphics.drawImage(mainVideo.getImage(), BIG_X_RIGHT - width, BIG_Y, width, height, opacity * .95);
         }
 
         private void drawStatus() {
