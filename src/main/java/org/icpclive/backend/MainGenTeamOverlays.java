@@ -45,7 +45,7 @@ public class MainGenTeamOverlays {
         ContestInfo data = EventsLoader.getInstance().getContestData();
         for (TeamInfo team : data.getStandings()) {
             int id = Integer.parseInt(((WFTeamInfo)team).cdsId);
-            if (id != 2) continue;
+//            if (id != 2) continue;
             ScreenGenerator generator = new ScreenGeneratorGL(width, height, properties, (double) width / Widget.BASE_WIDTH, null);
             Widget widget = new TeamStatsWidget(team);
             widget.setVisibilityState(1);
