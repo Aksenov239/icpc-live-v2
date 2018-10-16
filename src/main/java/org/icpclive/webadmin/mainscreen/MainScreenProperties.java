@@ -3,6 +3,7 @@ package org.icpclive.webadmin.mainscreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.Config;
+import org.icpclive.events.PCMS.PCMSTeamInfo;
 import org.icpclive.webadmin.ContextListener;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.TeamInfo;
@@ -65,15 +66,18 @@ public class MainScreenProperties {
 
         String onsiteRegex = properties.getProperty("onsite.teams", ".*");
         teamInfos = contestInfo.getStandings();
-//        int l = 0;
-//        for (int i = 0; i < teamInfos.length; i++) {
-//            if (teamInfos[i].getAlias().matches(onsiteRegex)) {
-//                teamInfos[l++] = teamInfos[i];
-//            }
-//        }
-//        teamInfos = Arrays.copyOf(teamInfos, l);
-        Arrays.sort(teamInfos, (a, b) ->
-            Integer.parseInt(a.getAlias()) - Integer.parseInt(b.getAlias()));
+        if (teamInfos[0] instanceof PCMSTeamInfo) {
+            int l = 0;
+            for (int i = 0; i < teamInfos.length; i++) {
+                if (teamInfos[i].getAlias().matches(onsiteRegex)) {
+                    teamInfos[l++] = teamInfos[i];
+                }
+            }
+            teamInfos = Arrays.copyOf(teamInfos, l);
+        } else {
+            Arrays.sort(teamInfos, (a, b) ->
+                    Integer.parseInt(a.getAlias()) - Integer.parseInt(b.getAlias()));
+        }
 
         cameraNumber = Integer.parseInt(properties.getProperty("camera.number", "0"));
 

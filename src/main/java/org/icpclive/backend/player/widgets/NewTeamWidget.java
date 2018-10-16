@@ -10,9 +10,9 @@ import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
+import org.icpclive.events.PCMS.PCMSTeamInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
-import org.icpclive.events.WF.json.WFEventsLoader;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,8 +31,14 @@ public class NewTeamWidget extends Widget {
     int currentView;
     private int timeToSwitch;
 
-    public NewTeamWidget(int sleepTime) {
+    boolean aspect43 = false;
+
+    public NewTeamWidget(int sleepTime, boolean aspect43) {
         this.sleepTime = sleepTime;
+        this.aspect43 = aspect43;
+        if (aspect43) {
+            standardAspect = 4. / 3;
+        }
         views.add(emptyView);
     }
 
@@ -52,7 +58,8 @@ public class NewTeamWidget extends Widget {
                 ok = false;
                 for (int i = currentView; i < views.size(); i++) {
                     TeamStatusView view = views.get(i);
-                    if (view.team == team) {
+                    if (view.team != null && team != null &&
+                            view.team.getId() == team.getId()) {
                         ok = true;
                         break;
                     }
@@ -63,6 +70,8 @@ public class NewTeamWidget extends Widget {
             if (!ok) {
                 TeamInfo team = Preparation.eventsLoader.getContestData().getParticipant(data.teamData.getTeamId());
                 String infoType = data.teamData.infoType;
+                timeToSwitch = data.teamData.sleepTime;
+                System.err.println("SWITCH " + timeToSwitch + " " + data.teamData.sleepTime);
                 addView(team, infoType);
             }
         }
@@ -92,7 +101,7 @@ public class NewTeamWidget extends Widget {
 
     public void addView(TeamInfo team, String infoType) {
         System.err.println("Add view " + team + " " + infoType);
-        if (views.size() > 0) {
+        if (views.size() - currentView > 0) {
             views.get(currentView).timeToLive = timeToSwitch; // FIX!!!
             System.err.println("TTL " + timeToSwitch);
         }
@@ -110,6 +119,10 @@ public class NewTeamWidget extends Widget {
         private static final int BIG_HEIGHT = 1305 * 9 / 16;//780;
         private static final int BIG_X_RIGHT = 1893;//493;
         private static final int BIG_Y = 52;
+
+        private static final int BIG_HEIGHT_43 = 1285 * 3 / 4;
+        private static final int BIG_X_RIGHT_43 = 1893;
+        private static final int BIG_Y_43 = 52;
 
         private static final int TEAM_PANE_X = 30;
         private static final int TEAM_PANE_Y = 52;
@@ -138,8 +151,12 @@ public class NewTeamWidget extends Widget {
         public TeamStatusView(TeamInfo team, String infoType, int sleepTime) {
             this.team = team;
             this.infoType = infoType;
-            width = (int) (standardAspect * BIG_HEIGHT);
-            height = BIG_HEIGHT;
+            if (aspect43) {
+                height = BIG_HEIGHT_43;
+            } else {
+                height = BIG_HEIGHT;
+            }
+            width = (int) (standardAspect * height);
 
             nameWidth = (int) Math.round(NAME_WIDTH * TEAM_PANE_HEIGHT);
             rankWidth = (int) Math.round(RANK_WIDTH * TEAM_PANE_HEIGHT);
@@ -160,12 +177,17 @@ public class NewTeamWidget extends Widget {
                 System.err.println("Load video: " + TeamUrls.getUrl(team, infoType));
                 PlayerInImage video = null;
                 try {
-                    video = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType));;
+                    video = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType));
+                    ;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 mainVideo = video;
-                stats = new TeamStatsWidget(team);
+                if (team instanceof PCMSTeamInfo) {
+                    stats = null;
+                } else {
+                    stats = new TeamStatsWidget(team);
+                }
             }
         }
 
