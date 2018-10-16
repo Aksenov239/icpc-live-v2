@@ -129,7 +129,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
 
     public void drawLogo(String currentLogo) {
         if (currentLogo.equals(CLOCK)) {
-            long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
+            long time = Preparation.eventsLoader.getContestData().getCurrentTime();
             currentLogo = getTimeString(Math.abs(time));
         }
 

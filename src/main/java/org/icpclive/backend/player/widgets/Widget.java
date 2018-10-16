@@ -332,7 +332,7 @@ public abstract class Widget {
         drawTextThatFits(problem.letter, x, y, width, height, PlateStyle.Alignment.CENTER, true);
     }
 
-    private double getBlinkingState() {
+    protected double getBlinkingState() {
         double v = (System.currentTimeMillis() % BLINKING_PERIOD) * 1.0 / BLINKING_PERIOD;
         v = Math.abs(v * 2 - 1);
         return v;

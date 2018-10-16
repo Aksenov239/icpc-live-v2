@@ -3,6 +3,7 @@ package org.icpclive.backend.player.widgets;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.*;
 import net.egork.teaminfo.data.*;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
@@ -15,8 +16,7 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class TeamStatsWidget extends Widget {
 
-    private static final int AWARD_HEIGHT = 55;
+    private static final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
     private static final int WIDTH = 1305;
     private static final int HEIGHT = 177;
     private static final int BASE_X = 1893 - WIDTH;
@@ -34,7 +34,7 @@ public class TeamStatsWidget extends Widget {
     private static final int LOGO_X = 17;
     private static final int STATS_WIDTH = WIDTH - LOGO_SIZE - LOGO_X - LOGO_X;
 
-    private static final double MOVE_SPEED = 0.5;
+    private static final double MOVE_SPEED = 1.5;
 
     private Record record;
     private BufferedImage logo;
@@ -55,13 +55,49 @@ public class TeamStatsWidget extends Widget {
             } catch (Exception e) {
                 logo = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
             }
+
+            JsonArray additionalAwards = new Gson().fromJson(new FileReader("awards.json"), JsonArray.class);
+            University university = record.university;
+            for (JsonElement award : additionalAwards) {
+                boolean myTeam = false;
+                JsonArray teams = award.getAsJsonObject().get("team_ids").getAsJsonArray();
+                for (JsonElement t : teams) {
+                    if (t.getAsInt() == id) {
+                        myTeam = true;
+                    }
+                }
+                if (myTeam) {
+                    String awardId = award.getAsJsonObject().get("id").getAsString();
+                    if (awardId.equals("winner")) {
+                        university.setWins(university.getWins() + 1);
+                        university.getWinYears().add(CURRENT_YEAR);
+                    } else if (awardId.startsWith("group-winner")) {
+                        university.setRegionalChampionships(university.getRegionalChampionships() + 1);
+                        university.getRegYears().add(CURRENT_YEAR);
+                    } else if (awardId.equals("gold-medal")) {
+                        university.setGold(university.getGold() + 1);
+                        university.getGoldYears().add(CURRENT_YEAR);
+                    } else if (awardId.equals("silver-medal")) {
+                        university.setSilver(university.getSilver() + 1);
+                        university.getSilverYears().add(CURRENT_YEAR);
+                    } else if (awardId.equals("bronze-medal")) {
+                        university.setBronze(university.getBronze() + 1);
+                        university.getBronzeYears().add(CURRENT_YEAR);
+                    }
+                }
+            }
+
+//            PrintWriter out = new PrintWriter(new FileWriter("temp.txt", true));
+//            out.println(id + " " + university.getFullName());
+//            out.close();
+
             panels = new StatsPanel[]{
                     new UnivsersityNamePanel(10000, STATS_WIDTH, record.university, record.team),
                     new PersonStatsPanel(5000, record.contestants[0], false),
                     new PersonStatsPanel(5000, record.contestants[1], false),
                     new PersonStatsPanel(5000, record.contestants[2], false),
                     new PersonStatsPanel(5000, record.coach, true),
-                    new AwardsPanel(5000, STATS_WIDTH, record.university)
+                    new AwardsPanel(5000, STATS_WIDTH, record.university, id)
             };
             fullPeriod = 0;
             fullWidth = 0;
@@ -148,7 +184,7 @@ public class TeamStatsWidget extends Widget {
         private final Team team;
 
         public UnivsersityNamePanel(int pauseTime, int width, University university, Team team) {
-            super(pauseTime, width);
+            super(pauseTime, Math.max(width, getStringWidth(TEXT_FONT, getInfoText(team, university)) + 20));
             this.university = university;
             this.team = team;
             List<String> ss = new ArrayList<>(team.getRegionals());
@@ -327,13 +363,14 @@ public class TeamStatsWidget extends Widget {
         private final BufferedImage silverMedalImage;
         private final BufferedImage bronzeMedalImage;
 
-        public AwardsPanel(int pauseTime, int width, University university) throws IOException {
+        public AwardsPanel(int pauseTime, int width, University university, int teamId) throws IOException {
             super(pauseTime, width);
             cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             regionalCupImage = getScaledInstance(ImageIO.read(new File("pics/regional.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             silverMedalImage = getScaledInstance(ImageIO.read(new File("pics/silver.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             bronzeMedalImage = getScaledInstance(ImageIO.read(new File("pics/bronze.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+
             this.university = university;
         }
 
@@ -347,7 +384,7 @@ public class TeamStatsWidget extends Widget {
             setTextColor(Color.WHITE);
             drawTextThatFits("" + university.getAppearances(), 0, 80, 100, 60, PlateStyle.Alignment.CENTER, false);
 
-            if (university.getRegionalChampionships() + university.getGold() + university.getSilver() + university.getGold() == 0) {
+            if (university.getRegionalChampionships() + university.getGold() + university.getSilver() + university.getBronze() == 0) {
                 return;
             }
 
@@ -356,7 +393,7 @@ public class TeamStatsWidget extends Widget {
             drawText("Awards", 150, 48);
             int x = 150;
             for (int i = 0; i < university.getWins(); i++) {
-                drawImage(cupImage, x, 75, "" + university.getWinYears().get(i), CUP_COLOR);
+                drawImage(cupImage, x, 75, "" + university.getWinYears().get(i), CUP_COLOR, false);
                 x += SHIFT;
             }
             if (university.getWins() > 0 && university.getRegionalChampionships() > university.getWins()) {
@@ -365,15 +402,16 @@ public class TeamStatsWidget extends Widget {
             {
                 int num = university.getRegionalChampionships() - university.getWins();
                 if (num > 5) {
-                    drawImage(regionalCupImage, x, 75, "", CUP_COLOR);
+                    boolean blinking = university.getRegYears().get(university.getRegionalChampionships() - 1) == CURRENT_YEAR;
+                    drawImage(regionalCupImage, x, 75, "", CUP_COLOR, blinking);
                     x += 80;
                     setFont(CAPTION_FONT);
                     setTextColor(CUP_COLOR);
-                    drawText("" + university.getRegionalChampionships(), x, 130);
+                    drawText("" + university.getRegionalChampionships(), x, 130, blinking ? getBlinkingState() : 1);
                     x += getStringWidth(CAPTION_FONT, "" + university.getRegionalChampionships());
                 } else {
                     for (int i = 0; i < num; i++) {
-                        drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(i), CUP_COLOR);
+                        drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(i), CUP_COLOR, false);
                         x += SHIFT;
                     }
                 }
@@ -388,29 +426,34 @@ public class TeamStatsWidget extends Widget {
             if (x + SHIFT * (university.getGold() + university.getSilver() + university.getBronze()) < this.width) {
                 for (int j = 0; j < 3; j++) {
                     for (int i = 0; i < num[j]; i++) {
-                        drawImage(img[j], x, 75, "" + years[j].get(i), colors[j]);
+                        drawImage(img[j], x, 75, "" + years[j].get(i), colors[j], false);
                         x += SHIFT;
                     }
                 }
             } else {
                 for (int i = 0; i < 3; i++) {
                     if (num[i] > 0) {
-                        drawImage(img[i], x, 75, "", colors[i]);
+                        boolean blinking = years[i].get(num[i] - 1) == CURRENT_YEAR;
+                        drawImage(img[i], x, 75, "", colors[i], blinking);
                         x += 70;
                         setFont(CAPTION_FONT);
                         setTextColor(colors[i]);
-                        drawText("" + num[i], x, 130);
+                        drawText("" + num[i], x, 130, blinking ? getBlinkingState() : 1);
                         x += getStringWidth(CAPTION_FONT, "" + num[i]);
                     }
                 }
             }
         }
 
-        private void drawImage(BufferedImage image, int x, int y, String year, Color cupColor) {
-            graphics.drawImage(image, x + (AWARD_SIZE - image.getWidth()) / 2, y + (AWARD_SIZE - image.getHeight()) / 2, image.getWidth(), image.getHeight());
+        private void drawImage(BufferedImage image, int x, int y, String year, Color cupColor, boolean blinking) {
+            blinking = blinking || year.equals("" + CURRENT_YEAR);
+            double opacity = blinking ? getBlinkingState() : 1;
+            graphics.drawImage(image, x + (AWARD_SIZE - image.getWidth()) / 2, y + (AWARD_SIZE - image.getHeight()) / 2, image.getWidth(), image.getHeight(), opacity);
             setTextColor(cupColor);
+            setTextOpacity(opacity);
             setFont(YEAR_FONT);
             drawTextThatFits(year, x, y + AWARD_SIZE, AWARD_SIZE, 30, PlateStyle.Alignment.CENTER, false);
+            setTextOpacity(1);
         }
     }
 
