@@ -410,8 +410,14 @@ public class TeamStatsWidget extends Widget {
                     drawText("" + university.getRegionalChampionships(), x, 130, blinking ? getBlinkingState() : 1);
                     x += getStringWidth(CAPTION_FONT, "" + university.getRegionalChampionships());
                 } else {
+                    int k = 0;
+                    int t = 0;
                     for (int i = 0; i < num; i++) {
-                        drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(i), CUP_COLOR, false);
+                        while (k < university.getWins() && university.getWinYears().get(k).equals(university.getRegYears().get(t))) {
+                            k++; t++;
+                        }
+                        drawImage(regionalCupImage, x, 75, "" + university.getRegYears().get(t), CUP_COLOR, false);
+                        t++;
                         x += SHIFT;
                     }
                 }
