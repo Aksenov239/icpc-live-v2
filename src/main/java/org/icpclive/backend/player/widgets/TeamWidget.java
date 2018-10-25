@@ -273,6 +273,7 @@ public class TeamWidget extends Widget {
         mainVideo.switchToNext();
         smallVideo.switchToNext();
         team = Preparation.eventsLoader.getContestData().getParticipant(getTeamId());
+        currentProblemId = nextProblemId;
     }
 
     @Override

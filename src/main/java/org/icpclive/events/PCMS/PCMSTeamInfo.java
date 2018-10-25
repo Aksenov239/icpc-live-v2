@@ -48,8 +48,17 @@ public class PCMSTeamInfo implements TeamInfo {
         }
     }
 
-    public int mergeRuns(ArrayList<PCMSRunInfo> runs, int problemId, int lastRunId) {
+    public int mergeRuns(ArrayList<PCMSRunInfo> runs, int problemId, int lastRunId, long currentTime) {
         int previousSize = problemRuns[problemId].size();
+        for (int i = 0; i < previousSize; i++) {
+            if (!problemRuns[problemId].get(i).isJudged() &&
+                    runs.get(i).isJudged()) {
+                PCMSRunInfo run = (PCMSRunInfo) problemRuns[problemId].get(i);
+                run.setLastUpdateTimestamp(currentTime);
+                run.setResult(runs.get(i).result);
+                run.setIsJudged(true);
+            }
+        }
         for (int i = previousSize; i < runs.size(); i++) {
             runs.get(i).id = lastRunId++;
             problemRuns[problemId].add(runs.get(i));
@@ -123,7 +132,7 @@ public class PCMSTeamInfo implements TeamInfo {
     }
 
     public String toString() {
-        return shortName;
+        return alias + ". " + shortName;
     }
 
     public int id;

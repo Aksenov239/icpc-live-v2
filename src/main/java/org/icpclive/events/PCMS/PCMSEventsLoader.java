@@ -3,37 +3,33 @@ package org.icpclive.events.PCMS;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.Config;
+import org.icpclive.backend.Preparation;
+import org.icpclive.events.ContestInfo;
+import org.icpclive.events.ContestInfo.Status;
+import org.icpclive.events.EventsLoader;
+import org.icpclive.events.ProblemInfo;
+import org.icpclive.events.TeamInfo;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
-import org.icpclive.backend.Preparation;
-import org.icpclive.events.ContestInfo;
-import org.icpclive.events.EventsLoader;
-import org.icpclive.events.ProblemInfo;
-import org.icpclive.events.TeamInfo;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.io.InputStream;
-import java.awt.Color;
 
-import org.icpclive.events.ContestInfo.Status;
-
-import java.util.HashMap;
-
-import static org.icpclive.events.ContestInfo.Status.BEFORE;
-import static org.icpclive.events.ContestInfo.Status.PAUSED;
-import static org.icpclive.events.ContestInfo.Status.RUNNING;
+import static org.icpclive.events.ContestInfo.Status.*;
 
 public class PCMSEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(PCMSEventsLoader.class);
@@ -47,7 +43,7 @@ public class PCMSEventsLoader extends EventsLoader {
             ProblemInfo problem = new ProblemInfo();
             problem.letter = element.attr("alias");
             problem.name = element.attr("name");
-            problem.color = element.attr("color") == null ? Color.BLACK : Color.getColor(element.attr("color"));
+            problem.color = element.attr("color") == null ? Color.BLACK : Color.decode(element.attr("color"));
             contestInfo.get().problems.add(problem);
         }
     }
@@ -56,6 +52,8 @@ public class PCMSEventsLoader extends EventsLoader {
 
     public PCMSEventsLoader() throws IOException {
         properties = Config.loadProperties("events");
+
+        emulationSpeed = Double.parseDouble(properties.getProperty("emulation.speed", "1"));
 
         ContestInfo.CONTEST_LENGTH = Integer.parseInt(properties.getProperty("contest.length", "" + 5 * 60 * 60 * 1000));
         ContestInfo.FREEZE_TIME = Integer.parseInt(properties.getProperty("freeze.time", "" + 4 * 60 * 60 * 1000));
@@ -72,18 +70,18 @@ public class PCMSEventsLoader extends EventsLoader {
             String alias = participant.attr("id");
             String shortName = participant.attr("shortname");
             if (shortName == null || shortName.length() == 0) {
-              int index = participantName.indexOf("(");
-              shortName = participantName.substring(0, index - 1);
-              index = -1;//shortName.indexOf(",");
-              shortName = shortName.substring(index == -1 ? 0 : index + 2);
-              if (shortName.length() >= 30) {
-                shortName = shortName.substring(0, 27) + "...";
-              }
+                int index = participantName.indexOf("(");
+                shortName = participantName.substring(0, index - 1);
+                index = -1;//shortName.indexOf(",");
+                shortName = shortName.substring(index == -1 ? 0 : index + 2);
+                if (shortName.length() >= 30) {
+                    shortName = shortName.substring(0, 27) + "...";
+                }
             }
             String region = participant.attr("region");
             if (region == null || region.length() == 0) {
-              int index = participantName.indexOf(",");
-              if (index != -1) region = participantName.substring(0, index);
+                int index = participantName.indexOf(",");
+                if (index != -1) region = participantName.substring(0, index);
             }
             String hashTag = participant.attr("hashtag");
 
@@ -114,8 +112,8 @@ public class PCMSEventsLoader extends EventsLoader {
             InputStream inputStream = Preparation.openAuthorizedStream(url, login, password);
 
             String xml = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                        .lines()
-                        .collect(Collectors.joining());
+                    .lines()
+                    .collect(Collectors.joining());
             Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
             parseAndUpdateStandings(doc);
         } catch (IOException e) {
@@ -182,6 +180,10 @@ public class PCMSEventsLoader extends EventsLoader {
 
         updatedContestInfo.frozen = "yes".equals(element.attr("frozen"));
 
+        updatedContestInfo.CONTEST_LENGTH = contestInfo.get().CONTEST_LENGTH;
+        updatedContestInfo.FREEZE_TIME = contestInfo.get().CONTEST_LENGTH;
+        updatedContestInfo.problems = contestInfo.get().problems;
+
         TeamInfo[] standings = contestInfo.get().getStandings();
         boolean[] taken = new boolean[standings.length];
         element.children().forEach(session -> {
@@ -196,7 +198,7 @@ public class PCMSEventsLoader extends EventsLoader {
 
         for (int i = 0; i < taken.length; i++) {
             if (!taken[i]) {
-                updatedContestInfo.addTeamStandings((PCMSTeamInfo)initialStandings[i]);
+                updatedContestInfo.addTeamStandings((PCMSTeamInfo) initialStandings[i]);
             }
         }
 
@@ -221,7 +223,7 @@ public class PCMSEventsLoader extends EventsLoader {
 
         for (int i = 0; i < element.children().size(); i++) {
             ArrayList<PCMSRunInfo> problemRuns = parseProblemRuns(element.child(i), i, teamInfoCopy.getId());
-            lastRunId = teamInfoCopy.mergeRuns(problemRuns, i, lastRunId);
+            lastRunId = teamInfoCopy.mergeRuns(problemRuns, i, lastRunId, contestInfo.get().getCurrentTime());
         }
 
         return teamInfoCopy;
@@ -263,7 +265,7 @@ public class PCMSEventsLoader extends EventsLoader {
         boolean isJudged = !isFrozen && !"undefined".equals(element.attr("outcome"));
         String result = "yes".equals(element.attr("accepted")) ? "AC" :
                 !isJudged ? "" :
-                outcomeMap.getOrDefault(element.attr("outcome"), "WA");
+                        outcomeMap.getOrDefault(element.attr("outcome"), "WA");
 
         return new PCMSRunInfo(isJudged, result, problemId, time, timestamp, teamId);
     }

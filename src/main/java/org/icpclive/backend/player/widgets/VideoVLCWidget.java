@@ -37,15 +37,14 @@ public class VideoVLCWidget extends PlayerWidget {
     }
 
     public void loadNext(String url) {
-//        SwingUtilities.invokeLater(() -> {
-            if (url == null) {
-                nextUrl = null;
-                return;
-            }
-            nextPlayer = new PlayerInImage(width, height, null, url);
-            nextImage = nextPlayer.getImage();
-            nextUrl = url;
-//        });
+        if (url == null) {
+            nextUrl = null;
+            return;
+        }
+        nextPlayer = new PlayerInImage(width, height, null, url);
+        nextImage = nextPlayer.getImage();
+        nextUrl = url;
+        nextPlayer.setVolume(0);
     }
 
     public void switchToNext() {
@@ -65,6 +64,8 @@ public class VideoVLCWidget extends PlayerWidget {
         player = nextPlayer;
         image = nextImage;
         currentUrl = nextUrl;
+
+        player.setVolume(100);
 
         oldPlayer.stop();
         nextPlayer = null;
