@@ -47,7 +47,7 @@ public class NewTeamWidget extends Widget {
         if (!data.teamData.isVisible) {
             setVisible(false);
             if (views.get(currentView) != emptyView) {
-                views.get(currentView).timeToLive = 0;
+                views.get(currentView).timeToSwitch = 0;
             }
         } else {
             setVisible(true);
@@ -83,7 +83,9 @@ public class NewTeamWidget extends Widget {
         for (TeamStatusView view : views) {
             view.paintImpl(g, width, height);
         }
-        if (views.get(currentView).timeToLive <= 0 && views.get(currentView).isVisible()) {
+        if ((views.get(currentView).timeToSwitch <= System.currentTimeMillis() ||
+                (currentView + 1 < views.size() && !views.get(currentView + 1).mainVideo.isBlack()))
+                && views.get(currentView).isVisible()) {
             views.get(currentView).setVisible(false);
         }
         if (views.get(currentView).visibilityState <= 0) {
@@ -93,7 +95,7 @@ public class NewTeamWidget extends Widget {
             currentView++;
             if (currentView == views.size()) {
                 views.add(emptyView);
-                emptyView.timeToLive = Integer.MAX_VALUE;
+                emptyView.timeToSwitch = Long.MAX_VALUE;
             }
             views.get(currentView).setVisible(true);
         }
@@ -102,7 +104,7 @@ public class NewTeamWidget extends Widget {
     public void addView(TeamInfo team, String infoType) {
         System.err.println("Add view " + team + " " + infoType);
         if (views.size() - currentView > 0) {
-            views.get(currentView).timeToLive = timeToSwitch; // FIX!!!
+            views.get(currentView).timeToSwitch = System.currentTimeMillis() + timeToSwitch; // FIX!!!
             System.err.println("TTL " + timeToSwitch);
         }
         views.add(new TeamStatusView(team, infoType, sleepTime));
@@ -146,7 +148,7 @@ public class NewTeamWidget extends Widget {
         private final PlayerInImage mainVideo;
         private final TeamStatsWidget stats;
         private TeamInfo team;
-        int timeToLive = Integer.MAX_VALUE;
+        long timeToSwitch = Long.MAX_VALUE;
 
         public TeamStatusView(TeamInfo team, String infoType, int sleepTime) {
             this.team = team;
@@ -194,7 +196,6 @@ public class NewTeamWidget extends Widget {
         @Override
         protected void paintImpl(AbstractGraphics g, int width, int height) {
             super.paintImpl(g, width, height);
-            timeToLive -= dt;
             if (team == null) {
                 return;
             }
