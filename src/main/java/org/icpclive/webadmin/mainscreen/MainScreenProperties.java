@@ -9,6 +9,7 @@ import org.icpclive.events.ContestInfo;
 import org.icpclive.events.TeamInfo;
 import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.events.EventsLoader;
+import org.icpclive.webadmin.mainscreen.picture.Picture;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -109,6 +110,9 @@ public class MainScreenProperties {
         maximumFlowSize = Integer.parseInt(properties.getProperty("creeping.line.maximum.flow", "30"));
         messageLifespanCreepingLine = Integer.parseInt(properties.getProperty("creeping.line.message.lifespan",
                 "600000"));
+
+        backupPicturesFilename = properties.getProperty("backup.pictures");
+        backupPictures = new BackUp<>(Picture.class, backupPicturesFilename);
     }
 
     public long overlayedDelay;
@@ -156,4 +160,8 @@ public class MainScreenProperties {
     // Creeping line
     public final int maximumFlowSize;
     public final long messageLifespanCreepingLine;
+
+    // Picture
+    public final String backupPicturesFilename;
+    public final BackUp<Picture> backupPictures;
 }

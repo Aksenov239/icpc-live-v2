@@ -12,6 +12,7 @@ import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import static java.lang.Math.rint;
 import static java.lang.Math.round;
@@ -430,4 +431,29 @@ public abstract class Widget {
         graphics.fillPolygon(xx, yy, STAR_COLOR, opacity);
     }
 
-}
+    public String[] split(AbstractGraphics g, String text, int width) {
+        String[] tokens = text.split(" ");
+        ArrayList<String> division = new ArrayList<>();
+
+        int l = 0;
+        while (l < tokens.length) {
+            String current = tokens[l];
+            int r = l + 1;
+            while (r < tokens.length) {
+                current += " " + tokens[r];
+                if (g.getStringBounds(current, font).getWidth() > width) {
+                    break;
+                }
+                r++;
+            }
+
+            current = tokens[l++];
+            while (l < r) {
+                current += " " + tokens[l++];
+            }
+            division.add(current);
+        }
+        return division.toArray(new String[0]);
+    }
+
+        }

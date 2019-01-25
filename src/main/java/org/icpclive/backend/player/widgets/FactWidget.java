@@ -40,29 +40,6 @@ public class FactWidget extends Widget {
         font = Font.decode(MAIN_FONT + " " + (int) Math.round(rowHeight * 0.7));
     }
 
-    public String[] split(AbstractGraphics g, String text) {
-        String[] tokens = text.split(" ");
-        ArrayList<String> division = new ArrayList<>();
-        int l = 0;
-        while (l < tokens.length) {
-            String current = tokens[l];
-            int r = l + 1;
-            while (r < tokens.length) {
-                current += " " + tokens[r];
-                if (g.getStringBounds(current, font).getWidth() > actualWidth) {
-                    break;
-                }
-                r++;
-            }
-
-            current = tokens[l++];
-            while (l < r) {
-                current += " " + tokens[l++];
-            }
-            division.add(current);
-        }
-        return division.toArray(new String[0]);
-    }
 
     @Override
     public void updateImpl(Data data) {
@@ -86,7 +63,7 @@ public class FactWidget extends Widget {
         super.paintImpl(g, width, height);
 
         if (fullText != null && text == null) {
-            text = split(g, fullText);
+            text = split(g, fullText, actualWidth);
         }
         if (text == null) {
             return;

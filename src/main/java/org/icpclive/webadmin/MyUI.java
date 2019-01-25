@@ -21,6 +21,7 @@ import org.icpclive.webadmin.mainscreen.MainScreenStandingsView;
 import org.icpclive.webadmin.mainscreen.MainScreenTeamView;
 import org.icpclive.webadmin.mainscreen.MainScreenView;
 import org.icpclive.webadmin.mainscreen.Polls.MainScreenPollView;
+import org.icpclive.webadmin.mainscreen.picture.MainScreenPictureView;
 import org.icpclive.webadmin.mainscreen.statistics.MainScreenStatisticsView;
 
 import javax.servlet.annotation.WebServlet;
@@ -72,7 +73,7 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenSplitScreenView.NAME, MainScreenSplitScreenView.class);
 
-
+        getNavigator().addView(MainScreenPictureView.NAME, MainScreenPictureView.class);
 
         menu.addItem("Captions", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
@@ -106,6 +107,10 @@ public class MyUI extends UI {
             getNavigator().navigateTo(CreepingLineView.NAME);
         });
 
+        menu.addItem("Picture Upload", selectedItem -> {
+            getNavigator().navigateTo(MainScreenPictureView.NAME);
+        });
+
         menu.addItem("Logout", selectedItem -> {
             getSession().setAttribute("user", null);
             getNavigator().navigateTo("");
@@ -137,6 +142,9 @@ public class MyUI extends UI {
             }
             if (currentView instanceof MainScreenSplitScreenView) {
                 ((MainScreenSplitScreenView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenPictureView) {
+                ((MainScreenPictureView) currentView).refresh();
             }
 
             DataLoader.iterateFrontend();

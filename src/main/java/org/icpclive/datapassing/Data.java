@@ -29,6 +29,7 @@ public class Data extends CachedData {
     public WordStatisticsData wordStatisticsData;
     public FrameRateData frameRateData;
     public FactData factData;
+    public PictureData pictureData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -58,6 +59,7 @@ public class Data extends CachedData {
             wordStatisticsData = (WordStatisticsData) cache.get(WordStatisticsData.class);
             frameRateData = (FrameRateData) cache.get(FrameRateData.class);
             factData = (FactData) cache.get(FactData.class);
+            pictureData = (PictureData) cache.get(PictureData.class);
             //cameraData = (CameraData) cache.get(CameraData.class);
             //log.debug(teamData);
         } catch (Exception e) {
