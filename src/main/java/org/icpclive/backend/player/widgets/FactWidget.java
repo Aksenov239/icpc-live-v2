@@ -40,7 +40,6 @@ public class FactWidget extends Widget {
         font = Font.decode(MAIN_FONT + " " + (int) Math.round(rowHeight * 0.7));
     }
 
-
     @Override
     public void updateImpl(Data data) {
         FactData factData = data.factData;

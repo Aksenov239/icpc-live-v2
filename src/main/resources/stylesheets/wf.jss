@@ -156,3 +156,7 @@ fact.title.background=white.color
 fact.title.text=black.color
 fact.text.background=main.color
 fact.text.text=white.color
+
+#picture
+picture.text.background = main.color
+picture.text.text = white.color

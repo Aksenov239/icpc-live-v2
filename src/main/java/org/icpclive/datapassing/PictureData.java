@@ -14,6 +14,7 @@ public class PictureData extends CachedData {
 
     public CachedData initialize() {
         PictureData data = MainScreenData.getMainScreenData().pictureData;
+        this.timestamp = data.timestamp;
         this.picture = data.picture;
         return this;
     }
