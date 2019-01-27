@@ -200,24 +200,24 @@ public class TeamStatsWidget extends Widget {
         protected void paintImpl(AbstractGraphics g, int width, int height) {
             try {
                 setGraphics(g.create());
-                List<String> parts = split(university.getFullName(), NAME_FONT, STATS_WIDTH - 50);
+                String[] parts = split(university.getFullName(), NAME_FONT, STATS_WIDTH - 50);
                 setTextColor(Color.WHITE);
-                if (parts.size() == 1) {
+                if (parts.length == 1) {
                     int y = 32;
                     setFont(NAME_FONT);
-                    drawText(parts.get(0), 0, 80);
+                    drawText(parts[0], 0, 80);
                 } else {
                     parts = split(university.getFullName(), NAME_FONT_SMALLER, STATS_WIDTH - 50);
-                    int y = parts.size() == 1 ? 80 : 60;
+                    int y = parts.length == 1 ? 80 : 60;
                     setFont(NAME_FONT_SMALLER);
-                    for (int i = 0; i < parts.size(); i++) {
-                        drawText(parts.get(i), 0, y);
+                    for (int i = 0; i < parts.length; i++) {
+                        drawText(parts[i], 0, y);
                         y += 52;
                     }
                 }
                 setFont(TEXT_FONT);
                 String text = getInfoText(team, university);
-                drawText(text, 0, parts.size() == 1 ? 130 : 160);
+                drawText(text, 0, parts.length == 1 ? 130 : 160);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -500,26 +500,6 @@ public class TeamStatsWidget extends Widget {
             return new Color(0x148A43);
         }
         return new Color(0x808080);
-    }
-
-    private static List<String> split(String s, Font font, int max) {
-        List<String> res = new ArrayList<>();
-        String last = null;
-        for (String word : s.split(" ")) {
-            String next = last == null ? word : last + " " + word;
-            if (getStringWidth(font, next) <= max) {
-                last = next;
-            } else {
-                res.add(last);
-                last = word;
-            }
-        }
-        res.add(last);
-        return res;
-    }
-
-    private static int getStringWidth(Font font, String string) {
-        return (int) font.getStringBounds(string, new FontRenderContext(new AffineTransform(), true, true)).getWidth();
     }
 
     private static BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {

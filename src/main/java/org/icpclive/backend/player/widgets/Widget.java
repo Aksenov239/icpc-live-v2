@@ -12,6 +12,8 @@ import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 import static java.lang.Math.rint;
@@ -431,7 +433,11 @@ public abstract class Widget {
         graphics.fillPolygon(xx, yy, STAR_COLOR, opacity);
     }
 
-    public String[] split(AbstractGraphics g, String text, int width) {
+    public static int getStringWidth(Font font, String string) {
+        return (int) font.getStringBounds(string, new FontRenderContext(new AffineTransform(), true, true)).getWidth();
+    }
+
+    public String[] split(String text, Font font, int width) {
         String[] tokens = text.split(" ");
         ArrayList<String> division = new ArrayList<>();
 
@@ -441,7 +447,7 @@ public abstract class Widget {
             int r = l + 1;
             while (r < tokens.length) {
                 current += " " + tokens[r];
-                if (g.getStringBounds(current, font).getWidth() > width) {
+                if (getStringWidth(font, current) > width) {
                     break;
                 }
                 r++;

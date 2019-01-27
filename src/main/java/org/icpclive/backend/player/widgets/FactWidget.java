@@ -63,7 +63,7 @@ public class FactWidget extends Widget {
         super.paintImpl(g, width, height);
 
         if (fullText != null && text == null) {
-            text = split(g, fullText, actualWidth);
+            text = split(fullText, font, actualWidth);
         }
         if (text == null) {
             return;
