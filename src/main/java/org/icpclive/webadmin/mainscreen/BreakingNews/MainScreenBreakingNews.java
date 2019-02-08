@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class    MainScreenBreakingNews extends CustomComponent implements View {
+public class MainScreenBreakingNews extends CustomComponent implements View {
     private static final Logger log = LogManager.getLogger(MainScreenBreakingNews.class);
 
     public final static String NAME = "mainscreen-breaking-news";
@@ -139,7 +139,7 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
                     while (lastShowedRun <= contestInfo.getLastRunId()) {
                         RunInfo run = contestInfo.getRun(lastShowedRun);
                         if (run != null) {
-                            System.err.println("Add run " + run);
+                            System.err.println("Add run " + run.getId() + " " + run);
                             BeanItem<BreakingNews> bi = container.addItemAt(0,
                                     new BreakingNews(run.getResult(), "" + (char) (run.getProblemId() + 'A'), run.getTeamId() + 1, run.getTime(), run.getId()));
                             hm.put(run.getId(), bi);
@@ -154,6 +154,8 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
                     }
 
                     toDelete.forEach(container::removeItem);
+                    toDelete.forEach(x -> hm.remove(x.getRunId()));
+                    System.err.println(hm);
 
                     for (int i = 0; i < container.getItemIds().size(); i++) {
                         BreakingNews bn = container.getItemIds().get(i);
@@ -161,9 +163,12 @@ public class    MainScreenBreakingNews extends CustomComponent implements View {
                         RunInfo run = contestInfo.getRun(runId);
                         if (container.getItemIds().get(i).getOutcome().length() == 0 &&
                                 run.getResult().length() != 0) {
-                            System.err.println("Updated run " + run);
+                            System.err.println("Updated run " + runId + " " + run);
                         }
                         BeanItem<BreakingNews> bi = hm.get(runId);
+                        if (bi == null) {
+                            continue;
+                        }
                         bi.getItemProperty("outcome").setValue(run.getResult());
                         bi.getItemProperty("timestamp").setValue(run.getTime());
                     }

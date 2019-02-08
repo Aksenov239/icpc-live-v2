@@ -66,6 +66,7 @@ public class SplitScreenWidget extends Widget {
             lastSwitch[i] = System.currentTimeMillis() + i * switchTime / 4;
         }
 
+        System.err.println("Twitter based queue");
         usersQueue = TwitterBasedQueue.getInstance();
         currentRunId = 1;
     }

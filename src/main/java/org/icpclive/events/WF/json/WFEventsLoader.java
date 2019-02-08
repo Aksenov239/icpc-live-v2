@@ -17,6 +17,8 @@ import org.icpclive.events.WF.WFTestCaseInfo;
 import java.awt.*;
 import java.io.*;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -262,7 +264,8 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public long parseTime(String time) {
-        ZonedDateTime zdt = ZonedDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+//        ZonedDateTime zdt = ZonedDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        ZonedDateTime zdt = ZonedDateTime.parse(time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         return zdt.toInstant().toEpochMilli();
 //        LocalDateTime ldt = LocalDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 //        return ldt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -296,6 +299,9 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void readState(WFContestInfo contestInfo, JsonObject je) {
+        if (je.get("started").isJsonNull()) {
+            return;
+        }
         String startTime = je.get("started").getAsString();
         contestInfo.setStartTime(parseTime(startTime));
         if (emulation) {
@@ -454,6 +460,7 @@ public class WFEventsLoader extends EventsLoader {
                         break;
                     }
 
+//                    System.err.println(line);
                     JsonObject je = new Gson().fromJson(line, JsonObject.class);
                     if (je == null) {
                         log.info("Non-json line");

@@ -81,11 +81,11 @@ public class ClockWidget extends Widget {
                 dx += w1;
             }
         } */
-        long time = Preparation.eventsLoader.getContestData().getCurrentTime() / 1000;
+        long time = Preparation.eventsLoader.getContestData().getCurrentTime();
         String timeS = getTimeString(Math.abs(time));
 //        drawRectWithText(g, timeS, x, y, WIDTH, HEIGHT, Graphics.Position.CENTER, clockFont, ClockStylesheet.main.background, ClockStylesheet.main.text, opacity, WidgetAnimation.VERTICAL_ANIMATED);
 
-        PlateStyle style = time < ContestInfo.FREEZE_TIME / 1000 ? ClockStylesheet.main : ClockStylesheet.freeze;
+        PlateStyle style = time < ContestInfo.FREEZE_TIME ? ClockStylesheet.main : ClockStylesheet.freeze;
         drawTextInRect(g, timeS, x, y, WIDTH, HEIGHT, PlateStyle.Alignment.CENTER,
                 clockFont, style, opacity, 1, WidgetAnimation.VERTICAL_ANIMATED);
 //        drawRect(g, x, y, WIDTH, HEIGHT, ClockStylesheet.main.background, 1);

@@ -118,6 +118,9 @@ public class TeamStatsWidget extends Widget {
 
     @Override
     protected void paintImpl(AbstractGraphics g, int ww, int hh) {
+        if (fullPeriod == 0) {
+            return;
+        }
         setGraphics(g.create());
         if (visibilityState == 0) time = 0;
         time += dt;

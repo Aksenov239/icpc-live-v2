@@ -1,5 +1,6 @@
 package org.icpclive.events;
 
+import org.icpclive.Config;
 import org.icpclive.datapassing.StandingsData;
 
 import java.util.ArrayList;

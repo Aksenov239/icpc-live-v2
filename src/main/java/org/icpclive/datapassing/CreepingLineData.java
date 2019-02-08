@@ -3,7 +3,6 @@ package org.icpclive.datapassing;
 import org.icpclive.webadmin.creepingline.Message;
 import org.icpclive.webadmin.creepingline.MessageData;
 import org.icpclive.webadmin.mainscreen.Advertisement;
-import org.icpclive.webadmin.mainscreen.MainScreenData;
 
 import java.util.ArrayList;
 import java.util.List;
