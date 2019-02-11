@@ -169,7 +169,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
                             continue;
                         }
                         bi.getItemProperty("outcome").setValue(run.getResult());
-                        bi.getItemProperty("timestamp").setValue(run.getTime());
+                        bi.getItemProperty("timestamp").setValue(run.getTime() * 1000);
                     }
 
                     try {
