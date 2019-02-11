@@ -10,8 +10,8 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.datapassing.CreepingLineData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.events.EventsLoader;
-import org.icpclive.events.WF.json.WFEventsLoader;
 import org.icpclive.events.WF.WFAnalystMessage;
+import org.icpclive.events.WF.json.WFEventsLoader;
 import org.icpclive.webadmin.ContextListener;
 import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.webadmin.mainscreen.Advertisement;
@@ -116,6 +116,8 @@ public class MessageData {
                     while (eventsLoader.getContestData() == null) {
                     }
 
+                    while (eventsLoader.getContestData().getStartTime() == 0) { }
+
                     String url = properties.getProperty("analytics.url", null);
                     if (url == null) {
                         log.info("There is no analytics feed");
@@ -132,17 +134,21 @@ public class MessageData {
                         String line;
                         while ((line = br.readLine()) != null) {
                             JsonObject je = new Gson().fromJson(line, JsonObject.class);
-                            WFAnalystMessage message =
-                                    wfEventsLoader.readAnalystMessage(je.get("data").getAsJsonObject());
-                            long endTime = message.getTime() + MainScreenData.getProperties().messageLifespanCreepingLine;
-                            if (message.getPriority() <= 3 &&
-                                    endTime > System.currentTimeMillis()) {
-                                System.err.println("Analytics message: " + line);
-                                addMessageToFlow(new Message(message.getMessage(),
-                                        message.getTime(),
-                                        MainScreenData.getProperties().messageLifespanCreepingLine,
-                                        false,
-                                        "Analytics"));
+                            switch (je.get("type").getAsString()) {
+                                case "commentary-messages":
+                                    WFAnalystMessage message =
+                                            wfEventsLoader.readAnalystMessage(je.get("data").getAsJsonObject());
+                                    long endTime = message.getTime() + MainScreenData.getProperties().messageLifespanCreepingLine;
+                                    if (message.getPriority() <= 3 &&
+                                            endTime > System.currentTimeMillis()) {
+                                        System.err.println("Analytics message: " + line);
+                                        addMessageToFlow(new Message(message.getMessage(),
+                                                message.getTime(),
+                                                MainScreenData.getProperties().messageLifespanCreepingLine,
+                                                false,
+                                                "Analytics"));
+                                    }
+                                    break;
                             }
                         }
                     } catch (IOException e) {

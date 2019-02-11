@@ -155,7 +155,6 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
 
                     toDelete.forEach(container::removeItem);
                     toDelete.forEach(x -> hm.remove(x.getRunId()));
-                    System.err.println(hm);
 
                     for (int i = 0; i < container.getItemIds().size(); i++) {
                         BreakingNews bn = container.getItemIds().get(i);
