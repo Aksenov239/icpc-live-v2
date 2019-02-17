@@ -51,12 +51,18 @@ public class StatisticsData extends CachedData {
             mainScreenData.standingsData.hide();
             turnOff = true;
         }
-        if (MainScreenData.getMainScreenData().pollData.isVisible) {
+        if (mainScreenData.pollData.isVisible) {
             mainScreenData.pollData.hide();
+            turnOff = true;
+        }
+        if (mainScreenData.pictureData.isVisible()) {
+            mainScreenData.pictureData.hide();
             turnOff = true;
         }
         if (turnOff) {
             delay = MainScreenData.getProperties().overlayedDelay;
+        } else {
+            delay = 0;
         }
     }
 

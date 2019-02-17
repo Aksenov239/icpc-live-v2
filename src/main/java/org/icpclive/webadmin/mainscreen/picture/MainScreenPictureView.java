@@ -113,11 +113,15 @@ public class MainScreenPictureView extends CustomComponent implements View {
                 Notification.show("You should choose a picture", Notification.Type.WARNING_MESSAGE);
                 return;
             }
-            mainScreenData.pictureData.setVisible((Picture) pictures.getValue());
+            String error = mainScreenData.pictureData.setVisible((Picture) pictures.getValue());
+            if (error != null) {
+                Notification.show(error, Notification.Type.WARNING_MESSAGE);
+                return;
+            }
         });
         hide = new Button("Hide");
         hide.addClickListener(event -> {
-            mainScreenData.pictureData.setVisible(null);
+            mainScreenData.pictureData.hide();
         });
         edit = new Button("Edit");
         edit.addClickListener(event -> {

@@ -54,13 +54,13 @@ public class PollWidget extends Widget {
 
     @Override
     public void updateImpl(Data data) {
-            if (data.pollData.isVisible ^ isVisible()) {
-                lastVisibleChange = System.currentTimeMillis();
-                setVisible(data.pollData.isVisible);
-            }
-            if (data.pollData.isVisible) {
-                pollToShow = data.pollData.poll;
-            }
+        if (data.pollData.isVisible ^ isVisible()) {
+            lastVisibleChange = System.currentTimeMillis();
+            setVisible(data.pollData.isVisible);
+        }
+        if (data.pollData.isVisible) {
+            pollToShow = data.pollData.poll;
+        }
     }
 
     @Override

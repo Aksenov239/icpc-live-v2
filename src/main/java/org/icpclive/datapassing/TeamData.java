@@ -57,8 +57,14 @@ public class TeamData extends CachedData {
             mainScreenData.pollData.hide();
             turnOff = true;
         }
+        if (mainScreenData.pictureData.isVisible()) {
+            mainScreenData.pictureData.hide();
+            turnOff = true;
+        }
         if (turnOff) {
             delay = MainScreenData.getProperties().overlayedDelay;
+        } else {
+            delay = 0;
         }
     }
 
@@ -223,6 +229,7 @@ public class TeamData extends CachedData {
         public JsonElement serialize(TeamData teamData, Type type, JsonSerializationContext jsonSerializationContext) {
             final JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("timestamp", teamData.timestamp);
+            jsonObject.addProperty("delay", teamData.delay);
             jsonObject.addProperty("isVisible", teamData.isVisible);
             jsonObject.addProperty("infoType", teamData.infoType);
             jsonObject.addProperty("teamId", teamData.teamId);
@@ -242,6 +249,7 @@ public class TeamData extends CachedData {
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
 
             teamData.timestamp = jsonObject.get("timestamp").getAsLong();
+            teamData.delay = jsonObject.get("delay").getAsInt();
             teamData.isVisible = jsonObject.get("isVisible").getAsBoolean();
             teamData.infoType = jsonObject.get("infoType").getAsString();
             teamData.teamId = jsonObject.get("teamId").getAsInt();

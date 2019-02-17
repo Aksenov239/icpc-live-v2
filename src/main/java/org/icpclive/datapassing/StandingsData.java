@@ -46,14 +46,24 @@ public class StandingsData extends CachedData {
 
     public void switchOverlaysOff() {
         if (isBig) {
+            boolean turnOff = false;
             MainScreenData mainScreenData = MainScreenData.getMainScreenData();
             if (mainScreenData.statisticsData.isVisible()) {
-                delay = MainScreenData.getProperties().overlayedDelay;
+                turnOff = true;
                 mainScreenData.statisticsData.hide();
             }
             if (mainScreenData.pollData.isVisible) {
-                delay = MainScreenData.getProperties().overlayedDelay;
+                turnOff = true;
                 mainScreenData.pollData.hide();
+            }
+            if (mainScreenData.pictureData.isVisible()) {
+                turnOff = true;
+                mainScreenData.pictureData.hide();
+            }
+            if (turnOff) {
+                delay = MainScreenData.getProperties().overlayedDelay;
+            } else {
+                delay = 0;
             }
         }
     }
@@ -61,6 +71,7 @@ public class StandingsData extends CachedData {
     public void hide() {
         delay = 0;
         synchronized (standingsLock) {
+            standingsType = StandingsType.HIDE;
             isVisible = false;
             timestamp = System.currentTimeMillis();
         }

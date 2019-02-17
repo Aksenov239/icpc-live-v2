@@ -16,15 +16,36 @@ public class PictureData extends CachedData {
         PictureData data = MainScreenData.getMainScreenData().pictureData;
         this.timestamp = data.timestamp;
         this.picture = data.picture;
+        this.delay = data.delay;
         return this;
     }
 
     public Picture picture;
 
-    public synchronized void setVisible(Picture picture) {
+    public synchronized String setVisible(Picture picture) {
+        String error = checkOverlays();
+        if (error != null) {
+            return error;
+        }
+        if (this.picture != null) {
+            return "Please hide the previous picture first";
+        }
         this.picture = picture;
         this.timestamp = System.currentTimeMillis();
+        switchOverlaysOff();
         recache();
+        return null;
+    }
+
+    public synchronized void hide() {
+        this.picture = null;
+        this.timestamp = System.currentTimeMillis();
+        delay = 0;
+        recache();
+    }
+
+    public synchronized boolean isVisible() {
+        return picture != null;
     }
 
     private void recache() {
@@ -45,6 +66,41 @@ public class PictureData extends CachedData {
 
     public synchronized void setNewCaption(Object picture, String newCaption) {
         MainScreenData.getProperties().backupPictures.setProperty(picture, "caption", newCaption);
+    }
+
+    public String checkOverlays() {
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        if (mainScreenData.teamData.isVisible) {
+            return mainScreenData.teamData.getOverlayError();
+        }
+        return null;
+    }
+
+    public void switchOverlaysOff() {
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        boolean turnOff = false;
+        if (mainScreenData.standingsData.isVisible &&
+            mainScreenData.standingsData.isBig) {
+            mainScreenData.standingsData.hide();
+            turnOff = true;
+        }
+        if (mainScreenData.statisticsData.isVisible()) {
+            mainScreenData.statisticsData.hide();
+            turnOff = true;
+        }
+        if (mainScreenData.pollData.isVisible) {
+            mainScreenData.pollData.hide();
+            turnOff = true;
+        }
+        if (turnOff) {
+            delay = MainScreenData.getProperties().overlayedDelay;
+        } else {
+            delay = 0;
+        }
+    }
+
+    public String getOverlayError() {
+        return "You need to hide picture first";
     }
 
     public void update() {

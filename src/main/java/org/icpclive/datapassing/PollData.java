@@ -1,6 +1,7 @@
 package org.icpclive.datapassing;
 
 import com.google.gson.*;
+import org.icpclive.backend.opengl.Main;
 import org.icpclive.webadmin.mainscreen.MainScreenData;
 import org.icpclive.webadmin.mainscreen.Polls.Poll;
 
@@ -14,6 +15,9 @@ public class PollData extends CachedData {
     public PollData initialize() {
         PollData data = MainScreenData.getMainScreenData().pollData;
         this.poll = data.poll;
+        this.isVisible = data.isVisible;
+        this.timestamp = data.timestamp;
+        this.delay = data.delay;
 
         return data;
     }
@@ -27,13 +31,29 @@ public class PollData extends CachedData {
         if (mainScreenData.teamData.isVisible) {
             return mainScreenData.teamData.getOverlayError();
         }
-        if (mainScreenData.statisticsData.isVisible()) {
-            return mainScreenData.standingsData.getOverlayError();
-        }
-        if (mainScreenData.standingsData.isVisible) {
-            return mainScreenData.standingsData.getOverlayError();
-        }
         return null;
+    }
+
+    public void switchOverlaysOff() {
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        boolean turnOff = false;
+        if (mainScreenData.standingsData.isVisible) {
+            mainScreenData.standingsData.hide();
+            turnOff = true;
+        }
+        if (mainScreenData.statisticsData.isVisible()) {
+            mainScreenData.statisticsData.hide();
+            turnOff = true;
+        }
+        if (mainScreenData.pictureData.isVisible()) {
+            mainScreenData.pictureData.hide();
+            turnOff = true;
+        }
+        if (turnOff) {
+            delay = MainScreenData.getProperties().overlayedDelay;
+        } else {
+            delay = 0;
+        }
     }
 
     public void hide() {
@@ -56,6 +76,7 @@ public class PollData extends CachedData {
             this.poll = poll;
 //            System.err.println("Set poll " + this.poll.getHashtag());
             isVisible = true;
+            switchOverlaysOff();
             recache();
         }
         return null;
@@ -74,7 +95,6 @@ public class PollData extends CachedData {
     }
 
     public Poll poll;
-    public long timestamp;
     public boolean isVisible = false;
 
     public static class PollDataSerializer implements JsonSerializer<PollData> {
@@ -84,6 +104,7 @@ public class PollData extends CachedData {
                 final JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("timestamp", pollData.timestamp);
                 jsonObject.addProperty("isVisible", pollData.isVisible);
+                jsonObject.addProperty("delay", pollData.delay);
                 Poll poll = pollData.poll;
                 Gson gsonSerializer = new GsonBuilder()
                         .registerTypeAdapter(Poll.class, new Poll.PollSerializer())
@@ -112,8 +133,9 @@ public class PollData extends CachedData {
                 pollData.poll = gsonDeserializer.fromJson(pollString, Poll.class);
             }
 
-            pollData.timestamp = jsonObject.get("timestamp").getAsInt();
+            pollData.timestamp = jsonObject.get("timestamp").getAsLong();
             pollData.isVisible = jsonObject.get("isVisible").getAsBoolean();
+            pollData.delay = jsonObject.get("delay").getAsInt();
             return pollData;
         }
     }
