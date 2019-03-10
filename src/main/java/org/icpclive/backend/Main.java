@@ -121,6 +121,8 @@ public class Main {
                 50
         ));
 
+        generator.addWidget(new PvPWidget());
+
         generator.addWidget(new TestFramesWidget());
 
         if (outputMode.equals("file")) {

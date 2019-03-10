@@ -30,6 +30,7 @@ public class Data extends CachedData {
     public FrameRateData frameRateData;
     public FactData factData;
     public PictureData pictureData;
+    public PvPData pvpData;
 
     //TODO merge this to statuses, as subclass.
 
@@ -60,6 +61,7 @@ public class Data extends CachedData {
             frameRateData = (FrameRateData) cache.get(FrameRateData.class);
             factData = (FactData) cache.get(FactData.class);
             pictureData = (PictureData) cache.get(PictureData.class);
+            pvpData = (PvPData) cache.get(PvPData.class);
             //cameraData = (CameraData) cache.get(CameraData.class);
             //log.debug(teamData);
         } catch (Exception e) {

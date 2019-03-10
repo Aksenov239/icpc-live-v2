@@ -26,6 +26,8 @@ public class DataLoader {
             .registerTypeAdapter(TeamData.class, new TeamData.TeamDataSerializer())
             .registerTypeAdapter(PollData.class, new PollData.PollDataDeserializer())
             .registerTypeAdapter(PollData.class, new PollData.PollDataSerializer())
+            .registerTypeAdapter(PvPData.class, new PvPData.PvPDataSerializer())
+            .registerTypeAdapter(PvPData.class, new PvPData.PvPDataDeserializer())
             .create();
 
     private AtomicReference<Data> data;

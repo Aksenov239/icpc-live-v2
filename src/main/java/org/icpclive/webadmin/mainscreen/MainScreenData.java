@@ -57,6 +57,7 @@ public class MainScreenData {
         frameRateData = new FrameRateData();
         factData = new FactData();
         pictureData = new PictureData();
+        pvpData = new PvPData();
     }
 
     public void update() {
@@ -92,6 +93,7 @@ public class MainScreenData {
     public FrameRateData frameRateData;
     public FactData factData;
     public PictureData pictureData;
+    public PvPData pvpData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

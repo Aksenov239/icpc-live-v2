@@ -38,8 +38,12 @@ public class StandingsData extends CachedData {
     }
 
     public String checkOverlays() {
-        if (MainScreenData.getMainScreenData().teamData.isVisible) {
-            return MainScreenData.getMainScreenData().teamData.getOverlayError();
+        MainScreenData mainScreenData = MainScreenData.getMainScreenData();
+        if (mainScreenData.teamData.isVisible) {
+            return mainScreenData.teamData.getOverlayError();
+        }
+        if (mainScreenData.pvpData.isVisible()) {
+            return mainScreenData.pvpData.getOverlayError();
         }
         return null;
     }

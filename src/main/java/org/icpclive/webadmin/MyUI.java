@@ -13,13 +13,10 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.icpclive.datapassing.DataLoader;
 import org.icpclive.datapassing.DataRequestHandler;
-import org.icpclive.webadmin.mainscreen.MainScreenSplitScreenView;
+import org.icpclive.webadmin.mainscreen.*;
 import org.icpclive.webadmin.creepingline.CreepingLineView;
 import org.icpclive.webadmin.login.LoginView;
 import org.icpclive.webadmin.mainscreen.BreakingNews.MainScreenBreakingNews;
-import org.icpclive.webadmin.mainscreen.MainScreenStandingsView;
-import org.icpclive.webadmin.mainscreen.MainScreenTeamView;
-import org.icpclive.webadmin.mainscreen.MainScreenView;
 import org.icpclive.webadmin.mainscreen.Polls.MainScreenPollView;
 import org.icpclive.webadmin.mainscreen.picture.MainScreenPictureView;
 import org.icpclive.webadmin.mainscreen.statistics.MainScreenStatisticsView;
@@ -75,6 +72,8 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenPictureView.NAME, MainScreenPictureView.class);
 
+        getNavigator().addView(MainScreenPvPView.NAME, MainScreenPvPView.class);
+
         menu.addItem("Captions", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
         });
@@ -111,6 +110,10 @@ public class MyUI extends UI {
             getNavigator().navigateTo(MainScreenPictureView.NAME);
         });
 
+        menu.addItem("PvP", selectedItem -> {
+            getNavigator().navigateTo(MainScreenPvPView.NAME);
+        });
+
         menu.addItem("Logout", selectedItem -> {
             getSession().setAttribute("user", null);
             getNavigator().navigateTo("");
@@ -145,6 +148,9 @@ public class MyUI extends UI {
             }
             if (currentView instanceof MainScreenPictureView) {
                 ((MainScreenPictureView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenPvPView) {
+                ((MainScreenPvPView) currentView).refresh();
             }
 
             DataLoader.iterateFrontend();

@@ -31,6 +31,9 @@ public class PollData extends CachedData {
         if (mainScreenData.teamData.isVisible) {
             return mainScreenData.teamData.getOverlayError();
         }
+        if (mainScreenData.pvpData.isVisible()) {
+            return mainScreenData.pvpData.getOverlayError();
+        }
         return null;
     }
 

@@ -61,6 +61,10 @@ public class TeamData extends CachedData {
             mainScreenData.pictureData.hide();
             turnOff = true;
         }
+        if (mainScreenData.pvpData.isVisible()) {
+            mainScreenData.pvpData.hide();
+            turnOff = true;
+        }
         if (turnOff) {
             delay = MainScreenData.getProperties().overlayedDelay;
         } else {
@@ -69,7 +73,7 @@ public class TeamData extends CachedData {
     }
 
     public String getOverlayError() {
-        return "You should close team view first!";
+        return "You should hide team view first!";
     }
 
     public synchronized boolean automaticStart(int number,
