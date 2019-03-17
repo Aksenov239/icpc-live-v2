@@ -20,6 +20,7 @@ import org.icpclive.webadmin.mainscreen.BreakingNews.MainScreenBreakingNews;
 import org.icpclive.webadmin.mainscreen.Polls.MainScreenPollView;
 import org.icpclive.webadmin.mainscreen.picture.MainScreenPictureView;
 import org.icpclive.webadmin.mainscreen.statistics.MainScreenStatisticsView;
+import org.icpclive.webadmin.mainscreen.video.MainScreenVideoView;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -74,6 +75,8 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenPvPView.NAME, MainScreenPvPView.class);
 
+        getNavigator().addView(MainScreenVideoView.NAME, MainScreenVideoView.class);
+
         menu.addItem("Captions", selectedItem -> {
             getNavigator().navigateTo(MainScreenView.NAME);
         });
@@ -106,8 +109,12 @@ public class MyUI extends UI {
             getNavigator().navigateTo(CreepingLineView.NAME);
         });
 
-        menu.addItem("Picture Upload", selectedItem -> {
+        menu.addItem("Pictures", selectedItem -> {
             getNavigator().navigateTo(MainScreenPictureView.NAME);
+        });
+
+        menu.addItem("Videos", selectedItem -> {
+            getNavigator().navigateTo(MainScreenVideoView.NAME);
         });
 
         menu.addItem("PvP", selectedItem -> {
@@ -151,6 +158,9 @@ public class MyUI extends UI {
             }
             if (currentView instanceof MainScreenPvPView) {
                 ((MainScreenPvPView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenVideoView) {
+                ((MainScreenVideoView) currentView).refresh();
             }
 
             DataLoader.iterateFrontend();

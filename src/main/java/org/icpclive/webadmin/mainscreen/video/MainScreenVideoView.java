@@ -1,4 +1,4 @@
-package org.icpclive.webadmin.mainscreen.picture;
+package org.icpclive.webadmin.mainscreen.video;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -12,60 +12,57 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/**
- * Created by Meepo on 11/28/2018.
- */
-public class MainScreenPictureView extends CustomComponent implements View {
-    public static String NAME = "mainscreen-picture";
+public class MainScreenVideoView extends CustomComponent implements View {
+    public static String NAME = "mainscreen-video";
 
     MainScreenData mainScreenData;
 
     Label status;
 
-    Table pictures;
+    Table videos;
 
     TextField captionAdd;
-    Upload pictureAdd;
+    Upload videoAdd;
 
     TextField caption;
-    Embedded picture;
+    com.vaadin.ui.Video video;
 
     Button show;
     Button hide;
 
     Button edit;
 
-    Picture lastPicture;
+    Video lastVideo;
 
     public Table createTable() {
-        pictures = new Table();
-        pictures.setContainerDataSource(mainScreenData.pictureData.getContainer());
+        videos = new Table();
+        videos.setContainerDataSource(mainScreenData.videoData.getContainer());
 
-        pictures.setVisibleColumns("caption");
+        videos.setVisibleColumns("caption");
 
-        pictures.setSelectable(true);
-        pictures.setEditable(false);
-        pictures.setSizeFull();
+        videos.setSelectable(true);
+        videos.setEditable(false);
+        videos.setSizeFull();
 
-        pictures.addValueChangeListener(event -> {
-            if (pictures.getValue() == null) {
+        videos.addValueChangeListener(event -> {
+            if (videos.getValue() == null) {
                 caption.setVisible(false);
-                picture.setVisible(false);
+                video.setVisible(false);
                 edit.setVisible(false);
                 return;
             }
-            lastPicture = (Picture) pictures.getValue();
-            caption.setValue(lastPicture.getCaption());
+            lastVideo = (Video) videos.getValue();
+            caption.setValue(lastVideo.getCaption());
             caption.setVisible(true);
-            picture.setSource(new FileResource(new File(lastPicture.getPath())));
-            picture.setVisible(true);
+            video.setSource(new FileResource(new File(lastVideo.getPath())));
+            video.setVisible(true);
             edit.setVisible(true);
         });
 
-        return pictures;
+        return videos;
     }
 
-    class PictureUploader implements Upload.Receiver, Upload.SucceededListener {
+    class VideoUploader implements Upload.Receiver, Upload.SucceededListener {
         public synchronized OutputStream receiveUpload(String filename, String mimeType) {
             FileOutputStream fos = null;
             String file;
@@ -77,8 +74,8 @@ public class MainScreenPictureView extends CustomComponent implements View {
                         .show(Page.getCurrent());
                 return null;
             }
-            Picture picture = new Picture(captionAdd.getValue(), file);
-            mainScreenData.pictureData.addPicture(picture);
+            Video video = new Video(captionAdd.getValue(), file);
+            mainScreenData.videoData.addVideo(video);
             return fos;
         }
 
@@ -88,32 +85,32 @@ public class MainScreenPictureView extends CustomComponent implements View {
     }
 
     public Component createUpload() {
-        captionAdd = new TextField("Caption to picture");
+        captionAdd = new TextField("Caption to video");
 
-        PictureUploader receiver = new PictureUploader();
-        pictureAdd = new Upload("Upload picture here", receiver);
-        pictureAdd.setButtonCaption("Upload");
-        pictureAdd.addSucceededListener(receiver);
+        VideoUploader receiver = new VideoUploader();
+        videoAdd = new Upload("Upload video here", receiver);
+        videoAdd.setButtonCaption("Upload");
+        videoAdd.addSucceededListener(receiver);
 
-        Component component = new VerticalLayout(captionAdd, pictureAdd);
+        Component component = new VerticalLayout(captionAdd, videoAdd);
         return component;
     }
 
     public Component editUpload() {
         caption = new TextField("Caption");
         caption.setVisible(false);
-        picture = new Embedded("Picture");
-        picture.setVisible(false);
+        video = new com.vaadin.ui.Video("Video");
+        video.setVisible(false);
 
-        picture.setSizeFull();
+        video.setSizeFull();
 
         show = new Button("Show");
         show.addClickListener(event -> {
-            if (pictures.getValue() == null) {
-                Notification.show("You should choose a picture", Notification.Type.WARNING_MESSAGE);
+            if (videos.getValue() == null) {
+                Notification.show("You should choose a video", Notification.Type.WARNING_MESSAGE);
                 return;
             }
-            String error = mainScreenData.pictureData.setVisible((Picture) pictures.getValue());
+            String error = mainScreenData.videoData.setVisible((Video) videos.getValue());
             if (error != null) {
                 Notification.show(error, Notification.Type.WARNING_MESSAGE);
                 return;
@@ -121,31 +118,31 @@ public class MainScreenPictureView extends CustomComponent implements View {
         });
         hide = new Button("Hide");
         hide.addClickListener(event -> {
-            mainScreenData.pictureData.hide();
+            mainScreenData.videoData.hide();
         });
         edit = new Button("Edit");
         edit.addClickListener(event -> {
-            if (pictures.getValue() == null) {
+            if (videos.getValue() == null) {
                 return;
             }
-            mainScreenData.pictureData.setNewCaption(pictures.getValue(), caption.getValue());
-            pictures.refreshRowCache();
+            mainScreenData.videoData.setNewCaption(videos.getValue(), caption.getValue());
+            videos.refreshRowCache();
         });
         edit.setVisible(false);
 
         HorizontalLayout buttons = new HorizontalLayout(show, hide, edit);
         buttons.setSpacing(true);
 
-        Component component = new VerticalLayout(buttons, caption, picture);
+        Component component = new VerticalLayout(buttons, caption, video);
         return component;
     }
 
-    public MainScreenPictureView() {
+    public MainScreenVideoView() {
         mainScreenData = MainScreenData.getMainScreenData();
 
         createTable();
 
-        status = new Label(mainScreenData.pictureData.toString());
+        status = new Label(mainScreenData.videoData.toString());
 
         HorizontalLayout mainPanel = new HorizontalLayout(
                 new VerticalLayout(status, createUpload(), editUpload()),
@@ -157,8 +154,8 @@ public class MainScreenPictureView extends CustomComponent implements View {
     }
 
     public void refresh() {
-        status.setValue(mainScreenData.pictureData.toString());
-        pictures.refreshRowCache();
+        status.setValue(mainScreenData.videoData.toString());
+        videos.refreshRowCache();
     }
 
     public void enter(ViewChangeListener.ViewChangeEvent event) {
