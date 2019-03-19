@@ -61,21 +61,11 @@ public class Main {
 //                Integer.parseInt(properties.getProperty("sleep.time"))
 //        ));
 
-        generator.addWidget(new VerticalCreepingLineWidget(updateWait,
-                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
-                properties.getProperty("creeping.line.logo", "ICPC 2016"),
-                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "2000")),
-                Integer.parseInt(properties.getProperty("creeping.line.clock.time", "20000")),
-                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
-
         int plateHeight = 41;
         int bottomY = 1007;
         StandingsWidget standingsWidget = new StandingsWidget(519, 825, plateHeight, updateWait);
         standingsWidget.alignBottom(bottomY);
         generator.addWidget(standingsWidget);
-
-        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
-        generator.addWidget(new QueueWidget(30, bottomY, plateHeight, 100, showVerdict));
 
         BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(588, 69,
                 1295, plateHeight, updateWait, 22, true);
@@ -121,9 +111,19 @@ public class Main {
                 50
         ));
 
-        generator.addWidget(new PvPWidget());
+        generator.addWidget(new PvPWidget(100, false));
 
         generator.addWidget(new TestFramesWidget());
+
+        generator.addWidget(new VerticalCreepingLineWidget(updateWait,
+                Integer.parseInt(properties.getProperty("creeping.line.rotate.time", "10000")),
+                properties.getProperty("creeping.line.logo", "ICPC 2016"),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.time", "2000")),
+                Integer.parseInt(properties.getProperty("creeping.line.clock.time", "20000")),
+                Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
+
+        boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
+        generator.addWidget(new QueueWidget(30, bottomY, plateHeight, 100, showVerdict));
 
         if (outputMode.equals("file")) {
             String filename = properties.getProperty("output.file", "c:\\work\\image.bin");

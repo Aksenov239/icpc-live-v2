@@ -80,6 +80,9 @@ public class NewTeamWidget extends Widget {
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
         super.paintImpl(g, width, height);
+        setBackgroundColor(Color.BLACK);
+        setMaximumOpacity(0.5);
+        drawRectangle(0, 0, width, height);
         for (TeamStatusView view : views) {
             view.paintImpl(g, width, height);
         }

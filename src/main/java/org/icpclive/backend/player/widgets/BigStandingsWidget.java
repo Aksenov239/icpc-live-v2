@@ -31,8 +31,8 @@ public class BigStandingsWidget extends Widget {
     public static final String OPTIMISTIC_STANDINGS = "OPTIMISTIC";
     public static final String FROZEN_STANDINGS = "FROZEN";
 
-    private static int STANDING_TIME = 5000;
-    private static int TOP_PAGE_STANDING_TIME = 10000;
+    private static int STANDING_TIME = 10000;
+    private static int TOP_PAGE_STANDING_TIME = 20000;
     private static final int MOVING_TIME = 500;
     private static int PERIOD = STANDING_TIME + MOVING_TIME;
 
@@ -359,7 +359,7 @@ public class BigStandingsWidget extends Widget {
 
         PlateStyle nameStyle =
                 topUniversity.contains(team.getId()) ? BigStandingsStylesheet.topUniversityTeam :
-                        topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
+//                        topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
                                 BigStandingsStylesheet.name;
         if (bright) {
             nameStyle = nameStyle.brighter();

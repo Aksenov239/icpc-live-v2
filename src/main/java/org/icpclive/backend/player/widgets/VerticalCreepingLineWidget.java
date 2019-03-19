@@ -106,7 +106,7 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     private int nowStandingsPosition = 0;
     private int nextStandingsPosition = 0;
     private TeamInfo[] standings;
-    private final int STANDINGS_SIZE = 12;
+    private final int STANDINGS_SIZE = 16;
     private final int STANDINGS_PAGE = 4;
     private final double percent = 0.8;
 

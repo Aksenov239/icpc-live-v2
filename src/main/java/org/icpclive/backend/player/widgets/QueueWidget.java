@@ -120,6 +120,7 @@ public class QueueWidget extends Widget {
     protected void move() {
         calculateQueue();
         if (info == null) return;
+        if (info.getRuns() == null) return;
 
         for (RunInfo r : info.getRuns()) {
             if (r == null)
@@ -269,6 +270,10 @@ public class QueueWidget extends Widget {
 
         RunInfo[] runs = info.getRuns();
         int lastId = info.getLastRunId();
+
+        if (runs == null) {
+            return;
+        }
 
         // first, load first-to-solves
         for (int i = lastId; i >= 0; i--) {
