@@ -10,6 +10,7 @@ import org.icpclive.events.TeamInfo;
 import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.webadmin.mainscreen.picture.Picture;
+import org.icpclive.webadmin.mainscreen.video.Video;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -111,8 +112,11 @@ public class MainScreenProperties {
         messageLifespanCreepingLine = Integer.parseInt(properties.getProperty("creeping.line.message.lifespan",
                 "600000"));
 
-        backupPicturesFilename = properties.getProperty("backup.pictures");
+        backupPicturesFilename = properties.getProperty("backup.pictures", "backup-pictures.txt");
         backupPictures = new BackUp<>(Picture.class, backupPicturesFilename);
+
+        backupVideosFilename = properties.getProperty("backup.videos", "backup-videos.txt");
+        backupVideos = new BackUp<>(Video.class, backupVideosFilename);
     }
 
     public long overlayedDelay;
@@ -164,4 +168,8 @@ public class MainScreenProperties {
     // Picture
     public final String backupPicturesFilename;
     public final BackUp<Picture> backupPictures;
+
+    // Video
+    public final String backupVideosFilename;
+    public final BackUp<Video> backupVideos;
 }

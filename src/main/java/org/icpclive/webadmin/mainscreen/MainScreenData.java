@@ -58,6 +58,7 @@ public class MainScreenData {
         factData = new FactData();
         pictureData = new PictureData();
         pvpData = new PvPData();
+        videoData = new VideoData();
     }
 
     public void update() {
@@ -69,6 +70,7 @@ public class MainScreenData {
         wordStatisticsData.update();
         factData.update();
         pictureData.update();
+        videoData.update();
     }
 
     private static MainScreenData mainScreenData;
@@ -94,6 +96,7 @@ public class MainScreenData {
     public FactData factData;
     public PictureData pictureData;
     public PvPData pvpData;
+    public VideoData videoData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }
