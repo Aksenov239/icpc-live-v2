@@ -104,12 +104,8 @@ public class Main {
                 50
         ));
 
-        generator.addWidget(new PictureWidget(updateWait,
-                550,
-                Widget.BASE_WIDTH - 600,
-                900,
-                50
-        ));
+        generator.addWidget(new PictureWidget(updateWait, 588, 50,
+                1295, 1007 - 50, 60));
 
         generator.addWidget(new PvPWidget(100, false));
 

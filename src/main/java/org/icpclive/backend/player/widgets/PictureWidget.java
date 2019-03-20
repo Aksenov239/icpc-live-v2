@@ -17,10 +17,12 @@ import java.io.IOException;
  * Created by Meepo on 1/27/2019.
  */
 public class PictureWidget extends Widget {
-    private int leftX;
-    private int captionWidth;
+
+    private int baseX;
+    private int baseY;
+    private int width;
+    private int height;
     private int textWidth;
-    private int captionY;
     private int rowHeight;
 
     private Font font;
@@ -28,17 +30,16 @@ public class PictureWidget extends Widget {
     private long lastTimestamp;
 
     private BufferedImage image;
-    private String caption;
     private String[] text;
 
-    public PictureWidget(long updateWait, int leftX, int captionWidth, int captionY, int rowHeight) {
+    public PictureWidget(long updateWait, int baseX, int baseY, int width, int height, int rowHeight) {
         super(updateWait);
-        this.leftX = leftX;
-        this.captionWidth = captionWidth;
-        this.textWidth = (int) (captionWidth - 2 * MARGIN * rowHeight);
-        this.captionY = captionY;
+        this.baseX = baseX;
+        this.baseY = baseY;
+        this.width = width;
+        this.height = height;
+        this.textWidth = (int) (width - 2 * MARGIN * rowHeight);
         this.rowHeight = rowHeight;
-
         font = Font.decode(MAIN_FONT + " " + (int) Math.round(0.7 * rowHeight));
     }
 
@@ -50,7 +51,7 @@ public class PictureWidget extends Widget {
             setVisible(true);
             try {
                 image = ImageIO.read(new File(pictureData.picture.getPath()));
-                caption = pictureData.picture.getCaption();
+                text = split(pictureData.picture.getCaption(), font, textWidth);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -66,45 +67,38 @@ public class PictureWidget extends Widget {
         if (visibilityState == 0) {
             return;
         }
-
-        if (text == null) {
-            if (caption != null) {
-                text = split(caption, font, textWidth);
-            } else {
-                return;
-            }
+        if (image == null || text == null) {
+            return;
         }
 
-        int currentX = (int) (BASE_WIDTH - visibilityState * (BASE_WIDTH - leftX));
+//        setBackgroundColor(Color.RED);
+//        drawRectangle(baseX, baseY, this.width, this.height);
 
-        double savedVisibilityState = visibilityState;
+        double scale = Math.min(
+                1.0 * (this.width) / image.getWidth(),
+                1.0 * (this.height - rowHeight * text.length) / image.getHeight());
 
-        setVisibilityState(1);
+        int imageHeight = (int) (image.getHeight() * scale);
+        int imageWidth = (int) (image.getWidth() * scale);
+
+        int y = baseY + (this.height - (imageHeight + rowHeight * text.length)) / 2;
+
+        g.drawImage(image, baseX, y,
+                imageWidth, imageHeight, opacity);
+
+        y += imageHeight;
 
         setFont(font);
-
         applyStyle(PictureStylesheet.text);
 
-        drawRectangle(currentX, captionY, captionWidth, rowHeight * text.length);
-        int currentY = captionY;
+        drawRectangle(baseX, y, this.width, rowHeight * text.length);
+
         for (String part : text) {
-            drawTextThatFits(part, currentX, currentY, captionWidth, rowHeight + 1,
+            setTextOpacity(getTextOpacity(visibilityState));
+            drawTextThatFits(part, baseX, y, this.width, rowHeight + 1,
                     PlateStyle.Alignment.LEFT, false);
-            currentY += rowHeight;
+            y += rowHeight;
         }
-
-        int pictureWidth = image.getWidth();
-        int pictureHeight = image.getHeight();
-
-        if (pictureWidth > this.captionWidth) {
-            pictureHeight = pictureHeight * captionWidth / pictureWidth;
-            pictureWidth = this.captionWidth;
-        }
-
-        g.drawImage(image, currentX, captionY - pictureHeight,
-                pictureWidth, pictureHeight);
-
-        setVisibilityState(savedVisibilityState);
     }
 
     public CachedData getCorrespondingData(Data data) {
