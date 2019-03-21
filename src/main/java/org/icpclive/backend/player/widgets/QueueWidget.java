@@ -169,7 +169,7 @@ public class QueueWidget extends Widget {
     }
 
     private void drawRun(int x, int y, RunPlate plate) {
-        boolean blinking = breakingNews.isVisible() && plate == breaking;
+        boolean blinking = breakingNews.isVisible() && breakingNews.getRun() == plate.runInfo;
 
         double saveVisibilityState = visibilityState;
         setVisibilityState(plate.visibilityState);

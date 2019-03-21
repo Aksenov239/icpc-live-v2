@@ -66,7 +66,7 @@ public class PvPWidget extends Widget {
             return;
         }
         setBackgroundColor(Color.BLACK);
-        setMaximumOpacity(0.5);
+        setMaximumOpacity(0.3);
         drawRectangle(0, 0, width, height);
         for (TeamStatusView view : views) {
             view.setVisibilityState(visibilityState);
@@ -264,7 +264,7 @@ public class PvPWidget extends Widget {
                     resultColor = BigStandingsStylesheet.acProblem;
                 } else if (status[i] == 2) {
                     resultColor = BigStandingsStylesheet.udProblem;
-                } else if (status[i] == 2) {
+                } else if (status[i] == 1) {
                     resultColor = BigStandingsStylesheet.waProblem;
                 } else {
                     resultColor = BigStandingsStylesheet.noProblem;
