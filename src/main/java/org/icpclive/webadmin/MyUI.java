@@ -75,6 +75,8 @@ public class MyUI extends UI {
 
         getNavigator().addView(MainScreenPvPView.NAME, MainScreenPvPView.class);
 
+        getNavigator().addView(MainScreenLocatorView.NAME, MainScreenLocatorView.class);
+
         getNavigator().addView(MainScreenVideoView.NAME, MainScreenVideoView.class);
 
         menu.addItem("Captions", selectedItem -> {
@@ -121,6 +123,10 @@ public class MyUI extends UI {
             getNavigator().navigateTo(MainScreenPvPView.NAME);
         });
 
+        menu.addItem("Locator", selectedItem -> {
+            getNavigator().navigateTo(MainScreenLocatorView.NAME);
+        });
+
         menu.addItem("Logout", selectedItem -> {
             getSession().setAttribute("user", null);
             getNavigator().navigateTo("");
@@ -158,6 +164,9 @@ public class MyUI extends UI {
             }
             if (currentView instanceof MainScreenPvPView) {
                 ((MainScreenPvPView) currentView).refresh();
+            }
+            if (currentView instanceof MainScreenLocatorView) {
+                ((MainScreenLocatorView) currentView).refresh();
             }
             if (currentView instanceof MainScreenVideoView) {
                 ((MainScreenVideoView) currentView).refresh();

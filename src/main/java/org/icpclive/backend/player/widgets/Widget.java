@@ -341,6 +341,14 @@ public abstract class Widget {
         return v;
     }
 
+    protected int getTeamPaneWidth(int height) {
+        int rankWidth = (int) round(height * RANK_WIDTH);
+        int nameWidth = (int) round(height * NAME_WIDTH);
+        int totalWidth = (int) round(height * TOTAL_WIDTH);
+        int penaltyWidth = (int) round(height * PENALTY_WIDTH);
+        return rankWidth + nameWidth + totalWidth + penaltyWidth;
+    }
+
     protected void drawTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, int height, double state,
                                 double rank_width, double name_width, double total_width, double penalty_width) {
 

@@ -59,6 +59,7 @@ public class MainScreenData {
         pictureData = new PictureData();
         pvpData = new PvPData();
         videoData = new VideoData();
+        locatorData = new LocatorData();
     }
 
     public void update() {
@@ -97,6 +98,7 @@ public class MainScreenData {
     public PictureData pictureData;
     public PvPData pvpData;
     public VideoData videoData;
+    public LocatorData locatorData;
 
     private final MainScreenProperties mainScreenProperties = new MainScreenProperties();
 }

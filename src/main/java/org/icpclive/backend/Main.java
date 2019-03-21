@@ -109,6 +109,8 @@ public class Main {
 
         generator.addWidget(new PvPWidget(100, false));
 
+        generator.addWidget(new LocatorWidget(updateWait));
+
         generator.addWidget(new TestFramesWidget());
 
         generator.addWidget(new VerticalCreepingLineWidget(updateWait,
