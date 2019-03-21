@@ -61,13 +61,14 @@ public class MainScreenTeamView extends CustomComponent implements View {
         showStatus = new Label(getStatus(), ContentMode.HTML);
 
         typeSelection = new OptionGroup();
-        typeSelection.addItem(STATISTICS_SHOW_TYPE);
+//        typeSelection.addItem(STATISTICS_SHOW_TYPE);
         for (String type : types) {
             if (!type.equals("")) {
                 typeSelection.addItem(type);
             }
         }
-        typeSelection.select(STATISTICS_SHOW_TYPE);
+//        typeSelection.select(STATISTICS_SHOW_TYPE);
+        typeSelection.select(types[0]);
         typeSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 
 //                Notification.show("You need to wait " + MainScreenData.getProperties().sleepTime / 1000 + " seconds first", Type.WARNING_MESSAGE);

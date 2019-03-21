@@ -341,7 +341,7 @@ public abstract class Widget {
         return v;
     }
 
-    protected int getTeamPaneWidth(int height) {
+    protected static int getTeamPaneWidth(int height) {
         int rankWidth = (int) round(height * RANK_WIDTH);
         int nameWidth = (int) round(height * NAME_WIDTH);
         int totalWidth = (int) round(height * TOTAL_WIDTH);

@@ -5,6 +5,8 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.icpclive.events.ContestInfo;
+import org.icpclive.events.EventsLoader;
 import org.icpclive.events.TeamInfo;
 
 import java.util.Set;
@@ -20,6 +22,7 @@ public class MainScreenLocatorView extends CustomComponent implements View {
 
     Button show;
     Button hide;
+    Button clear;
 
     Label teamsSelected;
 
@@ -33,13 +36,18 @@ public class MainScreenLocatorView extends CustomComponent implements View {
         teamSelection.addStyleName("team-optiongroup");
 
         Set<String> topTeamsIds = MainScreenProperties.topteamsids;
-        for (TeamInfo team : MainScreenData.getProperties().teamInfos) {
+        ContestInfo contestData = EventsLoader.getInstance().getContestData();
+        int n = contestData.getStandings().length;
+        for (int i = 0; i < n; i++) {
+            TeamInfo team = contestData.getParticipant(i);
             teamSelection.addItem(team);
-            String teamHtml = topTeamsIds.contains(team.getAlias()) ?
+//            String teamHtml = topTeamsIds.contains(team.getAlias()) ?
+//                    "<b>" + team.toString() + "</b>" : team.toString();
+            String teamHtml = team.getRank() <= 12 && team.getSolvedProblemsNumber() > 0 ?
                     "<b>" + team.toString() + "</b>" : team.toString();
             teamSelection.setItemCaption(team, teamHtml);
         }
-        teamSelection.setValue(MainScreenData.getProperties().teamInfos[0]);
+//        teamSelection.setValue(contestData[0]);
         teamSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         teamSelection.setWidth("100%");
 
@@ -51,6 +59,7 @@ public class MainScreenLocatorView extends CustomComponent implements View {
                 if (s.length() > 0) s += ", ";
                 s += teamInfo.getShortName();
             }
+            if (s.length() == 0) s = "nothing selected";
             teamsSelected.setValue(s);
         });
 
@@ -66,11 +75,15 @@ public class MainScreenLocatorView extends CustomComponent implements View {
         hide.addClickListener(e -> {
             mainScreenData.locatorData.hide();
         });
+        clear = new Button("Clear");
+        clear.addClickListener(e -> {
+            teamSelection.clear();
+        });
 
-        teamsSelected = new Label("", ContentMode.HTML);
+        teamsSelected = new Label("nothing selected", ContentMode.HTML);
         teamsSelected.setWidthUndefined();
 
-        Component buttonGroup = createGroupLayout(show, hide);
+        Component buttonGroup = createGroupLayout(show, hide, clear);
         HorizontalLayout teamsSelectedComponent = new HorizontalLayout(teamsSelected);
         teamsSelectedComponent.setMargin(true);
         teamsSelectedComponent.setComponentAlignment(teamsSelected, Alignment.MIDDLE_CENTER);

@@ -76,6 +76,7 @@ public class MainScreenProperties {
                 }
             }
             teamInfos = Arrays.copyOf(teamInfos, l);
+            Arrays.sort(teamInfos, (a, b) -> a.getAlias().compareTo(b.getAlias()));
         } else {
             Arrays.sort(teamInfos, (a, b) ->
                     Integer.parseInt(a.getAlias()) - Integer.parseInt(b.getAlias()));
