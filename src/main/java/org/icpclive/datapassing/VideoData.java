@@ -47,7 +47,7 @@ public class VideoData extends CachedData {
     }
 
     private void recache() {
-        Data.cache.refresh(PictureData.class);
+        Data.cache.refresh(VideoData.class);
     }
 
     public void addVideo(Video video) {

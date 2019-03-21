@@ -1,22 +1,19 @@
 package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.graphics.AbstractGraphics;
+import org.icpclive.backend.player.PlayerInImage;
 import org.icpclive.backend.player.widgets.stylesheets.PictureStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
-import org.icpclive.datapassing.PictureData;
+import org.icpclive.datapassing.VideoData;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by Meepo on 1/27/2019.
  */
-public class PictureWidget extends Widget {
+public class VideoWidget extends Widget {
     private int rightX;
     private int captionWidth;
     private int captionY;
@@ -24,13 +21,13 @@ public class PictureWidget extends Widget {
 
     private Font font;
 
-    private long lastTimestamp;
+    private volatile boolean asynchronousInitialization;
 
-    private BufferedImage image;
+    private PlayerInImage player;
     private String caption;
     private String[] text;
 
-    public PictureWidget(long updateWait, int rightX, int captionWidth, int captionY, int rowHeight) {
+    public VideoWidget(long updateWait, int rightX, int captionWidth, int captionY, int rowHeight) {
         super(updateWait);
         this.rightX = rightX;
         this.captionWidth = captionWidth;
@@ -42,22 +39,33 @@ public class PictureWidget extends Widget {
 
     @Override
     public void updateImpl(Data data) {
-        PictureData pictureData = data.pictureData;
-        lastTimestamp = pictureData.timestamp;
-        if (pictureData.picture != null) {
-            if (image == null) {
-                setVisible(true);
-                try {
-                    image = ImageIO.read(new File(pictureData.picture.getPath()));
-                    caption = pictureData.picture.getCaption();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        VideoData videoData = data.videoData;
+//        System.err.println(isVisible() + " " + videoData.timestamp + " " + videoData.video + " " +
+//                videoData.video + " " + player + " " + (player == null ? "false" : player.getPlayer().isPlaying()));
+        if (videoData.video != null) {
+            if (player == null) {
+                if (asynchronousInitialization) {
+                    return;
+                }
+                asynchronousInitialization = true;
+                new Thread(() -> {
+                    player = new PlayerInImage(-1, -1, null, videoData.video.getPath(), false);
+                    asynchronousInitialization = false;
+                }).start();
+                caption = videoData.video.getCaption();
+            } else {
+                if (player.getPlayer().isPlaying()) {
+                    setVisible(true);
+                } else {
+                    System.err.println("IS NOT PLAYING");
+                    setVisible(false);
                 }
             }
         } else {
             setVisible(false);
-            if (visibilityState == 0) {
-                image = null;
+            if (player != null && visibilityState == 0) {
+                player.stop();
+                player = null;
             }
         }
     }
@@ -69,9 +77,11 @@ public class PictureWidget extends Widget {
         if (visibilityState == 0) {
             return;
         }
+        player.setVolume((int) (visibilityState * 100));
 
-        int captionWidth = Math.min(this.captionWidth, image.getWidth());
-        int textWidth = (int)(captionWidth - 2 * MARGIN * rowHeight);
+        int captionWidth = Math.min(this.captionWidth, player.getImage().getWidth());
+
+        int textWidth = (int) (captionWidth - 2 * MARGIN * rowHeight);
 
         if (text == null) {
             if (caption != null) {
@@ -99,21 +109,22 @@ public class PictureWidget extends Widget {
             currentY += rowHeight;
         }
 
-        int pictureWidth = image.getWidth();
-        int pictureHeight = image.getHeight();
+//        player.getPlayer().getVideoDimension().
+        int pictureWidth = player.getImage().getWidth();
+        int pictureHeight = player.getImage().getHeight();
 
         if (pictureWidth > this.captionWidth) {
             pictureHeight = pictureHeight * captionWidth / pictureWidth;
             pictureWidth = this.captionWidth;
         }
 
-        g.drawImage(image, currentX, captionY - pictureHeight,
+        g.drawImage(player.getImage(), currentX, captionY - pictureHeight,
                 pictureWidth, pictureHeight);
 
         setVisibilityState(savedVisibilityState);
     }
 
     public CachedData getCorrespondingData(Data data) {
-        return data.pictureData;
+        return data.videoData;
     }
 }

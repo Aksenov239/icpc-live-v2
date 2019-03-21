@@ -9,6 +9,7 @@ import uk.co.caprica.vlcj.player.direct.BufferFormatCallback;
 import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
 import uk.co.caprica.vlcj.player.direct.RenderCallbackAdapter;
 import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,20 +32,37 @@ public class PlayerInImage {
     private boolean ready;
 
     public PlayerInImage(int width, int height, JComponent frame, String media) {
+        this(width, height, frame, media, true);
+    }
+
+    public PlayerInImage(int width, int height, JComponent frame, String media, boolean repeat) {
         this.media = media;
+
+        if (width == -1) {
+            MediaPlayerFactory factory = new MediaPlayerFactory(new String[0]);
+            EmbeddedMediaPlayer player = factory.newEmbeddedMediaPlayer();
+            player.setVolume(0);
+            player.playMedia(media);
+            while (player.getVideoDimension() == null) {}
+            width = (int)player.getVideoDimension().getWidth();
+            height = (int)player.getVideoDimension().getHeight();
+            player.stop();
+        }
+
         image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height);
         image.setAccelerationPriority(1.0f);
+
         this.frame = frame;
         factory = new MediaPlayerFactory(new String[0]);
 //        factory = new MediaPlayerFactory(
 //                "--http-hui=hui");
 //                "--http-ca=/Users/Meepo/Documents/icpc-live-v2/server.pem");
         mediaPlayer = factory.newDirectMediaPlayer(new TestBufferFormatCallback(), new TestRenderCallback());
-        mediaPlayer.setRepeat(true);
+        mediaPlayer.setRepeat(repeat);
 //        mediaPlayer.addMediaOptions(":file-caching=1500");
         mediaPlayer.setStandardMediaOptions(":file-caching=2000");
 //        mediaPlayer.setVolume(0);
-        mediaPlayer.setAspectRatio("16:9");
+//        mediaPlayer.setAspectRatio("16:9");
         if (media != null)
             mediaPlayer.playMedia(media, ":file-caching=0");
         log.info("PLAY!!! " + media);

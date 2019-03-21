@@ -123,6 +123,13 @@ public class Main {
 
         generator.addWidget(new PvPWidget());
 
+        generator.addWidget(new VideoWidget(updateWait,
+                Widget.BASE_WIDTH - 50,
+                Widget.BASE_WIDTH - 600,
+                900,
+                50
+        ));
+
         generator.addWidget(new TestFramesWidget());
 
         if (outputMode.equals("file")) {
