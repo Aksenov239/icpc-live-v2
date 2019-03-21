@@ -51,7 +51,7 @@ public class VideoData extends CachedData {
     }
 
     public void addVideo(Video video) {
-        MainScreenData.getProperties().backupVideos.addItem(video);
+        MainScreenData.getProperties().backupVideos.addItemAt(0, video);
     }
 
     public void removeVideo(Video video) {
