@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 public class PictureWidget extends Widget {
     private int rightX;
-    private int captionWidth;
+    private int widgetHeight;
     private int captionY;
     private int rowHeight;
 
@@ -30,10 +30,10 @@ public class PictureWidget extends Widget {
     private String caption;
     private String[] text;
 
-    public PictureWidget(long updateWait, int rightX, int captionWidth, int captionY, int rowHeight) {
+    public PictureWidget(long updateWait, int rightX, int widgetHeight, int captionY, int rowHeight) {
         super(updateWait);
         this.rightX = rightX;
-        this.captionWidth = captionWidth;
+        this.widgetHeight = widgetHeight;
         this.captionY = captionY;
         this.rowHeight = rowHeight;
 
@@ -47,6 +47,7 @@ public class PictureWidget extends Widget {
         if (pictureData.picture != null) {
             if (image == null) {
                 setVisible(true);
+                System.err.println(pictureData.picture.getPath() + " " + pictureData.picture.getCaption());
                 try {
                     image = ImageIO.read(new File(pictureData.picture.getPath()));
                     caption = pictureData.picture.getCaption();
@@ -58,6 +59,7 @@ public class PictureWidget extends Widget {
             setVisible(false);
             if (visibilityState == 0) {
                 image = null;
+                text = null;
             }
         }
     }
@@ -70,8 +72,10 @@ public class PictureWidget extends Widget {
             return;
         }
 
-        int captionWidth = Math.min(this.captionWidth, image.getWidth());
-        int textWidth = (int)(captionWidth - 2 * MARGIN * rowHeight);
+        int widgetWidth = this.widgetHeight * image.getWidth() / image.getHeight();
+
+        int captionWidth = Math.min(widgetWidth, image.getWidth());
+        int textWidth = (int) (captionWidth - 2 * MARGIN * rowHeight);
 
         if (text == null) {
             if (caption != null) {
@@ -102,9 +106,9 @@ public class PictureWidget extends Widget {
         int pictureWidth = image.getWidth();
         int pictureHeight = image.getHeight();
 
-        if (pictureWidth > this.captionWidth) {
-            pictureHeight = pictureHeight * captionWidth / pictureWidth;
-            pictureWidth = this.captionWidth;
+        if (pictureHeight > widgetHeight) {
+            pictureHeight = widgetHeight;
+            pictureWidth = widgetWidth;
         }
 
         g.drawImage(image, currentX, captionY - pictureHeight,

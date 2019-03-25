@@ -115,8 +115,8 @@ public class Main {
         ));
 
         generator.addWidget(new PictureWidget(updateWait,
-                550,
-                Widget.BASE_WIDTH - 600,
+                Widget.BASE_WIDTH - 50,
+                743,
                 900,
                 50
         ));
@@ -125,7 +125,7 @@ public class Main {
 
         generator.addWidget(new VideoWidget(updateWait,
                 Widget.BASE_WIDTH - 50,
-                Widget.BASE_WIDTH - 600,
+                743,
                 900,
                 50
         ));

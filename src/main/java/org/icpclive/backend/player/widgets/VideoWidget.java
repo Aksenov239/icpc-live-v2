@@ -15,7 +15,7 @@ import java.awt.*;
  */
 public class VideoWidget extends Widget {
     private int rightX;
-    private int captionWidth;
+    private int widgetHeight;
     private int captionY;
     private int rowHeight;
 
@@ -27,10 +27,10 @@ public class VideoWidget extends Widget {
     private String caption;
     private String[] text;
 
-    public VideoWidget(long updateWait, int rightX, int captionWidth, int captionY, int rowHeight) {
+    public VideoWidget(long updateWait, int rightX, int widgetHeight, int captionY, int rowHeight) {
         super(updateWait);
         this.rightX = rightX;
-        this.captionWidth = captionWidth;
+        this.widgetHeight = widgetHeight;
         this.captionY = captionY;
         this.rowHeight = rowHeight;
 
@@ -57,7 +57,6 @@ public class VideoWidget extends Widget {
                 if (player.getPlayer().isPlaying()) {
                     setVisible(true);
                 } else {
-                    System.err.println("IS NOT PLAYING");
                     setVisible(false);
                 }
             }
@@ -66,6 +65,7 @@ public class VideoWidget extends Widget {
             if (player != null && visibilityState == 0) {
                 player.stop();
                 player = null;
+                text = null;
             }
         }
     }
@@ -79,7 +79,9 @@ public class VideoWidget extends Widget {
         }
         player.setVolume((int) (visibilityState * 100));
 
-        int captionWidth = Math.min(this.captionWidth, player.getImage().getWidth());
+        int widgetWidth = this.widgetHeight * player.getImage().getWidth() / player.getImage().getHeight();
+
+        int captionWidth = Math.min(widgetWidth, player.getImage().getWidth());
 
         int textWidth = (int) (captionWidth - 2 * MARGIN * rowHeight);
 
@@ -113,9 +115,9 @@ public class VideoWidget extends Widget {
         int pictureWidth = player.getImage().getWidth();
         int pictureHeight = player.getImage().getHeight();
 
-        if (pictureWidth > this.captionWidth) {
-            pictureHeight = pictureHeight * captionWidth / pictureWidth;
-            pictureWidth = this.captionWidth;
+        if (pictureHeight > widgetHeight) {
+            pictureHeight = widgetHeight;
+            pictureWidth = widgetWidth;
         }
 
         g.drawImage(player.getImage(), currentX, captionY - pictureHeight,
