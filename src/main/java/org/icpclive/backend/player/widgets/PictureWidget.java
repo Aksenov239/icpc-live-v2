@@ -17,12 +17,18 @@ import java.io.IOException;
  * Created by Meepo on 1/27/2019.
  */
 public class PictureWidget extends Widget {
+<<<<<<< HEAD
 
     private int baseX;
     private int baseY;
     private int width;
     private int height;
     private int textWidth;
+=======
+    private int rightX;
+    private int widgetHeight;
+    private int captionY;
+>>>>>>> f05bd20e4066083065602ce412ab5d7943920256
     private int rowHeight;
 
     private Font font;
@@ -51,7 +57,6 @@ public class PictureWidget extends Widget {
         if (pictureData.picture != null) {
             if (image == null) {
                 setVisible(true);
-//                System.err.println(pictureData.picture.getPath() + " " + pictureData.picture.getCaption());
                 try {
                     image = ImageIO.read(new File(pictureData.picture.getPath()));
                     caption = pictureData.picture.getCaption();
@@ -81,6 +86,19 @@ public class PictureWidget extends Widget {
 
 //        setBackgroundColor(Color.RED);
 //        drawRectangle(baseX, baseY, this.width, this.height);
+
+        int widgetWidth = this.widgetHeight * image.getWidth() / image.getHeight();
+
+        int captionWidth = Math.min(widgetWidth, image.getWidth());
+        int textWidth = (int) (captionWidth - 2 * MARGIN * rowHeight);
+
+        if (text == null) {
+            if (caption != null) {
+                text = split(caption, font, textWidth);
+            } else {
+                return;
+            }
+        }
 
         double scale = Math.min(
                 1.0 * (this.width) / image.getWidth(),
