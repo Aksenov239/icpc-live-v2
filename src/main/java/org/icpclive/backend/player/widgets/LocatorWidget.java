@@ -10,6 +10,12 @@ import org.icpclive.events.TeamInfo;
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -22,15 +28,23 @@ public class LocatorWidget extends Widget {
     private static final int TEAM_PANE_HEIGHT = 41;
     private static final int TEAM_PANE_WIDTH = getTeamPaneWidth(TEAM_PANE_HEIGHT);
     private static final int MARGIN = 30;
+    private static final int UPDATE_TIMEOUT = 1000;
 
     public LocatorWidget(long updateWait) {
         super(updateWait);
     }
 
+    long lastUpdateTime = 0;
+
     @Override
     public void updateImpl(Data data) {
         this.data = data.locatorData;
         setVisible(data.locatorData.isVisible());
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > lastUpdateTime + UPDATE_TIMEOUT) {
+            updateState();
+            lastUpdateTime = currentTime;
+        }
     }
 
     @Override
@@ -46,17 +60,14 @@ public class LocatorWidget extends Widget {
         Polygon polygon = new Polygon(new int[]{0, width, width, 0}, new int[]{0, 0, height, height}, 4);
         Area area = new Area(polygon);
 
-//        for (TeamInfo team : data.getTeams()) {
-//            if (team == null) continue;
-//        }
-//
-        int[][] c = new int[data.getTeams().size()][2];
+        Point[] c = new Point[data.getTeams().size()];
 
         List<TeamInfo> teams = data.getTeams();
         for (int i = 0; i < teams.size(); i++) {
             TeamInfo teamInfo = teams.get(i);
             c[i] = getCoordinates(teamInfo);
-            Ellipse2D ellipse = new Ellipse2D.Double(c[i][0] - c[i][2], c[i][1] - c[i][2], c[i][2] * 2, c[i][2] * 2);
+            int r = radius[i];
+            Ellipse2D ellipse = new Ellipse2D.Double(c[i].x - r, c[i].y - r, r * 2, r * 2);
             area.subtract(new Area(ellipse));
         }
 
@@ -73,8 +84,8 @@ public class LocatorWidget extends Widget {
 
             if (n1 > 3 || n2 > 2) continue;
 
-            int[][] cTop = new int[n1][];
-            int[][] cBottom = new int[n2][];
+            Point[] cTop = new Point[n1];
+            Point[] cBottom = new Point[n2];
             int k1 = 0;
             int k2 = 0;
             for (int i = 0; i < c.length; i++) {
@@ -123,9 +134,9 @@ public class LocatorWidget extends Widget {
 
             int x1 = x[i];
             int y1 = side == 1 ? TOP_Y + TEAM_PANE_HEIGHT + 5 : BOTTOM_Y - 5;
-            int x2 = c[i][0];
-            int y2 = c[i][1];
-            int r = c[i][2];
+            int x2 = (int)c[i].x;
+            int y2 = (int)c[i].y;
+            int r = radius[i];
             double d = Math.hypot(x1 - x2, y1 - y2);
 
             if (d > r * 1.1) {
@@ -141,19 +152,16 @@ public class LocatorWidget extends Widget {
                 g2.setStroke(new BasicStroke(3));
                 g2.drawLine(xx1, yy1, xx2, yy2);
             }
-//
-//            int d = c[i][1] - 100 - TEAM_PANE_HEIGHT - c[i][2];
-//            g2.fillRect(c[i][0] - 1, 100 + TEAM_PANE_HEIGHT + (int) (d * (1 - textOpacity) / 10), 3, (int) (d * textOpacity));
         }
     }
 
     int penalty;
 
-    private int[] placeTeamPanes(int[][] c, int min, int max, int y) {
+    private int[] placeTeamPanes(Point[] c, int min, int max, int y) {
         int n = c.length;
         int[][] ap = new int[n][2];
         for (int i = 0; i < n; i++) {
-            ap[i][0] = c[i][0];
+            ap[i][0] = (int)c[i].x;
             ap[i][1] = i;
         }
         Arrays.sort(ap, (o1, o2) -> Integer.compare(o1[0], o2[0]));
@@ -179,7 +187,7 @@ public class LocatorWidget extends Widget {
         }
         penalty = calc(a, b);
         for (int i = 0; i < n; i++) {
-            penalty += (c[i][1] - y) * (c[i][1] - y);
+            penalty += ((int)c[i].y - y) * ((int)c[i].y - y);
         }
         int[] res = new int[n];
         for (int i = 0; i < n; i++) {
@@ -196,24 +204,141 @@ public class LocatorWidget extends Widget {
         return s;
     }
 
-    Map<Integer, int[]> coordinates = new HashMap<>();
-
-    private int[] getCoordinates(TeamInfo teamInfo) {
-        int id = teamInfo.getId();
-        int[] res = coordinates.get(id);
-        if (res == null) {
-            res = new int[3];
-            res[0] = 50 + (id % 15) * 110;
-            res[1] = 250 + (id / 15) * 80;
-            res[2] = res[1] / 5;
-            coordinates.put(id, res);
-        }
-        return res;
-    }
-
     @Override
     public CachedData getCorrespondingData(Data data) {
-        return data.pvpData;
+        return data.locatorData;
+    }
+
+    // BAD CODE DOWN HERE, USE CAREFULLY
+
+    Point[] points = new Point[10000];
+    int[] radius = new int[10000];
+
+    private Point getCoordinates(TeamInfo teamInfo) {
+        return points[teamInfo.getId()];
+    }
+
+    private static final double ANGLE = 1.01;
+    public static final String CAMERA_IP = "10.250.25.111";
+    double pan = 0, tilt = 0, angle = ANGLE;
+    private static final int WIDTH = 1920;
+    private static final int HEIGHT = 1080;
+
+    private synchronized void updateState() {
+        try {
+            parse(sendGet("http://" + CAMERA_IP + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + getUTCTime()));
+            Scanner in = new Scanner(new File("coordinates.txt"));
+            int n = in.nextInt();             
+            for (int i = 1; i <= n; i++) {
+                Point p = new Point(in.nextInt(), in.nextInt(), in.nextInt());
+                p = p.rotateY(pan);
+                p = p.rotateX(-tilt);
+                int R = (int) (20 / p.z * ANGLE / angle) + 2;
+                p = p.multiply(1 / p.z);
+                p = p.multiply(WIDTH / angle);
+                p = p.move(new Point(WIDTH / 2, HEIGHT / 2, 0));
+                points[i] = p;
+                radius[i] = R;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String sendGet(String url) throws Exception {
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        int responseCode = con.getResponseCode();
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
+    public static String getUTCTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ss'Z'");
+        sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+        String utcTime = sdf.format(cal.getTime());
+        return utcTime;
+    }
+
+    void parse(String s) {
+        s = s.trim();
+        int l = 0;
+        int r = 0;
+        while (r < s.length()) {
+            l = r;
+            r = l + 1;
+            while (r < s.length() && Character.isAlphabetic(s.charAt(r))) {
+                r++;
+            }
+            String key = s.substring(l, r);
+            l = r + 1;
+            r = l + 1;
+            while (r < s.length() && !Character.isAlphabetic(s.charAt(r))) {
+                r++;
+            }
+            try {
+                double value = Double.parseDouble(s.substring(l, r));
+                switch (key) {
+                    case "pan":
+                        pan = value * Math.PI / 180;
+                        break;
+                    case "tilt":
+                        tilt = value * Math.PI / 180;
+                        break;
+                    case "zoom":
+                        double maxmag = 35;
+                        double mag = 1 + (maxmag - 1) * value / 9999;
+                        angle = ANGLE / mag;
+                        break;
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    static class Point {
+        double x, y, z;
+
+        public Point(double x, double y, double z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        Point move(Point d) {
+            return new Point(x + d.x, y + d.y, z + d.z);
+        }
+
+        Point multiply(double d) {
+            return new Point(x * d, y * d, z * d);
+        }
+
+        Point rotateZ(double a) {
+            return new Point(x * Math.cos(a) - y * Math.sin(a),
+                    x * Math.sin(a) + y * Math.cos(a),
+                    z);
+        }
+
+        Point rotateY(double a) {
+            return new Point(x * Math.cos(a) - z * Math.sin(a),
+                    y,
+                    x * Math.sin(a) + z * Math.cos(a));
+        }
+
+        Point rotateX(double a) {
+            return new Point(x,
+                    y * Math.cos(a) - z * Math.sin(a),
+                    y * Math.sin(a) + z * Math.cos(a));
+        }
     }
 
 }
