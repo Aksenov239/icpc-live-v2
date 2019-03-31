@@ -1,4 +1,4 @@
-package sniper;
+package org.icpclive.backend.player.widgets.locator;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

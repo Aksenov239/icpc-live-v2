@@ -1,21 +1,14 @@
-package sniper;
+package org.icpclive.backend.player.widgets.locator;
 
-import de.onvif.soap.OnvifDevice;
-import de.onvif.soap.devices.PtzDevices;
-import org.onvif.ver10.schema.FloatRange;
-import org.onvif.ver10.schema.PTZVector;
-import org.onvif.ver10.schema.Profile;
-
-import javax.xml.soap.SOAPException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static javafx.css.StyleOrigin.USER_AGENT;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 /**
  * @author: pashka

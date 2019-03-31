@@ -1,4 +1,4 @@
-package sniper;
+package org.icpclive.backend.player.widgets.locator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.*;
-
-import static sniper.PtzTest.getUTCTime;
 
 /**
  * @author: pashka
@@ -83,7 +81,7 @@ public class StreamView implements MJpegViewer, MouseListener {
     }
 
     private synchronized void updateState() throws Exception {
-        parse(PtzTest.sendGet("http://" + CAMERA_IP + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + getUTCTime()));
+        parse(PtzTest.sendGet("http://" + CAMERA_IP + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + PtzTest.getUTCTime()));
     }
 
     void parse(String s) {
@@ -276,6 +274,7 @@ public class StreamView implements MJpegViewer, MouseListener {
                 out = new PrintWriter("output.txt");
             } catch (FileNotFoundException e1) {
             }
+            out.println(n);
             for (int i = 0; i < n; i++) {
                 double xc = xx[i];
                 double yc = yy[i];
