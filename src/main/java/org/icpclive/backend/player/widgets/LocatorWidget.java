@@ -24,6 +24,7 @@ public class LocatorWidget extends Widget {
     public static final int TOP_Y = 50;
     private static final int BOTTOM_Y = 968;
     private static final int QUEUE_WIDTH = 550;
+    public static final int BASE_RADIUS = 700;
     private LocatorData data;
     private static final int TEAM_PANE_HEIGHT = 41;
     private static final int TEAM_PANE_WIDTH = getTeamPaneWidth(TEAM_PANE_HEIGHT);
@@ -60,13 +61,22 @@ public class LocatorWidget extends Widget {
         Polygon polygon = new Polygon(new int[]{0, width, width, 0}, new int[]{0, 0, height, height}, 4);
         Area area = new Area(polygon);
 
-        Point[] c = new Point[data.getTeams().size()];
-
         List<TeamInfo> teams = data.getTeams();
+        List<TeamInfo> teams2 = new ArrayList<>();
+        for (TeamInfo team : teams) {
+            Point p = getCoordinates(team);
+            if (p.x > 0 && p.x < WIDTH && p.y > 0 && p.y < HEIGHT) {
+                teams2.add(team);
+            }
+        }
+        teams = teams2;
+
+        Point[] c = new Point[teams.size()];
+
         for (int i = 0; i < teams.size(); i++) {
             TeamInfo teamInfo = teams.get(i);
             c[i] = getCoordinates(teamInfo);
-            int r = radius[i];
+            int r = radius[teamInfo.getId()];
             Ellipse2D ellipse = new Ellipse2D.Double(c[i].x - r, c[i].y - r, r * 2, r * 2);
             area.subtract(new Area(ellipse));
         }
@@ -136,7 +146,7 @@ public class LocatorWidget extends Widget {
             int y1 = side == 1 ? TOP_Y + TEAM_PANE_HEIGHT + 5 : BOTTOM_Y - 5;
             int x2 = (int)c[i].x;
             int y2 = (int)c[i].y;
-            int r = radius[i];
+            int r = radius[teams.get(i).getId()];
             double d = Math.hypot(x1 - x2, y1 - y2);
 
             if (d > r * 1.1) {
@@ -228,12 +238,12 @@ public class LocatorWidget extends Widget {
         try {
             parse(sendGet("http://" + CAMERA_IP + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + getUTCTime()));
             Scanner in = new Scanner(new File("coordinates.txt"));
-            int n = in.nextInt();             
-            for (int i = 1; i <= n; i++) {
-                Point p = new Point(in.nextInt(), in.nextInt(), in.nextInt());
+            int n = in.nextInt();
+            for (int i = 0; i < n; i++) {
+                Point p = new Point(in.nextDouble(), in.nextDouble(), in.nextDouble());
                 p = p.rotateY(pan);
                 p = p.rotateX(-tilt);
-                int R = (int) (20 / p.z * ANGLE / angle) + 2;
+                int R = (int) (BASE_RADIUS / Math.abs(p.z) * ANGLE / angle) + 2;
                 p = p.multiply(1 / p.z);
                 p = p.multiply(WIDTH / angle);
                 p = p.move(new Point(WIDTH / 2, HEIGHT / 2, 0));
