@@ -53,7 +53,7 @@ public class PictureData extends CachedData {
     }
 
     public void addPicture(Picture picture) {
-        MainScreenData.getProperties().backupPictures.addItem(picture);
+        MainScreenData.getProperties().backupPictures.addItemAt(0, picture);
     }
 
     public void removePicture(Picture picture) {

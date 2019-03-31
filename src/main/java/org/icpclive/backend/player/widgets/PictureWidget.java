@@ -30,6 +30,7 @@ public class PictureWidget extends Widget {
     private long lastTimestamp;
 
     private BufferedImage image;
+    private String caption;
     private String[] text;
 
     public PictureWidget(long updateWait, int baseX, int baseY, int width, int height, int rowHeight) {
@@ -48,15 +49,22 @@ public class PictureWidget extends Widget {
         PictureData pictureData = data.pictureData;
         lastTimestamp = pictureData.timestamp;
         if (pictureData.picture != null) {
-            setVisible(true);
-            try {
-                image = ImageIO.read(new File(pictureData.picture.getPath()));
-                text = split(pictureData.picture.getCaption(), font, textWidth);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (image == null) {
+                setVisible(true);
+//                System.err.println(pictureData.picture.getPath() + " " + pictureData.picture.getCaption());
+                try {
+                    image = ImageIO.read(new File(pictureData.picture.getPath()));
+                    caption = pictureData.picture.getCaption();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             setVisible(false);
+            if (visibilityState == 0) {
+                image = null;
+                text = null;
+            }
         }
     }
 

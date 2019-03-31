@@ -111,6 +111,13 @@ public class Main {
 
         generator.addWidget(new LocatorWidget(updateWait));
 
+        generator.addWidget(new VideoWidget(updateWait,
+                Widget.BASE_WIDTH - 50,
+                743,
+                900,
+                50
+        ));
+
         generator.addWidget(new TestFramesWidget());
 
         generator.addWidget(new VerticalCreepingLineWidget(updateWait,
