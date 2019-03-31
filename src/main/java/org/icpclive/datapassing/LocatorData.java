@@ -123,16 +123,18 @@ public class LocatorData extends CachedData {
 
     public static class LocatorDataSerializer implements JsonSerializer<LocatorData> {
         @Override
-        public JsonElement serialize(LocatorData pvpData, Type type, JsonSerializationContext jsonSerializationContext) {
+        public JsonElement serialize(LocatorData locatorData, Type type, JsonSerializationContext jsonSerializationContext) {
             final JsonObject object = new JsonObject();
-            object.addProperty("timestamp", pvpData.timestamp);
-            object.addProperty("delay", pvpData.delay);
-            object.addProperty("visible", pvpData.visible);
+            object.addProperty("timestamp", locatorData.timestamp);
+            object.addProperty("delay", locatorData.delay);
+            object.addProperty("visible", locatorData.visible);
             JsonArray optionsArray = new JsonArray();
-            for (TeamInfo teamInfo : pvpData.getTeams()) {
-                JsonObject jsonOption = new JsonObject();
-                jsonOption.addProperty("id", teamInfo.getId());
-                optionsArray.add(jsonOption);
+            if (locatorData.getTeams() != null) {
+                for (TeamInfo teamInfo : locatorData.getTeams()) {
+                    JsonObject jsonOption = new JsonObject();
+                    jsonOption.addProperty("id", teamInfo.getId());
+                    optionsArray.add(jsonOption);
+                }
             }
             object.add("teams", optionsArray);
             return object;

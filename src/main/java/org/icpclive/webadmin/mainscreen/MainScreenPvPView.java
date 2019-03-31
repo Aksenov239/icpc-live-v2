@@ -21,6 +21,7 @@ public class MainScreenPvPView extends CustomComponent implements View {
 
     Button show;
     Button hide;
+    Button clear;
 
     Label firstTeam;
     Label secondTeam;
@@ -69,12 +70,17 @@ public class MainScreenPvPView extends CustomComponent implements View {
             mainScreenData.pvpData.hide();
         });
 
+        clear = new Button("Clear");
+        clear.addClickListener(e -> {
+            teamSelection.clear();
+        });
+
         firstTeam = new Label(mainScreenData.pvpData.getTeam(0), ContentMode.HTML);
         secondTeam = new Label(mainScreenData.pvpData.getTeam(1), ContentMode.HTML);
         firstTeam.setWidthUndefined();
         secondTeam.setWidthUndefined();
 
-        Component buttonGroup = createGroupLayout(show, hide);
+        Component buttonGroup = createGroupLayout(show, hide, clear);
         VerticalLayout firstTeamComponent = new VerticalLayout(firstTeam);
         firstTeamComponent.setMargin(true);
         firstTeamComponent.setComponentAlignment(firstTeam, Alignment.MIDDLE_RIGHT);

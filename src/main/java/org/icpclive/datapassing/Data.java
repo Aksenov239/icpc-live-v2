@@ -31,10 +31,7 @@ public class Data extends CachedData {
     public FactData factData;
     public PictureData pictureData;
     public PvPData pvpData;
-<<<<<<< HEAD
     public LocatorData locatorData;
-=======
->>>>>>> f05bd20e4066083065602ce412ab5d7943920256
     public VideoData videoData;
 
     //TODO merge this to statuses, as subclass.

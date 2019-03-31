@@ -477,7 +477,7 @@ public class WFEventsLoader extends EventsLoader {
                     String type = je.get("type").getAsString();
                     JsonObject json = je.get("data").getAsJsonObject();
 
-                    synchronized (GLOBAL_LOCK) {
+//                    synchronized (GLOBAL_LOCK) {
                         switch (type) {
                             case "contests":
                                 readContest(contestInfo, json);
@@ -501,7 +501,7 @@ public class WFEventsLoader extends EventsLoader {
                                 }
                             default:
                         }
-                    }
+//                    }
                 }
                 return;
             } catch (Throwable e) {

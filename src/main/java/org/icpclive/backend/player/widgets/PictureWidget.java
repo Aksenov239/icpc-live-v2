@@ -17,18 +17,12 @@ import java.io.IOException;
  * Created by Meepo on 1/27/2019.
  */
 public class PictureWidget extends Widget {
-<<<<<<< HEAD
 
     private int baseX;
     private int baseY;
     private int width;
     private int height;
     private int textWidth;
-=======
-    private int rightX;
-    private int widgetHeight;
-    private int captionY;
->>>>>>> f05bd20e4066083065602ce412ab5d7943920256
     private int rowHeight;
 
     private Font font;
@@ -36,7 +30,6 @@ public class PictureWidget extends Widget {
     private long lastTimestamp;
 
     private BufferedImage image;
-    private String caption;
     private String[] text;
 
     public PictureWidget(long updateWait, int baseX, int baseY, int width, int height, int rowHeight) {
@@ -55,21 +48,15 @@ public class PictureWidget extends Widget {
         PictureData pictureData = data.pictureData;
         lastTimestamp = pictureData.timestamp;
         if (pictureData.picture != null) {
-            if (image == null) {
-                setVisible(true);
-                try {
-                    image = ImageIO.read(new File(pictureData.picture.getPath()));
-                    caption = pictureData.picture.getCaption();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            setVisible(true);
+            try {
+                image = ImageIO.read(new File(pictureData.picture.getPath()));
+                text = split(pictureData.picture.getCaption(), font, textWidth);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } else {
             setVisible(false);
-            if (visibilityState == 0) {
-                image = null;
-                text = null;
-            }
         }
     }
 
@@ -86,19 +73,9 @@ public class PictureWidget extends Widget {
 
 //        setBackgroundColor(Color.RED);
 //        drawRectangle(baseX, baseY, this.width, this.height);
-
-        int widgetWidth = this.widgetHeight * image.getWidth() / image.getHeight();
-
-        int captionWidth = Math.min(widgetWidth, image.getWidth());
-        int textWidth = (int) (captionWidth - 2 * MARGIN * rowHeight);
-
-        if (text == null) {
-            if (caption != null) {
-                text = split(caption, font, textWidth);
-            } else {
-                return;
-            }
-        }
+        setBackgroundColor(Color.BLACK);
+        setMaximumOpacity(0.3);
+        drawRectangle(0, 0, width, height);
 
         double scale = Math.min(
                 1.0 * (this.width) / image.getWidth(),
