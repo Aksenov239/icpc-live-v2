@@ -1,6 +1,7 @@
 package org.icpclive.backend.player.widgets.locator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -42,10 +43,14 @@ public class LocatorsData {
         if (cameraIPs.length != locatorInputs.length || cameraIPs.length != locatorCoordinates.length) {
             throw new AssertionError("locator.cameras, locator.inputfiles and locator.coordinates must be of the same length");
         }
-        locatorCameras = new ArrayList<>();
+        locatorCameras = new ArrayList<>(cameraIPs.length);
         for (int i = 0; i < cameraIPs.length; i++) {
-            locatorCameras.add(new LocatorCamera(cameraIPs[i], new File(locatorInputs[i]),
-                    new File(locatorCoordinates[i]), i));
+            try {
+                locatorCameras.add(new LocatorCamera(cameraIPs[i], new File(locatorInputs[i]),
+                        new File(locatorCoordinates[i]), i));
+            } catch (FileNotFoundException e) {
+                throw new AssertionError(e);
+            }
         }
     }
 }

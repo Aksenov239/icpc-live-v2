@@ -70,6 +70,7 @@ public class MainScreenLocatorView extends CustomComponent implements View {
         locatorSelection.addItems(LocatorsData.locatorCameras);
         locatorSelection.select(LocatorsData.locatorCameras.get(0));
         locatorSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+        locatorSelection.setImmediate(true);
         locatorSelection.addValueChangeListener(event -> {
             mainScreenData.locatorData.setCameraID(((LocatorCamera) locatorSelection.getValue()).cameraID);
         });

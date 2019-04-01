@@ -40,6 +40,7 @@ public class LocatorData extends CachedData {
 
     public synchronized void setCameraID(int newCameraID) {
         cameraID = newCameraID;
+        recache();
     }
 
     public synchronized String setVisible() {

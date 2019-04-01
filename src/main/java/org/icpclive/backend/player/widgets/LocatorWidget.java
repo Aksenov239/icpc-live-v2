@@ -4,6 +4,7 @@ import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.graphics.GraphicsSWT;
 import org.icpclive.backend.player.widgets.locator.LocatorCamera;
 import org.icpclive.backend.player.widgets.locator.LocatorConfig;
+import org.icpclive.backend.player.widgets.locator.LocatorPoint;
 import org.icpclive.backend.player.widgets.locator.LocatorsData;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
@@ -73,14 +74,14 @@ public class LocatorWidget extends Widget {
         List<TeamInfo> teams = data.getTeams();
         List<TeamInfo> teams2 = new ArrayList<>();
         for (TeamInfo team : teams) {
-            Point p = getCoordinates(team);
+            LocatorPoint p = getCoordinates(team);
             if (p.x > 0 && p.x < WIDTH && p.y > 0 && p.y < HEIGHT) {
                 teams2.add(team);
             }
         }
         teams = teams2;
 
-        Point[] c = new Point[teams.size()];
+        LocatorPoint[] c = new LocatorPoint[teams.size()];
 
         for (int i = 0; i < teams.size(); i++) {
             TeamInfo teamInfo = teams.get(i);
@@ -103,8 +104,8 @@ public class LocatorWidget extends Widget {
 
             if (n1 > 3 || n2 > 2) continue;
 
-            Point[] cTop = new Point[n1];
-            Point[] cBottom = new Point[n2];
+            LocatorPoint[] cTop = new LocatorPoint[n1];
+            LocatorPoint[] cBottom = new LocatorPoint[n2];
             int k1 = 0;
             int k2 = 0;
             for (int i = 0; i < c.length; i++) {
@@ -176,7 +177,7 @@ public class LocatorWidget extends Widget {
 
     int penalty;
 
-    private int[] placeTeamPanes(Point[] c, int min, int max, int y) {
+    private int[] placeTeamPanes(LocatorPoint[] c, int min, int max, int y) {
         int n = c.length;
         int[][] ap = new int[n][2];
         for (int i = 0; i < n; i++) {
@@ -232,10 +233,10 @@ public class LocatorWidget extends Widget {
 
 //    Point[] points = new Point[10000];
 //    int[] radius = new int[10000];
-    private Point[] points;
+    private LocatorPoint[] points;
     private int[] radius;
 
-    private Point getCoordinates(TeamInfo teamInfo) {
+    private LocatorPoint getCoordinates(TeamInfo teamInfo) {
         return points[teamInfo.getId()];
     }
 
@@ -251,20 +252,21 @@ public class LocatorWidget extends Widget {
 
     private void updateState() {
         try {
-            String response = sendGet("http://" + getCamera().hostName + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + getUTCTime());
+            LocatorCamera camera = getCamera();
+            String response = sendGet("http://" + camera.hostName + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + getUTCTime());
+            camera.update();
             LocatorConfig config = parseCameraConfiguration(response);
-            Scanner in = new Scanner(getCamera().coordinatesFile);
-            int n = in.nextInt();
-            Point[] newPoints = new Point[n];
+            int n = camera.coordinates.length;
+            LocatorPoint[] newPoints = new LocatorPoint[n];
             int[] newRadius = new int[n];
             for (int i = 0; i < n; i++) {
-                Point p = new Point(in.nextDouble(), in.nextDouble(), in.nextDouble());
+                LocatorPoint p = camera.coordinates[i];
                 p = p.rotateY(config.pan);
                 p = p.rotateX(-config.tilt);
                 int R = (int) (BASE_RADIUS / Math.abs(p.z) * ANGLE / config.angle) + 2;
                 p = p.multiply(1 / p.z);
                 p = p.multiply(WIDTH / config.angle);
-                p = p.move(new Point(WIDTH / 2, HEIGHT / 2, 0));
+                p = p.move(new LocatorPoint(WIDTH / 2, HEIGHT / 2, 0));
                 newPoints[i] = p;
                 newRadius[i] = R;
             }
@@ -339,42 +341,6 @@ public class LocatorWidget extends Widget {
             throw new AssertionError();
         }
         return new LocatorConfig(newPan, newTilt, newAngle);
-    }
-
-    static class Point {
-        final double x, y, z;
-
-        public Point(double x, double y, double z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        Point move(Point d) {
-            return new Point(x + d.x, y + d.y, z + d.z);
-        }
-
-        Point multiply(double d) {
-            return new Point(x * d, y * d, z * d);
-        }
-
-        Point rotateZ(double a) {
-            return new Point(x * Math.cos(a) - y * Math.sin(a),
-                    x * Math.sin(a) + y * Math.cos(a),
-                    z);
-        }
-
-        Point rotateY(double a) {
-            return new Point(x * Math.cos(a) - z * Math.sin(a),
-                    y,
-                    x * Math.sin(a) + z * Math.cos(a));
-        }
-
-        Point rotateX(double a) {
-            return new Point(x,
-                    y * Math.cos(a) - z * Math.sin(a),
-                    y * Math.sin(a) + z * Math.cos(a));
-        }
     }
 
 }
