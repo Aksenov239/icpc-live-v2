@@ -264,8 +264,8 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public long parseTime(String time) {
-//        ZonedDateTime zdt = ZonedDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        ZonedDateTime zdt = ZonedDateTime.parse(time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        ZonedDateTime zdt = ZonedDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+//        ZonedDateTime zdt = ZonedDateTime.parse(time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         return zdt.toInstant().toEpochMilli();
 //        LocalDateTime ldt = LocalDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 //        return ldt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -477,7 +477,7 @@ public class WFEventsLoader extends EventsLoader {
                     String type = je.get("type").getAsString();
                     JsonObject json = je.get("data").getAsJsonObject();
 
-//                    synchronized (GLOBAL_LOCK) {
+                    synchronized (GLOBAL_LOCK) {
                         switch (type) {
                             case "contests":
                                 readContest(contestInfo, json);
@@ -501,7 +501,7 @@ public class WFEventsLoader extends EventsLoader {
                                 }
                             default:
                         }
-//                    }
+                    }
                 }
                 return;
             } catch (Throwable e) {

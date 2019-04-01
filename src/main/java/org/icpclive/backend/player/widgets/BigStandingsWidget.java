@@ -359,7 +359,7 @@ public class BigStandingsWidget extends Widget {
 
         PlateStyle nameStyle =
                 topUniversity.contains(team.getId()) ? BigStandingsStylesheet.topUniversityTeam :
-//                        topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
+                        topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
                                 BigStandingsStylesheet.name;
         if (bright) {
             nameStyle = nameStyle.brighter();
