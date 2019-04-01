@@ -2,12 +2,14 @@ package org.icpclive.datapassing;
 
 import com.google.gson.*;
 import net.egork.teaminfo.data.Team;
+import org.icpclive.backend.player.widgets.locator.LocatorCamera;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.TeamInfo;
 import org.icpclive.webadmin.mainscreen.MainScreenData;
 import org.icpclive.webadmin.mainscreen.Polls.Poll;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -23,15 +25,21 @@ public class LocatorData extends CachedData {
         this.delay = data.delay;
         this.visible = data.visible;
         this.teamInfos = data.teamInfos;
+        this.cameraID = data.cameraID;
         return this;
     }
 
     boolean visible;
     List<TeamInfo> teamInfos;
+    int cameraID;
     String status = "Locator is not shown";
 
     public synchronized void setTeams(Collection<TeamInfo> teams) {
         teamInfos = new ArrayList<>(teams);
+    }
+
+    public synchronized void setCameraID(int newCameraID) {
+        cameraID = newCameraID;
     }
 
     public synchronized String setVisible() {
@@ -65,6 +73,10 @@ public class LocatorData extends CachedData {
 
     public synchronized List<TeamInfo> getTeams() {
         return teamInfos;
+    }
+
+    public synchronized int getCameraID() {
+        return cameraID;
     }
 
     public synchronized String checkOverlays() {
@@ -128,6 +140,7 @@ public class LocatorData extends CachedData {
             object.addProperty("timestamp", locatorData.timestamp);
             object.addProperty("delay", locatorData.delay);
             object.addProperty("visible", locatorData.visible);
+            object.addProperty("cameraID", locatorData.cameraID);
             JsonArray optionsArray = new JsonArray();
             if (locatorData.getTeams() != null) {
                 for (TeamInfo teamInfo : locatorData.getTeams()) {
@@ -150,6 +163,7 @@ public class LocatorData extends CachedData {
             data.timestamp = jsonObject.get("timestamp").getAsLong();
             data.delay = jsonObject.get("delay").getAsInt();
             data.visible = jsonObject.get("visible").getAsBoolean();
+            data.cameraID = jsonObject.get("cameraID").getAsInt();
             JsonArray teamsArray = jsonObject.get("teams").getAsJsonArray();
             List<TeamInfo> teams = new ArrayList<>();
             ContestInfo contestInfo = EventsLoader.getInstance().getContestData();

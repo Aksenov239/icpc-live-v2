@@ -2,6 +2,9 @@ package org.icpclive.backend.player.widgets;
 
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.graphics.GraphicsSWT;
+import org.icpclive.backend.player.widgets.locator.LocatorCamera;
+import org.icpclive.backend.player.widgets.locator.LocatorConfig;
+import org.icpclive.backend.player.widgets.locator.LocatorsData;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.datapassing.LocatorData;
@@ -11,7 +14,6 @@ import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -33,6 +35,18 @@ public class LocatorWidget extends Widget {
 
     public LocatorWidget(long updateWait) {
         super(updateWait);
+        new Thread() {
+            @Override
+            public void run() {
+                while (!Thread.interrupted()) {
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime > lastUpdateTime + UPDATE_TIMEOUT) {
+                        updateState();
+                        lastUpdateTime = currentTime;
+                    }
+                }
+            }
+        }.start();
     }
 
     long lastUpdateTime = 0;
@@ -41,11 +55,6 @@ public class LocatorWidget extends Widget {
     public void updateImpl(Data data) {
         this.data = data.locatorData;
         setVisible(data.locatorData.isVisible());
-        long currentTime = System.currentTimeMillis();
-        if (currentTime > lastUpdateTime + UPDATE_TIMEOUT) {
-            updateState();
-            lastUpdateTime = currentTime;
-        }
     }
 
     @Override
@@ -144,12 +153,12 @@ public class LocatorWidget extends Widget {
 
             int x1 = x[i];
             int y1 = side == 1 ? TOP_Y + TEAM_PANE_HEIGHT + 5 : BOTTOM_Y - 5;
-            int x2 = (int)c[i].x;
-            int y2 = (int)c[i].y;
+            int x2 = (int) c[i].x;
+            int y2 = (int) c[i].y;
             int r = radius[teams.get(i).getId()];
             double d = Math.hypot(x1 - x2, y1 - y2);
 
-            if (d > r * 1.1) {
+            if (d > r * 1.1 && textOpacity > 0) {
                 double d1 = (d - r) * (0.1 - textOpacity * 0.1) / d;
                 double d2 = (d - r) * (0.1 + textOpacity * 0.9) / d;
 
@@ -171,7 +180,7 @@ public class LocatorWidget extends Widget {
         int n = c.length;
         int[][] ap = new int[n][2];
         for (int i = 0; i < n; i++) {
-            ap[i][0] = (int)c[i].x;
+            ap[i][0] = (int) c[i].x;
             ap[i][1] = i;
         }
         Arrays.sort(ap, (o1, o2) -> Integer.compare(o1[0], o2[0]));
@@ -197,7 +206,7 @@ public class LocatorWidget extends Widget {
         }
         penalty = calc(a, b);
         for (int i = 0; i < n; i++) {
-            penalty += ((int)c[i].y - y) * ((int)c[i].y - y);
+            penalty += ((int) c[i].y - y) * ((int) c[i].y - y);
         }
         int[] res = new int[n];
         for (int i = 0; i < n; i++) {
@@ -221,35 +230,46 @@ public class LocatorWidget extends Widget {
 
     // BAD CODE DOWN HERE, USE CAREFULLY
 
-    Point[] points = new Point[10000];
-    int[] radius = new int[10000];
+//    Point[] points = new Point[10000];
+//    int[] radius = new int[10000];
+    private Point[] points;
+    private int[] radius;
 
     private Point getCoordinates(TeamInfo teamInfo) {
         return points[teamInfo.getId()];
     }
 
     private static final double ANGLE = 1.01;
-    public static final String CAMERA_IP = "10.250.25.111";
-    double pan = 0, tilt = 0, angle = ANGLE;
+//    double pan = 0, tilt = 0, angle = ANGLE;
+//    LocatorConfig config = new LocatorConfig(0, 0, ANGLE);
     private static final int WIDTH = 1920;
     private static final int HEIGHT = 1080;
 
-    private synchronized void updateState() {
+    private LocatorCamera getCamera() {
+        return LocatorsData.locatorCameras.get(data.getCameraID());
+    }
+
+    private void updateState() {
         try {
-            parse(sendGet("http://" + CAMERA_IP + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + getUTCTime()));
-            Scanner in = new Scanner(new File("coordinates.txt"));
+            String response = sendGet("http://" + getCamera().hostName + "/axis-cgi/com/ptz.cgi?query=position,limits&camera=1&html=no&timestamp=" + getUTCTime());
+            LocatorConfig config = parseCameraConfiguration(response);
+            Scanner in = new Scanner(getCamera().coordinatesFile);
             int n = in.nextInt();
+            Point[] newPoints = new Point[n];
+            int[] newRadius = new int[n];
             for (int i = 0; i < n; i++) {
                 Point p = new Point(in.nextDouble(), in.nextDouble(), in.nextDouble());
-                p = p.rotateY(pan);
-                p = p.rotateX(-tilt);
-                int R = (int) (BASE_RADIUS / Math.abs(p.z) * ANGLE / angle) + 2;
+                p = p.rotateY(config.pan);
+                p = p.rotateX(-config.tilt);
+                int R = (int) (BASE_RADIUS / Math.abs(p.z) * ANGLE / config.angle) + 2;
                 p = p.multiply(1 / p.z);
-                p = p.multiply(WIDTH / angle);
+                p = p.multiply(WIDTH / config.angle);
                 p = p.move(new Point(WIDTH / 2, HEIGHT / 2, 0));
-                points[i] = p;
-                radius[i] = R;
+                newPoints[i] = p;
+                newRadius[i] = R;
             }
+            points = newPoints;
+            radius = newRadius;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -263,7 +283,7 @@ public class LocatorWidget extends Widget {
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
@@ -275,14 +295,16 @@ public class LocatorWidget extends Widget {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ss'Z'");
         sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-        String utcTime = sdf.format(cal.getTime());
-        return utcTime;
+        return sdf.format(cal.getTime());
     }
 
-    void parse(String s) {
+    LocatorConfig parseCameraConfiguration(String s) {
         s = s.trim();
         int l = 0;
         int r = 0;
+        double newPan = Double.NaN;
+        double newTilt = Double.NaN;
+        double newAngle = Double.NaN;
         while (r < s.length()) {
             l = r;
             r = l + 1;
@@ -299,24 +321,28 @@ public class LocatorWidget extends Widget {
                 double value = Double.parseDouble(s.substring(l, r));
                 switch (key) {
                     case "pan":
-                        pan = value * Math.PI / 180;
+                        newPan = value * Math.PI / 180;
                         break;
                     case "tilt":
-                        tilt = value * Math.PI / 180;
+                        newTilt = value * Math.PI / 180;
                         break;
                     case "zoom":
                         double maxmag = 35;
                         double mag = 1 + (maxmag - 1) * value / 9999;
-                        angle = ANGLE / mag;
+                        newAngle = ANGLE / mag;
                         break;
                 }
             } catch (Exception e) {
             }
         }
+        if (Double.isNaN(newPan) || Double.isNaN(newTilt) || Double.isNaN(newAngle)) {
+            throw new AssertionError();
+        }
+        return new LocatorConfig(newPan, newTilt, newAngle);
     }
 
     static class Point {
-        double x, y, z;
+        final double x, y, z;
 
         public Point(double x, double y, double z) {
             this.x = x;

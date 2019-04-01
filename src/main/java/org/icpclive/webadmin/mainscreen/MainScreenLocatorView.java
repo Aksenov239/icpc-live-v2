@@ -5,6 +5,8 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.icpclive.backend.player.widgets.locator.LocatorCamera;
+import org.icpclive.backend.player.widgets.locator.LocatorsData;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.TeamInfo;
@@ -19,6 +21,7 @@ public class MainScreenLocatorView extends CustomComponent implements View {
     Label status;
 
     OptionGroup teamSelection;
+    OptionGroup locatorSelection;
 
     Button show;
     Button hide;
@@ -63,6 +66,14 @@ public class MainScreenLocatorView extends CustomComponent implements View {
             teamsSelected.setValue(s);
         });
 
+        locatorSelection = new OptionGroup();
+        locatorSelection.addItems(LocatorsData.locatorCameras);
+        locatorSelection.select(LocatorsData.locatorCameras.get(0));
+        locatorSelection.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+        locatorSelection.addValueChangeListener(event -> {
+            mainScreenData.locatorData.setCameraID(((LocatorCamera) locatorSelection.getValue()).cameraID);
+        });
+
         show = new Button("Show");
         show.setStyleName(ValoTheme.BUTTON_PRIMARY);
         show.addClickListener(e -> {
@@ -91,6 +102,7 @@ public class MainScreenLocatorView extends CustomComponent implements View {
         teamsSelectedComponent.setWidth("100%");
         VerticalLayout result = new VerticalLayout(
                 status,
+                locatorSelection,
                 buttonGroup,
                 teamsSelectedComponent,
                 teamSelection
