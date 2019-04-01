@@ -57,7 +57,12 @@ public class TeamUrls {
             org.icpclive.events.WF.json.WFTeamInfo jsonTeam
                     = (org.icpclive.events.WF.json.WFTeamInfo) team;
             log.info("addView " + (jsonTeam.cdsId) + " " + infoType);
-            return String.format(urlTemplates.get(infoType), jsonTeam.getUrlByType(infoType));
+            System.err.println(urlTemplates.get(infoType) + " " + infoType);
+            if (jsonTeam.isTemplated(infoType)) {
+                return String.format(urlTemplates.get(infoType), jsonTeam.getUrlByType(infoType));
+            } else {
+                return jsonTeam.getUrlByType(infoType);
+            }
         } else if (team instanceof WFTeamInfo) {
             log.info("addView " + (team.getId() + 1) + " " + infoType);
             return String.format(urlTemplates.get(infoType), team.getId() + 1);

@@ -20,12 +20,22 @@ public class WFTeamInfo extends org.icpclive.events.WF.WFTeamInfo {
         return cdsId;
     }
 
+    public boolean isTemplated(String type) {
+        switch (type) {
+            case "screen":
+                return false;
+            case "camera":
+                return false;
+        }
+        return true;
+    }
+
     public String getUrlByType(String type) {
         switch (type) {
             case "screen":
-                return cdsId;//screen;
+                return screen;
             case "camera":
-                return cdsId;//camera;
+                return camera;
             case "video":
                 return cdsId;
             default:
