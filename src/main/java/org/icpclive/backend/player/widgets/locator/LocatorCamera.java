@@ -9,15 +9,13 @@ import java.util.Scanner;
  */
 public class LocatorCamera {
     public final String hostName;
-    public final File inputFile;
     public final File coordinatesFile;
     public final int cameraID;
     public LocatorPoint[] coordinates;
     private long lastChanged;
 
-    public LocatorCamera(String hostName, File inputFile, File coordinatesFile, int cameraID) throws FileNotFoundException {
+    public LocatorCamera(String hostName, File coordinatesFile, int cameraID) throws FileNotFoundException {
         this.hostName = hostName;
-        this.inputFile = inputFile;
         this.coordinatesFile = coordinatesFile;
         this.cameraID = cameraID;
         lastChanged = -1;
@@ -40,6 +38,6 @@ public class LocatorCamera {
 
     @Override
     public String toString() {
-        return "Camera #" + cameraID;
+        return "Sniper " + (cameraID + 1);
     }
 }

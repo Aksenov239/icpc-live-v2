@@ -81,6 +81,12 @@ public class LocatorWidget extends Widget {
         }
         teams = teams2;
 
+        if (teams.size() == 0) {
+            g2.setColor(new Color(0, 0, 0, (int) (textOpacity * 120)));
+            g2.fillOval(width - 100, 50, 50, 50);
+            return;
+        }
+
         LocatorPoint[] c = new LocatorPoint[teams.size()];
 
         for (int i = 0; i < teams.size(); i++) {
@@ -237,10 +243,13 @@ public class LocatorWidget extends Widget {
     private int[] radius;
 
     private LocatorPoint getCoordinates(TeamInfo teamInfo) {
+        if (points == null || teamInfo == null) {
+            System.out.println("!!!");
+        }
         return points[teamInfo.getId()];
     }
 
-    private static final double ANGLE = 1.01;
+    private static final double ANGLE = 1.1;
 //    double pan = 0, tilt = 0, angle = ANGLE;
 //    LocatorConfig config = new LocatorConfig(0, 0, ANGLE);
     private static final int WIDTH = 1920;

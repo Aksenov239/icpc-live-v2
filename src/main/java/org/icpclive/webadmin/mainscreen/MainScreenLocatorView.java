@@ -86,6 +86,7 @@ public class MainScreenLocatorView extends CustomComponent implements View {
         hide = new Button("Hide");
         hide.addClickListener(e -> {
             mainScreenData.locatorData.hide();
+            teamSelection.clear();
         });
         clear = new Button("Clear");
         clear.addClickListener(e -> {

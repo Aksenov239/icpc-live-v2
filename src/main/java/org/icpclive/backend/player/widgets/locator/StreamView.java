@@ -59,7 +59,7 @@ public class StreamView implements MJpegViewer, MouseListener {
             }.start();
             frame = new JFrame();
             label = new JLabel();
-            bg = ImageIO.read(new File("bg.png"));
+//            bg = ImageIO.read(new File("bg.png"));
 
 //            GraphicsEnvironment ge = GraphicsEnvironment.
 //                    getLocalGraphicsEnvironment();
