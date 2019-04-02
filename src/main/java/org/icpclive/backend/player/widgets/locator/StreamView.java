@@ -3,6 +3,8 @@ package org.icpclive.backend.player.widgets.locator;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -17,12 +19,16 @@ import java.util.*;
 /**
  * @author: pashka
  */
-public class StreamView implements MJpegViewer, MouseListener {
+public class StreamView implements MJpegViewer, MouseListener, KeyListener {
 
     private static final int WIDTH = 1280;
     private static final int HEIGHT = 720;
-    private static final double ANGLE = 1.01;
-    public static final String CAMERA_IP = "10.250.25.111";
+    private static final double ANGLE = 1.28;
+    private static final double COMPENSATION_TILT = 0;
+    private static final double COMPENSATION_PAN = 0;
+    private static final double COMPENSATION_X = 1;
+    private static final double COMPENSATION_Y = 1;
+    public static String CAMERA_IP = "10.250.25.11";
     private Image image;
     private Image bg;
     private String url;
@@ -31,6 +37,9 @@ public class StreamView implements MJpegViewer, MouseListener {
     private java.util.List<Point> points = new ArrayList<>();
 
     public static void main(String[] args) {
+        System.out.println("Select sniper (1-3)");
+        Scanner in = new Scanner(System.in);
+        CAMERA_IP += in.nextInt();
         new StreamView("http://" + CAMERA_IP + "/mjpg/video.mjpg").run();
     }
 
@@ -43,6 +52,13 @@ public class StreamView implements MJpegViewer, MouseListener {
 
     private void run() {
         try {
+            Scanner in = new Scanner(new File("output.txt"));
+            int n = in.nextInt();
+            for (int i = 0; i < n; i++) {
+                points.add(new Point(in.nextDouble(), in.nextDouble(), in.nextDouble()));
+            }
+            in.close();
+
             image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 //            updateState();
             new Thread() {
@@ -73,6 +89,7 @@ public class StreamView implements MJpegViewer, MouseListener {
             frame.pack();
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             label.addMouseListener(this);
+            frame.addKeyListener(this);
             frame.setVisible(true);
 
         } catch (Exception e) {
@@ -104,10 +121,10 @@ public class StreamView implements MJpegViewer, MouseListener {
                 double value = Double.parseDouble(s.substring(l, r));
                 switch (key) {
                     case "pan":
-                        pan = value * Math.PI / 180;
+                        pan = value * Math.PI / 180 + COMPENSATION_PAN;
                         break;
                     case "tilt":
-                        tilt = value * Math.PI / 180;
+                        tilt = value * Math.PI / 180 + COMPENSATION_TILT;
                         break;
                     case "zoom":
                         double maxmag = 35;
@@ -139,9 +156,11 @@ public class StreamView implements MJpegViewer, MouseListener {
         for (Point p : points) {
             p = p.rotateY(pan);
             p = p.rotateX(-tilt);
-            int R = (int) (20 / p.z * ANGLE / angle) + 2;
+            int R = (int) (20 / Math.abs(p.z) * ANGLE / angle) + 5;
             p = p.multiply(1 / p.z);
             p = p.multiply(WIDTH / angle);
+            p.x *= COMPENSATION_X;
+            p.y *= COMPENSATION_Y;
             p = p.move(new Point(WIDTH / 2, HEIGHT / 2, 0));
             g.setColor(new Color(255, 0, 0, 150));
             g.fillOval(
@@ -162,10 +181,19 @@ public class StreamView implements MJpegViewer, MouseListener {
     }
 
     @Override
-    public synchronized void mouseClicked(MouseEvent e) {
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyChar() == ' ')
+            click(WIDTH / 2, HEIGHT / 2);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
+        click(x, y);
+    }
 
+    public synchronized void click(int x, int y) {
         Point p = new Point(x, y, WIDTH / angle);
         p = p.move(new Point(-WIDTH / 2, -HEIGHT / 2, 0));
         p = p.multiply(angle / WIDTH);
@@ -309,6 +337,16 @@ public class StreamView implements MJpegViewer, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 
