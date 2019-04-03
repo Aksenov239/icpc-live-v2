@@ -84,7 +84,7 @@ public class PtzTest {
     }
 
     private static void move(float tilt, float pan, float zoom) throws Exception {
-        sendGet("http://192.168.1.111/axis-cgi/com/ptz.cgi?camera=1" +
+        sendGet("http://192.168.1.112/axis-cgi/com/ptz.cgi?camera=1" +
                 "&tilt=" + tilt +
                 "&pan=" + pan +
                 "&zoom=" + zoom +

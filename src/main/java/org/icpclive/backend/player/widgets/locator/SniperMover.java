@@ -23,15 +23,20 @@ public class SniperMover {
             Scanner scanner = new Scanner(new File("coordinates-" + sniper + ".txt"));
             int n = scanner.nextInt();
             StreamView.Point point = null;
-            for (int i = 0; i < n; i++) {
+            for (int i = 1; i <= n; i++) {
                 point = new StreamView.Point(
                         scanner.nextDouble(),
                         scanner.nextDouble(),
                         scanner.nextDouble()
                 );
-                if (i + 1 == id) {
+                if (i == id) {
                     break;
                 }
+            }
+            if (point.y > 0) {
+                point.x = -point.x;
+                point.y = -point.y;
+                point.z = -point.z;
             }
             double tilt = Math.atan2(point.y, Math.hypot(point.x, point.z));
             double pan = Math.atan2(-point.x, -point.z);
