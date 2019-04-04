@@ -2,6 +2,7 @@ package org.icpclive.backend.player;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.icpclive.Config;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.direct.BufferFormat;
@@ -11,10 +12,13 @@ import uk.co.caprica.vlcj.player.direct.RenderCallbackAdapter;
 import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
+import javax.security.auth.login.Configuration;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -22,6 +26,7 @@ import java.util.Random;
  */
 public class PlayerInImage {
     private static final Logger log = LogManager.getLogger(PlayerInImage.class);
+    public static final String HTTP_PREFIX = "http://";
 
     private final BufferedImage image;
     private final String media;
@@ -36,8 +41,21 @@ public class PlayerInImage {
     }
 
     public PlayerInImage(int width, int height, JComponent frame, String media, boolean repeat) {
-        this.media = media;
 
+        if (media.startsWith(HTTP_PREFIX)) {
+            try {
+                Properties properties = Config.loadProperties("events");
+                String login = properties.getProperty("login");
+                String password = properties.getProperty("password");
+                media = HTTP_PREFIX + login + ":" + password + "@" + media.substring(HTTP_PREFIX.length());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.err.println(media);
+
+        this.media = media;
         if (width == -1) {
             MediaPlayerFactory factory = new MediaPlayerFactory(new String[0]);
             EmbeddedMediaPlayer player = factory.newEmbeddedMediaPlayer();
