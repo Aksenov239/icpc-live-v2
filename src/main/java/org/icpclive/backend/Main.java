@@ -57,7 +57,7 @@ public class Main {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-        generator.addWidget(new NewTeamWidget(500, false));
+        generator.addWidget(new NewTeamWidget(500, true));
 //                Integer.parseInt(properties.getProperty("sleep.time"))
 //        ));
 
@@ -109,7 +109,7 @@ public class Main {
 
         generator.addWidget(new PvPWidget(100, false));
 
-        generator.addWidget(new LocatorWidget(updateWait));
+//        generator.addWidget(new LocatorWidget(updateWait));
 
         generator.addWidget(new VideoWidget(updateWait,
                 Widget.BASE_WIDTH - 50,

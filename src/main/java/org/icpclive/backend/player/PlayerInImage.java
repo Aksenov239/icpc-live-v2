@@ -41,8 +41,7 @@ public class PlayerInImage {
     }
 
     public PlayerInImage(int width, int height, JComponent frame, String media, boolean repeat) {
-
-        if (media.startsWith(HTTP_PREFIX)) {
+        if (media != null && media.startsWith(HTTP_PREFIX)) {
             try {
                 Properties properties = Config.loadProperties("events");
                 String login = properties.getProperty("login");

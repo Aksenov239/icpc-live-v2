@@ -48,7 +48,8 @@ public class TeamUrls {
 
     public static String getUrl(TeamInfo team, String infoType) {
         if (team instanceof PCMSTeamInfo) {
-            int aliasId = Integer.parseInt(team.getAlias().substring(1));
+//            int aliasId = Integer.parseInt(team.getAlias().substring(1));
+            int aliasId = Integer.parseInt(team.getAlias());
             int hall = aliasId / 100;
             int place = aliasId % 100;
             log.info("addView " + hall + " " + place);
