@@ -169,40 +169,38 @@ public class WFEventsLoader extends EventsLoader {
     private void readTeamInfos(WFContestInfo contest) throws IOException {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
-        /*HashMap<String, WFTeamInfo> organizations = new HashMap<>();
-        contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonOrganizations.size()];
-        for (int i = 0; i < jsonOrganizations.size(); i++) {
-            JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
-            WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
-            // TODO
-            teamInfo.name = je.get("formal_name").getAsString();
-            teamInfo.shortName = je.get("name").getAsString();
-            teamInfo.hashTag = je.get("twitter_hashtag") == null ?
-                    null : je.get("twitter_hashtag").getAsString();
-            organizations.put(je.get("id").getAsString(), teamInfo);
-            contest.teamInfos[i] = teamInfo;
-        }*/
         HashMap<String, String> organizations = new HashMap<>();
+        //contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonOrganizations.size()];
         for (int i = 0; i < jsonOrganizations.size(); i++) {
             JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
+            //WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
+            // TODO
+            //teamInfo.name = je.get("formal_name").getAsString();
+            //teamInfo.shortName = je.get("name").getAsString();
+            //teamInfo.hashTag = je.get("twitter_hashtag") == null ?
+            //        null : je.get("twitter_hashtag").getAsString();
             organizations.put(je.get("id").getAsString(), je.get("name").getAsString());
+            //contest.teamInfos[i] = teamInfo;
         }
-
-        Vector<org.icpclive.events.WF.WFTeamInfo> teamInfos = new Vector<>();
 
         JsonArray jsonTeams = new Gson().fromJson(
                 readJsonArray(url + "/teams"), JsonArray.class);
         contest.teamById = new HashMap<>();
+        contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonTeams.size()];
         for (int i = 0; i < jsonTeams.size(); i++) {
             JsonObject je = jsonTeams.get(i).getAsJsonObject();
-            if (je.get("organization_id").isJsonNull()) {
+            /*if (je.get("organization_id") == null || je.get("organization_id").isJsonNull()) {
                 continue;
-            }
-//            WFTeamInfo teamInfo = organizations.get(je.get("organization_id").getAsString());
+            }*/
+			// WFTeamInfo teamInfo = organizations.get(je.get("organization_id").getAsString());
+
             WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
-            teamInfo.name = organizations.get(je.get("organization_id").getAsString()) + ": " + je.get("name").getAsString();
-            teamInfo.shortName = shortName(teamInfo.name);
-            teamInfos.add(teamInfo);
+			teamInfo.name = je.get("name").getAsString();
+			if (je.get("organization_id") != null && !je.get("organization_id").isJsonNull()) {
+				teamInfo.name = "(" + organizations.get(je.get("organization_id").getAsString()) + ") " + teamInfo.name;
+			}
+			teamInfo.shortName = shortName(teamInfo.name);
+
             JsonArray groups = je.get("group_ids").getAsJsonArray();
             for (int j = 0; j < groups.size(); j++) {
                 String groupId = groups.get(j).getAsString();
@@ -218,9 +216,9 @@ public class WFEventsLoader extends EventsLoader {
                             get(0).getAsJsonObject().get("href").getAsString();
 
             teamInfo.cdsId = je.get("id").getAsString();
+			contest.teamInfos[i] = teamInfo;
             contest.teamById.put(teamInfo.cdsId, teamInfo);
-        }
-        contest.teamInfos = (org.icpclive.events.WF.WFTeamInfo[])teamInfos.toArray();
+		}
         Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo) a).cdsId, ((WFTeamInfo) b).cdsId));
 
         for (int i = 0; i < contest.teamInfos.length; i++) {
