@@ -70,7 +70,7 @@ public abstract class CreepingLineWidget extends Widget {
         super(updateWait);
     }
 
-    Font messageFont = Font.decode(MAIN_FONT + " " + 34);
+    Font messageFont = Font.decode(MAIN_FONT + "-" + 34);
 
     public void addMessage(String s) {
         inQueue.add(s);

@@ -80,7 +80,7 @@ public class QueueWidget extends Widget {
         problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
         statusWidth = (int) Math.round(STATUS_WIDTH * plateHeight);
 
-        setFont(Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7)));
+        setFont(Font.decode(MAIN_FONT + "-" + (int) (plateHeight * 0.7)));
 
         this.showVerdict = showVerdict;
 

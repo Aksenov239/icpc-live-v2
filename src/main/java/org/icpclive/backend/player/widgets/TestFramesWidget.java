@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class TestFramesWidget extends Widget {
 
-    Font font = Font.decode(MAIN_FONT + " " + 30);
+    Font font = Font.decode(MAIN_FONT + "-" + 30);
 
     public TestFramesWidget() {
         super(100);

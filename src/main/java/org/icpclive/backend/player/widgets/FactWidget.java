@@ -37,7 +37,7 @@ public class FactWidget extends Widget {
         this.actualWidth = (int) (factWidth - 2 * MARGIN * rowHeight);
         this.rowHeight = rowHeight;
 
-        font = Font.decode(MAIN_FONT + " " + (int) Math.round(rowHeight * 0.7));
+        font = Font.decode(MAIN_FONT + "-" + (int) Math.round(rowHeight * 0.7));
     }
 
     @Override

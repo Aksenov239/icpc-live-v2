@@ -65,7 +65,7 @@ public class TeamWidget extends Widget {
         teamId = id;
     }
 
-    protected Font FONT1 = Font.decode(MAIN_FONT + " " + 40);
+    protected Font FONT1 = Font.decode(MAIN_FONT + "-" + 40);
 
     protected int X = 20;
     protected int Y = 20;
@@ -77,7 +77,7 @@ public class TeamWidget extends Widget {
     protected int HEIGHT = 45;
     protected int WIGHT = 30;
     protected int STAR_SIZE = 5;
-    Font FONT2 = Font.decode(MAIN_FONT + " " + 30);
+    Font FONT2 = Font.decode(MAIN_FONT + "-" + 30);
 
     private static final Color GREEN = new Color(27, 155, 82);//Color.decode("0x33ff00");
     private static final Color RED = Color.decode("0xaa0000");

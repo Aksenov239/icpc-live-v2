@@ -42,7 +42,7 @@ public class PollWidget extends Widget {
         this.leftX = leftX;
         this.bottomY = bottomY;
 
-        font = Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7));
+        font = Font.decode(MAIN_FONT + "-" + (int) (plateHeight * 0.7));
 
         this.minimalVoteWidth = minimalVoteWidth;
 

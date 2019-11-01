@@ -21,8 +21,8 @@ public class CaptionWidget extends Widget {
 
     private final int Y = 994 - HEIGHT2 - HEIGHT1 - SPACE;
 
-    private final Font FONT1 = Font.decode(MAIN_FONT + " " + 40);
-    private final Font FONT2 = Font.decode(MAIN_FONT + " " + 28);
+    private final Font FONT1 = Font.decode(MAIN_FONT + "-" + 40);
+    private final Font FONT2 = Font.decode(MAIN_FONT + "-" + 28);
 
     private String caption;
     private String description;
