@@ -169,7 +169,7 @@ public class WFEventsLoader extends EventsLoader {
     private void readTeamInfos(WFContestInfo contest) throws IOException {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
-        HashMap<String, WFTeamInfo> organizations = new HashMap<>();
+        /*HashMap<String, WFTeamInfo> organizations = new HashMap<>();
         contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonOrganizations.size()];
         for (int i = 0; i < jsonOrganizations.size(); i++) {
             JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
@@ -181,7 +181,14 @@ public class WFEventsLoader extends EventsLoader {
                     null : je.get("twitter_hashtag").getAsString();
             organizations.put(je.get("id").getAsString(), teamInfo);
             contest.teamInfos[i] = teamInfo;
+        }*/
+        HashMap<String, String> organizations = new HashMap<>();
+        for (int i = 0; i < jsonOrganizations.size(); i++) {
+            JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
+            organizations.put(je.get("id").getAsString(), je.get("name").getAsString());
         }
+
+        Vector<org.icpclive.events.WF.WFTeamInfo> teamInfos = new Vector<>();
 
         JsonArray jsonTeams = new Gson().fromJson(
                 readJsonArray(url + "/teams"), JsonArray.class);
@@ -191,8 +198,11 @@ public class WFEventsLoader extends EventsLoader {
             if (je.get("organization_id").isJsonNull()) {
                 continue;
             }
-            WFTeamInfo teamInfo = organizations.get(je.get("organization_id").getAsString());
-
+//            WFTeamInfo teamInfo = organizations.get(je.get("organization_id").getAsString());
+            WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
+            teamInfo.name = organizations.get(je.get("organization_id").getAsString()) + ": " + je.get("name").getAsString();
+            teamInfo.shortName = shortName(teamInfo.name);
+            teamInfos.add(teamInfo);
             JsonArray groups = je.get("group_ids").getAsJsonArray();
             for (int j = 0; j < groups.size(); j++) {
                 String groupId = groups.get(j).getAsString();
@@ -210,6 +220,7 @@ public class WFEventsLoader extends EventsLoader {
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
         }
+        contest.teamInfos = (org.icpclive.events.WF.WFTeamInfo[])teamInfos.toArray();
         Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo) a).cdsId, ((WFTeamInfo) b).cdsId));
 
         for (int i = 0; i < contest.teamInfos.length; i++) {
