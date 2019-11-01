@@ -40,7 +40,7 @@ public class PictureWidget extends Widget {
         this.height = height;
         this.textWidth = (int) (width - 2 * MARGIN * rowHeight);
         this.rowHeight = rowHeight;
-        font = Font.decode(MAIN_FONT + " " + (int) Math.round(0.7 * rowHeight));
+        font = Font.decode(MAIN_FONT + "-" + (int) Math.round(0.7 * rowHeight));
     }
 
     @Override

@@ -41,7 +41,7 @@ public class StatisticsWidget extends Widget {
         this.width = width;
         problemWidth = (int) round(PROBLEM_WIDTH * plateHeight);
 
-        setFont(Font.decode(MAIN_FONT + " "  + (int) (plateHeight * 0.7)));
+        setFont(Font.decode(MAIN_FONT + "-"  + (int) (plateHeight * 0.7)));
 
         setVisibilityState(0);
         setVisible(false);

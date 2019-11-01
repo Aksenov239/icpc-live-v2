@@ -167,7 +167,7 @@ public class NewTeamWidget extends Widget {
             statusWidth = (int) Math.round(STATUS_WIDTH * TEAM_PANE_HEIGHT);
             timeWidth = (int) Math.round(TIME_WIDTH * TEAM_PANE_HEIGHT);
             penaltyWidth = (int) Math.round(PENALTY_WIDTH * TEAM_PANE_HEIGHT);
-            setFont(Font.decode(MAIN_FONT + " " + (int) (TEAM_PANE_HEIGHT * 0.7)));
+            setFont(Font.decode(MAIN_FONT + "-" + (int) (TEAM_PANE_HEIGHT * 0.7)));
 
             if (team == null) {
                 mainVideo = null;

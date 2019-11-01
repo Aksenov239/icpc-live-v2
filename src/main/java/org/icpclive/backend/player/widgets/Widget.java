@@ -23,7 +23,7 @@ import static java.lang.Math.round;
  * @author: pashka
  */
 public abstract class Widget {
-    protected static final String MAIN_FONT = "PassagewayICPCLive";
+    protected static final String MAIN_FONT = "Noto Sans CJK JP Regular";
     private static final int PAUSE_AFTER_ERROR = 50;
 
     protected final Logger log = LogManager.getLogger(getClass());
@@ -354,7 +354,7 @@ public abstract class Widget {
 
         PlateStyle color = getTeamRankColor(team);
         if (team.getSolvedProblemsNumber() == 0) color = TeamPaneStylesheet.zero;
-        Font font = Font.decode(MAIN_FONT + " " + (int) round(height * 0.7));
+        Font font = Font.decode(MAIN_FONT + "-" + (int) round(height * 0.7));
         int rankWidth = (int) round(height * rank_width);
         int nameWidth = (int) round(height * name_width);
         int totalWidth = (int) round(height * total_width);

@@ -88,7 +88,7 @@ public class BigStandingsWidget extends Widget {
 
         this.updateWait = updateWait;
 
-        setFont(Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7)));
+        setFont(Font.decode(MAIN_FONT + "-" + (int) (plateHeight * 0.7)));
 
         Properties properties = Config.loadProperties("mainscreen");
         blinkingTime = Long.parseLong(properties.getProperty("standings.blinking.time"));

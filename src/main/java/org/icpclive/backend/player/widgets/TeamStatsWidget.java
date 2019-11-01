@@ -181,9 +181,9 @@ public class TeamStatsWidget extends Widget {
 
     static class UnivsersityNamePanel extends StatsPanel {
 
-        private static final Font NAME_FONT = Font.decode(MAIN_FONT + " " + 60);
-        private static final Font NAME_FONT_SMALLER = Font.decode(MAIN_FONT + " " + 48);
-        private static final Font TEXT_FONT = Font.decode(MAIN_FONT + " " + 28);
+        private static final Font NAME_FONT = Font.decode(MAIN_FONT + "-" + 60);
+        private static final Font NAME_FONT_SMALLER = Font.decode(MAIN_FONT + "-" + 48);
+        private static final Font TEXT_FONT = Font.decode(MAIN_FONT + "-" + 28);
         private final University university;
         private final Team team;
 
@@ -263,7 +263,7 @@ public class TeamStatsWidget extends Widget {
 
     static class PersonStatsPanel extends StatsPanel {
 
-        private static final Font NAME_FONT = Font.decode(MAIN_FONT + " " + 38);
+        private static final Font NAME_FONT = Font.decode(MAIN_FONT + "-" + 38);
         private static final Font TEXT_FONT = Font.decode("Open Sans 18");
         private static final Font RATING_FONT = Font.decode("Open Sans 18").deriveFont(Font.BOLD);
         public static final int COLUMNS_SPACE = 30;
@@ -358,9 +358,9 @@ public class TeamStatsWidget extends Widget {
         private static final Color BRONZE_COLOR = new Color(0xad7329);
         private final University university;
 
-        private static final Font CAPTION_FONT = Font.decode(MAIN_FONT + " " + 38);
-        private static final Font FINALS_FONT = Font.decode(MAIN_FONT + " " + 88);
-        private static final Font YEAR_FONT = Font.decode(MAIN_FONT + " " + 27);
+        private static final Font CAPTION_FONT = Font.decode(MAIN_FONT + "-" + 38);
+        private static final Font FINALS_FONT = Font.decode(MAIN_FONT + "-" + 88);
+        private static final Font YEAR_FONT = Font.decode(MAIN_FONT + "-" + 27);
         private final BufferedImage cupImage;
         private final BufferedImage regionalCupImage;
         private final BufferedImage goldMedalImage;

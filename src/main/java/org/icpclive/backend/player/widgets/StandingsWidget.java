@@ -67,7 +67,7 @@ public class StandingsWidget extends Widget {
         dx = (int) Math.round(DX * plateHeight) + nameWidth + rankWidth + totalWidth + penaltyWidth + 3 * spaceX;
         dy = plateHeight + spaceY;
 
-        font = Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7));
+        font = Font.decode(MAIN_FONT + "-" + (int) (plateHeight * 0.7));
     }
 
     public void setState(StandingsData.StandingsType type) {

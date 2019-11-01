@@ -166,7 +166,7 @@ public class PvPWidget extends Widget {
 
             teamPaneWidth = nameWidth + rankWidth + solvedWidth + penaltyWidth;
 
-            setFont(Font.decode(MAIN_FONT + " " + (int) (TEAM_PANE_HEIGHT * 0.7)));
+            setFont(Font.decode(MAIN_FONT + "-" + (int) (TEAM_PANE_HEIGHT * 0.7)));
 
             System.err.println("Load video: " + TeamUrls.getUrl(team, MAIN_VIDEO));
             PlayerInImage video = null;

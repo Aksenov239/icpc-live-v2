@@ -34,7 +34,7 @@ public class VideoWidget extends Widget {
         this.captionY = captionY;
         this.rowHeight = rowHeight;
 
-        font = Font.decode(MAIN_FONT + " " + (int) Math.round(0.7 * rowHeight));
+        font = Font.decode(MAIN_FONT + "-" + (int) Math.round(0.7 * rowHeight));
     }
 
     @Override

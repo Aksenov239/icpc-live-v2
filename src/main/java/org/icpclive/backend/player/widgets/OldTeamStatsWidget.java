@@ -52,10 +52,10 @@ public class OldTeamStatsWidget extends RotatableWidget {
     private static final int UNIVERSITY_NAME_X = 20;
     private static final int UNIVERSITY_NAME_Y = 50;
     private static final Color UNIVERSITY_NAME_COLOR = new Color(0xaaaacc);
-    private static final Font UNIVERSITY_NAME = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
+    private static final Font UNIVERSITY_NAME = Font.decode(MAIN_FONT + "-" + 30).deriveFont(Font.BOLD);
     private static final int TEAM_INFO_X = 145;
     private static final int TEAM_INFO_Y = 94;
-    private static final Font TEAM_INFO = Font.decode(MAIN_FONT + " " + 24);
+    private static final Font TEAM_INFO = Font.decode(MAIN_FONT + "-" + 24);
     private static final Color TOP_FOREGROUND = Color.WHITE;
     private static final Color NAME_COLOR = Color.WHITE;
     private static final Color TOP_BACKGROUND = TeamStatsStylesheet.background;
@@ -64,15 +64,15 @@ public class OldTeamStatsWidget extends RotatableWidget {
     private static final int WF_CAPTION_X = 20;
     private static final int WF_CAPTION_Y = 50;
     private static final Color WF_CAPTION_COLOR = new Color(0xaaaacc);
-    private static final Font WF_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
+    private static final Font WF_CAPTION_FONT = Font.decode(MAIN_FONT + "-" + 30).deriveFont(Font.BOLD);
 
     private static final int AWARDS_CAPTION_X = 150;
     private static final int AWARDS_CAPTION_Y = 50;
     private static final Color AWARDS_CAPTION_COLOR = new Color(0xaaaacc);
-    private static final Font AWARDS_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
+    private static final Font AWARDS_CAPTION_FONT = Font.decode(MAIN_FONT + "-" + 30).deriveFont(Font.BOLD);
 
     private static final Color REGION_CAPTION_COLOR = new Color(0xaaaacc);
-    private static final Font REGION_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 24);
+    private static final Font REGION_CAPTION_FONT = Font.decode(MAIN_FONT + "-" + 24);
 
     private static final int AWARDS_X = 150;
     private static final int AWARDS_Y = 70;
@@ -80,7 +80,7 @@ public class OldTeamStatsWidget extends RotatableWidget {
     private static final int WF_X = 20;
     private static final int WF_Y = 114;
     private static final Color WF_COLOR = Color.WHITE;
-    private static final Font WF_FONT = Font.decode(MAIN_FONT + " " + 50).deriveFont(Font.BOLD);
+    private static final Font WF_FONT = Font.decode(MAIN_FONT + "-" + 50).deriveFont(Font.BOLD);
 
     private static final int PERSON_CIRCLE_X = 30;
     private static final int PERSON_CIRCLE_Y = 28;
@@ -88,15 +88,15 @@ public class OldTeamStatsWidget extends RotatableWidget {
     private static final int PERSON_NAME_X = 63;
     private static final int PERSON_NAME_Y = 50;
     private static final Color PERSON_NAME_COLOR = Color.WHITE;
-    private static final Font PERSON_NAME_FONT = Font.decode(MAIN_FONT + " " + 30).deriveFont(Font.BOLD);
+    private static final Font PERSON_NAME_FONT = Font.decode(MAIN_FONT + "-" + 30).deriveFont(Font.BOLD);
     private static final int PERSON_RATING_Y = 86;
-    private static final Font RATING_FONT = Font.decode(MAIN_FONT + " " + 24).deriveFont(Font.BOLD);
+    private static final Font RATING_FONT = Font.decode(MAIN_FONT + "-" + 24).deriveFont(Font.BOLD);
     private static final int RATING_SPACE = 18;
     private static final int TOP_ACHIEVEMENT_Y = 114;
     private static final int ACHIEVEMENT_DY = 30;
     private static final int ACHIEVEMENT_WIDTH = 314;
     private static final Color ACHIEVEMENT_COLOR = new Color(0xEFDFED);
-    private static final Font ACHIEVEMENT_CAPTION_FONT = Font.decode(MAIN_FONT + " " + 18);
+    private static final Font ACHIEVEMENT_CAPTION_FONT = Font.decode(MAIN_FONT + "-" + 18);
     private static final int AWARD_SIZE = 40;
     private BufferedImage cupImage;
     private BufferedImage regionalCupImage;

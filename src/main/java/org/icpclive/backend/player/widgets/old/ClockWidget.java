@@ -23,7 +23,7 @@ public class ClockWidget extends Widget {
     private final int y = 30;
     private final int WIDTH = 154;
     private final int HEIGHT = 66;
-    Font clockFont = Font.decode(MAIN_FONT + " " + FONT_SIZE);
+    Font clockFont = Font.decode(MAIN_FONT + "-" + FONT_SIZE);
     private long start;
 
     private void initialization() {
