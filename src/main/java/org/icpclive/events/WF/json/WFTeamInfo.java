@@ -12,6 +12,8 @@ public class WFTeamInfo extends org.icpclive.events.WF.WFTeamInfo {
     public String screen;
     public String camera;
 
+    public String organization;
+
     public WFTeamInfo(int problems) {
         super(problems);
     }
@@ -41,6 +43,10 @@ public class WFTeamInfo extends org.icpclive.events.WF.WFTeamInfo {
             default:
                 return "";
         }
+    }
+
+    public String getOrganization() {
+        return organization;
     }
 
     public String toString() {

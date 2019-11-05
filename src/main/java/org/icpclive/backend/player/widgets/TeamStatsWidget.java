@@ -50,42 +50,46 @@ public class TeamStatsWidget extends Widget {
             int id = Integer.parseInt(((WFTeamInfo) teamInfo).cdsId);
             record = mapper.readValue(new File("teamData/" + id + ".json"), Record.class);
             record.university.setHashTag(teamInfo.getHashTag());
-            record.university.setFullName(teamInfo.getName());
+            record.university.setFullName(((WFTeamInfo) teamInfo).getOrganization());
             try {
                 logo = getScaledInstance(ImageIO.read(new File("teamData/" + id + ".png")), LOGO_SIZE, LOGO_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
             } catch (Exception e) {
                 logo = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
             }
 
-            JsonArray additionalAwards = new Gson().fromJson(new FileReader("awards.json"), JsonArray.class);
-            University university = record.university;
-            for (JsonElement award : additionalAwards) {
-                boolean myTeam = false;
-                JsonArray teams = award.getAsJsonObject().get("team_ids").getAsJsonArray();
-                for (JsonElement t : teams) {
-                    if (t.getAsInt() == id) {
-                        myTeam = true;
+            try {
+                JsonArray additionalAwards = new Gson().fromJson(new FileReader("awards.json"), JsonArray.class);
+                University university = record.university;
+                for (JsonElement award : additionalAwards) {
+                    boolean myTeam = false;
+                    JsonArray teams = award.getAsJsonObject().get("team_ids").getAsJsonArray();
+                    for (JsonElement t : teams) {
+                        if (t.getAsInt() == id) {
+                            myTeam = true;
+                        }
+                    }
+                    if (myTeam) {
+                        String awardId = award.getAsJsonObject().get("id").getAsString();
+                        if (awardId.equals("winner")) {
+                            university.setWins(university.getWins() + 1);
+                            university.getWinYears().add(CURRENT_YEAR);
+                        } else if (awardId.startsWith("group-winner")) {
+                            university.setRegionalChampionships(university.getRegionalChampionships() + 1);
+                            university.getRegYears().add(CURRENT_YEAR);
+                        } else if (awardId.equals("gold-medal")) {
+                            university.setGold(university.getGold() + 1);
+                            university.getGoldYears().add(CURRENT_YEAR);
+                        } else if (awardId.equals("silver-medal")) {
+                            university.setSilver(university.getSilver() + 1);
+                            university.getSilverYears().add(CURRENT_YEAR);
+                        } else if (awardId.equals("bronze-medal")) {
+                            university.setBronze(university.getBronze() + 1);
+                            university.getBronzeYears().add(CURRENT_YEAR);
+                        }
                     }
                 }
-                if (myTeam) {
-                    String awardId = award.getAsJsonObject().get("id").getAsString();
-                    if (awardId.equals("winner")) {
-                        university.setWins(university.getWins() + 1);
-                        university.getWinYears().add(CURRENT_YEAR);
-                    } else if (awardId.startsWith("group-winner")) {
-                        university.setRegionalChampionships(university.getRegionalChampionships() + 1);
-                        university.getRegYears().add(CURRENT_YEAR);
-                    } else if (awardId.equals("gold-medal")) {
-                        university.setGold(university.getGold() + 1);
-                        university.getGoldYears().add(CURRENT_YEAR);
-                    } else if (awardId.equals("silver-medal")) {
-                        university.setSilver(university.getSilver() + 1);
-                        university.getSilverYears().add(CURRENT_YEAR);
-                    } else if (awardId.equals("bronze-medal")) {
-                        university.setBronze(university.getBronze() + 1);
-                        university.getBronzeYears().add(CURRENT_YEAR);
-                    }
-                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
 //            PrintWriter out = new PrintWriter(new FileWriter("temp.txt", true));
@@ -98,7 +102,7 @@ public class TeamStatsWidget extends Widget {
                     new PersonStatsPanel(5000, record.contestants[1], false),
                     new PersonStatsPanel(5000, record.contestants[2], false),
                     new PersonStatsPanel(5000, record.coach, true),
-                    new AwardsPanel(5000, STATS_WIDTH, record.university, id)
+//                    new AwardsPanel(5000, STATS_WIDTH, record.university, id)
             };
             fullPeriod = 0;
             fullWidth = 0;
@@ -269,11 +273,12 @@ public class TeamStatsWidget extends Widget {
         public static final int COLUMNS_SPACE = 30;
         private final Person person;
         private final boolean coach;
+        private static final String COACH = "教练";
 
         public PersonStatsPanel(int pauseTime, Person person, boolean coach) {
             super(pauseTime, Math.max(Math.max(
                     500,
-                    getStringWidth(NAME_FONT, person.getName() + (coach ? ", coach" : ""))),
+                    getStringWidth(NAME_FONT, person.getName() + (coach ? ", " + COACH : ""))),
                     getAchivementsWidth(person.getAchievements())
             ) + 50);
             this.person = person;
@@ -299,7 +304,7 @@ public class TeamStatsWidget extends Widget {
             setGraphics(g.create());
             setFont(NAME_FONT);
             setTextColor(Color.WHITE);
-            drawText(person.getName() + (coach ? ", coach" : ""), 0, 48);
+            drawText(person.getName() + (coach ? ", " + COACH : ""), 0, 48);
 
             int xx = 0;
             int yy = 80;
@@ -369,6 +374,7 @@ public class TeamStatsWidget extends Widget {
 
         public AwardsPanel(int pauseTime, int width, University university, int teamId) throws IOException {
             super(pauseTime, width);
+
             cupImage = getScaledInstance(ImageIO.read(new File("pics/cup.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             regionalCupImage = getScaledInstance(ImageIO.read(new File("pics/regional.png")), AWARD_SIZE, AWARD_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
             goldMedalImage = getScaledInstance(ImageIO.read(new File("pics/gold.png")), MEDAL_SIZE, MEDAL_SIZE, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
@@ -487,7 +493,7 @@ public class TeamStatsWidget extends Widget {
         if (tcRating >= 2400) {
             return new Color(0xED1F24);
         }
-        if (tcRating >= 2200) {
+        if (tcRating >= 2100) {
             return new Color(0xF79A3B);
         }
         if (tcRating >= 1900) {

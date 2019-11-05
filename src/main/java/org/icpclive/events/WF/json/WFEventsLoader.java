@@ -170,6 +170,8 @@ public class WFEventsLoader extends EventsLoader {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
         HashMap<String, String> organizations = new HashMap<>();
+        HashMap<String, String> organizations_formal_names = new HashMap<>();
+
         //contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonOrganizations.size()];
         for (int i = 0; i < jsonOrganizations.size(); i++) {
             JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
@@ -180,6 +182,7 @@ public class WFEventsLoader extends EventsLoader {
             //teamInfo.hashTag = je.get("twitter_hashtag") == null ?
             //        null : je.get("twitter_hashtag").getAsString();
             organizations.put(je.get("id").getAsString(), je.get("name").getAsString());
+            organizations_formal_names.put(je.get("id").getAsString(), je.get("formal_name").getAsString());
             //contest.teamInfos[i] = teamInfo;
         }
 
@@ -198,7 +201,10 @@ public class WFEventsLoader extends EventsLoader {
 			teamInfo.name = je.get("name").getAsString();
 			if (je.get("organization_id") != null && !je.get("organization_id").isJsonNull()) {
 				teamInfo.name = "(" + organizations.get(je.get("organization_id").getAsString()) + ") " + teamInfo.name;
-			}
+			    teamInfo.organization = organizations_formal_names.get(je.get("organization_id").getAsString());
+			} else {
+                teamInfo.organization = teamInfo.name;
+            }
 			teamInfo.shortName = shortName(teamInfo.name);
 
             JsonArray groups = je.get("group_ids").getAsJsonArray();
