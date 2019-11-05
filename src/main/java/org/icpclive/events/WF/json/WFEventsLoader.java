@@ -553,8 +553,8 @@ public class WFEventsLoader extends EventsLoader {
         assert shortNames.get(name) == null;
         if (shortNames.containsKey(name)) {
             return shortNames.get(name);
-        } else if (name.length() > 15) {
-            return name.substring(0, 12) + "...";
+        } else if (name.length() > 25) {
+            return name.substring(0, 22) + "...";
         } else {
             return name;
         }

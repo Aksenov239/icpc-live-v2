@@ -66,8 +66,11 @@ public interface TeamInfo extends Comparable<TeamInfo> {
                     else
                         return "+" + total;
                 }
-                total++;
+                if (!"CE".equals(run.getResult())) {
+                    total++;
+                }
             }
+            if (total == 0) return "";
             String finalStatus = runs.get(runs.size() - 1).getResult();
             if (finalStatus.equals("")) {
                 return "?" + (total > 1 ? "" + total : total);
