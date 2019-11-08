@@ -11,6 +11,7 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.WF.WFAnalystMessage;
+import org.icpclive.events.WF.WFOrganizationInfo;
 import org.icpclive.events.WF.WFRunInfo;
 import org.icpclive.events.WF.WFTestCaseInfo;
 
@@ -35,10 +36,11 @@ public class WFEventsLoader extends EventsLoader {
     private String url;
     private String login;
     private String password;
+    private boolean regionals;
 
     private boolean emulation;
 
-    public WFEventsLoader() {
+    public WFEventsLoader(boolean regionals) {
         try {
             Properties properties = Config.loadProperties("events");
 
@@ -58,6 +60,7 @@ public class WFEventsLoader extends EventsLoader {
                 emulationSpeed = 1;
             }
 
+            this.regionals = regionals;
             contestInfo = initialize();
         } catch (IOException e) {
             log.error("error", e);
@@ -166,7 +169,7 @@ public class WFEventsLoader extends EventsLoader {
         return Integer.compare(a.length(), b.length());
     }
 
-    private void readTeamInfos(WFContestInfo contest) throws IOException {
+    private void readTeamInfosWF(WFContestInfo contest) throws IOException {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
         HashMap<String, WFTeamInfo> organizations = new HashMap<>();
@@ -217,6 +220,60 @@ public class WFEventsLoader extends EventsLoader {
         }
     }
 
+    private void readTeamInfosRegionals(WFContestInfo contest) throws IOException {
+        JsonArray jsonOrganizations = new Gson().fromJson(
+                readJsonArray(url + "/organizations"), JsonArray.class);
+        HashMap<String, WFOrganizationInfo> organizations = new HashMap<>();
+        for (int i = 0; i < jsonOrganizations.size(); i++) {
+            JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
+            WFOrganizationInfo organizationInfo = new WFOrganizationInfo();
+            // TODO
+            organizationInfo.formalName = je.get("formal_name").getAsString();
+            organizationInfo.name = je.get("name").getAsString();
+            organizations.put(je.get("id").getAsString(), organizationInfo);
+        }
+
+        JsonArray jsonTeams = new Gson().fromJson(
+                readJsonArray(url + "/teams"), JsonArray.class);
+        contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonTeams.size()];
+        contest.teamById = new HashMap<>();
+        for (int i = 0; i < jsonTeams.size(); i++) {
+            JsonObject je = jsonTeams.get(i).getAsJsonObject();
+            if (je.get("organization_id").isJsonNull()) {
+                continue;
+            }
+            WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
+
+            WFOrganizationInfo organizationInfo = organizations.get(je.get("organization_id").getAsString());
+
+            teamInfo.name = organizationInfo.name + ": " + je.get("name").getAsString();
+            teamInfo.shortName = shortName(teamInfo.name);
+
+            JsonArray groups = je.get("group_ids").getAsJsonArray();
+            for (int j = 0; j < groups.size(); j++) {
+                String groupId = groups.get(j).getAsString();
+                String group = contest.groupById.get(groupId);
+                teamInfo.groups.add(group);
+            }
+
+            teamInfo.screen = je.get("desktop") == null ? null :
+                    je.get("desktop").getAsJsonArray().
+                            get(0).getAsJsonObject().get("href").getAsString();
+            teamInfo.camera = je.get("webcam") == null ? null :
+                    je.get("webcam").getAsJsonArray().
+                            get(0).getAsJsonObject().get("href").getAsString();
+
+            teamInfo.cdsId = je.get("id").getAsString();
+            contest.teamById.put(teamInfo.cdsId, teamInfo);
+            contest.teamInfos[i] = teamInfo;
+        }
+        Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo) a).cdsId, ((WFTeamInfo) b).cdsId));
+
+        for (int i = 0; i < contest.teamInfos.length; i++) {
+            contest.teamInfos[i].id = i;
+        }
+    }
+
     public void readLanguagesInfos(WFContestInfo contestInfo) throws IOException {
         JsonArray jsonLanguages = new Gson().fromJson(
                 readJsonArray(url + "/languages"), JsonArray.class);
@@ -240,7 +297,11 @@ public class WFEventsLoader extends EventsLoader {
         System.err.println("lanugage");
         readProblemInfos(contestInfo);
         System.err.println("problem");
-        readTeamInfos(contestInfo);
+        if (regionals) {
+            readTeamInfosRegionals(contestInfo);
+        } else {
+            readTeamInfosWF(contestInfo);
+        }
         contestInfo.initializationFinish();
         log.info("Problems " + contestInfo.problems.size() + ", teamInfos " + contestInfo.teamInfos.length);
 
@@ -253,7 +314,7 @@ public class WFEventsLoader extends EventsLoader {
         readGroupsInfo(contestInfo);
         readLanguagesInfos(contestInfo);
         readProblemInfos(contestInfo);
-        readTeamInfos(contestInfo);
+        readTeamInfosRegionals(contestInfo);
         contestInfo.initializationFinish();
 
         contestInfo.setStatus(ContestInfo.Status.RUNNING);
@@ -453,6 +514,7 @@ public class WFEventsLoader extends EventsLoader {
                 if (abortedEvent == null) {
                     WFEventsLoader.contestInfo = contestInfo;
                 }
+                System.err.println("Aborted event " + abortedEvent);
 
                 while (true) {
                     String line = br.readLine();
@@ -467,7 +529,7 @@ public class WFEventsLoader extends EventsLoader {
                         System.err.println("Non-json line: " + Arrays.toString(line.toCharArray()));
                         continue;
                     }
-                    String id = je.get("id").getAsString();
+                    String id = je.get("id").getAsString().substring(3);
 
                     if (id.equals(abortedEvent)) {
                         WFEventsLoader.contestInfo = contestInfo;
@@ -544,8 +606,8 @@ public class WFEventsLoader extends EventsLoader {
         assert shortNames.get(name) == null;
         if (shortNames.containsKey(name)) {
             return shortNames.get(name);
-        } else if (name.length() > 15) {
-            return name.substring(0, 12) + "...";
+        } else if (name.length() > 22) {
+            return name.substring(0, 19) + "...";
         } else {
             return name;
         }

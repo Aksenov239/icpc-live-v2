@@ -23,8 +23,10 @@ public abstract class EventsLoader implements Runnable {
                 Properties properties = Config.loadProperties("events");
                 String standingsType = properties.getProperty("standings.type");
                 if ("WF".equals(standingsType)) {
-                    instance = new WFEventsLoader();
-                } if ("PCMS".equals(standingsType)) {
+                    instance = new WFEventsLoader(false);
+                } else if ("WFRegionals".equals(standingsType)) {
+                    instance = new WFEventsLoader(true);
+                } else if ("PCMS".equals(standingsType)) {
                     instance = new PCMSEventsLoader();
                 }
             } catch (IOException e) {
