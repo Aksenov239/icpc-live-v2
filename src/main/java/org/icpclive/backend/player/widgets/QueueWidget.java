@@ -21,7 +21,7 @@ public class QueueWidget extends Widget {
 
     private static final long WAIT_TIME = 60000;
     private static final long FIRST_TO_SOLVE_WAIT_TIME = 120000;
-    private static final int MAX_QUEUE_SIZE = 24;
+    private static final int MAX_QUEUE_SIZE = 15;
 
     static double Y_SHIFT;
 
@@ -165,6 +165,7 @@ public class QueueWidget extends Widget {
 //            System.out.println(r.getTeamId());
             plates.put(r.getId(), plate);
         }
+        plate.runInfo = r;
         return plate;
     }
 

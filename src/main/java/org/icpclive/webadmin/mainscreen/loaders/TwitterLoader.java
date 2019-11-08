@@ -9,6 +9,7 @@ import org.icpclive.webadmin.mainscreen.Polls.PollsData;
 import org.icpclive.webadmin.mainscreen.Utils;
 import org.icpclive.webadmin.mainscreen.statistics.WordStatisticsData;
 import twitter4j.*;
+import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.IOException;
 import java.util.*;
@@ -35,7 +36,19 @@ public class TwitterLoader extends Utils.StoppedRunnable {
     public static void start() {
         if (instance == null) {
             pollsData = PollsData.getInstance();
-            twitter = TwitterFactory.getSingleton();
+
+            ConfigurationBuilder cb = new ConfigurationBuilder();
+            cb.setDebugEnabled(true)
+                    .setOAuthConsumerKey("ufPvAsmjiMgdoqjMUNEzQ")
+                    .setOAuthConsumerSecret("2FixWAc64f5m2R0KyN6okd1DWHeaa1qThgHbzLYzHM4")
+                    .setOAuthAccessToken("450069411-sjzhMx4PZPp3CiZUnzISyTOgD0hmhgNpAv8cZeiR")
+                    .setOAuthAccessTokenSecret("veodlw1zZkz1H4dikWRC7a2jyqAj87KahDcg7cGGZNjUd");
+            TwitterFactory twitterFactory = new TwitterFactory(cb.build());
+            twitter = twitterFactory.getInstance();
+//            TwitterFactory twf = new TwitterFactory();
+//            twitter = twf.getInstance();
+//            twitter.setOAuthConsumer("ufPvAsmjiMgdoqjMUNEzQ", "2FixWAc64f5m2R0KyN6okd1DWHeaa1qThgHbzLYzHM4");
+//            twitter = TwitterFactory.getSingleton();
             instance = new TwitterLoader();
             Utils.StoppedThread twitterThread = new Utils.StoppedThread(instance);
             twitterThread.start();

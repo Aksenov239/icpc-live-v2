@@ -446,6 +446,7 @@ public abstract class Widget {
     }
 
     public String[] split(String text, Font font, int width) {
+        if (text.isEmpty()) return new String[0];
         String[] tokens = text.split(" ");
         ArrayList<String> division = new ArrayList<>();
 

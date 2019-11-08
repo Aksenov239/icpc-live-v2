@@ -184,7 +184,8 @@ public class DataLoader {
                             data.set(newData);
                     }
                 } catch (Exception e) {
-                    log.error("error", e);
+//                    log.error("error", e);
+                    System.err.println("Cannot connect to webadmin  ");
                 }
                 try {
                     Thread.sleep(500);

@@ -34,7 +34,7 @@ public class MainScreenBreakingNews extends CustomComponent implements View {
         breakingNewsList = createBreakingNewsTable(container);
 
         sleepTime = new TextField("Sleep time");
-        sleepTime.setValue("10000");
+        sleepTime.setValue("" + MainScreenData.getProperties().sleepTime);
 
         breakingNewsForm = new BreakingNewsForm(this);
 

@@ -152,8 +152,9 @@ public class MessageData {
                             }
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
-                        log.error(e);
+                        System.out.println("Cannot connect to analytics feed");
+//                        e.printStackTrace();
+//                        log.error(e);
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e1) {

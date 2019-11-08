@@ -203,9 +203,11 @@ public class NewTeamWidget extends Widget {
             if (visibilityState == 0) {
                 return;
             }
-            setBackgroundColor(Color.BLACK);
-            setMaximumOpacity(0.3);
-            drawRectangle(0, 0, width, height);
+            if (!(infoType.equals("") || infoType.equals("stats"))) {
+                setBackgroundColor(Color.BLACK);
+                setMaximumOpacity(0.3);
+                drawRectangle(0, 0, width, height);
+            }
             if (mainVideo != null) {
                 drawVideos();
                 drawStatus();

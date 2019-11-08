@@ -487,7 +487,7 @@ public class TeamStatsWidget extends Widget {
         if (tcRating >= 2400) {
             return new Color(0xED1F24);
         }
-        if (tcRating >= 2200) {
+        if (tcRating >= 2100) {
             return new Color(0xF79A3B);
         }
         if (tcRating >= 1900) {

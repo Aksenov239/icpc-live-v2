@@ -30,7 +30,7 @@ public class VideoVLCWidget extends PlayerWidget {
         this.y = y;
         this.width = width;
         this.height = height;
-        player = new PlayerInImage(width, height, null, null);
+        player = new PlayerInImage(width, height, null, "");
         image = player.getImage();
         this.sleepTime = sleepTime;
         ready = true;

@@ -21,8 +21,8 @@ import java.util.List;
 
 public class PvPWidget extends Widget {
 
-    public static final String MAIN_VIDEO = "video";
-    public static final String SECOND_VIDEO = "video";
+    public static final String MAIN_VIDEO = "screen";
+    public static final String SECOND_VIDEO = "camera";
 
     private static boolean aspect43;
     private static double standardAspect;
@@ -63,6 +63,20 @@ public class PvPWidget extends Widget {
         super.paintImpl(g, width, height);
         update();
         if (!isVisible() && visibilityState == 0) {
+            return;
+        }
+        for (TeamStatusView view : views) {
+            view.mainVideo.setVolume((int) (visibilityState * 100));
+            view.secondVideo.setVolume((int) (visibilityState * 100));
+        }
+        boolean ok = true;
+        for (TeamStatusView view : views) {
+            if (view.mainVideo.isBlack() || view.secondVideo.isBlack()) {
+                ok = false;
+            }
+        }
+        if (!ok) {
+            visibilityState = 0;
             return;
         }
         setBackgroundColor(Color.BLACK);

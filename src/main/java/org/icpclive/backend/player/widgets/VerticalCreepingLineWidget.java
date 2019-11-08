@@ -153,6 +153,8 @@ public class VerticalCreepingLineWidget extends CreepingLineWidget {
     public void paintImpl(AbstractGraphics gg, int width, int height) {
         super.paintImpl(gg, width, height);
 
+        if (visibilityState == 0) return;
+
         setGraphics(graphics.create(0, BASE_HEIGHT - HEIGHT - BOTTOM, BASE_WIDTH, HEIGHT));
         setMaximumOpacity(1);
 //        setVisibilityState(1);
