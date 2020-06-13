@@ -71,7 +71,7 @@ public class NewBreakingNewsWidget extends Widget {
                     Preparation.eventsLoader.getContestData().getRun(data.breakingNewsData.runId);
 
             if (run == null || (run.getTeamId() != teamId || run.getProblemId() != problemId)) {
-                java.util.List<RunInfo> runs = team.getRuns()[problemId];
+                java.util.List<? extends RunInfo> runs = team.getRuns()[problemId];
 
                 run = null;
                 if (runs.size() != 0) {

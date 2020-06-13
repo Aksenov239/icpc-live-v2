@@ -24,7 +24,7 @@ public class PCMSContestInfo extends ContestInfo {
         PCMSTeamInfo[] standings = new PCMSTeamInfo[original.length];
         for (int i = 0; i < original.length; i++) {
             standings[i] = (PCMSTeamInfo)original[i].copy();
-            List<RunInfo>[] runs = original[i].getRuns();
+            List<? extends RunInfo>[] runs = original[i].getRuns();
             for (int j = 0; j < problemNumber; j++) {
                 int runIndex = 0;
                 for (RunInfo run : runs[j]) {
@@ -45,7 +45,7 @@ public class PCMSContestInfo extends ContestInfo {
             team.solved = 0;
             team.penalty = 0;
             team.lastAccepted = 0;
-            List<RunInfo>[] runs = team.getRuns();
+            List<? extends RunInfo>[] runs = team.getRuns();
             for (int j = 0; j < problemNumber; j++) {
                 int wrong = 0;
                 for (RunInfo run : runs[j]) {
@@ -123,7 +123,7 @@ public class PCMSContestInfo extends ContestInfo {
     public void makeRuns() {
         ArrayList<RunInfo> runs = new ArrayList<>();
         for (TeamInfo team : standings) {
-            for (List<RunInfo> innerRuns : team.getRuns()) {
+            for (List<? extends RunInfo> innerRuns : team.getRuns()) {
                 runs.addAll(innerRuns);
             }
         }
