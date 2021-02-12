@@ -51,7 +51,7 @@ public class CFContestInfo extends ContestInfo {
         CFTeamInfo[] standings = new CFTeamInfo[this.standings.rows.size()];
         int i = 0;
         for (CFRanklistRow row : this.standings.rows) {
-            standings[i] = participantsByName.get(getName(row.party));
+            standings[i++] = participantsByName.get(getName(row.party));
         }
         return standings;
     }

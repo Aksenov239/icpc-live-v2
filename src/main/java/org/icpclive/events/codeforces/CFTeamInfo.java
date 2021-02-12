@@ -5,8 +5,9 @@ import org.icpclive.events.TeamInfo;
 import org.icpclive.events.codeforces.api.data.CFProblemResult;
 import org.icpclive.events.codeforces.api.data.CFRanklistRow;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author egor@egork.net
@@ -48,8 +49,8 @@ public class CFTeamInfo implements TeamInfo {
     }
 
     @Override
-    public HashSet<String> getGroups() {
-        return null;
+    public Set<String> getGroups() {
+        return Collections.emptySet();
     }
 
     @Override
