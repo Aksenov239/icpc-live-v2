@@ -157,9 +157,9 @@ public class StatisticsWidget extends Widget {
         int[] submitted = new int[info.getProblemsNumber()];
 
         for (TeamInfo teamInfo : info.getStandings()) {
-            List<RunInfo>[] runs = teamInfo.getRuns();
+            List<? extends RunInfo>[] runs = teamInfo.getRuns();
             for (int problemId = 0; problemId < runs.length; problemId++) {
-                List<RunInfo> runInfos = runs[problemId];
+                List<? extends RunInfo> runInfos = runs[problemId];
                 if (runInfos.size() > 0) {
                     submitted[problemId]++;
                     for (RunInfo runInfo : runInfos) {
