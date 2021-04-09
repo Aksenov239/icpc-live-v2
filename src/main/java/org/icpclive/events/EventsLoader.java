@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.Config;
 import org.icpclive.events.PCMS.PCMSEventsLoader;
+import org.icpclive.events.PCMS.ioi.IOIPCMSEventsLoader;
 import org.icpclive.events.WF.json.WFEventsLoader;
 import org.icpclive.events.codeforces.CFEventsLoader;
 
@@ -31,6 +32,8 @@ public abstract class EventsLoader implements Runnable {
                     instance = new PCMSEventsLoader();
                 } else if ("CF".equals(standingsType)) {
                     instance = new CFEventsLoader();
+                } else if ("IOIPCMS".equals(standingsType)) {
+                    instance = new IOIPCMSEventsLoader();
                 }
             } catch (IOException e) {
                 log.error("error", e);

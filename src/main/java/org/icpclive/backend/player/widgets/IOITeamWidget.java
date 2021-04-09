@@ -11,6 +11,8 @@ import org.icpclive.datapassing.Data;
 import org.icpclive.events.ContestInfo;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.PCMS.PCMSTeamInfo;
+import org.icpclive.events.PCMS.ioi.IOIPCMSRunInfo;
+import org.icpclive.events.PCMS.ioi.IOIPCMSTeamInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 
@@ -132,7 +134,6 @@ public class IOITeamWidget extends Widget {
 
         private final int nameWidth;
         private final int rankWidth;
-        private final int solvedWidth;
         private final int problemWidth;
         private final int statusWidth;
         private final int timeWidth;
@@ -160,13 +161,12 @@ public class IOITeamWidget extends Widget {
             }
             width = (int) (standardAspect * height);
 
-            nameWidth = (int) Math.round(NAME_WIDTH * TEAM_PANE_HEIGHT);
+            nameWidth = (int) Math.round((NAME_WIDTH + PROBLEM_WIDTH) * TEAM_PANE_HEIGHT);
             rankWidth = (int) Math.round(RANK_WIDTH * TEAM_PANE_HEIGHT);
-            solvedWidth = (int) Math.round(PROBLEM_WIDTH * TEAM_PANE_HEIGHT);
+            penaltyWidth = (int) Math.round(PENALTY_WIDTH * TEAM_PANE_HEIGHT);
             problemWidth = (int) Math.round(TOTAL_WIDTH * TEAM_PANE_HEIGHT);
             statusWidth = (int) Math.round(STATUS_WIDTH * TEAM_PANE_HEIGHT);
             timeWidth = (int) Math.round(TIME_WIDTH * TEAM_PANE_HEIGHT);
-            penaltyWidth = (int) Math.round(PENALTY_WIDTH * TEAM_PANE_HEIGHT);
             setFont(Font.decode(MAIN_FONT + " " + (int) (TEAM_PANE_HEIGHT * 0.7)));
 
             if (team == null) {
@@ -238,7 +238,7 @@ public class IOITeamWidget extends Widget {
 
             int baseX = BIG_X_RIGHT;
 
-            int x = baseX - rankWidth - nameWidth - solvedWidth - penaltyWidth;
+            int x = baseX - rankWidth - nameWidth - penaltyWidth;
             int y = TEAM_PANE_Y;
 
             PlateStyle color = getTeamRankColor(team);
@@ -254,34 +254,30 @@ public class IOITeamWidget extends Widget {
 
             x += nameWidth;
 
-            drawRectangleWithText("" + team.getSolvedProblemsNumber(), x, y,
-                    solvedWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
-
-            x += solvedWidth;
-
-            drawRectangleWithText("" + team.getPenalty(), x, y,
+            drawRectangleWithText("" + ((IOIPCMSTeamInfo)team).getScore(), x, y,
                     penaltyWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
 
 
-            List<RunInfo> lastRuns = new ArrayList<>();
-            for (List<? extends RunInfo> runs : team.getRuns()) {
-                RunInfo lastRun = null;
-                for (RunInfo run : runs) {
-                    lastRun = run;
-                    if (lastRun.isAccepted()) {
-                        break;
-                    }
+            RunInfo[] bestRun = new RunInfo[team.getRuns().length];
+            RunInfo[] lastRun = new RunInfo[team.getRuns().length];
+            for (int i = 0; i < team.getRuns().length; i++) {
+                List<? extends RunInfo> runs = team.getRuns()[i];
+                if (runs.size() == 0) {
+                    continue;
                 }
-                if (lastRun != null) {
-                    lastRuns.add(lastRun);
+                bestRun[i] = runs.get(0);
+                for (RunInfo run : runs) {
+                    lastRun[i] = run;
+                    if (((IOIPCMSRunInfo)bestRun[i]).getScore() <
+                            ((IOIPCMSRunInfo)run).getScore()) {
+                        bestRun[i] = run;
+                    }
                 }
             }
 
-            Collections.sort(lastRuns, (o1, o2) -> Long.compare(o1.getTime(), o2.getTime()));
-
             boolean odd = false;
 
-            for (RunInfo run : lastRuns) {
+            for (int i = 0; i < lastRun.length; i++) {
                 odd = !odd;
                 y += TEAM_PANE_HEIGHT;
                 x = baseX - timeWidth - problemWidth - statusWidth;
@@ -289,10 +285,13 @@ public class IOITeamWidget extends Widget {
                 if (odd) {
                     setMaximumOpacity(maximumOpacity * .9);
                 }
-                drawRectangleWithText("" + format(run.getTime()), x, y,
-                        timeWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
+                if (lastRun[i] != null) {
+                    drawRectangleWithText(format(lastRun[i].getTime()), x, y,
+                            timeWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER);
+                }
                 x += timeWidth;
-                drawProblemPane(run.getProblem(), x, y, problemWidth, TEAM_PANE_HEIGHT);
+                drawProblemPane(EventsLoader.getInstance().getContestData().problems.get(i),
+                        x, y, problemWidth, TEAM_PANE_HEIGHT);
                 x += problemWidth;
 
                 PlateStyle resultColor = QueueStylesheet.udProblem;
@@ -300,19 +299,21 @@ public class IOITeamWidget extends Widget {
                 boolean inProgress = false;
                 int progressWidth = 0;
 
-                if (run.isJudged()) {
-                    if (run.isAccepted()) {
-                        resultColor = QueueStylesheet.acProblem;
+                if (lastRun[i] != null) {
+                    if (lastRun[i].isJudged()) {
+                        if (bestRun[i].isAccepted()) {
+                            resultColor = QueueStylesheet.acProblem;
+                        } else {
+                            resultColor = QueueStylesheet.waProblem;
+                        }
                     } else {
-                        resultColor = QueueStylesheet.waProblem;
+                        inProgress = true;
+                        progressWidth = (int) Math.round(statusWidth * lastRun[i].getPercentage());
                     }
-                } else {
-                    inProgress = true;
-                    progressWidth = (int) Math.round(statusWidth * run.getPercentage());
                 }
 
-                String result = run.getResult();
-                if (run.getTime() > ContestInfo.FREEZE_TIME) {
+                String result = bestRun[i] == null ? "." : ("" + ((IOIPCMSRunInfo)bestRun[i]).getScore());
+                if (bestRun[i] != null && bestRun[i].getTime() > ContestInfo.FREEZE_TIME) {
                     result = "?";
                     resultColor = QueueStylesheet.frozenProblem;
                     inProgress = false;
@@ -328,9 +329,6 @@ public class IOITeamWidget extends Widget {
                 if (inProgress) {
                     setBackgroundColor(QueueStylesheet.udTests);
                     drawRectangle(x, y, progressWidth, TEAM_PANE_HEIGHT);
-                }
-                if (run == EventsLoader.getInstance().getContestData().firstSolvedRun()[run.getProblemId()]) {
-                    drawStar(x + statusWidth - STAR_SIZE, y + 2 * STAR_SIZE, STAR_SIZE, 1);
                 }
             }
 

@@ -5,10 +5,12 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.BigStandingsStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
+import org.icpclive.backend.player.widgets.stylesheets.TeamPaneStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.datapassing.StandingsData;
 import org.icpclive.events.ContestInfo;
+import org.icpclive.events.PCMS.ioi.IOIPCMSTeamInfo;
 import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
@@ -16,9 +18,9 @@ import org.icpclive.events.TeamInfo;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.HashSet;
 
 /**
  * Full scale standings
@@ -28,8 +30,6 @@ public class IOIBigStandingsWidget extends Widget {
     private static final int STAR_SIZE = 5;
 
     public static final String CURRENT_STANDINGS = "CURRENT STANDINGS";
-    public static final String OPTIMISTIC_STANDINGS = "OPTIMISTIC";
-    public static final String FROZEN_STANDINGS = "FROZEN";
 
     private static int STANDING_TIME = 10000;
     private static int TOP_PAGE_STANDING_TIME = 20000;
@@ -37,14 +37,12 @@ public class IOIBigStandingsWidget extends Widget {
     private static int PERIOD = STANDING_TIME + MOVING_TIME;
 
     private static final double TOTAL_WIDTH = 1.8;
-    private static final double PENALTY_WIDTH = 2.4;
 
     private final int plateHeight;
 
     private final int nameWidth;
     private final int rankWidth;
     private final int totalWidth;
-    private final int penaltyWidth;
 
     public int length;
 
@@ -65,6 +63,8 @@ public class IOIBigStandingsWidget extends Widget {
 
     private long blinkingTime;
 
+    private static int NAME_WIDTH = 11;
+
     public IOIBigStandingsWidget(int baseX, int baseY, int width, int plateHeight, long updateWait, int teamsOnPage, boolean controlled) throws IOException {
         super(updateWait);
         last = System.currentTimeMillis();
@@ -84,7 +84,6 @@ public class IOIBigStandingsWidget extends Widget {
         nameWidth = (int) Math.round(NAME_WIDTH * plateHeight);
         rankWidth = (int) Math.round(RANK_WIDTH * plateHeight);
         totalWidth = (int) Math.round(TOTAL_WIDTH * plateHeight);
-        penaltyWidth = (int) Math.round(PENALTY_WIDTH * plateHeight);
 
         this.updateWait = updateWait;
 
@@ -150,10 +149,6 @@ public class IOIBigStandingsWidget extends Widget {
         lastChange = data.standingsData.getStandingsTimestamp();
     }
 
-    private List<Point> stars = new ArrayList<>();
-    private HashSet<Integer> topUniversity;
-    private HashSet<Integer> topRegion;
-
     @Override
     public void paintImpl(AbstractGraphics g, int width, int height) {
         super.paintImpl(g, width, height);
@@ -171,51 +166,9 @@ public class IOIBigStandingsWidget extends Widget {
 
         TeamInfo[] standings;
         standings = contestData.getStandings(region, optimismLevel);
+        length = standings.length;
 
         if (contestData == null || standings == null) return;
-
-        HashSet<String> appearedUniversity = new HashSet<>();
-        topUniversity = new HashSet<>();
-
-        HashSet<String> appearedRegion = new HashSet<>();
-        topRegion = new HashSet<>();
-
-        RunInfo[] firstSolved = new RunInfo[contestData.getProblemsNumber()];
-        for (TeamInfo team : standings) {
-            String universityName = team.getShortName();
-            universityName = universityName.split(":")[0];
-            boolean lastDigit = Character.isDigit(universityName.charAt(universityName.length() - 1));
-            if (lastDigit) {
-                universityName = universityName.substring(0, universityName.length() - 2);
-            }
-
-            if (team.getSolvedProblemsNumber() > 0) {
-                if (!appearedUniversity.contains(universityName) &&
-                        appearedUniversity.size() < BigStandingsStylesheet.finalists &&
-                        StandingsData.ALL_REGIONS.equals(region)) {
-                    topUniversity.add(team.getId());
-                    appearedUniversity.add(universityName);
-                }
-
-                for (String group : team.getGroups()) {
-                    if (!appearedRegion.contains(group) &&
-                            StandingsData.ALL_REGIONS.equals(region)) {
-                        appearedRegion.add(group);
-                        topRegion.add(team.getId());
-                    }
-                }
-            }
-
-            for (int p = 0; p < firstSolved.length; p++) {
-                for (RunInfo run : team.getRuns()[p]) {
-                    if ("AC".equals(run.getResult()) &&
-                            (firstSolved[p] == null || run.getTime() < firstSolved[p].getTime())) {
-                        firstSolved[p] = run;
-                        break;
-                    }
-                }
-            }
-        }
 
         if (desiredTeamPositions == null || desiredTeamPositions.length != contestData.getTeamsNumber() + 1) {
             desiredTeamPositions = new double[contestData.getTeamsNumber() + 1];
@@ -255,7 +208,7 @@ public class IOIBigStandingsWidget extends Widget {
 
             int initY = plateHeight;
 
-            drawHead(0, 0, firstSolved);
+            drawHead(0, 0);
 
             setGraphics(graphics.create());
             graphics.clip(-plateHeight,
@@ -263,17 +216,15 @@ public class IOIBigStandingsWidget extends Widget {
                     this.width + 2 * plateHeight,
                     plateHeight * teamsOnPage);
 
-            int lastProblems = -1;
+            int lastScore = -1;
             boolean bright = true;
-
-            stars.clear();
 
             boolean odd = true;
             for (int i = standings.length - 1; i >= 0; i--) {
                 odd = !odd;
-                TeamInfo teamInfo = standings[i];
-                if (teamInfo.getSolvedProblemsNumber() != lastProblems) {
-                    lastProblems = teamInfo.getSolvedProblemsNumber();
+                IOIPCMSTeamInfo teamInfo = (IOIPCMSTeamInfo)standings[i];
+                if (teamInfo.getScore() != lastScore) {
+                    lastScore = teamInfo.getScore();
                     bright = !bright;
                 }
                 int id = teamInfo.getId();
@@ -295,18 +246,10 @@ public class IOIBigStandingsWidget extends Widget {
                 }
                 double yy = currentTeamPositions[id] - start;
                 if (yy > -1 && yy < teamsOnPage) {
-                    drawFullTeamPane(teamInfo, 0, initY + (int) (yy * plateHeight), bright, odd, firstSolved);
+                    drawFullTeamPane(teamInfo, 0, initY + (int) (yy * plateHeight), bright, odd);
                 }
             }
-
-            for (Point star : stars) {
-                drawStar(star.x, star.y, STAR_SIZE, getOpacity(visibilityState));
-            }
-
-        }/* else {
-            timer = -TOP_PAGE_STANDING_TIME;
-            start = 0;
-        }*/
+        }
     }
 
     @Override
@@ -314,22 +257,12 @@ public class IOIBigStandingsWidget extends Widget {
         return data.standingsData;
     }
 
-    private void drawHead(int x, int y, RunInfo[] firstSolved) {
-        int problemWidth = problemWidth(firstSolved.length);
+    private void drawHead(int x, int y) {
+        int problemWidth = problemWidth(contestData.problems.size());
 
         PlateStyle heading = BigStandingsStylesheet.heading;
 
-        String headingText = region.equals(StandingsData.ALL_REGIONS) ? CURRENT_STANDINGS : region;
-
-        if (contestData.getCurrentTime() > ContestInfo.FREEZE_TIME) {
-            if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
-                heading = BigStandingsStylesheet.optimisticHeading;
-                headingText = OPTIMISTIC_STANDINGS;
-            } else {
-                heading = BigStandingsStylesheet.frozenHeading;
-                headingText = FROZEN_STANDINGS;
-            }
-        }
+        String headingText = !region.equals("all") ? region : CURRENT_STANDINGS;
 
         applyStyle(heading);
         drawRectangleWithText(headingText, x, y, rankWidth + nameWidth, plateHeight, PlateStyle.Alignment.CENTER);
@@ -338,10 +271,8 @@ public class IOIBigStandingsWidget extends Widget {
         applyStyle(BigStandingsStylesheet.noProblem);
         drawRectangleWithText("\u03A3", x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
         x += totalWidth;
-        drawRectangleWithText("PEN", x, y, penaltyWidth, plateHeight, PlateStyle.Alignment.CENTER);
-        x += penaltyWidth;
 
-        for (int i = 0; i < firstSolved.length; i++) {
+        for (int i = 0; i < contestData.problems.size(); i++) {
             ProblemInfo problem = contestData.problems.get(i);
             drawProblemPane(problem, x, y, problemWidth, plateHeight);
             x += problemWidth;
@@ -349,19 +280,17 @@ public class IOIBigStandingsWidget extends Widget {
 
     }
 
-    private void drawFullTeamPane(TeamInfo team, int x, int y, boolean bright, boolean odd, RunInfo[] firstSolved) {
-        stars.clear();
-
+    private void drawFullTeamPane(TeamInfo team, int x, int y, boolean bright, boolean odd) {
         PlateStyle rankStyle = getTeamRankColor(team);
         applyStyle(rankStyle);
         drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y, rankWidth, plateHeight, PlateStyle.Alignment.CENTER, false, false);
 
         x += rankWidth;
 
-        PlateStyle nameStyle =
-                topUniversity.contains(team.getId()) ? BigStandingsStylesheet.topUniversityTeam :
-                        topRegion.contains(team.getId()) ? BigStandingsStylesheet.topRegionTeam :
-                                BigStandingsStylesheet.name;
+        PlateStyle nameStyle = BigStandingsStylesheet.name;
+        if (((IOIPCMSTeamInfo)team).delay != 0) {
+            nameStyle = BigStandingsStylesheet.delay;
+        }
         if (bright) {
             nameStyle = nameStyle.brighter();
         }
@@ -379,67 +308,56 @@ public class IOIBigStandingsWidget extends Widget {
             problemsColor = problemsColor.brighter();
         }
         setBackgroundColor(problemsColor.background);
-        drawRectangleWithText("" + team.getSolvedProblemsNumber(), x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
+        drawRectangleWithText("" + ((IOIPCMSTeamInfo) team).score, x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
 
         x += totalWidth;
-
-        PlateStyle penaltyColor = BigStandingsStylesheet.penalty;
-        if (bright) {
-            penaltyColor = penaltyColor.brighter();
-        }
-        setBackgroundColor(penaltyColor.background);
-        drawRectangleWithText("" + team.getPenalty(), x, y, penaltyWidth, plateHeight, PlateStyle.Alignment.CENTER);
-
-        x += penaltyWidth;
 
         int problemWidth = problemWidth(contestData.getProblemsNumber());
 
         for (int i = 0; i < contestData.getProblemsNumber(); i++) {
             String status = team.getShortProblemState(i);
+            if (status.length() == 0) status = ".";
+
+            int score = status.equals("?") || status.equals(".") || status.equals("") ? 0 :
+                    Integer.parseInt(status);
 
             PlateStyle statusColor =
-                    status.startsWith("+") ? BigStandingsStylesheet.acProblem :
-                            status.startsWith("?") ? BigStandingsStylesheet.udProblem :
-                                    status.startsWith("-") ? BigStandingsStylesheet.waProblem :
-                                            BigStandingsStylesheet.noProblem;
+                        status.startsWith("?") ? BigStandingsStylesheet.udProblem :
+                                    status.startsWith(".") ? BigStandingsStylesheet.noProblem :
+                                            PlateStyle.mix(BigStandingsStylesheet.ioiFull,
+                                                    BigStandingsStylesheet.ioiZero,
+                                                    1 - (1 - 1. * score / 100) * (1 - 1. * score / 100));
             if (team.isReallyUnknown(i)) {
                 statusColor = BigStandingsStylesheet.udProblem;
-//                if (optimismLevel == StandingsData.OptimismLevel.OPTIMISTIC) {
-//                    statusColor = YELLOW_GREEN_COLOR;
-//                } else {
-//                    statusColor = YELLOW_RED_COLOR;
-//                }
             }
             if (bright && statusColor == BigStandingsStylesheet.noProblem) {
                 applyStyle(statusColor.brighter());
             } else {
                 applyStyle(statusColor);
             }
-            if (odd && status.length() == 0) {
+
+            if (odd) {
                 setMaximumOpacity(maximumOpacity * .9);
             }
 
-            if (status.startsWith("-")) status = "\u2212" + status.substring(1);
-            boolean blinking = team.getLastRun(i) != null && (contestData.getCurrentTime() <= team.getLastRun(i).getLastUpdateTime() + blinkingTime);
-            if (status.length() == 0) status = ".";
+//            if (odd && status.length() == 0) {
+//                setMaximumOpacity(maximumOpacity * .9);
+//            }
+//            if (odd && statusColor == BigStandingsStylesheet.noProblem) {
+//                setMaximumOpacity(maximumOpacity * .9);
+//            }
 
-//            setBackgroundColor(statusColor.background);
+
+            boolean blinking = team.getLastRun(i) != null && (contestData.getCurrentTime() <= team.getLastRun(i).getLastUpdateTime() + blinkingTime);
+
             drawRectangleWithText(status, x, y, problemWidth, plateHeight, PlateStyle.Alignment.CENTER, blinking);
 
-            RunInfo firstSolvedRun = firstSolved[i];
-            if (firstSolvedRun != null && firstSolvedRun.getTeamId() == team.getId() && visibilityState >= 0.5) {
-                stars.add(new Point(x + problemWidth - STAR_SIZE, y + 2 * STAR_SIZE));
-            }
             x += problemWidth;
-        }
-
-        for (Point star : stars) {
-            drawStar(star.x, star.y, STAR_SIZE, getOpacity(visibilityState));
         }
     }
 
     private int problemWidth(int problemsNumber) {
-        return (int) Math.round((width - rankWidth - nameWidth - totalWidth - penaltyWidth) * 1.0 / problemsNumber - 0);
+        return (int) Math.round((width - rankWidth - nameWidth - totalWidth) * 1.0 / problemsNumber - 0);
     }
 
     public void alignBottom(int y) {
