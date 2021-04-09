@@ -87,7 +87,7 @@ public class PCMSContestInfo extends ContestInfo {
         return null;
     }
 
-    PCMSContestInfo(int problemNumber) {
+    public PCMSContestInfo(int problemNumber) {
         super(problemNumber);
         standings = new ArrayList<>();
         positions = new HashMap<>();
@@ -139,7 +139,7 @@ public class PCMSContestInfo extends ContestInfo {
         }
     }
 
-    void addTeamStandings(PCMSTeamInfo teamInfo) {
+    public void addTeamStandings(PCMSTeamInfo teamInfo) {
         standings.add(teamInfo);
         positions.put(teamInfo.getAlias(), standings.size() - 1);
         teamNumber = standings.size();

@@ -29,6 +29,11 @@ public class PlateStyle {
         return new PlateStyle(brighter(background), text, rectangleType, alignment, opacity);
     }
 
+    public static PlateStyle mix(PlateStyle first, PlateStyle second, double p) {
+        return new PlateStyle(mix(first.background, second.background, p),
+                mix(first.text, second.text, p), first.rectangleType, first.alignment, first.opacity);
+    }
+
     public PlateStyle darker() {
         return new PlateStyle(background.darker(), text, rectangleType, alignment, opacity);
     }
@@ -48,6 +53,15 @@ public class PlateStyle {
 //        if ( b > 0 && b < i ) b = i;
 
         return new Color(r, g, b, alpha);
+    }
+
+    public static Color mix(Color first, Color second, double p) {
+        return new Color(
+                (int) (first.getRed() * p + second.getRed() * (1 - p)),
+                (int) (first.getGreen() * p + second.getGreen() * (1 - p)),
+                (int) (first.getBlue() * p + second.getBlue() * (1 - p)),
+                (int) (first.getAlpha() * p + second.getAlpha() * (1 - p))
+                );
     }
 
 

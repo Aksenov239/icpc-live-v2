@@ -8,6 +8,7 @@ import org.icpclive.backend.player.widgets.stylesheets.TeamPaneStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
+import org.icpclive.events.PCMS.ioi.IOIPCMSTeamInfo;
 import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
 
@@ -56,7 +57,7 @@ public abstract class Widget {
     protected static Color mergeColors(Color first, Color second, double v) {
         int rgb = 0;
         for (int i = 0; i < 3; i++) {
-            rgb |= (int)(((first.getRGB() >> (8 * i)) & 255) * (1 - v) +
+            rgb |= (int) (((first.getRGB() >> (8 * i)) & 255) * (1 - v) +
                     ((second.getRGB() >> (8 * i)) & 255) * v) << (8 * i);
         }
         return new Color(rgb);
@@ -351,22 +352,37 @@ public abstract class Widget {
 
     protected void drawTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, int height, double state,
                                 double rank_width, double name_width, double total_width, double penalty_width) {
-
-        PlateStyle color = getTeamRankColor(team);
-        if (team.getSolvedProblemsNumber() == 0) color = TeamPaneStylesheet.zero;
-        Font font = Font.decode(MAIN_FONT + " " + (int) round(height * 0.7));
-        int rankWidth = (int) round(height * rank_width);
-        int nameWidth = (int) round(height * name_width);
-        int totalWidth = (int) round(height * total_width);
-        int penaltyWidth = (int) round(height * penalty_width);
-        int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
-        x += rankWidth + spaceX;
-        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += nameWidth + spaceX;
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        if (team instanceof IOIPCMSTeamInfo) {
+            PlateStyle color = getTeamRankColor(team);
+            if (((IOIPCMSTeamInfo) team).getScore() == 0) color = TeamPaneStylesheet.zero;
+            Font font = Font.decode(MAIN_FONT + " " + (int) round(height * 0.7));
+            name_width += total_width;
+            int rankWidth = (int) round(height * rank_width);
+            int nameWidth = (int) round(height * name_width);
+            int scoreWidth = (int) round(height * penalty_width);
+            int spaceX = (int) round(height * SPACE_X);
+            drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
+            x += rankWidth + spaceX;
+            drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            x += nameWidth + spaceX;
+            drawTextInRect(g, "" + ((IOIPCMSTeamInfo) team).getScore(), x, y, scoreWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        } else {
+            PlateStyle color = getTeamRankColor(team);
+            if (team.getSolvedProblemsNumber() == 0) color = TeamPaneStylesheet.zero;
+            Font font = Font.decode(MAIN_FONT + " " + (int) round(height * 0.7));
+            int rankWidth = (int) round(height * rank_width);
+            int nameWidth = (int) round(height * name_width);
+            int totalWidth = (int) round(height * total_width);
+            int penaltyWidth = (int) round(height * penalty_width);
+            int spaceX = (int) round(height * SPACE_X);
+            drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
+            x += rankWidth + spaceX;
+            drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            x += nameWidth + spaceX;
+            drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            x += totalWidth + spaceX;
+            drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        }
     }
 
     protected void drawTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, int height, double state) {
@@ -419,15 +435,28 @@ public abstract class Widget {
     }
 
     protected PlateStyle getTeamRankColor(TeamInfo team) {
-        PlateStyle color = TeamPaneStylesheet.none;
-        if (team.getSolvedProblemsNumber() > 0 &&
-                team.getRank() <= TeamPaneStylesheet.goldPlaces + TeamPaneStylesheet.silverPlaces +
-                        TeamPaneStylesheet.bronzePlaces) {
-            color = team.getRank() <= TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.gold :
-                    team.getRank() <= TeamPaneStylesheet.silverPlaces + TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.silver :
-                            TeamPaneStylesheet.bronze;
+        if (team instanceof IOIPCMSTeamInfo) {
+            IOIPCMSTeamInfo ioipcmsTeamInfo = (IOIPCMSTeamInfo) team;
+            PlateStyle color = TeamPaneStylesheet.none;
+            if (ioipcmsTeamInfo.getScore() >= 400 &&
+                    team.getRank() <= TeamPaneStylesheet.goldPlaces + TeamPaneStylesheet.silverPlaces +
+                            TeamPaneStylesheet.bronzePlaces) {
+                color = team.getRank() <= TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.gold :
+                        team.getRank() <= TeamPaneStylesheet.silverPlaces + TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.silver :
+                                TeamPaneStylesheet.bronze;
+            }
+            return color;
+        } else {
+            PlateStyle color = TeamPaneStylesheet.none;
+            if (team.getSolvedProblemsNumber() > 0 &&
+                    team.getRank() <= TeamPaneStylesheet.goldPlaces + TeamPaneStylesheet.silverPlaces +
+                            TeamPaneStylesheet.bronzePlaces) {
+                color = team.getRank() <= TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.gold :
+                        team.getRank() <= TeamPaneStylesheet.silverPlaces + TeamPaneStylesheet.goldPlaces ? TeamPaneStylesheet.silver :
+                                TeamPaneStylesheet.bronze;
+            }
+            return color;
         }
-        return color;
     }
 
     protected void drawStar(int x, int y, int size, double opacity) {
@@ -471,4 +500,4 @@ public abstract class Widget {
         return division.toArray(new String[0]);
     }
 
-        }
+}
