@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.icpclive.Config;
 import org.icpclive.events.EventsLoader;
 import org.icpclive.events.codeforces.api.CFApiCentral;
+import org.icpclive.events.codeforces.api.data.CFContest;
 import org.icpclive.events.codeforces.api.data.CFSubmission;
 import org.icpclive.events.codeforces.api.results.CFStandings;
 
@@ -22,6 +23,7 @@ public class CFEventsLoader extends EventsLoader {
 
     public CFEventsLoader() throws IOException {
         Properties properties = Config.loadProperties("events");
+        emulationSpeed = 1;
         central = new CFApiCentral(Integer.parseInt(properties.getProperty("contest_id")));
     }
 
@@ -38,15 +40,13 @@ public class CFEventsLoader extends EventsLoader {
         while (true) {
             try {
                 while (true) {
-                    Thread.sleep(100);
-                    List<CFSubmission> submissions = central.getStatus();
-                    if (submissions == null) {
-                        continue;
-                    }
+                    Thread.sleep(300);
                     CFStandings standings = central.getStandings();
                     if (standings == null) {
                         continue;
                     }
+                    List<CFSubmission> submissions = standings.contest.phase == CFContest.CFContestPhase.BEFORE ? null :
+                            central.getStatus();
                     System.err.println("Data received");
                     contestInfo.update(standings, submissions);
                 }

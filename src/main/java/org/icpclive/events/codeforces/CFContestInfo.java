@@ -105,6 +105,17 @@ public class CFContestInfo extends ContestInfo {
         return runsById.size() - 1;
     }
 
+    @Override
+    public long getTimeFromStart() {
+        if (standings == null) {
+            return 0;
+        }
+        if (standings.contest.relativeTimeSeconds == null) {
+            return 0;
+        }
+        return Math.min(standings.contest.relativeTimeSeconds, standings.contest.durationSeconds) * 1000;
+    }
+
     public void update(CFStandings standings, List<CFSubmission> submissions) {
         if (problemsMap.isEmpty() && !standings.problems.isEmpty()) {
             int id = 0;
@@ -117,6 +128,7 @@ public class CFContestInfo extends ContestInfo {
             problemNumber = id;
         }
         this.standings = standings;
+        setStartTime(standings.contest.startTimeSeconds * 1000);
         lastTime = standings.contest.relativeTimeSeconds;
         CFContest.CFContestPhase phase = standings.contest.phase;
         status = phase == CFContest.CFContestPhase.BEFORE ? Status.BEFORE : phase == CFContest.CFContestPhase.CODING ? Status.RUNNING : Status.OVER;
@@ -132,29 +144,31 @@ public class CFContestInfo extends ContestInfo {
             participantsById.put(teamInfo.getId(), teamInfo);
         }
         teamNumber = standings.rows.size();
-        synchronized (runsById) {
-            for (CFSubmission submission : submissions) {
-                if (submission.author.participantType != CFParty.CFPartyParticipantType.CONTESTANT || !participantsByName.containsKey(getName(submission.author))) {
-                    continue;
-                }
-                CFRunInfo runInfo;
-                boolean isNew;
-                if (runsById.containsKey((int) submission.id)) {
-                    runInfo = runsById.get((int) submission.id);
-                    runInfo.updateFrom(submission, standings.contest.relativeTimeSeconds);
-                    isNew = false;
-                } else {
-                    runInfo = new CFRunInfo(submission);
-                    runsById.put(runInfo.getId(), runInfo);
-                    isNew = true;
-                }
-                if (isNew) {
-                    addRun(runInfo, runInfo.getProblemId());
-                }
-                if (runInfo.isAccepted()) {
-                    int pid = runInfo.getProblemId();
-                    if (firstSolved[pid] == null || firstSolved[pid].getTime() > runInfo.getTime()) {
-                        firstSolved[pid] = runInfo;
+        if (submissions != null) {
+            synchronized (runsById) {
+                for (CFSubmission submission : submissions) {
+                    if (submission.author.participantType != CFParty.CFPartyParticipantType.CONTESTANT || !participantsByName.containsKey(getName(submission.author))) {
+                        continue;
+                    }
+                    CFRunInfo runInfo;
+                    boolean isNew;
+                    if (runsById.containsKey((int) submission.id)) {
+                        runInfo = runsById.get((int) submission.id);
+                        runInfo.updateFrom(submission, standings.contest.relativeTimeSeconds);
+                        isNew = false;
+                    } else {
+                        runInfo = new CFRunInfo(submission);
+                        runsById.put(runInfo.getId(), runInfo);
+                        isNew = true;
+                    }
+                    if (isNew) {
+                        addRun(runInfo, runInfo.getProblemId());
+                    }
+                    if (runInfo.isAccepted()) {
+                        int pid = runInfo.getProblemId();
+                        if (firstSolved[pid] == null || firstSolved[pid].getTime() > runInfo.getTime()) {
+                            firstSolved[pid] = runInfo;
+                        }
                     }
                 }
             }
