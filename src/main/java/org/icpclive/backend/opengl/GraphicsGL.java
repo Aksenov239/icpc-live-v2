@@ -183,7 +183,7 @@ public class GraphicsGL extends AbstractGraphics {
         textRenderer.begin3DRendering();
 
         float[] rgbColor = fromColor(color);
-        textRenderer.setColor(rgbColor[0], rgbColor[1], rgbColor[2], (float) opacity);
+        textRenderer.setColor(rgbColor[0], rgbColor[1], rgbColor[2], (float) 1.0);//(float) opacity);
         textRenderer.draw(text, 0, 0);
 
         textRenderer.end3DRendering();
@@ -201,6 +201,8 @@ public class GraphicsGL extends AbstractGraphics {
     public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
                                PlateStyle plateStyle, double opacity, double textOpacity, double margin,
                                boolean scale) {
+        opacity = 1;
+        textOpacity = 1;
         x += x0;
         y += y0;
 //        com.jogamp.graph.font.Font joglFont = getFont(font);

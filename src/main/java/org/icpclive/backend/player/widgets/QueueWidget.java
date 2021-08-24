@@ -10,6 +10,7 @@ import org.icpclive.datapassing.Data;
 import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
 import org.icpclive.events.RunInfo;
+import org.icpclive.events.codeforces.CFRunInfo;
 
 import java.awt.*;
 import java.util.*;
@@ -180,6 +181,9 @@ public class QueueWidget extends Widget {
         String name = team.getShortName();
         ProblemInfo problem = info.problems.get(runInfo.getProblemId());
         String result = runInfo.getResult();
+        if (runInfo instanceof CFRunInfo) {
+            result = runInfo.getResult().equals("AC") ? ((CFRunInfo) runInfo).getPoints() + "" : result;
+        }
 
         PlateStyle teamColor = QueueStylesheet.name;
         PlateStyle resultColor = QueueStylesheet.udProblem;

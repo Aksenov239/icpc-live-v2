@@ -63,7 +63,8 @@ public class FastGraphics extends AbstractGraphics {
     public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
                                PlateStyle plateStyle, double opacity, double textOpacity, double margin,
                                boolean scale) {
-
+        opacity = 1;
+        textOpacity = 1;
         Graphics2D saved = g;
         x += x0;
         y += y0;
@@ -125,6 +126,7 @@ public class FastGraphics extends AbstractGraphics {
     public void drawRect(int x, int y, int width, int height, Color color, double opacity, PlateStyle.RectangleType rectangleType) {
 //        setFillColor(color, opacity * .9);
 //        g.fillRect(x + x0, y + y0, width, height);
+        opacity = 1;
         int c = color.getRGB() & 0xffffff | ((int) (opacity * 230) << 24);
         x += x0;
         y += y0;
@@ -242,6 +244,7 @@ public class FastGraphics extends AbstractGraphics {
 
     @Override
     public void fillPolygon(int[] x, int[] y, Color color, double opacity) {
+        opacity = 1.0;
         setFillColor(color, opacity);
         int[] xx = new int[x.length];
         int[] yy = new int[y.length];

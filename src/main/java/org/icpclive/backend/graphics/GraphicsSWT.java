@@ -44,6 +44,7 @@ public class GraphicsSWT extends AbstractGraphics {
 
     @Override
     public void drawString(String text, int x, int y, Font font, Color color, double opacity) {
+        opacity = 1;
         setTextColor(color, opacity);
         setFont(font);
         g.setFont(font);
@@ -55,6 +56,8 @@ public class GraphicsSWT extends AbstractGraphics {
     public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, Font font,
                                PlateStyle plateStyle, double opacity, double textOpacity, double margin,
                                boolean scale) {
+        opacity = 1;
+        textOpacity = 1;
         Graphics2D saved = g;
         x += x0;
         y += y0;
@@ -109,6 +112,8 @@ public class GraphicsSWT extends AbstractGraphics {
 
     @Override
     public void drawTextInRect(String text, int x, int y, int width, int height, PlateStyle.Alignment alignment, double opacity, double textOpacity, double margin, boolean scaleText) {
+        opacity = 1;
+        textOpacity = 1;
         Graphics2D saved = g;
         x += x0;
         y += y0;
@@ -165,6 +170,7 @@ public class GraphicsSWT extends AbstractGraphics {
     }
 
     public void drawRect(int x, int y, int width, int height, Color color, double opacity) {
+        opacity = 1;
         setFillColor(color, opacity);
         drawRect(x, y, width, height);
     }
@@ -176,8 +182,11 @@ public class GraphicsSWT extends AbstractGraphics {
     }
 
     public void drawGradientRect(int x, int y, int width, int height, double opacity, Color left, Color right) {
-        left = new Color(left.getRed(), left.getGreen(), left.getBlue(), (int) (opacity * 255));
-        right = new Color(right.getRed(), right.getGreen(), right.getBlue(), (int) (opacity * 255));
+        left = new Color(left.getRed(), left.getGreen(), left.getBlue(), 255);
+        right = new Color(right.getRed(), right.getGreen(), right.getBlue(), 255);
+//
+//        left = new Color(left.getRed(), left.getGreen(), left.getBlue(), (int) (opacity * 255));
+//        right = new Color(right.getRed(), right.getGreen(), right.getBlue(), (int) (opacity * 255));
         GradientPaint gradient = new GradientPaint(x + x0, 0, left, x + x0 + width, 0, right);
         g.setPaint(gradient);
         g.draw(new Rectangle(x + x0, y + y0, width, height));

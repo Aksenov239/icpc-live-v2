@@ -8,8 +8,11 @@ import org.icpclive.backend.player.widgets.stylesheets.TeamPaneStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
+import org.icpclive.events.PCMS.PCMSTeamInfo;
 import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
+import org.icpclive.events.WF.json.WFTeamInfo;
+import org.icpclive.events.codeforces.CFTeamInfo;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -36,12 +39,17 @@ public abstract class Widget {
     protected static final double SPACE_Y = 0;
     protected static final double SPACE_X = 0;
 
-    protected static final double NAME_WIDTH = 7;
+    protected static final double NAME_WIDTH = 7.3;
     protected static final double RANK_WIDTH = 1.5;
-    protected static final double TOTAL_WIDTH = 1.3;
+    protected static final double TOTAL_WIDTH = 3;
+//    protected static final double NAME_WIDTH = 7;
+//    protected static final double RANK_WIDTH = 1.5;
+//    protected static final double TOTAL_WIDTH = 1.3;
+
     protected static final double PENALTY_WIDTH = 2.0;
     protected static final double PROBLEM_WIDTH = 1.2;
-    protected static final double STATUS_WIDTH = 1.6;
+//    protected static final double STATUS_WIDTH = 1.6;
+    protected static final double STATUS_WIDTH = 2.5;
     protected static final double TIME_WIDTH = 2;
 
     protected static final int STAR_SIZE = 5;
@@ -56,7 +64,7 @@ public abstract class Widget {
     protected static Color mergeColors(Color first, Color second, double v) {
         int rgb = 0;
         for (int i = 0; i < 3; i++) {
-            rgb |= (int)(((first.getRGB() >> (8 * i)) & 255) * (1 - v) +
+            rgb |= (int) (((first.getRGB() >> (8 * i)) & 255) * (1 - v) +
                     ((second.getRGB() >> (8 * i)) & 255) * v) << (8 * i);
         }
         return new Color(rgb);
@@ -227,7 +235,7 @@ public abstract class Widget {
                                   Font font, PlateStyle plateStyle,
                                   double visibilityState, double maximumOpacity, boolean scale,
                                   WidgetAnimation widgetAnimation, boolean isBlinking) {
-        double opacity = getOpacity(visibilityState) * maximumOpacity;
+        double opacity = maximumOpacity;//getOpacity(visibilityState) * maximumOpacity;
         double textOpacity = getTextOpacity(visibilityState);
         if (text == null) {
             text = "NULL";
@@ -308,7 +316,7 @@ public abstract class Widget {
     }
 
     protected void drawRectangle(int x, int y, int width, int height) {
-        double opacity = getOpacity(visibilityState) * maximumOpacity;
+        double opacity = 1;//getOpacity(visibilityState) * maximumOpacity;
         if (opacity == 0) return;
         graphics.setFillColor(backgroundColor, opacity);
         graphics.drawRect(x, y, width, height);
@@ -360,13 +368,21 @@ public abstract class Widget {
         int totalWidth = (int) round(height * total_width);
         int penaltyWidth = (int) round(height * penalty_width);
         int spaceX = (int) round(height * SPACE_X);
-        drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
-        x += rankWidth + spaceX;
-        drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += nameWidth + spaceX;
-        drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
-        x += totalWidth + spaceX;
-        drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        if (team instanceof PCMSTeamInfo || team instanceof WFTeamInfo) {
+            drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
+            x += rankWidth + spaceX;
+            drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            x += nameWidth + spaceX;
+            drawTextInRect(g, "" + team.getSolvedProblemsNumber(), x, y, totalWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            x += totalWidth + spaceX;
+            drawTextInRect(g, "" + team.getPenalty(), x, y, penaltyWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        } else {
+            drawTextInRect(g, "" + Math.max(team.getRank(), 1), x, y, rankWidth, height, PlateStyle.Alignment.CENTER, font, color, state, 1, false, WidgetAnimation.UNFOLD_ANIMATED, false);
+            x += rankWidth + spaceX;
+            drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            x += nameWidth + spaceX;
+            drawTextInRect(g, "" + ((CFTeamInfo) team).getPoints(), x, y, totalWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.problems, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+        }
     }
 
     protected void drawTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, int height, double state) {
@@ -471,4 +487,4 @@ public abstract class Widget {
         return division.toArray(new String[0]);
     }
 
-        }
+}

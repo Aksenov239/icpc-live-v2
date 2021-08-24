@@ -55,7 +55,11 @@ public class CFTeamInfo implements TeamInfo {
 
     @Override
     public int getPenalty() {
-        return row.penalty == 0 ? (int)row.points : row.penalty;
+        return row.penalty == 0 ? (int) row.points : row.penalty;
+    }
+
+    public int getPoints() {
+        return (int) row.points;
     }
 
     @Override
