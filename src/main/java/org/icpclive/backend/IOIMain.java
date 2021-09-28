@@ -19,10 +19,10 @@ import java.util.Properties;
 /**
  * @author: pashka
  */
-public class Main {
+public class IOIMain {
 
     public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
-        new Main().run();
+        new IOIMain().run();
     }
 
     private void run() throws InterruptedException, InvocationTargetException, IOException {
@@ -57,59 +57,20 @@ public class Main {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-        generator.addWidget(new NewTeamWidget(500, false));
+        generator.addWidget(new IOITeamWidget(500, false));
 //                Integer.parseInt(properties.getProperty("sleep.time"))
 //        ));
 
         int plateHeight = 41;
         int bottomY = 1007;
-        StandingsWidget standingsWidget = new StandingsWidget(519, 825, plateHeight, updateWait);
-        standingsWidget.alignBottom(bottomY);
-        generator.addWidget(standingsWidget);
 
-        BigStandingsWidget bigStandingsWidget = new BigStandingsWidget(588, 69,
+        IOIBigStandingsWidget bigStandingsWidget = new IOIBigStandingsWidget(600, 69,
                 1295, plateHeight, updateWait, 22, true);
         bigStandingsWidget.alignBottom(bottomY);
         generator.addWidget(bigStandingsWidget);
 
-        generator.addWidget(new StatisticsWidget(
-                588, bottomY, plateHeight, 1295, updateWait
-        ));
-
         generator.addWidget(new DoublePersonWidget(updateWait, timePerson));
         generator.addWidget(new AdvertisementWidget(updateWait, timeAdvertisement));
-
-//        TeamStatsWidget widget = new TeamStatsWidget(updateWait, Integer.parseInt(properties.getProperty("sleep.time")));
-//        generator.addWidget(widget);
-
-        generator.addWidget(new PollWidget(updateWait,
-                Integer.parseInt(properties.getProperty("poll.top.teams", "5")),
-                50,
-                1301,
-                200,
-                80,
-                578, bottomY
-        ));
-
-        generator.addWidget(new WordStatisticsWidget(updateWait,
-                600,
-                400,
-                200
-        ));
-
-        generator.addWidget(new FactWidget(updateWait,
-                Widget.BASE_WIDTH - 500,
-                600,
-                450,
-                50
-        ));
-
-        generator.addWidget(new PictureWidget(updateWait, 588, 50,
-                1295, 1007 - 50, 60));
-
-        generator.addWidget(new PvPWidget(100, false));
-
-//        generator.addWidget(new LocatorWidget(updateWait));
 
         generator.addWidget(new VideoWidget(updateWait,
                 Widget.BASE_WIDTH - 50,
@@ -128,7 +89,7 @@ public class Main {
                 Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
 
         boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
-        generator.addWidget(new QueueWidget(30, bottomY, plateHeight, 100, showVerdict));
+        generator.addWidget(new IOIQueueWidget(5, bottomY, plateHeight, 100, showVerdict));
 
         if (outputMode.equals("file")) {
             String filename = properties.getProperty("output.file", "c:\\work\\image.bin");

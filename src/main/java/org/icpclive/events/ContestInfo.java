@@ -68,6 +68,10 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
+        return getCurrentTime(0);
+    }
+
+    public long getCurrentTime(int delay) {
         switch (status) {
             case BEFORE:
                 return 0;
@@ -77,6 +81,9 @@ public abstract class ContestInfo {
                 return startTime == 0 ? 0 :
                         Math.min(getTimeFromStart(), ContestInfo.CONTEST_LENGTH);
             case OVER:
+                if (delay != 0) {
+                    return Math.min(getTimeFromStart(), ContestInfo.CONTEST_LENGTH + delay);
+                }
                 return ContestInfo.CONTEST_LENGTH;
             default:
                 return 0;
