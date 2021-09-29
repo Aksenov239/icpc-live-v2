@@ -6,7 +6,9 @@ import org.icpclive.Config;
 import org.icpclive.events.PCMS.PCMSEventsLoader;
 import org.icpclive.events.PCMS.ioi.IOIPCMSEventsLoader;
 import org.icpclive.events.WF.json.WFEventsLoader;
+import org.icpclive.events.codeforces.CFContestInfo;
 import org.icpclive.events.codeforces.CFEventsLoader;
+import org.icpclive.events.codeforces.marathon.MarathonCFContestInfo;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -31,9 +33,11 @@ public abstract class EventsLoader implements Runnable {
                 } else if ("PCMS".equals(standingsType)) {
                     instance = new PCMSEventsLoader();
                 } else if ("CF".equals(standingsType)) {
-                    instance = new CFEventsLoader();
+                    instance = new CFEventsLoader(CFContestInfo.class);
                 } else if ("IOIPCMS".equals(standingsType)) {
                     instance = new IOIPCMSEventsLoader();
+                } else if ("MarathonCF".equals(standingsType)) {
+                    instance = new CFEventsLoader(MarathonCFContestInfo.class);
                 }
             } catch (IOException e) {
                 log.error("error", e);

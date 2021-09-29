@@ -1,12 +1,9 @@
 package org.icpclive.events.PCMS.ioi;
 
-import org.icpclive.backend.Preparation;
+import org.icpclive.events.*;
 import org.icpclive.events.PCMS.PCMSRunInfo;
-import org.icpclive.events.ProblemInfo;
-import org.icpclive.events.RunInfo;
-import org.icpclive.events.SmallTeamInfo;
 
-public class IOIPCMSRunInfo extends PCMSRunInfo {
+public class IOIPCMSRunInfo extends PCMSRunInfo implements ScoreRunInfo {
     public IOIPCMSRunInfo() {
         this.judged = true;
     }
@@ -30,22 +27,22 @@ public class IOIPCMSRunInfo extends PCMSRunInfo {
         this.teamId = run.getTeamId();
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
-    public int getTotalScore() {
+    public double getTotalScore() {
         return totalScore;
     }
 
-    public void setTotalScore(int totalScore) {
+    public void setTotalScore(double totalScore) {
         this.totalScore = totalScore;
     }
 
-    protected int score;
-    protected int totalScore;
+    protected double score;
+    protected double totalScore;
 }

@@ -5,21 +5,16 @@ import org.icpclive.backend.Preparation;
 import org.icpclive.backend.graphics.AbstractGraphics;
 import org.icpclive.backend.player.widgets.stylesheets.BigStandingsStylesheet;
 import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
-import org.icpclive.backend.player.widgets.stylesheets.TeamPaneStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
 import org.icpclive.datapassing.StandingsData;
-import org.icpclive.events.ContestInfo;
+import org.icpclive.events.*;
 import org.icpclive.events.PCMS.ioi.IOIPCMSTeamInfo;
-import org.icpclive.events.ProblemInfo;
-import org.icpclive.events.RunInfo;
-import org.icpclive.events.TeamInfo;
+import org.icpclive.events.codeforces.marathon.MarathonCFContestInfo;
+import org.icpclive.events.codeforces.marathon.MarathonCFTeamInfo;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -36,7 +31,7 @@ public class IOIBigStandingsWidget extends Widget {
     private static final int MOVING_TIME = 500;
     private static int PERIOD = STANDING_TIME + MOVING_TIME;
 
-    private static final double TOTAL_WIDTH = 1.8;
+    private static final double TOTAL_WIDTH = 2.8;
 
     private final int plateHeight;
 
@@ -216,15 +211,16 @@ public class IOIBigStandingsWidget extends Widget {
                     this.width + 2 * plateHeight,
                     plateHeight * teamsOnPage);
 
-            int lastScore = -1;
+            double lastScore = -1;
             boolean bright = true;
 
             boolean odd = true;
             for (int i = standings.length - 1; i >= 0; i--) {
                 odd = !odd;
-                IOIPCMSTeamInfo teamInfo = (IOIPCMSTeamInfo)standings[i];
-                if (teamInfo.getScore() != lastScore) {
-                    lastScore = teamInfo.getScore();
+                TeamInfo teamInfo = standings[i];
+                double score = ((ScoreTeamInfo) teamInfo).getScore();
+                if (score != lastScore) {
+                    lastScore = score;
                     bright = !bright;
                 }
                 int id = teamInfo.getId();
@@ -288,7 +284,7 @@ public class IOIBigStandingsWidget extends Widget {
         x += rankWidth;
 
         PlateStyle nameStyle = BigStandingsStylesheet.name;
-        if (((IOIPCMSTeamInfo)team).delay != 0) {
+        if (team instanceof IOIPCMSTeamInfo && ((IOIPCMSTeamInfo)team).delay != 0) {
             nameStyle = BigStandingsStylesheet.delay;
         }
         if (bright) {
@@ -308,7 +304,7 @@ public class IOIBigStandingsWidget extends Widget {
             problemsColor = problemsColor.brighter();
         }
         setBackgroundColor(problemsColor.background);
-        drawRectangleWithText("" + ((IOIPCMSTeamInfo) team).score, x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
+        drawRectangleWithText("" + ((ScoreTeamInfo) team).getScore(), x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
 
         x += totalWidth;
 
@@ -318,15 +314,19 @@ public class IOIBigStandingsWidget extends Widget {
             String status = team.getShortProblemState(i);
             if (status.length() == 0) status = ".";
 
-            int score = status.equals("?") || status.equals(".") || status.equals("") ? 0 :
-                    Integer.parseInt(status);
+            double score = ((ScoreTeamInfo) team).getProblemScore(i);
+            double maxScore = 100.;
+
+            if (team instanceof MarathonCFTeamInfo) {
+                maxScore = ((MarathonCFContestInfo) contestData).getMaxProblemScore(i);
+            }
 
             PlateStyle statusColor =
                         status.startsWith("?") ? BigStandingsStylesheet.udProblem :
                                     status.startsWith(".") ? BigStandingsStylesheet.noProblem :
                                             PlateStyle.mix(BigStandingsStylesheet.ioiFull,
                                                     BigStandingsStylesheet.ioiZero,
-                                                    1 - (1 - 1. * score / 100) * (1 - 1. * score / 100));
+                                                    1 - (1 - score / maxScore) * (1 - score / maxScore));
             if (team.isReallyUnknown(i)) {
                 statusColor = BigStandingsStylesheet.udProblem;
             }

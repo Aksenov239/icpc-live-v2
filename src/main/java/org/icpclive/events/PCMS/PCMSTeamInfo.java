@@ -64,7 +64,7 @@ public class PCMSTeamInfo implements TeamInfo {
                     run.setResult(runs.get(i).result);
                     run.setIsJudged(true);
                     IOIPCMSRunInfo ioiRun = (IOIPCMSRunInfo) run;
-                    ioiRun.setScore(((IOIPCMSRunInfo) runs.get(i)).getScore());
+                    ioiRun.setScore((int) Math.round(((IOIPCMSRunInfo) runs.get(i)).getScore()));
                     ioiRun.setTotalScore(((IOIPCMSRunInfo) runs.get(i)).getTotalScore());
                 }
 

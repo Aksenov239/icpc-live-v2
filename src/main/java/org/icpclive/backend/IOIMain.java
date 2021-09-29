@@ -89,7 +89,7 @@ public class IOIMain {
                 Integer.parseInt(properties.getProperty("creeping.line.logo.change.time", "1000"))));
 
         boolean showVerdict = Boolean.parseBoolean(properties.getProperty("queue.show.verdict", "true"));
-        generator.addWidget(new IOIQueueWidget(5, bottomY, plateHeight, 100, showVerdict));
+        generator.addWidget(new IOIQueueWidget(5, bottomY, plateHeight, 100, showVerdict, 0));
 
         if (outputMode.equals("file")) {
             String filename = properties.getProperty("output.file", "c:\\work\\image.bin");

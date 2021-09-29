@@ -113,7 +113,7 @@ public class CFApiCentral {
     }
 
     public static void main(String[] args) {
-        CFApiCentral cfApiCentral = new CFApiCentral(1564);
+        CFApiCentral cfApiCentral = new CFApiCentral(1524);
         cfApiCentral.getStatus();
         cfApiCentral.getStandings();
     }

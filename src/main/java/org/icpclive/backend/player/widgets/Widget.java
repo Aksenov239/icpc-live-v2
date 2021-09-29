@@ -12,6 +12,7 @@ import org.icpclive.events.PCMS.PCMSTeamInfo;
 import org.icpclive.events.PCMS.ioi.IOIPCMSTeamInfo;
 import org.icpclive.events.ProblemInfo;
 import org.icpclive.events.TeamInfo;
+import org.icpclive.events.ScoreTeamInfo;
 import org.icpclive.events.WF.json.WFTeamInfo;
 import org.icpclive.events.codeforces.CFTeamInfo;
 
@@ -360,8 +361,8 @@ public abstract class Widget {
     protected void drawTeamPane(AbstractGraphics g, TeamInfo team, int x, int y, int height, double state,
                                 double rank_width, double name_width, double total_width, double penalty_width) {
         PlateStyle color = getTeamRankColor(team);
-        if (team instanceof IOIPCMSTeamInfo) { // ioi
-            if (((IOIPCMSTeamInfo) team).getScore() == 0) color = TeamPaneStylesheet.zero;
+        if (team instanceof ScoreTeamInfo) { // ioi or marathon
+            if (((ScoreTeamInfo) team).getScore() == 0) color = TeamPaneStylesheet.zero;
             Font font = Font.decode(MAIN_FONT + " " + (int) round(height * 0.7));
             name_width += total_width;
             int rankWidth = (int) round(height * rank_width);
@@ -372,7 +373,7 @@ public abstract class Widget {
             x += rankWidth + spaceX;
             drawTextInRect(g, team.getShortName(), x, y, nameWidth, height, PlateStyle.Alignment.LEFT, font, TeamPaneStylesheet.name, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
             x += nameWidth + spaceX;
-            drawTextInRect(g, "" + ((IOIPCMSTeamInfo) team).getScore(), x, y, scoreWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
+            drawTextInRect(g, "" + ((ScoreTeamInfo) team).getScore(), x, y, scoreWidth, height, PlateStyle.Alignment.CENTER, font, TeamPaneStylesheet.penalty, state, 1, WidgetAnimation.UNFOLD_ANIMATED);
         } else { // icpc
             if (team.getSolvedProblemsNumber() == 0) color = TeamPaneStylesheet.zero;
             Font font = Font.decode(MAIN_FONT + " " + (int) round(height * 0.7));

@@ -6,12 +6,7 @@ import org.icpclive.backend.player.widgets.stylesheets.PlateStyle;
 import org.icpclive.backend.player.widgets.stylesheets.QueueStylesheet;
 import org.icpclive.datapassing.CachedData;
 import org.icpclive.datapassing.Data;
-import org.icpclive.events.ContestInfo;
-import org.icpclive.events.PCMS.ioi.IOIPCMSRunInfo;
-import org.icpclive.events.PCMS.ioi.IOIPCMSTeamInfo;
-import org.icpclive.events.ProblemInfo;
-import org.icpclive.events.RunInfo;
-import org.icpclive.events.TeamInfo;
+import org.icpclive.events.*;
 
 import java.awt.*;
 import java.util.*;
@@ -23,7 +18,8 @@ public class IOIQueueWidget extends Widget {
 
     private static final long WAIT_TIME = 60000;
     private static final int MAX_QUEUE_SIZE = 15;
-    private static final double DIFF_WIDTH = 1.6;
+    private static final double DIFF_WIDTH = 1.8;
+    protected static final double STATUS_WIDTH = 1.4;
 
     static double Y_SHIFT;
 
@@ -43,6 +39,7 @@ public class IOIQueueWidget extends Widget {
 
     ContestInfo info;
     private boolean showVerdict;
+    private int roundTo;
 
     private NewBreakingNewsWidget breakingNews;
     private RunPlate breaking;
@@ -66,7 +63,7 @@ public class IOIQueueWidget extends Widget {
 
     private Map<Integer, RunPlate> plates = new HashMap<>();
 
-    public IOIQueueWidget(int baseX, int baseY, int plateHeight, long updateWait, boolean showVerdict) {
+    public IOIQueueWidget(int baseX, int baseY, int plateHeight, long updateWait, boolean showVerdict, int roundTo) {
         super(updateWait);
 
         this.baseX = baseX;
@@ -85,6 +82,7 @@ public class IOIQueueWidget extends Widget {
         setFont(Font.decode(MAIN_FONT + " " + (int) (plateHeight * 0.7)));
 
         this.showVerdict = showVerdict;
+        this.roundTo = roundTo;
 
         int videoWidth = problemWidth + nameWidth + rankWidth + statusWidth;
         videoHeight = videoWidth * 9 / 16;
@@ -171,6 +169,36 @@ public class IOIQueueWidget extends Widget {
         return plate;
     }
 
+    private String formatScore(double score) {
+        if (roundTo == 0) {
+            return String.valueOf(Math.round(score));
+        } else {
+            return String.format(Locale.US, "%." + roundTo + "f", score);
+        }
+    }
+
+    private String getScoreUpTo(TeamInfo team, RunInfo run) {
+        List<? extends RunInfo> runs = team.getRuns()[run.getProblemId()];
+        synchronized (runs) {
+            if (runs.size() == 0) return "";
+            double maxBefore = 0;
+
+            for (RunInfo pRun: runs) {
+                if (pRun == run) {
+                    break;
+                }
+                maxBefore = Math.max(maxBefore, ((ScoreRunInfo) pRun).getTotalScore());
+            }
+
+            double diff = Math.max(((ScoreRunInfo) run).getTotalScore() - maxBefore, 0);
+            if (diff == 0) {
+                return "=";
+            } else {
+                return "+" + formatScore(diff);
+            }
+        }
+    }
+
     private void drawRun(int x, int y, RunPlate plate) {
         boolean blinking = breakingNews.isVisible() && breakingNews.getRun() == plate.runInfo;
 
@@ -181,20 +209,21 @@ public class IOIQueueWidget extends Widget {
         TeamInfo team = info.getParticipant(runInfo.getTeamId());
         String name = team.getShortName();
         ProblemInfo problem = info.problems.get(runInfo.getProblemId());
-        String result = ((IOIPCMSRunInfo) runInfo).getTotalScore() + "";
-        String diff = ((IOIPCMSTeamInfo)team).getScoreUpTo((IOIPCMSRunInfo) runInfo);
+        String result = ((ScoreTeamInfo) team).getScore() + "";
+        String diff = getScoreUpTo(team, runInfo);
+//        String diff = ((IOIPCMSTeamInfo)team).getScoreUpTo((IOIPCMSRunInfo) runInfo);
 
         PlateStyle teamColor = QueueStylesheet.name;
         PlateStyle resultColor = QueueStylesheet.udProblem;
 
-        boolean inProgress = false;
-        int progressWidth = 0;
+//        boolean inProgress = false;
+//        int progressWidth = 0;
 
         if (!runInfo.isJudged()) {
-            inProgress = true;
+//            inProgress = true;
             result = "";
             diff = "";
-            progressWidth = (int) Math.round(statusWidth * runInfo.getPercentage());
+//            progressWidth = (int) Math.round(statusWidth * runInfo.getPercentage());
         }
 
         PlateStyle color = getTeamRankColor(team);
@@ -219,7 +248,7 @@ public class IOIQueueWidget extends Widget {
             if (runInfo.getTime() > ContestInfo.FREEZE_TIME) {
                 result = "?";
                 resultColor = QueueStylesheet.frozenProblem;
-                inProgress = false;
+//                inProgress = false;
             }
 
             applyStyle(resultColor);

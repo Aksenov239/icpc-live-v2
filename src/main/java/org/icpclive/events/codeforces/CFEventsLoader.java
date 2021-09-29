@@ -18,10 +18,15 @@ import java.util.Properties;
  */
 public class CFEventsLoader extends EventsLoader {
     private static final Logger log = LogManager.getLogger(CFEventsLoader.class);
-    private CFContestInfo contestInfo = new CFContestInfo();
+    private CFContestInfo contestInfo;
     private CFApiCentral central;
 
-    public CFEventsLoader() throws IOException {
+    public CFEventsLoader(Class<? extends CFContestInfo> infoType) throws IOException {
+        try {
+            contestInfo = infoType.newInstance();
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException(e);
+        }
         Properties properties = Config.loadProperties("events");
         emulationSpeed = 1;
         central = new CFApiCentral(Integer.parseInt(properties.getProperty("contest_id")));

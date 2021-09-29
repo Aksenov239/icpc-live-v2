@@ -13,7 +13,7 @@ import java.util.Set;
  * @author egor@egork.net
  */
 public class CFTeamInfo implements TeamInfo {
-    private final CFRanklistRow row;
+    protected final CFRanklistRow row;
     private int id;
 
     public CFTeamInfo(CFRanklistRow row) {

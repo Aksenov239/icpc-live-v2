@@ -24,7 +24,7 @@ public class CFContestInfo extends ContestInfo {
     private Map<Integer, List<CFRunInfo>[]> runsByTeam = new HashMap<>();
     private Map<String, CFProblemInfo> problemsMap = new HashMap<>();
     private Map<String, CFTeamInfo> participantsByName = new HashMap<>();
-    private Map<Integer, CFTeamInfo> participantsById = new HashMap<>();
+    protected Map<Integer, CFTeamInfo> participantsById = new HashMap<>();
     private CFRunInfo[] firstSolved;
     private int nextParticipantId = 1;
 
@@ -136,7 +136,7 @@ public class CFContestInfo extends ContestInfo {
         }
         status = phase == CFContest.CFContestPhase.BEFORE ? Status.BEFORE : phase == CFContest.CFContestPhase.CODING ? Status.RUNNING : Status.OVER;
         for (CFRanklistRow row : standings.rows) {
-            CFTeamInfo teamInfo = new CFTeamInfo(row);
+            CFTeamInfo teamInfo = createTeamInfo(row);
             if (participantsByName.containsKey(teamInfo.getName())) {
                 teamInfo.setId(participantsByName.get(teamInfo.getName()).getId());
             } else {
@@ -160,7 +160,7 @@ public class CFContestInfo extends ContestInfo {
                         runInfo.updateFrom(submission, standings.contest.relativeTimeSeconds);
                         isNew = false;
                     } else {
-                        runInfo = new CFRunInfo(submission);
+                        runInfo = createRunInfo(submission);
                         runsById.put(runInfo.getId(), runInfo);
                         isNew = true;
                     }
@@ -178,7 +178,7 @@ public class CFContestInfo extends ContestInfo {
         }
 
         for (CFRanklistRow row : standings.rows) {
-            CFTeamInfo teamInfo = new CFTeamInfo(row);
+            CFTeamInfo teamInfo = createTeamInfo(row);
 
             for (int i = 0; i < teamInfo.getRuns().length; i++) {
                 for (CFRunInfo runInfo : teamInfo.getRuns()[i]) {
@@ -188,6 +188,14 @@ public class CFContestInfo extends ContestInfo {
                 }
             }
         }
+    }
+
+    protected CFRunInfo createRunInfo(CFSubmission submission) {
+        return new CFRunInfo(submission);
+    }
+
+    protected CFTeamInfo createTeamInfo(CFRanklistRow row) {
+        return new CFTeamInfo(row);
     }
 
     private List<CFRunInfo>[] createEmptyRunsArray() {
