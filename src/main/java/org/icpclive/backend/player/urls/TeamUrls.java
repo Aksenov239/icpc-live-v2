@@ -47,25 +47,22 @@ public class TeamUrls {
     }
 
     public static String getUrl(TeamInfo team, String infoType) {
+        return getUrl(team, infoType, 0);
+    }
+
+    public static String getUrl(TeamInfo team, String infoType, int id) {
         if (team instanceof PCMSTeamInfo) {
-//            int aliasId = Integer.parseInt(team.getAlias().substring(1));
             int hallId = -1;
-//            int hallId = Integer.parseInt(((PCMSTeamInfo) team).getHallId());
-//            int hall = hallId / 100;
-//            int place = hallId % 100;
-//            log.info("addView " + hall + " " + place);
-//            return String.format(urlTemplates.get(infoType), hall, place);
             log.info("addView " + hallId);
             return String.format(urlTemplates.get(infoType), hallId);
         } else if (team instanceof org.icpclive.events.WF.json.WFTeamInfo) {
             org.icpclive.events.WF.json.WFTeamInfo jsonTeam
                     = (org.icpclive.events.WF.json.WFTeamInfo) team;
             log.info("addView " + (jsonTeam.cdsId) + " " + infoType);
-            System.err.println(urlTemplates.get(infoType) + " " + infoType);
             if (jsonTeam.isTemplated(infoType)) {
                 return String.format(urlTemplates.get(infoType), jsonTeam.getUrlByType(infoType));
             } else {
-                return jsonTeam.getUrlByType(infoType);
+                return jsonTeam.getUrlByType(infoType, id);
             }
         } else if (team instanceof WFTeamInfo) {
             log.info("addView " + (team.getId() + 1) + " " + infoType);

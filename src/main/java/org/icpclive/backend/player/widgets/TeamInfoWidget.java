@@ -19,7 +19,7 @@ public class TeamInfoWidget extends TeamWidget {
     }
 
     private long updateWait;
-    private long lastUpdate;
+    private long lastIdUpdate;
     private String currentInfoType;
 
     public void updateImpl(Data data) {
@@ -43,6 +43,11 @@ public class TeamInfoWidget extends TeamWidget {
                 change(team, data.teamData.infoType);
                 teamId = data.teamData.getTeamId();
                 currentInfoType = data.teamData.infoType;
+                lastIdUpdate = System.currentTimeMillis();
+            } else {
+                if (data.teamData.getTeamId() == teamId) {
+
+                }
             }
         }
     }
