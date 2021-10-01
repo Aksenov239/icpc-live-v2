@@ -91,8 +91,10 @@ public class Preparation {
 
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-        con.setRequestProperty("Authorization",
-                "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
+        if (login != null) {
+            con.setRequestProperty("Authorization",
+                    "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes()));
+        }
         con.connect();
         log.debug(con.getHeaderFields());
         return con.getInputStream();
