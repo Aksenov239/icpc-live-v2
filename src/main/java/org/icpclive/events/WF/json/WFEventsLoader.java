@@ -203,12 +203,21 @@ public class WFEventsLoader extends EventsLoader {
                 teamInfo.groups.add(group);
             }
 
-            teamInfo.screen = je.get("desktop") == null ? null :
-                    je.get("desktop").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
-            teamInfo.camera = je.get("webcam") == null ? null :
-                    je.get("webcam").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
+            if (je.get("desktop") != null) {
+                JsonArray hrefs = je.get("desktop").getAsJsonArray();
+                teamInfo.screens = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.screens[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
+
+            if (je.get("webcam") != null) {
+                JsonArray hrefs = je.get("webcam").getAsJsonArray();
+                teamInfo.cameras = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.cameras[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
 
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
@@ -256,12 +265,21 @@ public class WFEventsLoader extends EventsLoader {
                 teamInfo.groups.add(group);
             }
 
-            teamInfo.screen = je.get("desktop") == null ? null :
-                    je.get("desktop").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
-            teamInfo.camera = je.get("webcam") == null ? null :
-                    je.get("webcam").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
+            if (je.get("desktop") != null) {
+                JsonArray hrefs = je.get("desktop").getAsJsonArray();
+                teamInfo.screens = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.screens[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
+
+            if (je.get("webcam") != null) {
+                JsonArray hrefs = je.get("webcam").getAsJsonArray();
+                teamInfo.cameras = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.cameras[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
 
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);

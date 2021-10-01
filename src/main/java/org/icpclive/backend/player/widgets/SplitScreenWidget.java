@@ -22,10 +22,12 @@ public class SplitScreenWidget extends Widget {
     final String[] currentInfoType = new String[4];
     final boolean[] automatic = new boolean[4];
     private long switchTime;
+    private long switchIdTime;
     private long replayTime;
     private long sleepTime;
     private long relevanceTime;
     private long[] lastSwitch = new long[4];
+    private View[] lastView = new View[4];
     private String defaultType;
     private int currentRunId;
     private int[] interestingTeams;
@@ -43,6 +45,7 @@ public class SplitScreenWidget extends Widget {
         }
 
         switchTime = Integer.parseInt(properties.getProperty("switch.time"));
+        switchIdTime = Integer.parseInt(properties.getProperty("switch.id.time"));
         relevanceTime = Integer.parseInt(properties.getProperty("relevance.time"));
         replayTime = Integer.parseInt(properties.getProperty("replay.time"));
         topPlaces = Integer.parseInt(properties.getProperty("top.places"));
@@ -61,8 +64,8 @@ public class SplitScreenWidget extends Widget {
                 teamId = standings[i].getId();
             }
             teamInfoWidgets[i].setVisible(true);
-            teamInfoWidgets[i].change(
-                    Preparation.eventsLoader.getContestData().getParticipant(teamId), defaultType);
+            lastView[i] = new View(Preparation.eventsLoader.getContestData().getParticipant(teamId), defaultType);
+            teamInfoWidgets[i].change(lastView[i].teamInfo, lastView[i].infoType);
             lastSwitch[i] = System.currentTimeMillis() + i * switchTime / 4;
         }
 
@@ -146,10 +149,15 @@ public class SplitScreenWidget extends Widget {
             System.err.println("Found replay " + replayRun);
 //            TODO: while replay do not work
 //            teamInfoWidgets[widget].change(replayRun);
+//            teamInfoWidgets[widget].change(
+//                    replayRun,
+//                    contestInfo.getParticipant(replayRun.getTeamId())
+//            );
+            View newView = new View(contestInfo.getParticipant(replayRun.getTeamId()), "camera");
             teamInfoWidgets[widget].change(
-                    replayRun,
-                    contestInfo.getParticipant(replayRun.getTeamId())
+                    newView.teamInfo, newView.infoType
             );
+            lastView[widget] = newView;
             lastSwitch[widget] = System.currentTimeMillis() - switchTime + replayTime;
             return;
         }
@@ -187,13 +195,23 @@ public class SplitScreenWidget extends Widget {
             }
         }
         //log.info("Choose " + teamId + " for " + widget + " with mode " + mode);
+        View newView = new View(contestInfo.getParticipant(teamId), infoType);
         teamInfoWidgets[widget].change(
-                contestInfo.getParticipant(teamId),
-                infoType
+                newView.teamInfo, newView.infoType
         );
+        lastView[widget] = newView;
         //log.info("There " + teamInfoWidgets[widget].teamId + " " + teamInfoWidgets[widget].team.getId());
         lastSwitch[widget] = System.currentTimeMillis();
         mode ^= 1;
+    }
+
+    private void switchIds() {
+        for (int i = 0; i < 4; i++) {
+            if (System.currentTimeMillis() > lastView[i].lastSwitchIdTime + switchIdTime - sleepTime) {
+                lastView[i].nextId();
+                teamInfoWidgets[i].change(lastView[i].teamInfo, lastView[i].infoType, lastView[i].id);
+            }
+        }
     }
 
     @Override
@@ -218,16 +236,20 @@ public class SplitScreenWidget extends Widget {
                 if ((data.splitScreenData.getTeamId(i) != teamInfoWidgets[i].getTeamId()
                         && !data.splitScreenData.infoStatus(i).equals(currentInfoType[i])) &&
                         teamInfoWidgets[i].mainVideo.readyToShow()) {
-                    teamInfoWidgets[i].setTeamId(data.splitScreenData.getTeamId(i));
+                    View newView = new View(Preparation.eventsLoader.getContestData().getParticipant(data.splitScreenData.getTeamId(i)),
+                            data.splitScreenData.controllerDatas[i].infoType);
+                    teamInfoWidgets[i].setTeamId(newView.teamInfo.getId());
                     teamInfoWidgets[i].mainVideo.change(
                             TeamUrls.getUrl(
-                                    Preparation.eventsLoader.getContestData().getParticipant(data.splitScreenData.getTeamId(i)),
-                                    data.splitScreenData.controllerDatas[i].infoType
+                                    newView.teamInfo,
+                                    newView.infoType
                             )
                     );
+                    lastView[i] = newView;
                 }
             }
         }
+        switchIds();
     }
 
     @Override
@@ -241,6 +263,24 @@ public class SplitScreenWidget extends Widget {
     @Override
     public CachedData getCorrespondingData(Data data) {
         return data.splitScreenData;
+    }
+
+    public class View {
+        TeamInfo teamInfo;
+        String infoType;
+        int id;
+        long lastSwitchIdTime;
+
+        public View(TeamInfo teamInfo, String infoType) {
+            this.teamInfo = teamInfo;
+            this.infoType = infoType;
+            this.lastSwitchIdTime = System.currentTimeMillis();
+        }
+
+        public void nextId() {
+            id++;
+            lastSwitchIdTime = System.currentTimeMillis();
+        }
     }
 
 }

@@ -57,7 +57,9 @@ public class Main {
         long timeAdvertisement = Long.parseLong(properties.getProperty("advertisement.time"));
         long timePerson = Long.parseLong(properties.getProperty("person.time"));
 
-        generator.addWidget(new NewTeamWidget(500, false));
+        int timeToSwitchId = Integer.parseInt(properties.getProperty("time.to.switch.id", "20000"));
+
+        generator.addWidget(new NewTeamWidget(500, timeToSwitchId, false));
 //                Integer.parseInt(properties.getProperty("sleep.time"))
 //        ));
 
