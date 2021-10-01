@@ -122,7 +122,7 @@ public class NewTeamWidget extends Widget {
             next = views.get(currentView);
             next.setVisible(true);
             if (next.consequent) {
-                view.visibilityState = 1;
+                next.visibilityState = 1;
             }
         }
     }
@@ -225,7 +225,7 @@ public class NewTeamWidget extends Widget {
             TeamStatusView newView = new TeamStatusView(team, infoType, sleepTime);
             newView.id = id + 1;
             newView.stats = stats;
-            consequent = true;
+            newView.consequent = true;
             return newView;
         }
 
