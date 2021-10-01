@@ -68,6 +68,10 @@ public class PCMSEventsLoader extends EventsLoader {
         for (Element participant : participants.children()) {
             String participantName = participant.attr("name");
             String alias = participant.attr("id");
+            String hallId = participant.attr("hall_id");
+            if (hallId.length() == 0) {
+                hallId = alias;
+            }
             String shortName = participant.attr("shortname");
             if (shortName == null || shortName.length() == 0) {
                 int index = participantName.indexOf("(");
@@ -91,8 +95,8 @@ public class PCMSEventsLoader extends EventsLoader {
             HashSet<String> groups = new HashSet<>();
             groups.add(region);
             PCMSTeamInfo team = new PCMSTeamInfo(
-                    id, alias, participantName, shortName,
-                    hashTag, groups, initial.getProblemsNumber());
+                    id, alias, hallId, participantName, shortName,
+                    hashTag, groups, initial.getProblemsNumber(), 0);
             if (team.shortName.length() != 0) {
                 initial.addTeamStandings(team);
                 id++;

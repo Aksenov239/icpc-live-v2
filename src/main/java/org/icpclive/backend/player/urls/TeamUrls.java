@@ -49,11 +49,14 @@ public class TeamUrls {
     public static String getUrl(TeamInfo team, String infoType) {
         if (team instanceof PCMSTeamInfo) {
 //            int aliasId = Integer.parseInt(team.getAlias().substring(1));
-            int aliasId = Integer.parseInt(team.getAlias());
-            int hall = aliasId / 100;
-            int place = aliasId % 100;
-            log.info("addView " + hall + " " + place);
-            return String.format(urlTemplates.get(infoType), hall, place);
+            int hallId = -1;
+//            int hallId = Integer.parseInt(((PCMSTeamInfo) team).getHallId());
+//            int hall = hallId / 100;
+//            int place = hallId % 100;
+//            log.info("addView " + hall + " " + place);
+//            return String.format(urlTemplates.get(infoType), hall, place);
+            log.info("addView " + hallId);
+            return String.format(urlTemplates.get(infoType), hallId);
         } else if (team instanceof org.icpclive.events.WF.json.WFTeamInfo) {
             org.icpclive.events.WF.json.WFTeamInfo jsonTeam
                     = (org.icpclive.events.WF.json.WFTeamInfo) team;

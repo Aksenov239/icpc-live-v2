@@ -20,6 +20,9 @@ public class BigStandingsStylesheet extends Stylesheet {
     public static int finalists;
     public static PlateStyle topRegionTeam;
     public static Color star;
+    public static PlateStyle delay;
+    public static PlateStyle ioiFull;
+    public static PlateStyle ioiZero;
 
     static {
         name = new PlateStyle("big.standings.name");
@@ -36,5 +39,8 @@ public class BigStandingsStylesheet extends Stylesheet {
         finalists = Integer.parseInt(properties.getProperty("big.standings.finalists", "0"));
         topRegionTeam = new PlateStyle("big.standings.top.region");
         star = Color.decode(styles.getOrDefault("big.standings.star", "#FFFFA0"));
+        delay = new PlateStyle("big.standings.delay");
+        ioiFull = new PlateStyle("big.standings.ioi.full");
+        ioiZero = new PlateStyle("big.standings.ioi.zero");
     }
 }

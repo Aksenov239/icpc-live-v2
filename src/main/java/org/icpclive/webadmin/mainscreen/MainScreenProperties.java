@@ -3,20 +3,19 @@ package org.icpclive.webadmin.mainscreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.icpclive.Config;
-import org.icpclive.events.PCMS.PCMSTeamInfo;
-import org.icpclive.webadmin.ContextListener;
 import org.icpclive.events.ContestInfo;
-import org.icpclive.events.TeamInfo;
-import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.events.EventsLoader;
+import org.icpclive.events.PCMS.PCMSTeamInfo;
+import org.icpclive.events.TeamInfo;
+import org.icpclive.webadmin.ContextListener;
+import org.icpclive.webadmin.backup.BackUp;
 import org.icpclive.webadmin.mainscreen.picture.Picture;
 import org.icpclive.webadmin.mainscreen.video.Video;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Properties;
 
 public class MainScreenProperties {
     private static final Logger log = LogManager.getLogger(MainScreenProperties.class);
@@ -68,7 +67,7 @@ public class MainScreenProperties {
 
         String onsiteRegex = properties.getProperty("onsite.teams", ".*");
         teamInfos = contestInfo.getStandings();
-        if (teamInfos[0] instanceof PCMSTeamInfo) {
+        if (teamInfos.length > 0 && teamInfos[0] instanceof PCMSTeamInfo) {
             int l = 0;
             for (int i = 0; i < teamInfos.length; i++) {
                 if (teamInfos[i].getAlias().matches(onsiteRegex)) {
@@ -77,6 +76,9 @@ public class MainScreenProperties {
             }
             teamInfos = Arrays.copyOf(teamInfos, l);
             Arrays.sort(teamInfos, (a, b) -> a.getAlias().compareTo(b.getAlias()));
+//            Arrays.sort(teamInfos, (a, b) ->
+//                    Integer.parseInt(((PCMSTeamInfo)a).getHallId()) -
+//                            Integer.parseInt(((PCMSTeamInfo)b).getHallId()));
         } else {
             Arrays.sort(teamInfos, (a, b) ->
                     Integer.parseInt(a.getAlias()) - Integer.parseInt(b.getAlias()));

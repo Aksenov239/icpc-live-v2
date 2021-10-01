@@ -264,7 +264,7 @@ public class NewTeamWidget extends Widget {
 
 
             List<RunInfo> lastRuns = new ArrayList<>();
-            for (List<RunInfo> runs : team.getRuns()) {
+            for (List<? extends RunInfo> runs : team.getRuns()) {
                 RunInfo lastRun = null;
                 for (RunInfo run : runs) {
                     lastRun = run;

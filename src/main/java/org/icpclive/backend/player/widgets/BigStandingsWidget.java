@@ -183,6 +183,7 @@ public class BigStandingsWidget extends Widget {
         RunInfo[] firstSolved = new RunInfo[contestData.getProblemsNumber()];
         for (TeamInfo team : standings) {
             String universityName = team.getShortName();
+            universityName = universityName.split(":")[0];
             boolean lastDigit = Character.isDigit(universityName.charAt(universityName.length() - 1));
             if (lastDigit) {
                 universityName = universityName.substring(0, universityName.length() - 2);

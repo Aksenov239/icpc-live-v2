@@ -270,7 +270,7 @@ public class QueueWidget extends Widget {
         Deque<RunPlate> queue = new ArrayDeque<>();
 
         RunInfo[] runs = info.getRuns();
-        int lastId = info.getLastRunId();
+        int lastId = Math.min(info.getLastRunId(), runs.length - 1);
 
         if (runs == null) {
             return;

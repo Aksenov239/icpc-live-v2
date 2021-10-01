@@ -1,8 +1,8 @@
 package org.icpclive.events;
 
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface TeamInfo extends Comparable<TeamInfo> {
     int getId();
@@ -15,7 +15,7 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     String getAlias();
 
-    HashSet<String> getGroups();
+    Set<String> getGroups();
 
     int getPenalty();
 
@@ -23,7 +23,7 @@ public interface TeamInfo extends Comparable<TeamInfo> {
 
     long getLastAccepted();
 
-    List<RunInfo>[] getRuns();
+    List<? extends RunInfo>[] getRuns();
 
     void addRun(RunInfo run, int problem);
 
@@ -40,7 +40,7 @@ public interface TeamInfo extends Comparable<TeamInfo> {
     }
 
     default RunInfo getLastRun(int problem) {
-        List<RunInfo> runs = getRuns()[problem];
+        List<? extends RunInfo> runs = getRuns()[problem];
         synchronized (runs) {
             if (runs.size() == 0) return null;
 
@@ -55,7 +55,7 @@ public interface TeamInfo extends Comparable<TeamInfo> {
     }
 
     default String getShortProblemState(int problem) {
-        List<RunInfo> runs = getRuns()[problem];
+        List<? extends RunInfo> runs = getRuns()[problem];
         synchronized (runs) {
             if (runs.size() == 0) return "";
             int total = 0;
@@ -78,7 +78,7 @@ public interface TeamInfo extends Comparable<TeamInfo> {
     }
 
     default boolean isReallyUnknown(int problem) {
-        List<RunInfo> runs = getRuns()[problem];
+        List<? extends RunInfo> runs = getRuns()[problem];
         synchronized (runs) {
             for (RunInfo run : runs) {
                 if ("AC".equals(run.getResult()) && !run.isReallyUnknown()) {

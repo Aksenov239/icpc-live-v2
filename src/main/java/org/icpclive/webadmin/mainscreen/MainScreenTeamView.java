@@ -9,6 +9,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.icpclive.backend.player.urls.TeamUrls;
 import org.icpclive.events.TeamInfo;
 
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -59,6 +60,8 @@ public class MainScreenTeamView extends CustomComponent implements View {
 
     public Component getControllerTeam() {
         showStatus = new Label(getStatus(), ContentMode.HTML);
+
+        System.err.println(Arrays.toString(types));
 
         typeSelection = new OptionGroup();
 //        typeSelection.addItem(STATISTICS_SHOW_TYPE);

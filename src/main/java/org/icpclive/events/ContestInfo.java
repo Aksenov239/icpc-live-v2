@@ -1,6 +1,5 @@
 package org.icpclive.events;
 
-import org.icpclive.Config;
 import org.icpclive.datapassing.StandingsData;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public abstract class ContestInfo {
     public int teamNumber;
     public int problemNumber = 0;
     private long startTime = 0;
-    public List<ProblemInfo> problems;
+    public List<ProblemInfo> problems = new ArrayList<>();
     public long lastTime;
     private static String[] hashtags;
 
@@ -69,6 +68,10 @@ public abstract class ContestInfo {
     }
 
     public long getCurrentTime() {
+        return getCurrentTime(0);
+    }
+
+    public long getCurrentTime(int delay) {
         switch (status) {
             case BEFORE:
                 return 0;
@@ -78,6 +81,9 @@ public abstract class ContestInfo {
                 return startTime == 0 ? 0 :
                         Math.min(getTimeFromStart(), ContestInfo.CONTEST_LENGTH);
             case OVER:
+                if (delay != 0) {
+                    return Math.min(getTimeFromStart(), ContestInfo.CONTEST_LENGTH + delay);
+                }
                 return ContestInfo.CONTEST_LENGTH;
             default:
                 return 0;

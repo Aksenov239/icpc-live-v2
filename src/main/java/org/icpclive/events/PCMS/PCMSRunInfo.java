@@ -6,11 +6,11 @@ import org.icpclive.events.SmallTeamInfo;
 import org.icpclive.events.RunInfo;
 
 public class PCMSRunInfo implements RunInfo {
-    PCMSRunInfo() {
+    public PCMSRunInfo() {
         this.judged = true;
     }
 
-    PCMSRunInfo(boolean judged, String result, int problem, long time, long timestamp, int teamId) {
+    public PCMSRunInfo(boolean judged, String result, int problem, long time, long timestamp, int teamId) {
         this.judged = judged;
         this.result = result;
         this.problem = problem;
@@ -20,7 +20,7 @@ public class PCMSRunInfo implements RunInfo {
         this.teamId = teamId;
     }
 
-    PCMSRunInfo(RunInfo run) {
+    public PCMSRunInfo(RunInfo run) {
         this.judged = run.isJudged();
         this.result = run.getResult();
         this.problem = run.getProblemId();

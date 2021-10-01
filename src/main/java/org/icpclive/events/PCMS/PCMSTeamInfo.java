@@ -1,5 +1,6 @@
 package org.icpclive.events.PCMS;
 
+import org.icpclive.events.PCMS.ioi.IOIPCMSRunInfo;
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
 
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class PCMSTeamInfo implements TeamInfo {
-    String alias;
+    public String alias;
 
     public PCMSTeamInfo(int problemsNumber) {
         problemRuns = new ArrayList[problemsNumber];
@@ -16,25 +17,28 @@ public class PCMSTeamInfo implements TeamInfo {
         this.rank = 1;
     }
 
-    public PCMSTeamInfo(int id, String alias, String name, String shortName, String hashTag,
-                        HashSet<String> groups, int problemsNumber) {
+    public PCMSTeamInfo(int id, String alias, String hallId, String name, String shortName, String hashTag,
+                        HashSet<String> groups, int problemsNumber, int delay) {
         this(problemsNumber);
 
         this.id = id;
         this.alias = alias;
+        this.hallId = hallId;
         this.name = name;
         this.shortName = shortName;
         this.groups = groups == null ? null : new HashSet<>(groups);
         this.hashTag = hashTag;
+        this.delay = delay;
     }
 
     public PCMSTeamInfo(String name, int problemsNumber) {
-        this(-1, "", name, null, null, null, problemsNumber);
+        this(-1, "", "1", name, null, null, null, problemsNumber, 0);
     }
 
     public PCMSTeamInfo(PCMSTeamInfo pcmsTeamInfo) {
-        this(pcmsTeamInfo.id, pcmsTeamInfo.alias, pcmsTeamInfo.name,
-                pcmsTeamInfo.shortName, pcmsTeamInfo.hashTag, pcmsTeamInfo.groups, pcmsTeamInfo.problemRuns.length);
+        this(pcmsTeamInfo.id, pcmsTeamInfo.alias, pcmsTeamInfo.hallId, pcmsTeamInfo.name,
+                pcmsTeamInfo.shortName, pcmsTeamInfo.hashTag, pcmsTeamInfo.groups, pcmsTeamInfo.problemRuns.length,
+                pcmsTeamInfo.delay);
 
         for (int i = 0; i < pcmsTeamInfo.problemRuns.length; i++) {
             problemRuns[i].addAll(pcmsTeamInfo.problemRuns[i]);
@@ -50,13 +54,27 @@ public class PCMSTeamInfo implements TeamInfo {
 
     public int mergeRuns(ArrayList<PCMSRunInfo> runs, int problemId, int lastRunId, long currentTime) {
         int previousSize = problemRuns[problemId].size();
-        for (int i = 0; i < previousSize; i++) {
-            if (!problemRuns[problemId].get(i).isJudged() &&
-                    runs.get(i).isJudged()) {
-                PCMSRunInfo run = (PCMSRunInfo) problemRuns[problemId].get(i);
-                run.setLastUpdateTimestamp(currentTime);
-                run.setResult(runs.get(i).result);
-                run.setIsJudged(true);
+        for (int i = 0; i < previousSize && i < runs.size(); i++) {
+            PCMSRunInfo run = (PCMSRunInfo) problemRuns[problemId].get(i);
+            if (run instanceof IOIPCMSRunInfo) {
+                if ((((IOIPCMSRunInfo) run).getScore() != ((IOIPCMSRunInfo) runs.get(i)).getScore())
+                        || (!run.isJudged() && runs.get(i).isJudged())
+                        || (((IOIPCMSRunInfo) run).getTotalScore() < ((IOIPCMSRunInfo) runs.get(i)).getTotalScore())) {
+                    run.setLastUpdateTimestamp(currentTime);
+                    run.setResult(runs.get(i).result);
+                    run.setIsJudged(true);
+                    IOIPCMSRunInfo ioiRun = (IOIPCMSRunInfo) run;
+                    ioiRun.setScore(((IOIPCMSRunInfo) runs.get(i)).getScore());
+                    ioiRun.setTotalScore(((IOIPCMSRunInfo) runs.get(i)).getTotalScore());
+                }
+
+            } else {
+                if (!run.isJudged() &&
+                        runs.get(i).isJudged()) {
+                    run.setLastUpdateTimestamp(currentTime);
+                    run.setResult(runs.get(i).result);
+                    run.setIsJudged(true);
+                }
             }
         }
         for (int i = previousSize; i < runs.size(); i++) {
@@ -86,6 +104,10 @@ public class PCMSTeamInfo implements TeamInfo {
 
     public String getAlias() {
         return alias;
+    }
+
+    public String getHallId() {
+        return hallId;
     }
 
     @Override
@@ -125,18 +147,23 @@ public class PCMSTeamInfo implements TeamInfo {
         return hashTag;
     }
 
+    public int getDelay() {
+        return delay;
+    }
+
     @Override
     public PCMSTeamInfo copy() {
-        return new PCMSTeamInfo(this.id, this.alias, this.name, this.shortName, this.hashTag,
-                this.groups, problemRuns.length);
+        return new PCMSTeamInfo(this.id, this.alias, this.hallId, this.name, this.shortName, this.hashTag,
+                this.groups, problemRuns.length, delay);
     }
 
     public String toString() {
-        return alias + ". " + shortName;
+        return hallId + ". " + shortName;
     }
 
     public int id;
 
+    public String hallId;
     public String name;
     public String shortName;
     public HashSet<String> groups;
@@ -147,5 +174,7 @@ public class PCMSTeamInfo implements TeamInfo {
     public int penalty;
     public long lastAccepted;
 
-    protected ArrayList<RunInfo>[] problemRuns;
+    public ArrayList<RunInfo>[] problemRuns;
+
+    public int delay;
 }
