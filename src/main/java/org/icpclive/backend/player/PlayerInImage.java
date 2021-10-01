@@ -41,6 +41,10 @@ public class PlayerInImage {
     }
 
     public PlayerInImage(int width, int height, JComponent frame, String media, boolean repeat) {
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         if (media != null && media.startsWith(HTTP_PREFIX)) {
             try {
                 Properties properties = Config.loadProperties("events");
