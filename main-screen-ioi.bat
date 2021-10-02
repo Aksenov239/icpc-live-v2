@@ -1,0 +1,2 @@
+set MAVEN_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+mvn package exec:java -Dsun.java2d.opengl=True -D_sun.java2d.trace=count,out:opengl.log -Dexec.mainClass="org.icpclive.backend.IOIMain"
