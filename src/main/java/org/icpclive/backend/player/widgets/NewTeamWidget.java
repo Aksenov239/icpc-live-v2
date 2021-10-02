@@ -80,7 +80,7 @@ public class NewTeamWidget extends Widget {
             } else {
                 if (teamId >= 0 && lastSwitchIdTime + switchIdTime <= System.currentTimeMillis()) {
                     TeamStatusView last = views.get(views.size() - 1);
-                    if (last != emptyView) {
+                    if (last != emptyView && last.team.getId() == teamId) {
                         String currentUrl = TeamUrls.getUrl(last.team, last.infoType, last.id);
                         String nextUrl = TeamUrls.getUrl(last.team, last.infoType, last.id + 1);
                         if (currentUrl != null && !currentUrl.equals(nextUrl)) {
@@ -133,14 +133,14 @@ public class NewTeamWidget extends Widget {
             views.get(currentView).timeToSwitch = System.currentTimeMillis() + timeToSwitch; // FIX!!!
             System.err.println("TTL " + timeToSwitch);
         }
-        views.add(new TeamStatusView(team, infoType, sleepTime));
+        views.add(new TeamStatusView(team, infoType, sleepTime, 0));
     }
 
     public CachedData getCorrespondingData(Data data) {
         return data.teamData;
     }
 
-    TeamStatusView emptyView = new TeamStatusView(null, null, sleepTime);
+    TeamStatusView emptyView = new TeamStatusView(null, null, sleepTime, 0);
 
     class TeamStatusView extends Widget {
 
@@ -178,10 +178,10 @@ public class NewTeamWidget extends Widget {
         int id;
         boolean consequent;
 
-        public TeamStatusView(TeamInfo team, String infoType, int sleepTime) {
+        public TeamStatusView(TeamInfo team, String infoType, int sleepTime, int id) {
             this.team = team;
             this.infoType = infoType;
-            this.id = 0;
+            this.id = id;
             if (aspect43) {
                 height = BIG_HEIGHT_43;
             } else {
@@ -222,8 +222,7 @@ public class NewTeamWidget extends Widget {
         }
 
         public TeamStatusView generateNext() {
-            TeamStatusView newView = new TeamStatusView(team, infoType, sleepTime);
-            newView.id = id + 1;
+            TeamStatusView newView = new TeamStatusView(team, infoType, sleepTime, id + 1);
             newView.stats = stats;
             newView.consequent = true;
             return newView;
