@@ -129,7 +129,7 @@ public class CFContestInfo extends ContestInfo {
         }
         this.standings = standings;
 //        lastTime = standings.contest.relativeTimeSeconds;
-        CONTEST_LENGTH = standings.contest.durationSeconds * 1000;
+        FREEZE_TIME = CONTEST_LENGTH = standings.contest.durationSeconds * 1000;
         CFContest.CFContestPhase phase = standings.contest.phase;
         if (status == Status.BEFORE && phase == CFContest.CFContestPhase.CODING) {
             setStartTime(System.currentTimeMillis() - standings.contest.relativeTimeSeconds * 1000);

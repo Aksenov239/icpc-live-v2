@@ -32,7 +32,7 @@ public class IOIBigStandingsWidget extends Widget {
     private static final int MOVING_TIME = 500;
     private static int PERIOD = STANDING_TIME + MOVING_TIME;
 
-    private static final double TOTAL_WIDTH = 2.8;
+    private static final double TOTAL_WIDTH = 5.8;
 
     private final int plateHeight;
 

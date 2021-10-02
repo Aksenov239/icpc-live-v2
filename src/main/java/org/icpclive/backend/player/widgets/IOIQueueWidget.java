@@ -18,8 +18,8 @@ public class IOIQueueWidget extends Widget {
 
     private static final long WAIT_TIME = 600000;
     private static final int MAX_QUEUE_SIZE = 15;
-    private static final double DIFF_WIDTH = 1.8;
-    protected static final double STATUS_WIDTH = 1.4;
+    private static final double DIFF_WIDTH = 2.8;
+    protected static final double STATUS_WIDTH = 2.8;
 
     static double Y_SHIFT;
 
@@ -73,9 +73,10 @@ public class IOIQueueWidget extends Widget {
         spaceX = (int) Math.round(plateHeight * SPACE_X);
         spaceY = (int) Math.round(plateHeight * SPACE_Y);
 
-        nameWidth = (int) Math.round((NAME_WIDTH + PROBLEM_WIDTH) * plateHeight);
+        nameWidth = (int) Math.round((NAME_WIDTH - 1) * plateHeight);
         rankWidth = (int) Math.round(RANK_WIDTH * plateHeight);
-        problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
+//        problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
+        problemWidth = 0;
         statusWidth = (int) Math.round(STATUS_WIDTH * plateHeight);
         diffWidth = (int) Math.round(DIFF_WIDTH * plateHeight);
 
@@ -210,7 +211,7 @@ public class IOIQueueWidget extends Widget {
         TeamInfo team = info.getParticipant(runInfo.getTeamId());
         String name = team.getShortName();
         ProblemInfo problem = info.problems.get(runInfo.getProblemId());
-        String result = ((ScoreTeamInfo) team).getScore() + "";
+        String result = runInfo.getResult().equals("PA") || runInfo.isAccepted() ? Math.round(Math.floor(((ScoreRunInfo) runInfo).getScore())) + "" : runInfo.getResult();
         String diff = getScoreUpTo(team, runInfo);
 //        String diff = ((IOIPCMSTeamInfo)team).getScoreUpTo((IOIPCMSRunInfo) runInfo);
 
@@ -241,7 +242,7 @@ public class IOIQueueWidget extends Widget {
 
         x += nameWidth + spaceX;
 
-        drawProblemPane(problem, x, y, problemWidth, plateHeight, blinking);
+//        drawProblemPane(problem, x, y, problemWidth, plateHeight, blinking);
 
         if (showVerdict) {
             x += problemWidth + spaceX;
