@@ -16,7 +16,7 @@ public class IOIQueueWidget extends Widget {
 
     private static final double V = 0.005;
 
-    private static final long WAIT_TIME = 60000;
+    private static final long WAIT_TIME = 600000;
     private static final int MAX_QUEUE_SIZE = 15;
     private static final double DIFF_WIDTH = 1.8;
     protected static final double STATUS_WIDTH = 1.4;

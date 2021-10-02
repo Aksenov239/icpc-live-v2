@@ -7,6 +7,7 @@ import org.icpclive.events.codeforces.CFTeamInfo;
 import org.icpclive.events.codeforces.api.data.CFRanklistRow;
 
 import java.util.List;
+import java.util.Locale;
 
 public class MarathonCFTeamInfo extends CFTeamInfo implements ScoreTeamInfo {
     public MarathonCFTeamInfo(CFRanklistRow row) {
@@ -14,7 +15,10 @@ public class MarathonCFTeamInfo extends CFTeamInfo implements ScoreTeamInfo {
     }
 
     public double getScore() {
-        return row.points;
+        if (row.pointsInfo.isEmpty()) {
+            return 0;
+        }
+        return Double.parseDouble(row.pointsInfo);
     }
 
     @Override
@@ -38,7 +42,7 @@ public class MarathonCFTeamInfo extends CFTeamInfo implements ScoreTeamInfo {
             if (finalStatus.isEmpty()) {
                 return "?";
             }
-            return String.valueOf(Math.round(getProblemScore(problem)));
+            return String.format(Locale.US, "%.5f", getProblemScore(problem));
         }
     }
 }

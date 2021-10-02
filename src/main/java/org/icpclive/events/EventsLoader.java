@@ -33,11 +33,11 @@ public abstract class EventsLoader implements Runnable {
                 } else if ("PCMS".equals(standingsType)) {
                     instance = new PCMSEventsLoader();
                 } else if ("CF".equals(standingsType)) {
-                    instance = new CFEventsLoader(CFContestInfo.class);
+                    instance = new CFEventsLoader(new CFContestInfo());
                 } else if ("IOIPCMS".equals(standingsType)) {
                     instance = new IOIPCMSEventsLoader();
                 } else if ("MarathonCF".equals(standingsType)) {
-                    instance = new CFEventsLoader(MarathonCFContestInfo.class);
+                    instance = new CFEventsLoader(new MarathonCFContestInfo());
                 }
             } catch (IOException e) {
                 log.error("error", e);

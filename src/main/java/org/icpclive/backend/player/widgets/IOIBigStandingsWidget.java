@@ -15,6 +15,7 @@ import org.icpclive.events.codeforces.marathon.MarathonCFTeamInfo;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -57,6 +58,7 @@ public class IOIBigStandingsWidget extends Widget {
     private double[] desiredTeamPositions;
 
     private long blinkingTime;
+    private int roundUp;
 
     private static int NAME_WIDTH = 11;
 
@@ -86,6 +88,7 @@ public class IOIBigStandingsWidget extends Widget {
 
         Properties properties = Config.loadProperties("mainscreen");
         blinkingTime = Long.parseLong(properties.getProperty("standings.blinking.time"));
+        roundUp = Integer.parseInt(properties.getProperty("standings.round.digits", "0"));
     }
 
     public void setState(StandingsData.StandingsType type) {
@@ -304,7 +307,7 @@ public class IOIBigStandingsWidget extends Widget {
             problemsColor = problemsColor.brighter();
         }
         setBackgroundColor(problemsColor.background);
-        drawRectangleWithText("" + ((ScoreTeamInfo) team).getScore(), x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
+        drawRectangleWithText("" + String.format(Locale.US, "%.5f", ((ScoreTeamInfo) team).getScore()), x, y, totalWidth, plateHeight, PlateStyle.Alignment.CENTER);
 
         x += totalWidth;
 

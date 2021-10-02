@@ -14,4 +14,5 @@ public class CFRanklistRow {
     public int unsuccessfulHackCount;
     public List<CFProblemResult> problemResults;
     public Long lastSubmissionTimeSeconds;
+    public String pointsInfo;
 }

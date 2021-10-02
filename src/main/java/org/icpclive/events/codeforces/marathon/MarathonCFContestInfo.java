@@ -11,6 +11,11 @@ import java.util.List;
 public class MarathonCFContestInfo extends CFContestInfo {
     double[] maxScores;
 
+    public MarathonCFContestInfo() {
+        super();
+        FREEZE_TIME = CONTEST_LENGTH;
+    }
+
     protected CFTeamInfo createTeamInfo(CFRanklistRow row) {
         return new MarathonCFTeamInfo(row);
     }

@@ -9,6 +9,7 @@ public class CFProblemResult {
     public int rejectedAttemptCount;
     public CFProblemResultType type;
     public long bestSubmissionTimeSeconds;
+    public String pointsInfo;
 
     public enum CFProblemResultType {
         PRELIMINARY, FINAL

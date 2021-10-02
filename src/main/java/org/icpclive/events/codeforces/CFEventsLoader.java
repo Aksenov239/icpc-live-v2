@@ -21,12 +21,8 @@ public class CFEventsLoader extends EventsLoader {
     private CFContestInfo contestInfo;
     private CFApiCentral central;
 
-    public CFEventsLoader(Class<? extends CFContestInfo> infoType) throws IOException {
-        try {
-            contestInfo = infoType.newInstance();
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new RuntimeException(e);
-        }
+    public CFEventsLoader(CFContestInfo info) throws IOException {
+        contestInfo = info;
         Properties properties = Config.loadProperties("events");
         emulationSpeed = 1;
         central = new CFApiCentral(Integer.parseInt(properties.getProperty("contest_id")));

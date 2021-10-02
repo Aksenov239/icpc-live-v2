@@ -129,7 +129,7 @@ public class CFContestInfo extends ContestInfo {
         }
         this.standings = standings;
 //        lastTime = standings.contest.relativeTimeSeconds;
-        CONTEST_LENGTH = (int) standings.contest.durationSeconds * 1000;
+        CONTEST_LENGTH = standings.contest.durationSeconds * 1000;
         CFContest.CFContestPhase phase = standings.contest.phase;
         if (status == Status.BEFORE && phase == CFContest.CFContestPhase.CODING) {
             setStartTime(System.currentTimeMillis() - standings.contest.relativeTimeSeconds * 1000);
@@ -183,7 +183,10 @@ public class CFContestInfo extends ContestInfo {
             for (int i = 0; i < teamInfo.getRuns().length; i++) {
                 for (CFRunInfo runInfo : teamInfo.getRuns()[i]) {
                     if (runInfo.getPoints() == 0) {
-                        runInfo.setPoints((int) row.problemResults.get(i).points);
+                        String pointsInfo = row.problemResults.get(i).pointsInfo;
+                        if (!pointsInfo.isEmpty()) {
+                            runInfo.setPoints(Double.parseDouble(pointsInfo));
+                        }
                     }
                 }
             }

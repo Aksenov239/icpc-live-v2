@@ -26,8 +26,8 @@ public abstract class ContestInfo {
 
     public Status status = Status.BEFORE;
 
-    public static int CONTEST_LENGTH = 5 * 60 * 60 * 1000;
-    public static int FREEZE_TIME = 4 * 60 * 60 * 1000;
+    public static long CONTEST_LENGTH = 5 * 60 * 60 * 1000;
+    public static long FREEZE_TIME = 4 * 60 * 60 * 1000;
     public static final TreeSet<String> GROUPS = new TreeSet<>();
 
     protected ContestInfo() {

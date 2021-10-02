@@ -38,7 +38,7 @@ public class CFRunInfo implements RunInfo {
 
     private CFSubmission submission;
     private long lastUpdate;
-    private int points = 0;
+    private double points = 0;
 
     public CFRunInfo(CFSubmission submission) {
         this.submission = submission;
@@ -68,11 +68,11 @@ public class CFRunInfo implements RunInfo {
         return verdictToString.get(submission.verdict);
     }
 
-    public void setPoints(int points) {
+    public void setPoints(double points) {
         this.points = points;
     }
 
-    public int getPoints() {
+    public double getPoints() {
         return points;
     }
 
