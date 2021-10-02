@@ -51,6 +51,7 @@ public class CFApiCentral {
             while (elements.hasNext()) {
                 result.add(mapper.treeToValue(elements.next(), CFSubmission.class));
             }
+            Collections.reverse(result);
             return result;
         } catch (IOException | NoSuchAlgorithmException e) {
             log.error(e);

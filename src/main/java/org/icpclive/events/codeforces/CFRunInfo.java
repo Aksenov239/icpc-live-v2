@@ -43,6 +43,7 @@ public class CFRunInfo implements RunInfo {
     public CFRunInfo(CFSubmission submission) {
         this.submission = submission;
         lastUpdate = this.submission.relativeTimeSeconds;
+        points = !submission.pointsInfo.isEmpty() ? Double.parseDouble(submission.pointsInfo) : 0;
     }
 
     @Override

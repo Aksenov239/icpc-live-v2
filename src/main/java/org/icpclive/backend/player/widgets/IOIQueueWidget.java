@@ -171,7 +171,7 @@ public class IOIQueueWidget extends Widget {
 
     private String formatScore(double score) {
         if (roundTo == 0) {
-            return String.valueOf(Math.round(score));
+            return String.valueOf(Math.round(Math.floor(score)));
         } else {
             return String.format(Locale.US, "%." + roundTo + "f", score);
         }
@@ -203,6 +203,7 @@ public class IOIQueueWidget extends Widget {
         boolean blinking = breakingNews.isVisible() && breakingNews.getRun() == plate.runInfo;
 
         double saveVisibilityState = visibilityState;
+        if (plate.visibilityState == 0) return;
         setVisibilityState(plate.visibilityState);
 
         RunInfo runInfo = plate.runInfo;

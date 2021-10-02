@@ -177,20 +177,20 @@ public class CFContestInfo extends ContestInfo {
             }
         }
 
-        for (CFRanklistRow row : standings.rows) {
-            CFTeamInfo teamInfo = createTeamInfo(row);
-
-            for (int i = 0; i < teamInfo.getRuns().length; i++) {
-                for (CFRunInfo runInfo : teamInfo.getRuns()[i]) {
-                    if (runInfo.getPoints() == 0) {
-                        String pointsInfo = row.problemResults.get(i).pointsInfo;
-                        if (!pointsInfo.isEmpty()) {
-                            runInfo.setPoints(Double.parseDouble(pointsInfo));
-                        }
-                    }
-                }
-            }
-        }
+//        for (CFRanklistRow row : standings.rows) {
+//            CFTeamInfo teamInfo = createTeamInfo(row);
+//
+//            for (int i = 0; i < teamInfo.getRuns().length; i++) {
+//                for (CFRunInfo runInfo : teamInfo.getRuns()[i]) {
+//                    if (runInfo.getPoints() == 0) {
+//                        String pointsInfo = row.problemResults.get(i).pointsInfo;
+//                        if (!pointsInfo.isEmpty()) {
+//                            runInfo.setPoints(Double.parseDouble(pointsInfo));
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     protected CFRunInfo createRunInfo(CFSubmission submission) {

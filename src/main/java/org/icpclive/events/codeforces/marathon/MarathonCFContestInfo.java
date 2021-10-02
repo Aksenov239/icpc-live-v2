@@ -13,7 +13,6 @@ public class MarathonCFContestInfo extends CFContestInfo {
 
     public MarathonCFContestInfo() {
         super();
-        FREEZE_TIME = CONTEST_LENGTH;
     }
 
     protected CFTeamInfo createTeamInfo(CFRanklistRow row) {
