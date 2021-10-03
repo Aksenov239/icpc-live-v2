@@ -1,1 +1,68 @@
-{"id":92,"university":{"fullName":"Universidad de La Habana","shortName":"UH","region":"Latin America","appearances":7,"appYears":[2011,2012,2013,2015,2016,2017],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":1,"regYears":[2017]},"team":{"name":"UH++","regionals":["Caribbean, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Alfredo Somoza Moreno","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2011-2013, 2015-2017)","priority":1006}]},"contestants":[{"name":"Alberto González Rosales","altNames":["Alberto Gonzalez Rosales","Alberto Gonzalez","Gonzalez Alberto"],"tcRating":-1,"cfHandle":"albeXL","cfRating":1686,"achievements":[]},{"name":"Yanoel Llano Boitel","altNames":[],"tcRating":-1,"cfHandle":"__yano__","cfRating":1841,"achievements":[]},{"name":"Eloy Pérez Torres","altNames":["Eloy Perez Torres","Perez Torres Eloy"],"tcHandle":"blacktools","tcId":"40552060","tcRating":1453,"cfHandle":"BlackTools","cfRating":2172,"achievements":[{"achievement":"ICPC Finalist (2017)","priority":1001}]}]}
+{
+  "id" : 92,
+  "university" : {
+    "fullName" : "Universidade de São Paulo",
+    "shortName" : "USP",
+    "region" : "Latin America",
+    "hashTag" : "#USP",
+    "url" : "http://www.usp.br",
+    "appearances" : 14,
+    "appYears" : [ 1999, 2001, 2002, 2007, 2008, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2001 ],
+    "regionalChampionships" : 2,
+    "regYears" : [ 2001, 2018 ]
+  },
+  "team" : {
+    "name" : "Time com T",
+    "regionals" : [ "Brazil, 1st" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Nathan Benedetto Proença",
+    "altNames" : [ "Nathan Benedetto Proenca", "Benedetto Proença Nathan", "Benedetto Proenca Nathan" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  },
+  "contestants" : [ {
+    "name" : "Cezar Guimarães",
+    "altNames" : [ "Cezar Guimaraes", "Guimarães Cezar", "Guimaraes Cezar", "Cezar Filho", "Filho Cezar" ],
+    "tcRating" : -1,
+    "cfHandle" : "nonsequitur",
+    "cfRating" : 2241,
+    "twitterHandle" : "cezarcgf",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2019)",
+      "priority" : 1001
+    } ]
+  }, {
+    "name" : "Giovanna Conrado",
+    "altNames" : [ "Conrado Giovanna" ],
+    "tcRating" : -1,
+    "cfHandle" : "kobus",
+    "cfRating" : 2137,
+    "achievements" : [ ]
+  }, {
+    "name" : "Arthur Nascimento",
+    "altNames" : [ "Nascimento Arthur", "Arthur Ferreira Do Nascimento" ],
+    "tcRating" : -1,
+    "cfHandle" : "arthur.nascimento",
+    "cfRating" : 2446,
+    "ioiID" : "5045",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "IOI Silver Medalist (2014)",
+      "priority" : 31
+    } ]
+  } ]
+}

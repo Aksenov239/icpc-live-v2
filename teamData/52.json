@@ -1,1 +1,117 @@
-{"id":52,"university":{"fullName":"Kazakh-British Technical University","shortName":"Kazakh-British TU","region":"Northern Eurasia","appearances":6,"appYears":[2006,2011,2012,2013,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Kazakh-British TU 1","regionals":["NEERC, 14th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Askar Akshabayev","altNames":["Akshabayev Askar"],"tcRating":-1,"cfHandle":"askar.akshabayev","cfRating":1594,"achievements":[{"achievement":"World Finals coach (2018)","priority":1001}]},"contestants":[{"name":"Zharaskhan Aman","altNames":["Aman Zharaskhan"],"tcHandle":"Zharaskhan","tcId":"23131782","tcRating":1408,"cfHandle":"Zharaskhan","cfRating":2187,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Alan Amanov","altNames":[],"tcHandle":"Aeon","tcId":"21929011","tcRating":1694,"cfHandle":"Aeon","cfRating":2252,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Nurlan Zhussipov","altNames":["Nurlan Zhusupov","Zhusupov Nurlan"],"tcHandle":"NurlashKO_TC","tcId":"23050380","tcRating":1736,"cfHandle":"NurlashKO","cfRating":2266,"achievements":[{"achievement":"IOI Bronze Medalist (2013)","priority":21},{"achievement":"IOI Participant (2014)","priority":11}]}]}
+{
+  "id" : 52,
+  "university" : {
+    "fullName" : "Moscow Institute of Physics and Technology",
+    "shortName" : "MIPT",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#PhysTech",
+    "url" : "http://www.mipt.ru",
+    "appearances" : 11,
+    "appYears" : [ 2008, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 3,
+    "goldYears" : [ 2012, 2016, 2018 ],
+    "silver" : 1,
+    "silverYears" : [ 2017 ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2019 ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Godnotent",
+    "regionals" : [ "NERC, 3rd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Mikhail Tikhomirov",
+    "altNames" : [ "Tikhomirov Mikhail", "Michael Tikhomirov" ],
+    "tcHandle" : "Endagorion",
+    "tcId" : "22681902",
+    "tcRating" : 3016,
+    "cfHandle" : "Endagorion",
+    "cfRating" : 2977,
+    "twitterHandle" : "endagorion",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC gold medal as coach (2016)",
+      "priority" : 4001
+    }, {
+      "achievement" : "ACM ICPC silver medal as coach (2017)",
+      "priority" : 3001
+    }, {
+      "achievement" : "World Finals coach (2018, 2019)",
+      "priority" : 1002
+    }, {
+      "achievement" : "TCO Finalist (2014)",
+      "priority" : 76
+    }, {
+      "achievement" : "VK Cup 2nd (2020)",
+      "priority" : 56
+    }, {
+      "achievement" : "TCO Semifinalist (2015)",
+      "priority" : 51
+    }, {
+      "achievement" : "SnackDown 3rd (2015)",
+      "priority" : 51
+    }, {
+      "achievement" : "RCC Finalist (2014, 2015)",
+      "priority" : 27
+    }, {
+      "achievement" : "VK Cup finalist (2015)",
+      "priority" : 26
+    }, {
+      "achievement" : "CROC Championship finalist (2013)",
+      "priority" : 16
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Alexander Golovanov",
+    "altNames" : [ "Aleksandr Golovanov", "Golovanov Alexander" ],
+    "tcHandle" : "HTML_Sanek",
+    "tcId" : "23053688",
+    "tcRating" : 2629,
+    "cfHandle" : "Golovanov399",
+    "cfRating" : 3005,
+    "twitterHandle" : "HTML_Sanek",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "VK Cup finalist (2017, 2018)",
+      "priority" : 27
+    }, {
+      "achievement" : "Kotlin Finalist (2014)",
+      "priority" : 16
+    } ]
+  }, {
+    "name" : "Andrey Sergunin",
+    "altNames" : [ "Sergunin Andrey" ],
+    "tcHandle" : "AndreySergunin",
+    "tcId" : "40237917",
+    "tcRating" : 1817,
+    "cfHandle" : "AndreySergunin",
+    "cfRating" : 2737,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2019)",
+      "priority" : 1001
+    }, {
+      "achievement" : "VK Cup finalist (2020)",
+      "priority" : 26
+    } ]
+  }, {
+    "name" : "Evgenii Belykh",
+    "altNames" : [ "Belykh Evgenii" ],
+    "tcRating" : -1,
+    "cfHandle" : "amethyst0",
+    "cfRating" : 2576,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2019)",
+      "priority" : 1001
+    }, {
+      "achievement" : "VK Cup finalist (2020)",
+      "priority" : 26
+    } ]
+  } ]
+}

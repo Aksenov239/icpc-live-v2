@@ -1,1 +1,66 @@
-{"id":106,"university":{"fullName":"The University of Auckland","shortName":"U Auckland","region":"Asia Pacific","appearances":9,"appYears":[1995,1996,1998,2003,2005,2006,2007,2008],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":1,"bronzeYears":[2007],"regionalChampionships":2,"regYears":[2007,2008]},"team":{"name":"MessyUniversity","regionals":["South Pacific, 2nd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Yu-Cheng Tu","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"Edward Chen","altNames":[],"tcRating":-1,"cfHandle":"sheepmolester","cfRating":-1,"achievements":[]},{"name":"Samuel Dobson","altNames":[],"tcRating":-1,"cfHandle":"sadobson97","cfRating":-1,"achievements":[]},{"name":"Qingchuan Zhang","altNames":["Zhang Qingchuan"],"tcRating":-1,"cfHandle":"UoA_ZQC","cfRating":2331,"achievements":[]}]}
+{
+  "id" : 106,
+  "university" : {
+    "fullName" : "University of Illinois at Urbana-Champaign",
+    "shortName" : "U Illinois at U-C",
+    "region" : "North America",
+    "hashTag" : "#Illini",
+    "url" : "http://illinois.edu",
+    "appearances" : 14,
+    "appYears" : [ 1992, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Must Pass",
+    "regionals" : [ "NAC, 8th", "Mid-Central USA, 1st" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Mattox Beckman",
+    "altNames" : [ "Beckman Mattox" ],
+    "tcRating" : -1,
+    "cfHandle" : "mattoxb",
+    "cfRating" : 1390,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2019)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Zihan Wang",
+    "altNames" : [ "Wang Zihan" ],
+    "tcRating" : -1,
+    "cfHandle" : "Suzukaze",
+    "cfRating" : 2330,
+    "achievements" : [ {
+      "achievement" : "Forethought Future Cup finalist (2019)",
+      "priority" : 6
+    } ]
+  }, {
+    "name" : "Zhuolin Yang",
+    "altNames" : [ "Yang Zhuolin" ],
+    "tcRating" : -1,
+    "cfHandle" : "I_love_simplespy",
+    "cfRating" : 2326,
+    "achievements" : [ ]
+  }, {
+    "name" : "Yen-Hsiang Chang",
+    "altNames" : [ "Chang Yen-Hsiang" ],
+    "tcHandle" : "yhchang3",
+    "tcId" : "40998003",
+    "tcRating" : 2214,
+    "cfHandle" : "yhchang3",
+    "cfRating" : 2502,
+    "achievements" : [ ]
+  } ]
+}

@@ -1,1 +1,67 @@
-{"id":34,"university":{"fullName":"Harbin Institute of Technology","shortName":"HIT","region":"Asia East","appearances":4,"appYears":[2010,2011,2013],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Sunset Glow","regionals":["Nanjing, 4th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Dalie Sun","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2010, 2011, 2013)","priority":1003}]},"contestants":[{"name":"Haifeng Chen","altNames":[],"tcRating":-1,"cfHandle":"xpchf","cfRating":2092,"achievements":[]},{"name":"Shun Yao","altNames":["Yao Shun"],"tcHandle":"hsuppr","tcId":"23164365","tcRating":1366,"cfHandle":"hsuppr","cfRating":1954,"achievements":[]},{"name":"Jinlu Yu","altNames":[],"tcRating":-1,"cfHandle":"HIT_TOM","cfRating":1996,"achievements":[]}]}
+{
+  "id" : 34,
+  "university" : {
+    "fullName" : "Indian Institute of Technology - Roorkee",
+    "shortName" : "IIT Roorkee",
+    "region" : "Asia West",
+    "hashTag" : "#IITRoorkee",
+    "url" : "http://www.iitr.ernet.in",
+    "appearances" : 7,
+    "appYears" : [ 2013, 2014, 2015, 2016, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Laila",
+    "regionals" : [ "Amritapuri, 4th", "Kharagpur, 2nd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Balasubramanian Raman",
+    "altNames" : [ "Raman Balasubramanian" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2013, 2018, 2019)",
+      "priority" : 1003
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Piyush Sethia",
+    "altNames" : [ "Sethia Piyush" ],
+    "tcHandle" : "piyush1999",
+    "tcId" : "40797750",
+    "tcRating" : 1459,
+    "cfHandle" : "piyushsethia1999",
+    "cfRating" : 2391,
+    "twitterHandle" : "PiyushSethia7",
+    "achievements" : [ ]
+  }, {
+    "name" : "Rahul Dugar",
+    "altNames" : [ "Dugar Rahul" ],
+    "tcRating" : -1,
+    "cfHandle" : "amnesiac_dusk",
+    "cfRating" : 2532,
+    "twitterHandle" : "rahuldugarrd",
+    "achievements" : [ ]
+  }, {
+    "name" : "Aniket Goyal",
+    "altNames" : [ "Goyal Aniket" ],
+    "tcHandle" : "aniket9465",
+    "tcId" : "40752867",
+    "tcRating" : 1688,
+    "cfHandle" : "aniket9465",
+    "cfRating" : 2194,
+    "twitterHandle" : "Aniketgoyal442",
+    "achievements" : [ ]
+  } ]
+}

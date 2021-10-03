@@ -1,1 +1,72 @@
-{"id":115,"university":{"fullName":"University of Latvia","shortName":"Latvia","region":"Northern Eurasia","appearances":5,"appYears":[2012,2014,2017,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"LU 2","regionals":["NEERC, 9th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Guntis Arnicans","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2012, 2014, 2017, 2018)","priority":1004}]},"contestants":[{"name":"Vladislavs Klevickis","altNames":["Klevickis Vladislavs"],"tcRating":-1,"cfHandle":"bauldaiselemaitre","cfRating":2106,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Peteris Pakalns","altNames":["Pakalns Peteris"],"tcRating":-1,"cfHandle":"Pakalns","cfRating":2263,"achievements":[{"achievement":"ICPC Finalist (2017)","priority":1001}]},{"name":"Ingus Janis Pretkalnins","altNames":["Ingus Pretkalnin","Pretkalnin Ingus"],"tcRating":-1,"cfHandle":"Ingus","cfRating":1707,"achievements":[]}]}
+{
+  "id" : 115,
+  "university" : {
+    "fullName" : "Utrecht - Leiden University",
+    "shortName" : "Utrecht - Leiden",
+    "region" : "Europe",
+    "url" : "http://www.utrechtleiden.edu",
+    "appearances" : 1,
+    "appYears" : [ 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Utrecht University - Leiden University",
+    "regionals" : [ "NWERC, 1st", "NWERC, 3rd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Ragnar Groot Koerkamp",
+    "altNames" : [ "Groot Koerkamp Ragnar" ],
+    "tcHandle" : "philae",
+    "tcId" : "40272203",
+    "tcRating" : 1818,
+    "cfHandle" : "Philae",
+    "cfRating" : 2366,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2018, 2019)",
+      "priority" : 1002
+    }, {
+      "achievement" : "ACM ICPC Finalist (2016)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Reinier Schmiermann",
+    "altNames" : [ "Schmiermann Reinier" ],
+    "tcRating" : -1,
+    "cfHandle" : "Reinier",
+    "cfRating" : 2671,
+    "achievements" : [ ]
+  }, {
+    "name" : "Ludo Pulles",
+    "altNames" : [ "Pulles Ludo" ],
+    "tcRating" : -1,
+    "cfHandle" : "ludo",
+    "cfRating" : 2391,
+    "ioiID" : "5680",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2015)",
+      "priority" : 21
+    } ]
+  }, {
+    "name" : "Jorke De Vlas",
+    "altNames" : [ "De Vlas Jorke" ],
+    "tcRating" : -1,
+    "cfHandle" : "Jorke ",
+    "cfRating" : 2176,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    } ]
+  } ]
+}

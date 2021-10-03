@@ -1,1 +1,75 @@
-{"id":66,"university":{"fullName":"National Technical University \"Kharkiv Polytechnic Institute\"","shortName":"NTU KhPI","region":"Europe","appearances":3,"appYears":[2010,2012],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"KhPI_Morituri::Reborn*","regionals":["SEERC, 4th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Leonid Lyubchyk","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2010)","priority":1001}]},"contestants":[{"name":"Mykhailo Babenko","altNames":["Babenko Misha","Misha Babenko"],"tcHandle":"NegaTeeF","tcId":"23119121","tcRating":1133,"cfHandle":"NegaTeeF","cfRating":2059,"achievements":[{"achievement":"IOI Bronze Medalist (2014)","priority":21}]},{"name":"Andrii Cherevko","altNames":["Andrey Cherevko","Andrei Cherevko","Cherevko Andrey"],"tcRating":-1,"cfHandle":"Cyber","cfRating":1687,"achievements":[]},{"name":"Vladyslav Mats","altNames":["Vlad Mats","Mats Vlad"],"tcRating":-1,"cfHandle":"vlad8","cfRating":2109,"achievements":[]}]}
+{
+  "id" : 66,
+  "university" : {
+    "fullName" : "Sharif University of Technology",
+    "shortName" : "Sharif UT",
+    "region" : "Asia West",
+    "hashTag" : "#SharifUT",
+    "url" : "http://www.sharif.edu",
+    "appearances" : 21,
+    "appYears" : [ 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 1,
+    "silverYears" : [ 2001 ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2019 ],
+    "regionalChampionships" : 1,
+    "regYears" : [ 2019 ]
+  },
+  "team" : {
+    "name" : "NimRoo",
+    "regionals" : [ "Tehran, 1st" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Hamid Zarrabi-Zadeh",
+    "altNames" : [ "Zarrabi-Zadeh Hamid" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2018, 2019)",
+      "priority" : 1002
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Hamidreza Hedayati",
+    "altNames" : [ "Hedayati Hamidreza", "HamidReza Hedayati", "Hedayati HamidReza" ],
+    "tcRating" : -1,
+    "cfHandle" : "ITDOI",
+    "cfRating" : 2054,
+    "twitterHandle" : "hedayati_hamid",
+    "ioiID" : "6246",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2017)",
+      "priority" : 31
+    } ]
+  }, {
+    "name" : "Keivan Rezaei",
+    "altNames" : [ "Rezaei Keivan" ],
+    "tcHandle" : "Navick",
+    "tcId" : "40533517",
+    "tcRating" : 1664,
+    "cfHandle" : "Navick",
+    "cfRating" : 2277,
+    "ioiID" : "6547",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2018)",
+      "priority" : 31
+    } ]
+  }, {
+    "name" : "Ali Shafiee",
+    "altNames" : [ "Shafiee Ali" ],
+    "tcRating" : -1,
+    "cfHandle" : "ToTLeS",
+    "cfRating" : 2207,
+    "ioiID" : "6249",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2017)",
+      "priority" : 31
+    } ]
+  } ]
+}

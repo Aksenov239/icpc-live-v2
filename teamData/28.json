@@ -1,1 +1,70 @@
-{"id":28,"university":{"fullName":"Faculty of Engineering- Mansoura University","shortName":"FE-MU","region":"Africa and the Middle East","appearances":1,"appYears":[],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Hawksbeard","regionals":["ACPC, 15th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Ibrahim Gamil","altNames":["Gamil Ibrahim"],"tcRating":-1,"cfHandle":"gamel","cfRating":1499,"achievements":[]},"contestants":[{"name":"Abdulla Ashraf","altNames":["Ashraf Abdulla"],"tcRating":-1,"cfHandle":"abdulla.ashraf","cfRating":1939,"achievements":[]},{"name":"Omar Elawady","altNames":[],"tcRating":-1,"cfHandle":"Omar_Elawady","cfRating":2137,"achievements":[]},{"name":"Sara Elkady","altNames":["sara elkady","elkady sara"],"tcRating":-1,"cfHandle":"sara_elkady","cfRating":1633,"achievements":[]}]}
+{
+  "id" : 28,
+  "university" : {
+    "fullName" : "Indian Institute of Technology - Delhi",
+    "shortName" : "IIT Delhi",
+    "region" : "Asia West",
+    "hashTag" : "#IITDelhi",
+    "url" : "http://www.iitd.ernet.in",
+    "appearances" : 7,
+    "appYears" : [ 2007, 2011, 2012, 2015, 2016, 2018, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "AlwaysReadyToOverkill",
+    "regionals" : [ "Gwalior-Pune, 3rd", "Amritapuri, 3rd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Amit Kumar",
+    "altNames" : [ "Kumar Amit" ],
+    "tcHandle" : "amitgomi",
+    "tcId" : "40545805",
+    "tcRating" : 1333,
+    "cfHandle" : "amitgomi",
+    "cfRating" : 2052,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2018)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Naman Jain",
+    "altNames" : [ "Jain Naman" ],
+    "tcRating" : -1,
+    "cfHandle" : "smartnj",
+    "cfRating" : 2099,
+    "achievements" : [ ]
+  }, {
+    "name" : "Harish Yadav",
+    "altNames" : [ "Yadav Harish" ],
+    "tcHandle" : "hkyiitd",
+    "tcId" : "40896410",
+    "tcRating" : 1313,
+    "cfHandle" : "hkyiitd",
+    "cfRating" : 2207,
+    "achievements" : [ ]
+  }, {
+    "name" : "Kalash Gupta",
+    "altNames" : [ "Gupta Kalash" ],
+    "tcHandle" : "kal013",
+    "tcId" : "40844697",
+    "tcRating" : 1708,
+    "cfHandle" : "kal013",
+    "cfRating" : 2507,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    } ]
+  } ]
+}

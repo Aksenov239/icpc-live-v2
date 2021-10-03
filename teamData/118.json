@@ -1,1 +1,82 @@
-{"id":118,"university":{"fullName":"University of Niš - Faculty of Sciences and Mathematics","shortName":"NIŠ FSM","region":"Europe","appearances":1,"appYears":[],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"PMF Nis","regionals":["SEERC, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Nikola Milosavljević","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"Vuk Bibić","altNames":[],"tcRating":-1,"cfHandle":"vucislav","cfRating":1652,"achievements":[]},{"name":"Lazar Stamenković","altNames":[],"tcRating":-1,"cfHandle":"lazar96","cfRating":1331,"achievements":[]},{"name":"Ivan Stošić","altNames":["Ivan Stosić","Ivan Stosic","Stosic Ivan"],"tcHandle":"Ivan100sic","tcId":"22936075","tcRating":1847,"cfHandle":"ivan100sic","cfRating":2442,"achievements":[{"achievement":"IOI Silver Medalist (2012, 2013)","priority":32},{"achievement":"IOI Bronze Medalist (2014)","priority":21}]}]}
+{
+  "id" : 118,
+  "university" : {
+    "fullName" : "Yerevan State University",
+    "shortName" : "YSU",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#YSU",
+    "url" : "http://www.ysu.am",
+    "appearances" : 2,
+    "appYears" : [ 2017, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Yerevan SU One Last Dance:",
+    "regionals" : [ "NERC, 25th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Albert Sahakyan",
+    "altNames" : [ "Sahakyan Albert" ],
+    "tcHandle" : "albert96",
+    "tcId" : "23099298",
+    "tcRating" : 1818,
+    "cfHandle" : "albert96",
+    "cfRating" : 2333,
+    "ioiID" : "2965",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2017)",
+      "priority" : 1001
+    }, {
+      "achievement" : "IOI Bronze Medalist (2013)",
+      "priority" : 21
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Levon Muradyan",
+    "altNames" : [ "Muradyan Levon" ],
+    "tcRating" : -1,
+    "cfHandle" : "_LeMur_",
+    "cfRating" : 2226,
+    "ioiID" : "5836",
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    }, {
+      "achievement" : "IOI Bronze Medalist (2016)",
+      "priority" : 21
+    } ]
+  }, {
+    "name" : "Hamlet Mikaelyan",
+    "altNames" : [ "Mikaelyan Hamlet" ],
+    "tcRating" : -1,
+    "cfHandle" : "hamlet",
+    "cfRating" : 2479,
+    "ioiID" : "6151",
+    "achievements" : [ {
+      "achievement" : "IOI Participant (2017)",
+      "priority" : 11
+    } ]
+  }, {
+    "name" : "Khazhak Galstyan",
+    "altNames" : [ "Galstyan Khazhak" ],
+    "tcRating" : -1,
+    "cfHandle" : "Khazhak",
+    "cfRating" : 2050,
+    "ioiID" : "6148",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2017)",
+      "priority" : 21
+    } ]
+  } ]
+}

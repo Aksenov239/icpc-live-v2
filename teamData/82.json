@@ -1,1 +1,70 @@
-{"id":82,"university":{"fullName":"Southeast University, China","shortName":"SEU","region":"Asia East","appearances":2,"appYears":[2010],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"the lowest Gu","regionals":["Xuzhou, 6th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Qingjian Ni","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"Xinyi Gu","altNames":["Gu Xinyi"],"tcRating":-1,"cfHandle":"fifteen","cfRating":1657,"achievements":[]},{"name":"Zheng Tan","altNames":[],"tcRating":-1,"cfHandle":"CoupDeGrace","cfRating":2146,"achievements":[]},{"name":"Guanyi Yu","altNames":[],"tcHandle":"Aguin","tcId":"40341225","tcRating":1681,"cfHandle":"Aguin","cfRating":2187,"achievements":[]}]}
+{
+  "id" : 82,
+  "university" : {
+    "fullName" : "Universidad de Guanajuato - DCNE",
+    "shortName" : "UG-CIMAT",
+    "region" : "Latin America",
+    "hashTag" : "#SoyUG",
+    "url" : "http://www.dcne.ugto.mx",
+    "appearances" : 1,
+    "appYears" : [ 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "E3",
+    "regionals" : [ "Mexico, 2nd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Carlos Segura",
+    "altNames" : [ "Segura Carlos" ],
+    "tcHandle" : "csegura",
+    "tcId" : "22874858",
+    "tcRating" : 1480,
+    "cfHandle" : "csegura",
+    "cfRating" : 1877,
+    "achievements" : [ ]
+  },
+  "contestants" : [ {
+    "name" : "José Ángel Alejandro Soto",
+    "altNames" : [ "Jose Angel Alejandro Soto", "Alejandro Soto José Ángel", "Alejandro Soto Jose Angel", "José Angel Alejandro Soto" ],
+    "tcHandle" : "JoseSoto",
+    "tcId" : "40341053",
+    "tcRating" : 1363,
+    "cfHandle" : "JoseSoto",
+    "cfRating" : 1965,
+    "ioiID" : "6287",
+    "achievements" : [ {
+      "achievement" : "IOI Participant (2017)",
+      "priority" : 11
+    } ]
+  }, {
+    "name" : "Irwin Villalobos",
+    "altNames" : [ "Villalobos Irwin", "Irwin E Villalobos", "Villalobos Irwin E" ],
+    "tcRating" : -1,
+    "cfHandle" : "irwin.hetmmet",
+    "cfRating" : 1772,
+    "achievements" : [ ]
+  }, {
+    "name" : "Emmanuel Antonio Cuevas",
+    "altNames" : [ "Antonio Cuevas Emmanuel" ],
+    "tcRating" : -1,
+    "cfHandle" : "EmmanuelAC",
+    "cfRating" : 1744,
+    "ioiID" : "5662",
+    "achievements" : [ {
+      "achievement" : "IOI Participant (2015)",
+      "priority" : 11
+    } ]
+  } ]
+}

@@ -1,1 +1,102 @@
-{"id":70,"university":{"fullName":"Peking University","shortName":"Peking U","region":"Asia East","appearances":15,"appYears":[2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],"wins":0,"winYears":[],"gold":2,"goldYears":[2014,2018],"silver":2,"silverYears":[2015,2017],"bronze":1,"bronzeYears":[2005],"regionalChampionships":2,"regYears":[2014,2018]},"team":{"name":"La Mala Hora","regionals":["QingDao, 3rd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Guojie Luo","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"ICPC gold medal as coach (2014, 2018)","priority":4002},{"achievement":"ICPC silver medal as coach (2015, 2017)","priority":3002},{"achievement":"World Finals coach (2013, 2016)","priority":1002}]},"contestants":[{"name":"Zhe Feng","altNames":[],"tcRating":-1,"cfHandle":"Altria-PenDragon","cfRating":2630,"achievements":[]},{"name":"Xuandi Ren","altNames":["Ren Xuandi"],"tcHandle":"RXDoi","tcId":"40176228","tcRating":2413,"cfHandle":"rxdoi","cfRating":2559,"achievements":[{"achievement":"IOI Gold Medalist (2018)","priority":51}]},{"name":"Jianing Ye","altNames":["Ye Jianing"],"tcRating":-1,"cfHandle":"Remilia-Scarlet","cfRating":2292,"achievements":[]}]}
+{
+  "id" : 70,
+  "university" : {
+    "fullName" : "St. Petersburg State University",
+    "shortName" : "St. Petersburg SU",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#SPBU",
+    "url" : "http://eng.spbu.ru",
+    "appearances" : 23,
+    "appYears" : [ 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 4,
+    "winYears" : [ 2000, 2001, 2014, 2016 ],
+    "gold" : 8,
+    "goldYears" : [ 1998, 2000, 2001, 2009, 2011, 2014, 2016, 2017 ],
+    "silver" : 3,
+    "silverYears" : [ 2006, 2010, 2013 ],
+    "bronze" : 3,
+    "bronzeYears" : [ 1997, 1999, 2008 ],
+    "regionalChampionships" : 5,
+    "regYears" : [ 2000, 2001, 2011, 2014, 2016 ]
+  },
+  "team" : {
+    "name" : "SPb SU 25",
+    "regionals" : [ "NERC, 1st" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Andrei Lopatin",
+    "altNames" : [ "Andrey Lopatin", "Lopatin Andrei" ],
+    "tcHandle" : "KOTEHOK",
+    "tcId" : "15805598",
+    "tcRating" : 2313,
+    "cfHandle" : "KOTEHOK",
+    "cfRating" : 2291,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC win as coach (2014, 2016)",
+      "priority" : 5002
+    }, {
+      "achievement" : "ACM ICPC gold medal as coach (2009, 2011, 2017)",
+      "priority" : 4003
+    }, {
+      "achievement" : "ACM ICPC silver medal as coach (2006, 2010, 2013)",
+      "priority" : 3004
+    }, {
+      "achievement" : "ACM ICPC bronze medal as coach (2008)",
+      "priority" : 2002
+    }, {
+      "achievement" : "World Finals coach (2003-2005, 2007, 2012, 2015, 2018, 2019)",
+      "priority" : 1012
+    }, {
+      "achievement" : "GCJ Finalist (2008)",
+      "priority" : 51
+    }, {
+      "achievement" : "TCCC Semifinalist (2006)",
+      "priority" : 51
+    }, {
+      "achievement" : "TCO Semifinalist (2008)",
+      "priority" : 51
+    }, {
+      "achievement" : "RCC Finalist (2012)",
+      "priority" : 26
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Nikita Bykov",
+    "altNames" : [ "Bykov Nikita" ],
+    "tcRating" : -1,
+    "cfHandle" : "dargelirli",
+    "cfRating" : 2416,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2020)",
+      "priority" : 26
+    }, {
+      "achievement" : "Technocup finalist (2018)",
+      "priority" : 16
+    }, {
+      "achievement" : "Dasha Code finalist (2019)",
+      "priority" : 6
+    } ]
+  }, {
+    "name" : "Dmitriy Belichenko",
+    "altNames" : [ "Dmitriyy Belichenko", "Belichenko Dmitriy", "Dmitry Belichenko", "Belichenko Dmitry" ],
+    "tcRating" : -1,
+    "cfHandle" : "Dmitriy.Belichenko",
+    "cfRating" : 2937,
+    "achievements" : [ ]
+  }, {
+    "name" : "Semen Petrov",
+    "altNames" : [ "Petrov Semen" ],
+    "tcRating" : -1,
+    "cfHandle" : "Semenar",
+    "cfRating" : 2486,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2018)",
+      "priority" : 26
+    }, {
+      "achievement" : "Dasha Code finalist (2019)",
+      "priority" : 6
+    } ]
+  } ]
+}

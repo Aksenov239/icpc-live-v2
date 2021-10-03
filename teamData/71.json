@@ -1,1 +1,79 @@
-{"id":71,"university":{"fullName":"Princeton University","shortName":"Princeton","region":"North America","appearances":8,"appYears":[1997,2006,2008,2011,2012,2015,2017],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Princeton 1","regionals":["Greater NY, 2nd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Lucas Fernán Salvador","altNames":["Lucas Fernan Salvador"],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"IOI Participant (2017)","priority":11}]},"contestants":[{"name":"Yuping Luo","altNames":["Luo Yuping"],"tcHandle":"roosephu","tcId":"23017884","tcRating":2412,"cfHandle":"roosephu","cfRating":2343,"achievements":[]},{"name":"Xingyuan Sun","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},{"name":"Dingli Yu","altNames":["Leo Yu","Yu Leo"],"tcHandle":"Leo_Yu","tcId":"23064316","tcRating":2433,"cfHandle":"Leoyu","cfRating":2044,"achievements":[{"achievement":"ICPC gold medal (2015)","priority":8001},{"achievement":"IOI Gold Medalist (2014)","priority":51}]}]}
+{
+  "id" : 71,
+  "university" : {
+    "fullName" : "Stanford University",
+    "shortName" : "Stanford",
+    "region" : "North America",
+    "hashTag" : "#Stanford",
+    "url" : "http://www.stanford.edu",
+    "appearances" : 22,
+    "appYears" : [ 1992, 1993, 1995, 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2007, 2008, 2009, 2010, 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 1,
+    "goldYears" : [ 1993 ],
+    "silver" : 3,
+    "silverYears" : [ 1992, 2002, 2008 ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2001 ],
+    "regionalChampionships" : 1,
+    "regYears" : [ 2010 ]
+  },
+  "team" : {
+    "name" : "Stanford Cardinal",
+    "regionals" : [ "NAC, 16th", "Pacific Northwest, 5th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Gerald Cain",
+    "altNames" : [ "Cain Gerald" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "twitterHandle" : "jerrycainjr",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC silver medal as coach (2002, 2008)",
+      "priority" : 3003
+    }, {
+      "achievement" : "ACM ICPC bronze medal as coach (2001)",
+      "priority" : 2002
+    }, {
+      "achievement" : "World Finals coach (1999, 2000, 2004, 2007, 2012-2016, 2018, 2019)",
+      "priority" : 1015
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Konstantin Miagkov",
+    "altNames" : [ "Miagkov Konstantin" ],
+    "tcHandle" : "bogeyman",
+    "tcId" : "40166529",
+    "tcRating" : 1537,
+    "cfHandle" : "miagkov",
+    "cfRating" : 2224,
+    "twitterHandle" : "KonstantinMiag1",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2017)",
+      "priority" : 1001
+    } ]
+  }, {
+    "name" : "Andy Shih",
+    "altNames" : [ "Shih Andy" ],
+    "tcHandle" : "andyshih12",
+    "tcId" : "40171544",
+    "tcRating" : 1559,
+    "cfHandle" : "andyshih12",
+    "cfRating" : 2241,
+    "twitterHandle" : "andyshih12",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2017)",
+      "priority" : 1001
+    } ]
+  }, {
+    "name" : "Golrokh Emami",
+    "altNames" : [ "Emami Golrokh", "Goli Emami", "Emami Goli" ],
+    "tcRating" : -1,
+    "cfHandle" : "_iris_",
+    "cfRating" : 2070,
+    "achievements" : [ ]
+  } ]
+}

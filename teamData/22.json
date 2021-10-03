@@ -1,1 +1,72 @@
-{"id":22,"university":{"fullName":"Duke University","shortName":"Duke","region":"North America","appearances":19,"appYears":[1994,1995,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":2,"silverYears":[1994,1999],"bronze":2,"bronzeYears":[2001,2002],"regionalChampionships":0,"regYears":[]},"team":{"name":"BMC","regionals":["Mid-Atlantic USA, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Owen Astrachan","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"ICPC bronze medal as coach (2001, 2002)","priority":2002},{"achievement":"World Finals coach (2003-2011)","priority":1009}]},"contestants":[{"name":"Kangning Wang","altNames":["Wang Kangning"],"tcHandle":"a142857a","tcId":"23042478","tcRating":2103,"cfHandle":"a142857a","cfRating":2381,"achievements":[{"achievement":"IOI Gold Medalist (2013)","priority":51}]},{"name":"Xiang Wang","altNames":[],"tcRating":-1,"cfHandle":"alexwangxiang","cfRating":1491,"achievements":[]},{"name":"Chenwei Wu","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]}]}
+{
+  "id" : 22,
+  "university" : {
+    "fullName" : "Faculty of Computer Science, Belgrade",
+    "shortName" : "RAF",
+    "region" : "Europe",
+    "hashTag" : "#UBelgrade",
+    "url" : "http://www.raf.edu.rs",
+    "appearances" : 2,
+    "appYears" : [ 1996, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "RAF Penguins",
+    "regionals" : [ "SEERC, 3rd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Dušan Zdravković",
+    "altNames" : [ "Dusan Zdravković", "Zdravković Dušan", "Zdravković Dusan", "Dusan Zdravkovic", "Zdravkovic Dusan" ],
+    "tcRating" : -1,
+    "cfHandle" : "DuX",
+    "cfRating" : 2118,
+    "ioiID" : "665",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2010, 2011)",
+      "priority" : 22
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Pavle Martinovic",
+    "altNames" : [ "Martinovic Pavle", "Pavle Martinović" ],
+    "tcRating" : -1,
+    "cfHandle" : "Pajaraja",
+    "cfRating" : 2495,
+    "ioiID" : "6650",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2018)",
+      "priority" : 31
+    } ]
+  }, {
+    "name" : "Aleksa Milisavljevic",
+    "altNames" : [ "Milisavljevic Aleksa", "Aleksa Milisavljević" ],
+    "tcRating" : -1,
+    "cfHandle" : "milisav",
+    "cfRating" : 2495,
+    "ioiID" : "6647",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2018)",
+      "priority" : 21
+    } ]
+  }, {
+    "name" : "Aleksa Plavsic",
+    "altNames" : [ "Plavsic Aleksa" ],
+    "tcHandle" : "allllekssssa",
+    "tcId" : "40028726",
+    "tcRating" : 1756,
+    "cfHandle" : "allllekssssa",
+    "cfRating" : 2164,
+    "achievements" : [ ]
+  } ]
+}
