@@ -505,6 +505,10 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void readRun(WFContestInfo contestInfo, JsonObject je, boolean update) {
+        if (je.get("judgement_id").isJsonNull()) {
+            System.err.println(je);
+            return;
+        }
 
         WFRunInfo runInfo = contestInfo.runByJudgementId.get(je.get("judgement_id").getAsString());
 
