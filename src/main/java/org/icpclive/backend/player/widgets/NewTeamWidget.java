@@ -43,15 +43,23 @@ public class NewTeamWidget extends Widget {
             standardAspect = 4. / 3;
         }
         views.add(emptyView);
+        emptyView.setVisible(true);
+        emptyView.timeToSwitch = 0;
     }
 
     public void updateImpl(Data data) {
         timeToSwitch = data.teamData.sleepTime;
         if (!data.teamData.isVisible) {
             setVisible(false);
-            if (views.get(currentView) != emptyView) {
-                views.get(currentView).timeToSwitch = 0;
-            }
+//            if (views.get(currentView) != emptyView) {
+                for (int i = views.size() - 1; i >= currentView + 1; i--) {
+                    TeamStatusView view = views.get(i);
+                    view.mainVideo.stop();
+                    views.remove(i);
+                }
+                views.get(currentView).timeToSwitch = -1;
+//            }
+            lastSwitchIdTime = Integer.MAX_VALUE;
         } else {
             setVisible(true);
             int teamId = data.teamData.getTeamId();
@@ -102,9 +110,15 @@ public class NewTeamWidget extends Widget {
         }
         TeamStatusView view = views.get(currentView);
         TeamStatusView next = currentView + 1 == views.size() ? null : views.get(currentView + 1);
-        if ((view.timeToSwitch <= System.currentTimeMillis() ||
-                (currentView + 1 < views.size() && !views.get(currentView + 1).mainVideo.isBlack()))
-                && view.isVisible()) {
+        if ((view.timeToSwitch == -1 && view != emptyView) ||
+                ((view.timeToSwitch <= System.currentTimeMillis() &&
+                        (
+//                                currentView + 1 == views.size()
+//                        || view.timeToSwitch <= System.currentTimeMillis() + 30000 ||
+                                (currentView + 1 < views.size() &&
+                                (!views.get(currentView + 1).mainVideo.isBlack())) || (next == emptyView)))
+                        && view.isVisible())) {
+            System.err.println("SET VISIBLE FALSE");
             view.setVisible(false);
             if (next != null && next.consequent) {
                 view.visibilityState = 0;
@@ -114,15 +128,19 @@ public class NewTeamWidget extends Widget {
             System.err.println("Switch view");
             if (view.mainVideo != null)
                 view.mainVideo.stop();
-            currentView++;
-            if (currentView == views.size()) {
-                views.add(emptyView);
-                emptyView.timeToSwitch = Long.MAX_VALUE;
-            }
-            next = views.get(currentView);
-            next.setVisible(true);
-            if (next.consequent) {
-                next.visibilityState = 1;
+            if (view == emptyView && currentView + 1 == views.size()) {
+
+            } else {
+                currentView++;
+                if (currentView == views.size()) {
+                    views.add(emptyView);
+                    emptyView.timeToSwitch = 0;
+                }
+                next = views.get(currentView);
+                next.setVisible(true);
+                if (next.consequent) {
+                    next.visibilityState = 1;
+                }
             }
         }
     }
@@ -130,7 +148,9 @@ public class NewTeamWidget extends Widget {
     public void addView(TeamInfo team, String infoType) {
         System.err.println("Add view " + team + " " + infoType + " " + 0);
         if (views.size() - currentView > 0) {
-            views.get(currentView).timeToSwitch = System.currentTimeMillis() + timeToSwitch; // FIX!!!
+            for (int i = currentView; i < views.size(); i++) {
+                views.get(i).timeToSwitch = System.currentTimeMillis() + timeToSwitch; // FIX!!!
+            }
             System.err.println("TTL " + timeToSwitch);
         }
         views.add(new TeamStatusView(team, infoType, sleepTime, 0));

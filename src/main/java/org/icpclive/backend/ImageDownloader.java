@@ -52,7 +52,7 @@ public class ImageDownloader {
             String logo_url = String.format("https://192.168.1.207/api/contests/test1/organizations/%s/logo.160x160", organization_id);
             System.err.println(logo_url);
             try (BufferedInputStream in = new BufferedInputStream(new URL(logo_url).openStream());
-                 FileOutputStream fileOutputStream = new FileOutputStream(String.format("teamData/%s.png", id))) {
+                 FileOutputStream fileOutputStream = new FileOutputStream(String.format("teamData_new/%s.png", id))) {
                 byte dataBuffer[] = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
