@@ -1,1 +1,63 @@
-{"id":53,"university":{"fullName":"KimChaek University of Technology","shortName":"KUT","region":"Asia East","appearances":2,"appYears":[2008],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"KUT_Team","regionals":["Beijing, 2nd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"CholRyong Jong","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"SongIl Kim","altNames":["Kim Song Il","Song Il Kim"],"tcRating":-1,"cfHandle":"ksi1996","cfRating":2377,"achievements":[]},{"name":"SoMin Mun","altNames":["Mun SoMin"],"tcRating":-1,"cfHandle":"black_horse2014","cfRating":2716,"achievements":[]},{"name":"GukSong Ri","altNames":[],"tcRating":-1,"cfHandle":"kutengine","cfRating":2001,"achievements":[]}]}
+{
+  "id" : 53,
+  "university" : {
+    "fullName" : "Moscow State University",
+    "shortName" : "Moscow SU",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#MoscowStateU",
+    "url" : "http://msu.ru",
+    "appearances" : 25,
+    "appYears" : [ 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 2,
+    "winYears" : [ 2018, 2019 ],
+    "gold" : 7,
+    "goldYears" : [ 2003, 2005, 2010, 2014, 2015, 2018, 2019 ],
+    "silver" : 1,
+    "silverYears" : [ 2008 ],
+    "bronze" : 7,
+    "bronzeYears" : [ 2001, 2002, 2006, 2007, 2011, 2012, 2013 ],
+    "regionalChampionships" : 4,
+    "regYears" : [ 2005, 2010, 2018, 2019 ]
+  },
+  "team" : {
+    "name" : "Moscow SU: NoNames",
+    "regionals" : [ "NERC, 11th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Anton Pankratyev",
+    "altNames" : [ "Pankratyev Anton" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC gold medal as coach (2015)",
+      "priority" : 4001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Egor Chunaev",
+    "altNames" : [ "Chunaev Egor" ],
+    "tcHandle" : "ch_egor",
+    "tcRating" : -1,
+    "cfHandle" : "ch_egor",
+    "cfRating" : 2848,
+    "achievements" : [ ]
+  }, {
+    "name" : "Andrei Kalendarov",
+    "altNames" : [ "Andrey Kalendarov", "Kalendarov Andrei" ],
+    "tcHandle" : "Andreikkaa",
+    "tcId" : "40191233",
+    "tcRating" : 1826,
+    "cfHandle" : "Andreikkaa",
+    "cfRating" : 2221,
+    "achievements" : [ ]
+  }, {
+    "name" : "Mikhail Koshelev",
+    "altNames" : [ "Koshelev Mikhail" ],
+    "tcRating" : -1,
+    "cfHandle" : "SendThemToHell",
+    "cfRating" : 2512,
+    "achievements" : [ ]
+  } ]
+}

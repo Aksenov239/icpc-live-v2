@@ -1,1 +1,61 @@
-{"id":35,"university":{"fullName":"Harvard University","shortName":"Harvard","region":"North America","appearances":17,"appYears":[1992,1993,1994,1995,1996,1997,1999,2000,2001,2003,2004,2007,2012,2015,2016,2018],"wins":1,"winYears":[1993],"gold":3,"goldYears":[1993,1996,2016],"silver":3,"silverYears":[1995,2001,2012],"bronze":3,"bronzeYears":[1992,1999,2004],"regionalChampionships":2,"regYears":[2012,2016]},"team":{"name":"Harvard","regionals":["Northeast NA, 2nd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Robert L Walton","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"ICPC gold medal as coach (2016)","priority":4001},{"achievement":"World Finals coach (2015, 2018)","priority":1002}]},"contestants":[{"name":"Daniel Chiu","altNames":["Chiu Daniel"],"tcHandle":"waterfalls","tcId":"40029084","tcRating":2518,"cfHandle":"waterfalls","cfRating":2778,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001},{"achievement":"IOI Gold Medalist (2015, 2016)","priority":52}]},{"name":"Pranay Tankala","altNames":["Tankala Pranay"],"tcRating":-1,"cfHandle":"pbt17","cfRating":1954,"achievements":[]},{"name":"Franklyn Wang","altNames":[],"tcHandle":"Franklyn.Wang","tcId":"40636204","tcRating":1531,"cfHandle":"Franklyn_W","cfRating":2233,"achievements":[]}]}
+{
+  "id" : 35,
+  "university" : {
+    "fullName" : "Indian Institute of Technology - Varanasi",
+    "shortName" : "IITBHU",
+    "region" : "Asia West",
+    "hashTag" : "#BanarasHinduUniversity",
+    "url" : "https://www.iitbhu.ac.in",
+    "appearances" : 1,
+    "appYears" : [ 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Minimum Spanking Tree",
+    "regionals" : [ "Amritapuri, 20th", "Kanpur, 8th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Tanima Dutta",
+    "altNames" : [ "Dutta Tanima" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  },
+  "contestants" : [ {
+    "name" : "Deepak Gour",
+    "altNames" : [ "Gour Deepak", "Deepak Kumar Gour", "Gour Deepak Kumar" ],
+    "tcHandle" : "enigma27",
+    "tcId" : "40599430",
+    "tcRating" : 1360,
+    "cfHandle" : "enigma27",
+    "cfRating" : 1939,
+    "achievements" : [ ]
+  }, {
+    "name" : "Bhavy Jain",
+    "altNames" : [ "Jain Bhavy" ],
+    "tcRating" : -1,
+    "cfHandle" : "_shanky",
+    "cfRating" : 2166,
+    "achievements" : [ ]
+  }, {
+    "name" : "Himanshu Singh",
+    "altNames" : [ "Singh Himanshu" ],
+    "tcHandle" : "hitman623",
+    "tcId" : "40559673",
+    "tcRating" : 1611,
+    "cfHandle" : "hitman623",
+    "cfRating" : 2391,
+    "achievements" : [ ]
+  } ]
+}

@@ -1,1 +1,75 @@
-{"id":73,"university":{"fullName":"Scuola Normale Superiore","shortName":"SNS","region":"Europe","appearances":2,"appYears":[2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"SNS","regionals":["SWERC, 4th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Igor Simunec","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"Filippo Baroni","altNames":["Filippo Gianni Baroni"],"tcRating":-1,"cfHandle":"Delfad0r","cfRating":2307,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001},{"achievement":"IOI Silver Medalist (2015, 2016)","priority":32}]},{"name":"Andrea Ciprietti","altNames":[],"tcRating":-1,"cfHandle":"cip999","cfRating":2034,"achievements":[{"achievement":"IOI Silver Medalist (2016, 2017)","priority":32},{"achievement":"IOI Bronze Medalist (2018)","priority":21}]},{"name":"Francesco Milizia","altNames":[],"tcHandle":"fram_2511","tcId":"23320217","tcRating":1239,"cfHandle":"fram","cfRating":2375,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001},{"achievement":"IOI Silver Medalist (2014)","priority":31},{"achievement":"IOI Bronze Medalist (2015)","priority":21}]}]}
+{
+  "id" : 73,
+  "university" : {
+    "fullName" : "Technische Universität München",
+    "shortName" : "TUM",
+    "region" : "Europe",
+    "hashTag" : "#TUM",
+    "url" : "http://www.tum.de",
+    "appearances" : 3,
+    "appYears" : [ 2006, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Lord VolTUMort",
+    "regionals" : [ "NWERC, 4th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Gregor Schwarz",
+    "altNames" : [ "Schwarz Gregor" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2019)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Tobias Benjamin Schindler",
+    "altNames" : [ "Schindler Tobias Benjamin", "Tobias Schindler", "Schindler Tobias" ],
+    "tcRating" : -1,
+    "cfHandle" : "tob123",
+    "cfRating" : 2404,
+    "ioiID" : "6524",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2018)",
+      "priority" : 31
+    } ]
+  }, {
+    "name" : "Gregor Matl",
+    "altNames" : [ "Matl Gregor" ],
+    "tcRating" : -1,
+    "cfHandle" : "Gregory",
+    "cfRating" : 2195,
+    "ioiID" : "5086",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2019)",
+      "priority" : 1001
+    }, {
+      "achievement" : "IOI Bronze Medalist (2014)",
+      "priority" : 21
+    } ]
+  }, {
+    "name" : "Florian Jüngermann",
+    "altNames" : [ "Florian Jungermann", "Jüngermann Florian", "Jungermann Florian", "Florian Juengermann", "Juengermann Florian" ],
+    "tcRating" : -1,
+    "cfHandle" : "fjuengermann",
+    "cfRating" : 2244,
+    "ioiID" : "6525",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2018)",
+      "priority" : 21
+    } ]
+  } ]
+}

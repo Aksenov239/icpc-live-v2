@@ -1,1 +1,84 @@
-{"id":86,"university":{"fullName":"Stanford University","shortName":"Stanford","region":"North America","appearances":21,"appYears":[1992,1993,1995,1997,1998,1999,2000,2001,2002,2004,2007,2008,2009,2010,2012,2013,2014,2015,2016,2018],"wins":0,"winYears":[],"gold":1,"goldYears":[1993],"silver":3,"silverYears":[1992,2002,2008],"bronze":1,"bronzeYears":[2001],"regionalChampionships":1,"regYears":[2010]},"team":{"name":"Stanford Cardinal","regionals":["Pacific Northwest, 2nd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Gerald Cain","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"ICPC silver medal as coach (2002)","priority":3001},{"achievement":"ICPC bronze medal as coach (2001)","priority":2001},{"achievement":"World Finals coach (1999, 2000, 2004, 2007, 2012-2016, 2018)","priority":1010}]},"contestants":[{"name":"Yang Liu","altNames":["Liu Yang"],"tcHandle":"desert97","tcId":"40053483","tcRating":2531,"cfHandle":"desert97","cfRating":2629,"achievements":[{"achievement":"ICPC bronze medal (2018)","priority":4001}]},{"name":"Wenli Looi","altNames":[],"tcRating":-1,"cfHandle":"yum","cfRating":1998,"achievements":[{"achievement":"ICPC Finalist (2015)","priority":1001}]},{"name":"Eric Xu","altNames":["Xu Eric"],"tcRating":-1,"cfHandle":"ericxu0","cfRating":2338,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]}]}
+{
+  "id" : 86,
+  "university" : {
+    "fullName" : "Universidad Nacional de Colombia - Bogotá",
+    "shortName" : "UNAL Bogotá",
+    "region" : "Latin America",
+    "hashTag" : "#ComunidadUN",
+    "url" : "http://www.unal.edu.co",
+    "appearances" : 11,
+    "appYears" : [ 2009, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "descomUNAL",
+    "regionals" : [ "South America/North, 1st" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Ivan Castellanos",
+    "altNames" : [ "Castellanos Ivan" ],
+    "tcHandle" : "ivancastel",
+    "tcId" : "22855367",
+    "tcRating" : 1167,
+    "cfHandle" : "ivancastel",
+    "cfRating" : 2069,
+    "twitterHandle" : "ivancastel",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2016, 2017)",
+      "priority" : 1002
+    }, {
+      "achievement" : "World Finals coach (2019)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Roger David Trujillo Ibáñez",
+    "altNames" : [ "Roger David Trujillo Ibanez", "Trujillo Ibáñez Roger David", "Trujillo Ibanez Roger David", "Roger Trujillo", "Roger David Trujillo", "Trujillo Roger David" ],
+    "tcRating" : -1,
+    "cfHandle" : "ahoraSoyPeor",
+    "cfRating" : 2188,
+    "twitterHandle" : "@RogerTr22400480",
+    "ioiID" : "5564",
+    "achievements" : [ {
+      "achievement" : "IOI Participant (2015-2018)",
+      "priority" : 14
+    } ]
+  }, {
+    "name" : "Jonathan Carrillo",
+    "altNames" : [ "Carrillo Jonathan" ],
+    "tcHandle" : "JhonnyZaz",
+    "tcId" : "40595787",
+    "tcRating" : 1174,
+    "cfHandle" : "JhonnyZaz",
+    "cfRating" : 2011,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    } ]
+  }, {
+    "name" : "Osman David Jiménez Gutiérrez",
+    "altNames" : [ "Osman David Jimenez Gutierrez", "Jiménez Gutiérrez Osman David", "Jimenez Gutierrez Osman David", "Osman Jimenez", "Jimenez Osman" ],
+    "tcRating" : -1,
+    "cfHandle" : "-osdajigu-",
+    "cfRating" : 2005,
+    "twitterHandle" : "osdajigu",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2019)",
+      "priority" : 1001
+    }, {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    } ]
+  } ]
+}

@@ -1,1 +1,61 @@
-{"id":16,"university":{"fullName":"Chennai Mathematical Institute","shortName":"CMI","region":"Asia West","appearances":5,"appYears":[2008,2012,2013,2017],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"UniverseIsDeterministic","regionals":["Kharagpur, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Narayan Kumar Krishnan","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2008, 2012, 2013, 2017)","priority":1004}]},"contestants":[{"name":"Sreejata Kishor Bhattacharya","altNames":["Bhattacharya Sreejata Kishor"],"tcHandle":"AnonymousBunny","tcId":"40116196","tcRating":1555,"cfHandle":"AnonymousBunny","cfRating":2059,"achievements":[{"achievement":"ICPC Finalist (2017)","priority":1001}]},{"name":"Rajat De","altNames":["De Rajat"],"tcHandle":"rajat1603","tcId":"40065078","tcRating":2050,"cfHandle":"rajat1603","cfRating":2549,"achievements":[{"achievement":"ICPC Finalist (2017)","priority":1001},{"achievement":"IOI Silver Medalist (2016)","priority":31}]},{"name":"Debjit Paria","altNames":["DEBJIT PARIA","PARIA DEBJIT"],"tcRating":-1,"cfHandle":"DP99","cfRating":1683,"achievements":[]}]}
+{
+  "id" : 16,
+  "university" : {
+    "fullName" : "Damascus University",
+    "shortName" : "Damascus U",
+    "region" : "Africa and the Middle East",
+    "hashTag" : "#DamasUniv",
+    "url" : "http://www.damascusuniversity.edu.sy",
+    "appearances" : 5,
+    "appYears" : [ 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "ICPCNextCentury",
+    "regionals" : [ "ACPC, 9th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Said Sryheni",
+    "altNames" : [ "Sryheni Said" ],
+    "tcRating" : -1,
+    "cfHandle" : "SAeed",
+    "cfRating" : 2121,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2017-2019)",
+      "priority" : 1003
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Mhd Bsher Ghbrh",
+    "altNames" : [ "Ghbrh Mhd Bsher", "Bsher Ghbra", "Ghbra Bsher" ],
+    "tcRating" : -1,
+    "cfHandle" : "Bsher",
+    "cfRating" : 1779,
+    "achievements" : [ ]
+  }, {
+    "name" : "Mhd Said Sabbagh",
+    "altNames" : [ "Sabbagh Mhd Said", "Saeed Sabbagh", "Sabbagh Saeed" ],
+    "tcRating" : -1,
+    "cfHandle" : "Oxygen.",
+    "cfRating" : 2088,
+    "achievements" : [ ]
+  }, {
+    "name" : "Abdulkader Sukaria",
+    "altNames" : [ "Sukaria Abdulkader", "AbdUlkader Sukaria", "Sukaria AbdUlkader" ],
+    "tcRating" : -1,
+    "cfHandle" : "abdalkader-s",
+    "cfRating" : 1409,
+    "achievements" : [ ]
+  } ]
+}

@@ -1,1 +1,64 @@
-{"id":4,"university":{"fullName":"Alexandru Ioan Cuza University of Iași","shortName":"UAIC","region":"Europe","appearances":1,"appYears":[],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Clown Fiesta","regionals":["SEERC, 3rd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Paul Diac","altNames":["Diac Paul"],"tcHandle":"diac_paul","tcId":"11790850","tcRating":1444,"cfHandle":"pauldiac","cfRating":1704,"achievements":[]},"contestants":[{"name":"Alexandru Ionita","altNames":[],"tcHandle":"Juve45","tcId":"23304444","tcRating":1200,"cfHandle":"Juve45","cfRating":2195,"achievements":[]},{"name":"Valeriu Motroi","altNames":["Motroi Valeriu"],"tcHandle":"Djok","tcId":"40029156","tcRating":1523,"cfHandle":"Sin","cfRating":1905,"achievements":[{"achievement":"IOI Participant (2015)","priority":11}]},{"name":"Cristian Vintur","altNames":[],"tcRating":-1,"cfHandle":"cristian1997","cfRating":2211,"achievements":[]}]}
+{
+  "id" : 4,
+  "university" : {
+    "fullName" : "American University - Central Asia",
+    "shortName" : "AUCA",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#AUCA",
+    "url" : "http://www.auca.kg",
+    "appearances" : 1,
+    "appYears" : [ 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "AUCA-1",
+    "regionals" : [ "NERC, 43rd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Almaz Bakenov",
+    "altNames" : [ "Bakenov Almaz" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  },
+  "contestants" : [ {
+    "name" : "Amangeldi Zhusubaliev",
+    "altNames" : [ "Zhusubaliev Amangeldi" ],
+    "tcRating" : -1,
+    "cfHandle" : "bktl4ever",
+    "cfRating" : 1977,
+    "ioiID" : "5948",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2017)",
+      "priority" : 21
+    }, {
+      "achievement" : "IOI Participant (2016)",
+      "priority" : 11
+    } ]
+  }, {
+    "name" : "Azamat Kydyraliev",
+    "altNames" : [ "Kydyraliev Azamat" ],
+    "tcRating" : -1,
+    "cfHandle" : "Azamat",
+    "cfRating" : 1849,
+    "achievements" : [ ]
+  }, {
+    "name" : "Azamat Derkenbaev",
+    "altNames" : [ "Derkenbaev Azamat" ],
+    "tcRating" : -1,
+    "cfHandle" : "derkenbaev",
+    "cfRating" : 1850,
+    "achievements" : [ ]
+  } ]
+}

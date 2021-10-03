@@ -1,1 +1,64 @@
-{"id":78,"university":{"fullName":"Sharif University of Technology","shortName":"Sharif UT","region":"Asia West","appearances":20,"appYears":[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":1,"silverYears":[2001],"bronze":0,"bronzeYears":[],"regionalChampionships":1,"regYears":[2018]},"team":{"name":"Kolompeh","regionals":["Tehran, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Hamid Zarrabi-Zadeh","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2018)","priority":1001}]},"contestants":[{"name":"Ali Behjati","altNames":["Ali Bahjati","Behjati Ali"],"tcHandle":"axile","tcId":"23115545","tcRating":1839,"cfHandle":"LiTi","cfRating":2540,"achievements":[{"achievement":"IOI Gold Medalist (2015, 2016)","priority":52},{"achievement":"Bayan Finalist (2015)","priority":26}]},{"name":"SeyedParsa Mirtaheri","altNames":["Seyed Parsa Mirtaheri","Mirtaheri Seyed Parsa"],"tcHandle":"SeyedParsa","tcId":"23069251","tcRating":1437,"cfHandle":"SeyedParsa","cfRating":2341,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001},{"achievement":"IOI Silver Medalist (2016)","priority":31},{"achievement":"Bayan Finalist (2015)","priority":26}]},{"name":"Mohammad Mahdi Shokri","altNames":["Shokri Mohammad Mahdi"],"tcHandle":"M.Mahdi.Shokri","tcId":"23162828","tcRating":1412,"cfHandle":"M.Mahdi","cfRating":2466,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001},{"achievement":"Bayan Finalist (2015)","priority":26}]}]}
+{
+  "id" : 78,
+  "university" : {
+    "fullName" : "Ulsan National Institute of Science and Technology",
+    "shortName" : "UNIST",
+    "region" : "Asia Pacific",
+    "hashTag" : "#UNIST",
+    "url" : "http://www.unist.ac.kr",
+    "appearances" : 2,
+    "appYears" : [ 2018, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Underdog",
+    "regionals" : [ "Seoul, 10th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Hyungon Moon",
+    "altNames" : [ "Moon Hyungon" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  },
+  "contestants" : [ {
+    "name" : "Temirlan Amangeldin",
+    "altNames" : [ "Amangeldin Temirlan" ],
+    "tcRating" : -1,
+    "cfHandle" : "teamskiy",
+    "cfRating" : 1946,
+    "achievements" : [ ]
+  }, {
+    "name" : "Daniyar Abesbek",
+    "altNames" : [ "Abesbek Daniyar" ],
+    "tcRating" : -1,
+    "cfHandle" : "dohchuk",
+    "cfRating" : 1661,
+    "achievements" : [ ]
+  }, {
+    "name" : "Nazarbek Altybay",
+    "altNames" : [ "Altybay Nazarbek" ],
+    "tcRating" : -1,
+    "cfHandle" : "Na2a",
+    "cfRating" : 2256,
+    "ioiID" : "5638",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "IOI Silver Medalist (2015, 2016)",
+      "priority" : 32
+    } ]
+  } ]
+}

@@ -1,1 +1,69 @@
-{"id":42,"university":{"fullName":"Indian Institute of Technology - Patna","shortName":"IIT Patna","region":"Asia West","appearances":2,"appYears":[2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"ButterRoti","regionals":["Gwalior-Pune, 2nd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Arijit Mondal","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2018)","priority":1001}]},"contestants":[{"name":"Shaurya Gupta","altNames":["Gupta Shaurya"],"tcHandle":"Gear4","tcId":"23282189","tcRating":1313,"cfHandle":"Gear4","cfRating":1979,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Prateek Karnal","altNames":["Karnal Prateek"],"tcRating":-1,"cfHandle":"Equinox","cfRating":2160,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Bhavit Sharma","altNames":[],"tcRating":-1,"cfHandle":"I_Love_Equinox","cfRating":1944,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]}]}
+{
+  "id" : 42,
+  "university" : {
+    "fullName" : "International Institute of Information Technology - Hyderabad",
+    "shortName" : "IIIT Hyderabad",
+    "region" : "Asia West",
+    "hashTag" : "#IIITHyderabad",
+    "url" : "http://www.iiit.ac.in",
+    "appearances" : 10,
+    "appYears" : [ 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "tesla_protocol",
+    "regionals" : [ "Kanpur, 4th", "Amritapuri, 6th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Vikram Pudi",
+    "altNames" : [ "Pudi Vikram" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2009-2013)",
+      "priority" : 1005
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Devansh Gautam",
+    "altNames" : [ "Gautam Devansh" ],
+    "tcRating" : -1,
+    "cfHandle" : "devanshg27",
+    "cfRating" : 2128,
+    "achievements" : [ ]
+  }, {
+    "name" : "Arjun Pitchanathan",
+    "altNames" : [ "Pitchanathan Arjun", "Rm09F2Ht0Yye3Sv P", "P Rm09F2Ht0Yye3Sv" ],
+    "tcRating" : -1,
+    "cfHandle" : "Superty",
+    "cfRating" : 2028,
+    "ioiID" : "5608",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2015)",
+      "priority" : 21
+    } ]
+  }, {
+    "name" : "Sai Anurudh Peduri",
+    "altNames" : [ "Peduri Sai Anurudh", "Anurudh Peduri", "Peduri Anurudh" ],
+    "tcHandle" : "anurudhp",
+    "tcId" : "23181388",
+    "tcRating" : 1826,
+    "cfHandle" : "codelegend",
+    "cfRating" : 1921,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    } ]
+  } ]
+}

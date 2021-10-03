@@ -1,1 +1,57 @@
-{"id":72,"university":{"fullName":"Saratov State University","shortName":"Saratov State U","region":"Northern Eurasia","appearances":16,"appYears":[2002,2003,2005,2006,2007,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],"wins":1,"winYears":[2006],"gold":2,"goldYears":[2006,2009],"silver":5,"silverYears":[2002,2003,2007,2010,2011],"bronze":0,"bronzeYears":[],"regionalChampionships":2,"regYears":[2002,2006]},"team":{"name":"Saratov SU 2","regionals":["NEERC, 16th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Aleksandr Frolov","altNames":["Alexandr Frolov","Alex Frolov","Frolov Alex"],"tcHandle":"fcspartakm","tcId":"23309145","tcRating":1389,"cfHandle":"fcspartakm","cfRating":2028,"achievements":[{"achievement":"ICPC Finalist (2015)","priority":1001}]},"contestants":[{"name":"Ivan Androsov","altNames":["Androsov Ivan"],"tcRating":-1,"cfHandle":"BledDest","cfRating":2575,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Adilbek Dalabaev","altNames":["Dalabaev Adilbek"],"tcRating":-1,"cfHandle":"adedalic","cfRating":2319,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001},{"achievement":"VK Cup finalist (2016, 2018)","priority":27}]},{"name":"Roman Glazov","altNames":["Glazov Roman"],"tcRating":-1,"cfHandle":"Roms","cfRating":2121,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001},{"achievement":"VK Cup finalist (2018)","priority":26}]}]}
+{
+  "id" : 72,
+  "university" : {
+    "fullName" : "Syrian Virtual University",
+    "shortName" : "SVU",
+    "region" : "Africa and the Middle East",
+    "hashTag" : "#SVU",
+    "url" : "http://www.svuonline.org",
+    "appearances" : 2,
+    "appYears" : [ 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 1,
+    "regYears" : [ 2019 ]
+  },
+  "team" : {
+    "name" : "Traitors",
+    "regionals" : [ "ACPC, 8th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Wassim Youssef",
+    "altNames" : [ "Youssef Wassim" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  },
+  "contestants" : [ {
+    "name" : "Mhd Adel SaadEddin",
+    "altNames" : [ "SaadEddin Mhd Adel" ],
+    "tcRating" : -1,
+    "cfHandle" : "Adel_SaadEddin",
+    "cfRating" : 1965,
+    "achievements" : [ ]
+  }, {
+    "name" : "Zaher SaadEddin",
+    "altNames" : [ "SaadEddin Zaher" ],
+    "tcRating" : -1,
+    "cfHandle" : "Zaher",
+    "cfRating" : 2111,
+    "achievements" : [ ]
+  }, {
+    "name" : "Salim Shebli",
+    "altNames" : [ "Shebli Salim" ],
+    "tcRating" : -1,
+    "cfHandle" : "Salim_Shebli",
+    "cfRating" : 2018,
+    "achievements" : [ ]
+  } ]
+}
