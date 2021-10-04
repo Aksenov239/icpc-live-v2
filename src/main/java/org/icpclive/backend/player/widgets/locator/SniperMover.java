@@ -14,6 +14,7 @@ import java.util.*;
 public class SniperMover {
 
     public static void main(String[] args) throws Exception {
+        Locale.setDefault(Locale.US);
         Scanner in = new Scanner(System.in);
         while (true) {
             System.out.println("Select sniper (1-3)");
