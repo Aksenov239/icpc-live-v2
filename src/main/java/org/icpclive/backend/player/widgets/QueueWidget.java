@@ -303,6 +303,8 @@ public class QueueWidget extends Widget {
                 RunInfo runInfo = plate.runInfo;
                 if (toRemove == null ||
                         !toRemove.isJudged() && runInfo.isJudged() ||
+                        (toRemove.isJudged() && runInfo.isJudged() &&
+                                toRemove.isAccepted() && !runInfo.isAccepted()) ||
                         runInfo.getLastUpdateTime() < toRemove.getLastUpdateTime()
                 ) {
                     toRemove = runInfo;
