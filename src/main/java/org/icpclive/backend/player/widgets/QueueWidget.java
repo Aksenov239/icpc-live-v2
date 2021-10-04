@@ -298,7 +298,24 @@ public class QueueWidget extends Widget {
         }
 
         while (firstToSolves.size() + queue.size() > MAX_QUEUE_SIZE) {
-            queue.removeFirst();
+            RunInfo toRemove = null;
+            for (RunPlate plate : queue) {
+                RunInfo runInfo = plate.runInfo;
+                if (toRemove == null ||
+                        !toRemove.isJudged() && runInfo.isJudged() ||
+                        runInfo.getLastUpdateTime() < toRemove.getLastUpdateTime()
+                ) {
+                    toRemove = runInfo;
+                }
+            }
+            Deque<RunPlate> newQueue = new ArrayDeque<>();
+            for (RunPlate plate : queue) {
+                if (plate.runInfo != toRemove) {
+                    newQueue.add(plate);
+                }
+            }
+            if (newQueue.size() >= queue.size()) break;
+            queue = newQueue;
         }
 //                    if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
 
