@@ -229,6 +229,7 @@ public class NewTeamWidget extends Widget {
                 PlayerInImage video = null;
                 try {
                     video = new PlayerInImage(width, height, null, TeamUrls.getUrl(team, infoType, id));
+                    video.setVolume(0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
