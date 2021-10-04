@@ -301,13 +301,20 @@ public class QueueWidget extends Widget {
             RunInfo toRemove = null;
             for (RunPlate plate : queue) {
                 RunInfo runInfo = plate.runInfo;
-                if (toRemove == null ||
-                        !toRemove.isJudged() && runInfo.isJudged() ||
-                        (toRemove.isJudged() && runInfo.isJudged() &&
-                                toRemove.isAccepted() && !runInfo.isAccepted()) ||
-                        runInfo.getLastUpdateTime() < toRemove.getLastUpdateTime()
-                ) {
+                if (toRemove == null) {
                     toRemove = runInfo;
+                } else if (toRemove.isJudged() != runInfo.isJudged()) {
+                    if (runInfo.isJudged()) {
+                        toRemove = runInfo;
+                    }
+                } else if (toRemove.isAccepted() != runInfo.isAccepted()) {
+                    if (!runInfo.isAccepted()) {
+                        toRemove = runInfo;
+                    }
+                } else {
+                    if (runInfo.getLastUpdateTime() < toRemove.getLastUpdateTime()) {
+                        toRemove = runInfo;
+                    }
                 }
             }
             Deque<RunPlate> newQueue = new ArrayDeque<>();
