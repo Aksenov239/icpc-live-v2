@@ -2,6 +2,7 @@ package org.icpclive.backend.player.widgets.locator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -29,6 +30,7 @@ public class LocatorCamera {
         }
         lastChanged = curLastChanged;
         Scanner in = new Scanner(coordinatesFile);
+        in.useLocale(Locale.US);
         int n = in.nextInt();
         coordinates = new LocatorPoint[n];
         for (int i = 0; i < n; i++) {
