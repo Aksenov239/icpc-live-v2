@@ -44,9 +44,10 @@
   },
   "contestants" : [ {
     "name" : "Kangmin Tan",
-    "altNames" : [ "Tan Kangmin" ],
+    "altNames" : [ "Tan Kangmin", "Tianlei Wang", "Wang Tianlei" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "deSigntheClutch",
+    "cfRating" : 1988,
     "achievements" : [ ]
   }, {
     "name" : "Tianyi Chen",

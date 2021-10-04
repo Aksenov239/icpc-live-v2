@@ -39,6 +39,9 @@
     }, {
       "achievement" : "ACM ICPC Finalist (2013, 2014)",
       "priority" : 1002
+    }, {
+      "achievement" : "FII Code Finalist (-1, 0)",
+      "priority" : 16
     } ]
   },
   "contestants" : [ {
@@ -49,8 +52,14 @@
     "cfRating" : 2247,
     "ioiID" : "6912",
     "achievements" : [ {
+      "achievement" : "FII Code Winner (-1, 0)",
+      "priority" : 41
+    }, {
       "achievement" : "IOI Silver Medalist (2019)",
       "priority" : 31
+    }, {
+      "achievement" : "Codeflow Finalist (2021)",
+      "priority" : 16
     } ]
   }, {
     "name" : "Lucian Bicsi",

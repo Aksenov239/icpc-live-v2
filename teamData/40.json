@@ -43,13 +43,15 @@
     "name" : "Lucas Rocha Dos Santos",
     "altNames" : [ "Rocha Dos Santos Lucas" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "laron",
+    "cfRating" : 1140,
     "achievements" : [ ]
   }, {
     "name" : "Felipe Pereira Franco",
     "altNames" : [ "Pereira Franco Felipe" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "felipovysk",
+    "cfRating" : 1415,
     "achievements" : [ ]
   } ]
 }

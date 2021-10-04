@@ -39,13 +39,18 @@
     "name" : "Peter Kwak",
     "altNames" : [ "Kwak Peter" ],
     "tcRating" : -1,
-    "cfRating" : -1,
-    "achievements" : [ ]
+    "cfHandle" : "peterr",
+    "cfRating" : 2403,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    } ]
   }, {
     "name" : "Darrin Wiley",
     "altNames" : [ "Wiley Darrin" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "TheDarBear",
+    "cfRating" : 1916,
     "achievements" : [ ]
   }, {
     "name" : "An Nguyen",

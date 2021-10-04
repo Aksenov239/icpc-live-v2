@@ -40,6 +40,9 @@
       "achievement" : "ACM ICPC Finalist (2012)",
       "priority" : 1001
     }, {
+      "achievement" : "GCJ 3rd (2018)",
+      "priority" : 101
+    }, {
       "achievement" : "GCJ Finalist (2011)",
       "priority" : 51
     }, {
@@ -69,22 +72,43 @@
       "achievement" : "World Finals coach (2018)",
       "priority" : 1001
     }, {
+      "achievement" : "TCO Finalist (2018-2020)",
+      "priority" : 78
+    }, {
+      "achievement" : "SnackDown Winner (2017)",
+      "priority" : 61
+    }, {
+      "achievement" : "Yandex.Algorithm 2nd (2018)",
+      "priority" : 56
+    }, {
+      "achievement" : "SnackDown 2nd (2018)",
+      "priority" : 56
+    }, {
       "achievement" : "VK Cup 2nd (2016)",
       "priority" : 56
     }, {
-      "achievement" : "TCO Semifinalist (2016)",
+      "achievement" : "TCO Semifinalist (2016, 2017)",
+      "priority" : 52
+    }, {
+      "achievement" : "GCJ Finalist (2021)",
       "priority" : 51
     }, {
-      "achievement" : "RCC Finalist (2015, 2016)",
+      "achievement" : "AtCoder 3rd (2017)",
+      "priority" : 51
+    }, {
+      "achievement" : "FBHC Finalist (2017-2020)",
+      "priority" : 29
+    }, {
+      "achievement" : "RCC Finalist (2015-2017)",
+      "priority" : 28
+    }, {
+      "achievement" : "Yandex.Algorithm Finalist (2016, 2017)",
       "priority" : 27
     }, {
       "achievement" : "VK Cup finalist (2015, 2020)",
       "priority" : 27
     }, {
       "achievement" : "Yandex.Algorithm Finalsit (2015)",
-      "priority" : 26
-    }, {
-      "achievement" : "Yandex.Algorithm Finalist (2016)",
       "priority" : 26
     }, {
       "achievement" : "AtCoder Grand Finalist (2016)",
@@ -113,28 +137,34 @@
       "achievement" : "ACM ICPC bronze medal (2016)",
       "priority" : 4001
     }, {
+      "achievement" : "TCO Finalist (2020)",
+      "priority" : 76
+    }, {
+      "achievement" : "GCJ Finalist (2016, 2017, 2020)",
+      "priority" : 53
+    }, {
       "achievement" : "IOI Gold Medalist (2013, 2014)",
       "priority" : 52
-    }, {
-      "achievement" : "GCJ Finalist (2016)",
-      "priority" : 51
     }, {
       "achievement" : "RCC 3rd (2016)",
       "priority" : 51
     }, {
+      "achievement" : "Yandex.Algorithm Finalist (2016-2018)",
+      "priority" : 28
+    }, {
       "achievement" : "VK Cup finalist (2015, 2016, 2020)",
       "priority" : 28
     }, {
-      "achievement" : "FBHC Finalist (2016)",
-      "priority" : 26
+      "achievement" : "FBHC Finalist (2016, 2017)",
+      "priority" : 27
     }, {
       "achievement" : "RCC Finalist (2015)",
       "priority" : 26
     }, {
-      "achievement" : "Yandex.Algorithm Finalist (2016)",
+      "achievement" : "AtCoder Grand Finalist (2016)",
       "priority" : 26
     }, {
-      "achievement" : "AtCoder Grand Finalist (2016)",
+      "achievement" : "DGCJ Finalist (2017)",
       "priority" : 26
     } ]
   } ]

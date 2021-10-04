@@ -34,9 +34,12 @@
   },
   "contestants" : [ {
     "name" : "Paulo Augusto Gomes Kataki",
-    "altNames" : [ "Gomes Kataki Paulo Augusto" ],
-    "tcRating" : -1,
-    "cfRating" : -1,
+    "altNames" : [ "Gomes Kataki Paulo Augusto", "Paulo Augusto Kataki", "Kataki Paulo Augusto" ],
+    "tcHandle" : "kataki",
+    "tcId" : "40186248",
+    "tcRating" : 785,
+    "cfHandle" : "kataki",
+    "cfRating" : 1501,
     "achievements" : [ ]
   }, {
     "name" : "Rafael De Castro Silva",
@@ -51,7 +54,8 @@
     "name" : "Misael Moraes",
     "altNames" : [ "Moraes Misael" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "misael",
+    "cfRating" : 2265,
     "achievements" : [ ]
   } ]
 }
