@@ -28,7 +28,7 @@ public class StreamView implements MJpegViewer, MouseListener, KeyListener {
     private static final double COMPENSATION_PAN = 0;
     private static final double COMPENSATION_X = 1;
     private static final double COMPENSATION_Y = 1;
-    public static String CAMERA_IP = "10.250.25.11";
+    public static String CAMERA_IP = "10.45.0.1";
     private Image image;
     private Image bg;
     private String url;
@@ -52,12 +52,12 @@ public class StreamView implements MJpegViewer, MouseListener, KeyListener {
 
     private void run() {
         try {
-            Scanner in = new Scanner(new File("output.txt"));
-            int n = in.nextInt();
-            for (int i = 0; i < n; i++) {
-                points.add(new Point(in.nextDouble(), in.nextDouble(), in.nextDouble()));
-            }
-            in.close();
+//            Scanner in = new Scanner(new File("output.txt"));
+//            int n = in.nextInt();
+//            for (int i = 0; i < n; i++) {
+//                points.add(new Point(in.nextDouble(), in.nextDouble(), in.nextDouble()));
+//            }
+//            in.close();
 
             image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 //            updateState();

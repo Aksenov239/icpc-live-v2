@@ -39,7 +39,8 @@
     "name" : "Serhii Horielyshev",
     "altNames" : [ "Horielyshev Serhii" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "SeHor",
+    "cfRating" : 1725,
     "achievements" : [ {
       "achievement" : "ACM ICPC Finalist (2019)",
       "priority" : 1001

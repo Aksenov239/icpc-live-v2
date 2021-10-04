@@ -53,8 +53,17 @@
     "cfRating" : 3672,
     "ioiID" : "6716",
     "achievements" : [ {
+      "achievement" : "FBHC 2nd (2020)",
+      "priority" : 56
+    }, {
       "achievement" : "IOI Gold Medalist (2018, 2019)",
       "priority" : 52
+    }, {
+      "achievement" : "GCJ Finalist (2020)",
+      "priority" : 51
+    }, {
+      "achievement" : "TCO Semifinalist (2020)",
+      "priority" : 51
     } ]
   }, {
     "name" : "Zhezheng Luo",

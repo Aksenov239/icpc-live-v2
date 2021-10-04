@@ -49,7 +49,8 @@
     "name" : "Loc Bui",
     "altNames" : [ "Bui Loc" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "heklo",
+    "cfRating" : 1944,
     "achievements" : [ ]
   }, {
     "name" : "Vladimir Maksimovski",

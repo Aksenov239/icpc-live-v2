@@ -28,13 +28,18 @@
   "coach" : {
     "name" : "Dušan Zdravković",
     "altNames" : [ "Dusan Zdravković", "Zdravković Dušan", "Zdravković Dusan", "Dusan Zdravkovic", "Zdravkovic Dusan" ],
-    "tcRating" : -1,
+    "tcHandle" : "DuXSerbia",
+    "tcId" : "22768032",
+    "tcRating" : 1519,
     "cfHandle" : "DuX",
     "cfRating" : 2118,
     "ioiID" : "665",
     "achievements" : [ {
       "achievement" : "IOI Bronze Medalist (2010, 2011)",
       "priority" : 22
+    }, {
+      "achievement" : "Codeflow Finalist (2021)",
+      "priority" : 16
     } ]
   },
   "contestants" : [ {

@@ -42,15 +42,19 @@
     "achievements" : [ ]
   }, {
     "name" : "Ivan Dario Chacon Uribe",
-    "altNames" : [ "Chacon Uribe Ivan Dario" ],
+    "altNames" : [ "Chacon Uribe Ivan Dario", "Ivan Chacon", "Chacon Ivan" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "IvanD94",
+    "cfRating" : 1379,
     "achievements" : [ ]
   }, {
     "name" : "Javier Andres Torres Reyes",
-    "altNames" : [ "Torres Reyes Javier Andres" ],
-    "tcRating" : -1,
-    "cfRating" : -1,
+    "altNames" : [ "Torres Reyes Javier Andres", "Javier Torres", "Torres Javier" ],
+    "tcHandle" : "Javtor",
+    "tcId" : "40993632",
+    "tcRating" : 1460,
+    "cfHandle" : "Javtor",
+    "cfRating" : 1670,
     "achievements" : [ ]
   } ]
 }

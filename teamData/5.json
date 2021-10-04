@@ -40,9 +40,10 @@
   },
   "contestants" : [ {
     "name" : "Karim Hamadeh",
-    "altNames" : [ "Hamadeh Karim" ],
+    "altNames" : [ "Hamadeh Karim", "Chaos Is A Laddah" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "petyr_baelish",
+    "cfRating" : 1769,
     "achievements" : [ ]
   }, {
     "name" : "Hadi Kotaich",

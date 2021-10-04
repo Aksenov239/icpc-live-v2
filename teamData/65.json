@@ -54,12 +54,20 @@
   }, {
     "name" : "Sangsoo Park",
     "altNames" : [ "Park Sangsoo" ],
-    "tcRating" : -1,
+    "tcHandle" : "cki86201",
+    "tcId" : "23309657",
+    "tcRating" : 2676,
     "cfHandle" : "molamola.",
     "cfRating" : 3076,
     "achievements" : [ {
       "achievement" : "ACM ICPC Finalist (2018)",
       "priority" : 1001
+    }, {
+      "achievement" : "GCJ Finalist (2019, 2021)",
+      "priority" : 52
+    }, {
+      "achievement" : "FBHC Finalist (2019, 2020)",
+      "priority" : 27
     } ]
   }, {
     "name" : "Sunghyeon Jo",
@@ -72,11 +80,17 @@
     "twitterHandle" : "kaizero_ainta",
     "ioiID" : "5132",
     "achievements" : [ {
+      "achievement" : "GCJ Finalist (2018-2021)",
+      "priority" : 54
+    }, {
       "achievement" : "IOI Gold Medalist (2015)",
       "priority" : 51
     }, {
       "achievement" : "IOI Silver Medalist (2014)",
       "priority" : 31
+    }, {
+      "achievement" : "FBHC Finalist (2019)",
+      "priority" : 26
     }, {
       "achievement" : "RCC Finalist (2016)",
       "priority" : 26
