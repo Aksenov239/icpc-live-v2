@@ -101,7 +101,7 @@ public class CFApiCentral {
                 e.printStackTrace();
             }
             try {
-                Thread.sleep(10000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -114,7 +114,7 @@ public class CFApiCentral {
     }
 
     public static void main(String[] args) {
-        CFApiCentral cfApiCentral = new CFApiCentral(1524);
+        CFApiCentral cfApiCentral = new CFApiCentral(1577);
         cfApiCentral.getStatus();
         cfApiCentral.getStandings();
     }

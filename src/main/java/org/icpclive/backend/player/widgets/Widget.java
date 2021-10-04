@@ -15,6 +15,7 @@ import org.icpclive.events.TeamInfo;
 import org.icpclive.events.ScoreTeamInfo;
 import org.icpclive.events.WF.json.WFTeamInfo;
 import org.icpclive.events.codeforces.CFTeamInfo;
+import org.icpclive.events.codeforces.marathon.MarathonCFTeamInfo;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -446,7 +447,9 @@ public abstract class Widget {
     }
 
     protected PlateStyle getTeamRankColor(TeamInfo team) {
-        if (team instanceof IOIPCMSTeamInfo) {
+        if (team instanceof MarathonCFTeamInfo) {
+            return TeamPaneStylesheet.none;
+        } else if (team instanceof IOIPCMSTeamInfo) {
             IOIPCMSTeamInfo ioipcmsTeamInfo = (IOIPCMSTeamInfo) team;
             PlateStyle color = TeamPaneStylesheet.none;
             if (ioipcmsTeamInfo.getScore() >= 400 &&

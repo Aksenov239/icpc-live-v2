@@ -39,10 +39,11 @@ public class MarathonCFTeamInfo extends CFTeamInfo implements ScoreTeamInfo {
         synchronized (runs) {
             if (runs.isEmpty()) return "";
             String finalStatus = runs.get(runs.size() - 1).getResult();
+            double score = getProblemScore(problem);
             if (finalStatus.isEmpty()) {
-                return "?";
+                return "? " + (score != 0 ? String.format(Locale.US, "%.5f", score) : "");
             }
-            return String.format(Locale.US, "%.5f", getProblemScore(problem));
+            return String.format(Locale.US, "%.5f", score);
         }
     }
 }

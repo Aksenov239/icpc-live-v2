@@ -5,4 +5,5 @@ package org.icpclive.events.codeforces.api.data;
  */
 public class CFMember {
     public String handle;
+    public String name;
 }

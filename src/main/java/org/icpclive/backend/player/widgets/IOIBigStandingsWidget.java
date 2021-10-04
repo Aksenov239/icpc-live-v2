@@ -66,7 +66,8 @@ public class IOIBigStandingsWidget extends Widget {
         super(updateWait);
         last = System.currentTimeMillis();
 
-        this.baseX = baseX;
+        this.baseX = baseX + 4 * plateHeight;
+        width -= 4 * plateHeight;
         this.baseY = baseY;
         this.width = width;
         this.plateHeight = plateHeight;
@@ -78,7 +79,7 @@ public class IOIBigStandingsWidget extends Widget {
             setVisible(true);
         }
 
-        nameWidth = (int) Math.round(NAME_WIDTH * plateHeight);
+        nameWidth = (int) Math.round((NAME_WIDTH + 3) * plateHeight);
         rankWidth = (int) Math.round(RANK_WIDTH * plateHeight);
         totalWidth = (int) Math.round(TOTAL_WIDTH * plateHeight);
 
@@ -329,7 +330,7 @@ public class IOIBigStandingsWidget extends Widget {
                                     status.startsWith(".") ? BigStandingsStylesheet.noProblem :
                                             PlateStyle.mix(BigStandingsStylesheet.ioiFull,
                                                     BigStandingsStylesheet.ioiZero,
-                                                    1 - (1 - score / maxScore) * (1 - score / maxScore));
+                                                    Math.pow(score / maxScore, 7));
             if (team.isReallyUnknown(i)) {
                 statusColor = BigStandingsStylesheet.udProblem;
             }

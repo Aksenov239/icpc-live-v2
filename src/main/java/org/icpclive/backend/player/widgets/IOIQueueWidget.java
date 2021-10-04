@@ -16,8 +16,8 @@ public class IOIQueueWidget extends Widget {
 
     private static final double V = 0.005;
 
-    private static final long WAIT_TIME = 600000;
-    private static final int MAX_QUEUE_SIZE = 15;
+    private static final long WAIT_TIME = 6000000000L;
+    private static final int MAX_QUEUE_SIZE = 23;
     private static final double DIFF_WIDTH = 2.8;
     protected static final double STATUS_WIDTH = 2.8;
 
@@ -73,7 +73,7 @@ public class IOIQueueWidget extends Widget {
         spaceX = (int) Math.round(plateHeight * SPACE_X);
         spaceY = (int) Math.round(plateHeight * SPACE_Y);
 
-        nameWidth = (int) Math.round((NAME_WIDTH - 1) * plateHeight);
+        nameWidth = (int) Math.round((NAME_WIDTH + 3) * plateHeight);
         rankWidth = (int) Math.round(RANK_WIDTH * plateHeight);
 //        problemWidth = (int) Math.round(PROBLEM_WIDTH * plateHeight);
         problemWidth = 0;
@@ -175,6 +175,23 @@ public class IOIQueueWidget extends Widget {
             return String.valueOf(Math.round(Math.floor(score)));
         } else {
             return String.format(Locale.US, "%." + roundTo + "f", score);
+        }
+    }
+
+    private double getScoreExcept(TeamInfo team, RunInfo run) {
+        List<? extends RunInfo> runs = team.getRuns()[run.getProblemId()];
+        synchronized (runs) {
+            if (runs.size() == 0) return 0;
+            double maxBefore = 0;
+
+            for (RunInfo pRun: runs) {
+                if (pRun == run) {
+                    break;
+                }
+                maxBefore = Math.max(maxBefore, ((ScoreRunInfo) pRun).getTotalScore());
+            }
+
+            return maxBefore;
         }
     }
 
@@ -311,6 +328,9 @@ public class IOIQueueWidget extends Widget {
                 continue;
             }
             if (breaking != null && breaking.runInfo == r) {
+                continue;
+            }
+            if (((ScoreRunInfo)r).getScore() <= getScoreExcept(Preparation.eventsLoader.getContestData().getParticipant(r.getTeamId()), r)) {
                 continue;
             }
 

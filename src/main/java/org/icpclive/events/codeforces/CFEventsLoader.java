@@ -42,15 +42,16 @@ public class CFEventsLoader extends EventsLoader {
         while (!interrupted) {
             try {
                 while (true) {
-                    Thread.sleep(10000);
                     CFStandings standings = central.getStandings();
                     if (standings == null) {
+                        Thread.sleep(5000);
                         continue;
                     }
                     List<CFSubmission> submissions = standings.contest.phase == CFContest.CFContestPhase.BEFORE ? null :
                             central.getStatus();
                     System.err.println("Data received");
                     contestInfo.update(standings, submissions);
+                    Thread.sleep(2000);
                 }
             } catch (InterruptedException e) {
                 log.error("error", e);

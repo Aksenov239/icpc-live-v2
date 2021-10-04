@@ -1,5 +1,8 @@
 package org.icpclive.events.codeforces.marathon;
 
+import org.icpclive.datapassing.StandingsData;
+import org.icpclive.events.ContestInfo;
+import org.icpclive.events.TeamInfo;
 import org.icpclive.events.codeforces.CFContestInfo;
 import org.icpclive.events.codeforces.CFRunInfo;
 import org.icpclive.events.codeforces.CFTeamInfo;
@@ -13,6 +16,8 @@ public class MarathonCFContestInfo extends CFContestInfo {
 
     public MarathonCFContestInfo() {
         super();
+        ContestInfo.GROUPS.add("Coaches");
+        ContestInfo.GROUPS.add("Contestants");
     }
 
     protected CFTeamInfo createTeamInfo(CFRanklistRow row) {

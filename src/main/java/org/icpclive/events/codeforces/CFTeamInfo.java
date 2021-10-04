@@ -6,6 +6,7 @@ import org.icpclive.events.codeforces.api.data.CFProblemResult;
 import org.icpclive.events.codeforces.api.data.CFRanklistRow;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class CFTeamInfo implements TeamInfo {
 
     @Override
     public String getShortName() {
-        return getName();
+        return row.party.members.get(0).name;
     }
 
     @Override
@@ -50,7 +51,14 @@ public class CFTeamInfo implements TeamInfo {
 
     @Override
     public Set<String> getGroups() {
-        return Collections.emptySet();
+        Set<String> ret = new HashSet<>();
+        if (getName().contains("=c")) {
+            ret.add("Coaches");
+        }
+        if (getName().contains("=p")) {
+            ret.add("Contestants");
+        }
+        return ret;
     }
 
     @Override
