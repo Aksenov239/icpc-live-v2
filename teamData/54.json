@@ -54,9 +54,10 @@
     "achievements" : [ ]
   }, {
     "name" : "Andrey Borzenkov",
-    "altNames" : [ "Borzenkov Andrey" ],
+    "altNames" : [ "Borzenkov Andrey", "Andey Borzenkov", "Borzenkov Andey" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "armoking",
+    "cfRating" : 2119,
     "achievements" : [ ]
   } ]
 }

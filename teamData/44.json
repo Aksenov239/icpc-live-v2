@@ -57,9 +57,10 @@
     "achievements" : [ ]
   }, {
     "name" : "Aleksandr Yegorov",
-    "altNames" : [ "Yegorov Aleksandr" ],
+    "altNames" : [ "Yegorov Aleksandr", "Alexandr Egorov", "Aleksandr Egorov", "Egorov Alexandr" ],
     "tcRating" : -1,
-    "cfRating" : -1,
+    "cfHandle" : "Aleksandr_Stark",
+    "cfRating" : 1665,
     "achievements" : [ ]
   } ]
 }

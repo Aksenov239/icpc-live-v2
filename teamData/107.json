@@ -67,8 +67,14 @@
       "achievement" : "IOI Silver Medalist (2013, 2014)",
       "priority" : 32
     }, {
+      "achievement" : "Yandex.Algorithm Finalist (2017, 2018)",
+      "priority" : 27
+    }, {
       "achievement" : "VK Cup finalist (2016, 2020)",
       "priority" : 27
+    }, {
+      "achievement" : "FBHC Finalist (2020)",
+      "priority" : 26
     }, {
       "achievement" : "MemSQL Start[c]UP finalist (2014)",
       "priority" : 6
