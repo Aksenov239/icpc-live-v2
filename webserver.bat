@@ -1,1 +1,1 @@
-mvn package jetty:run
+mvn -DoutputDirectory=targetweb package jetty:run
