@@ -1,1 +1,60 @@
-{"id":100,"university":{"fullName":"Universidade de São Paulo - Campus de São Carlos","shortName":"USP - São Carlos","region":"Latin America","appearances":4,"appYears":[2014,2016,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"time do dia 10","regionals":["Brazil, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Danilo Tedeschi","altNames":["Danilo Françoso Tedeschi","Danilo Francoso Tedeschi","Françoso Tedeschi Danilo","Francoso Tedeschi Danilo"],"tcHandle":"danft","tcId":"40097463","tcRating":1207,"cfHandle":"danft","cfRating":1985,"achievements":[{"achievement":"World Finals coach (2018)","priority":1001},{"achievement":"ICPC Finalist (2016)","priority":1001}]},"contestants":[{"name":"Lucas de Oliveira Pacheco","altNames":[],"tcRating":-1,"cfHandle":"LoppA","cfRating":1960,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Cezar Guimarães","altNames":["Cezar Guimaraes","Cezar Filho","Filho Cezar"],"tcRating":-1,"cfHandle":"nonsequitur","cfRating":2241,"achievements":[]},{"name":"Samuel Santos","altNames":[],"tcRating":-1,"cfHandle":"samuelfgs","cfRating":2181,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]}]}
+{
+  "id" : 100,
+  "university" : {
+    "fullName" : "University of Aizu",
+    "shortName" : "U Aizu",
+    "region" : "Asia Pacific",
+    "hashTag" : "#UAizu",
+    "url" : "http://www.u-aizu.ac.jp",
+    "appearances" : 4,
+    "appYears" : [ 2009, 2016, 2017, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "UKUNICHIA",
+    "regionals" : [ "Kuala Lumpur, 2nd", "Yokohama, 4th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Yutaka Watanobe",
+    "altNames" : [ "Watanobe Yutaka" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2009, 2016, 2017)",
+      "priority" : 1003
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Hiroki Ohashi",
+    "altNames" : [ "Ohashi Hiroki" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  }, {
+    "name" : "Hisato Matsukawa",
+    "altNames" : [ "Matsukawa Hisato" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  }, {
+    "name" : "Aki Nakamura",
+    "altNames" : [ "Nakamura Aki" ],
+    "tcHandle" : "beet",
+    "tcId" : "40443509",
+    "tcRating" : 2206,
+    "cfHandle" : "beet ",
+    "cfRating" : 2441,
+    "achievements" : [ ]
+  } ]
+}

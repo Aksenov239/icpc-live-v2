@@ -3,6 +3,9 @@ package org.icpclive.events.WF;
 import org.icpclive.backend.Preparation;
 import org.icpclive.events.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by aksenov on 16.04.2015.
  */
@@ -22,6 +25,8 @@ public class WFRunInfo implements RunInfo {
     public int teamId;
     public SmallTeamInfo teamInfoBefore;
     public TeamInfo team;
+
+    private Set<Integer> passedTests = new HashSet<>();
 
     public WFRunInfo() {
     }
@@ -43,7 +48,8 @@ public class WFRunInfo implements RunInfo {
         if (total == 0) {
             total = test.total;
         }
-        passed = test.id;
+        passedTests.add(test.id);
+        passed = passedTests.size();
         lastUpdateTime = Math.max(lastUpdateTime, test.time);
     }
 

@@ -1,1 +1,128 @@
-{"id":69,"university":{"fullName":"Northern (Arctic) Federal University","shortName":"NArFU","region":"Northern Eurasia","appearances":2,"appYears":[2016],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"NArFU","regionals":["NEERC, 27th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Kirill Butin","altNames":[],"tcHandle":"KirillB","tcId":"22679165","tcRating":1524,"cfHandle":"KirillB","cfRating":1917,"achievements":[{"achievement":"World Finals coach (2016)","priority":1001}]},"contestants":[{"name":"Pavel Asyutchenko","altNames":["Asyutchenko Pavel"],"tcRating":-1,"cfHandle":"Svenny","cfRating":1918,"achievements":[]},{"name":"Denis Diachkov","altNames":["Denis Dyachkov","Dyachkov Denis"],"tcRating":-1,"cfHandle":"Artichoke","cfRating":1659,"achievements":[]},{"name":"Timur Guriev","altNames":["Timur Gurjev","Gurjev Timur"],"tcRating":-1,"cfHandle":"ijnhtrgdew","cfRating":1992,"achievements":[]}]}
+{
+  "id" : 69,
+  "university" : {
+    "fullName" : "St. Petersburg ITMO University",
+    "shortName" : "SPb ITMO",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#ITMO",
+    "url" : "http://en.ifmo.ru",
+    "appearances" : 25,
+    "appYears" : [ 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 7,
+    "winYears" : [ 2004, 2008, 2009, 2012, 2013, 2015, 2017 ],
+    "gold" : 12,
+    "goldYears" : [ 1999, 2001, 2003, 2004, 2005, 2007, 2008, 2009, 2012, 2013, 2015, 2017 ],
+    "silver" : 2,
+    "silverYears" : [ 2000, 2016 ],
+    "bronze" : 2,
+    "bronzeYears" : [ 2014, 2018 ],
+    "regionalChampionships" : 7,
+    "regYears" : [ 2004, 2008, 2009, 2012, 2013, 2015, 2017 ]
+  },
+  "team" : {
+    "name" : "ITMO U 1 Standard deviation",
+    "regionals" : [ "NERC, 4th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Andrey Stankevich",
+    "altNames" : [ "Stankevich Andrey", "Andrew Stankevich", "Stankevich Andrew" ],
+    "tcHandle" : "andrewzta",
+    "tcId" : "11829284",
+    "tcRating" : 2429,
+    "cfHandle" : "andrewzta",
+    "cfRating" : 2617,
+    "twitterHandle" : "andrewzta",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC gold medal (2001)",
+      "priority" : 8001
+    }, {
+      "achievement" : "ACM ICPC silver medal (2000)",
+      "priority" : 6001
+    }, {
+      "achievement" : "ACM ICPC win as coach (2004, 2008, 2009, 2012, 2013, 2015, 2017)",
+      "priority" : 5009
+    }, {
+      "achievement" : "ACM ICPC gold medal as coach (2003, 2005, 2007)",
+      "priority" : 4006
+    }, {
+      "achievement" : "ACM ICPC silver medal as coach (2016)",
+      "priority" : 3001
+    }, {
+      "achievement" : "ACM ICPC bronze medal as coach (2014)",
+      "priority" : 2001
+    }, {
+      "achievement" : "World Finals coach (2002, 2006, 2010, 2011, 2018, 2019)",
+      "priority" : 1008
+    }, {
+      "achievement" : "GCJ 3rd (2006)",
+      "priority" : 101
+    }, {
+      "achievement" : "TCO Finalist (2006, 2008, 2012)",
+      "priority" : 78
+    }, {
+      "achievement" : "TCCC Finalist (2006)",
+      "priority" : 76
+    }, {
+      "achievement" : "TCO Semifinalist (2007, 2009, 2013)",
+      "priority" : 53
+    }, {
+      "achievement" : "GCJ Finalist (2005, 2008)",
+      "priority" : 52
+    }, {
+      "achievement" : "FBHC Finalist (2011, 2014)",
+      "priority" : 27
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Dmitrii Sayutin",
+    "altNames" : [ "Dmitriy Sayutin", "Dmitriyi Sayutin", "Sayutin Dmitrii" ],
+    "tcHandle" : "cdkrot",
+    "tcId" : "40248141",
+    "tcRating" : 1757,
+    "cfHandle" : "cdkrot",
+    "cfRating" : 2670,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "VK Cup finalist (2020)",
+      "priority" : 26
+    } ]
+  }, {
+    "name" : "Arsenii Kirillov",
+    "altNames" : [ "Kirillov Arsenii" ],
+    "tcRating" : -1,
+    "cfHandle" : "kraborak",
+    "cfRating" : 2550,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2018)",
+      "priority" : 26
+    } ]
+  }, {
+    "name" : "Nikolay Budin",
+    "altNames" : [ "Budin Nikolay" ],
+    "tcHandle" : "BudAlNik",
+    "tcId" : "23282609",
+    "tcRating" : 2274,
+    "cfHandle" : "Nebuchadnezzar",
+    "cfRating" : 2833,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2017, 2020)",
+      "priority" : 27
+    }, {
+      "achievement" : "FBHC Finalist (2020)",
+      "priority" : 26
+    }, {
+      "achievement" : "Yandex.Algorithm Finalist (2018)",
+      "priority" : 26
+    }, {
+      "achievement" : "CROC Championship finalist (2016)",
+      "priority" : 16
+    }, {
+      "achievement" : "Dasha Code finalist (2019)",
+      "priority" : 6
+    } ]
+  } ]
+}

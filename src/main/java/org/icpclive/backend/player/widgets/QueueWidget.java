@@ -20,7 +20,7 @@ public class QueueWidget extends Widget {
 
     private static final double V = 0.005;
 
-    private static final long WAIT_TIME = 60000;
+    private static final long WAIT_TIME = 300000;
     private static final long FIRST_TO_SOLVE_WAIT_TIME = 120000;
     private static final int MAX_QUEUE_SIZE = 15;
 
@@ -302,7 +302,33 @@ public class QueueWidget extends Widget {
         }
 
         while (firstToSolves.size() + queue.size() > MAX_QUEUE_SIZE) {
-            queue.removeFirst();
+            RunInfo toRemove = null;
+            for (RunPlate plate : queue) {
+                RunInfo runInfo = plate.runInfo;
+                if (toRemove == null) {
+                    toRemove = runInfo;
+                } else if (toRemove.isJudged() != runInfo.isJudged()) {
+                    if (runInfo.isJudged()) {
+                        toRemove = runInfo;
+                    }
+                } else if (toRemove.isAccepted() != runInfo.isAccepted()) {
+                    if (!runInfo.isAccepted()) {
+                        toRemove = runInfo;
+                    }
+                } else {
+                    if (runInfo.getLastUpdateTime() < toRemove.getLastUpdateTime()) {
+                        toRemove = runInfo;
+                    }
+                }
+            }
+            Deque<RunPlate> newQueue = new ArrayDeque<>();
+            for (RunPlate plate : queue) {
+                if (plate.runInfo != toRemove) {
+                    newQueue.add(plate);
+                }
+            }
+            if (newQueue.size() >= queue.size()) break;
+            queue = newQueue;
         }
 //                    if ((r.isJudged() || r.getTime() > ContestInfo.FREEZE_TIME) && extra > 0) {
 

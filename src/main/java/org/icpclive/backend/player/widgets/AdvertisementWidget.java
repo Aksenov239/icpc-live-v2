@@ -26,8 +26,11 @@ public class AdvertisementWidget extends CaptionWidget {
             super.setVisible(false);
         } else {
             super.setVisible(data.advertisementData.isVisible);
-            if (super.isVisible())
-                super.setCaption(data.advertisementData.advertisement.getAdvertisement(), null);
+            if (super.isVisible()) {
+                String s = data.advertisementData.advertisement.getAdvertisement();
+                s = s.replace("\\n", "\n");
+                super.setCaption(s, null);
+            }
         }
 
         lastUpdate = System.currentTimeMillis();

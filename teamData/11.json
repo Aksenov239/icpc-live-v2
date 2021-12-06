@@ -1,1 +1,87 @@
-{"id":11,"university":{"fullName":"Belarusian State University","shortName":"Belarusian SU","region":"Northern Eurasia","appearances":18,"appYears":[1999,2000,2002,2003,2004,2005,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2018],"wins":0,"winYears":[],"gold":1,"goldYears":[2004],"silver":2,"silverYears":[2012,2013],"bronze":1,"bronzeYears":[2008],"regionalChampionships":0,"regYears":[]},"team":{"name":"BelarusianSU 1","regionals":["NEERC, 11th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Vladimir Kotov","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"ICPC gold medal as coach (2004)","priority":4001},{"achievement":"ICPC silver medal as coach (2012, 2013)","priority":3002},{"achievement":"ICPC bronze medal as coach (2008)","priority":2001},{"achievement":"World Finals coach (1999, 2000, 2002, 2003, 2005, 2007, 2009-2011, 2014-2016, 2018)","priority":1013}]},"contestants":[{"name":"Dzianis Kim","altNames":["Kim Dzianis"],"tcHandle":"kimden","tcId":"40585912","tcRating":1525,"cfHandle":"kimden","cfRating":2336,"achievements":[]},{"name":"Ivan Lukyanov","altNames":["Lukyanov Ivan"],"tcRating":-1,"cfHandle":"greencis","cfRating":2193,"achievements":[{"achievement":"VK Cup finalist (2017)","priority":26}]},{"name":"Aliaksei Rak","altNames":["Alexey Rak","Rak Alexey"],"tcHandle":"Kventinel","tcId":"40503859","tcRating":1719,"cfHandle":"Lollipop","cfRating":2203,"achievements":[]}]}
+{
+  "id" : 11,
+  "university" : {
+    "fullName" : "Belarusian State University of Informatics and Radioelectronics",
+    "shortName" : "BSUIR",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#BSUIR",
+    "url" : "http://www.bsuir.by",
+    "appearances" : 6,
+    "appYears" : [ 2012, 2015, 2016, 2017, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2012 ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Belarusian SUIR #2",
+    "regionals" : [ "NERC, 30th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Aliaksei Ropan",
+    "altNames" : [ "Ropan Aliaksei", "Alexey Ropan", "Aleksey Ropan", "Ropan Aleksey" ],
+    "tcHandle" : "aropan",
+    "tcId" : "22710905",
+    "tcRating" : 2171,
+    "cfHandle" : "aropan",
+    "cfRating" : 2409,
+    "twitterHandle" : "aropan",
+    "ioiID" : "145",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC bronze medal (2012)",
+      "priority" : 4001
+    }, {
+      "achievement" : "World Finals coach (2015-2017, 2019)",
+      "priority" : 1004
+    }, {
+      "achievement" : "TCO Semifinalist (2013)",
+      "priority" : 51
+    }, {
+      "achievement" : "RCC Finalist (2012, 2015, 2017)",
+      "priority" : 28
+    }, {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    }, {
+      "achievement" : "IOI Bronze Medalist (2008)",
+      "priority" : 21
+    }, {
+      "achievement" : "CROC Championship finalist (2013)",
+      "priority" : 16
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Uladzislau Vishneuski",
+    "altNames" : [ "Vishneuski Uladzislau", "Vlad Vishnevsky", "Vishnevsky Vlad" ],
+    "tcRating" : -1,
+    "cfHandle" : "Vladik",
+    "cfRating" : 2193,
+    "achievements" : [ {
+      "achievement" : "Dasha Code finalist (2019)",
+      "priority" : 6
+    } ]
+  }, {
+    "name" : "Ivan Udovin",
+    "altNames" : [ "Udovin Ivan" ],
+    "tcRating" : -1,
+    "cfHandle" : "wilcot",
+    "cfRating" : 2131,
+    "twitterHandle" : "iudovin",
+    "achievements" : [ ]
+  }, {
+    "name" : "Valery Shavel",
+    "altNames" : [ "Shavel Valery" ],
+    "tcRating" : -1,
+    "cfHandle" : "Qwertenx",
+    "cfRating" : 2200,
+    "achievements" : [ ]
+  } ]
+}

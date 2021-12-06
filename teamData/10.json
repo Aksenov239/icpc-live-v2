@@ -1,1 +1,100 @@
-{"id":10,"university":{"fullName":"Beijing Normal University","shortName":"BNU","region":"Asia East","appearances":5,"appYears":[2014,2015,2017,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Faraway","regionals":["Xuzhou, 8th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Su Feng","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2014, 2015, 2017, 2018)","priority":1004}]},"contestants":[{"name":"Jianyang Gao","altNames":["Gao Jianyang"],"tcRating":-1,"cfHandle":"MisakaKuma","cfRating":2042,"achievements":[]},{"name":"Hechuan Guo","altNames":["Guo Hechuan"],"tcHandle":"zhuaiballl","tcId":"40421038","tcRating":1463,"cfHandle":"zhuaiballl","cfRating":1987,"achievements":[{"achievement":"ICPC Finalist (2017)","priority":1001}]},{"name":"Ke Sun","altNames":[],"tcRating":-1,"cfHandle":"Forever_you","cfRating":2163,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]}]}
+{
+  "id" : 10,
+  "university" : {
+    "fullName" : "Belarusian State University",
+    "shortName" : "Belarusian SU",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#BelarusianSU",
+    "url" : "http://www.bsu.by",
+    "appearances" : 19,
+    "appYears" : [ 1999, 2000, 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 1,
+    "goldYears" : [ 2004 ],
+    "silver" : 2,
+    "silverYears" : [ 2012, 2013 ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2008 ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Belarusian SU #1",
+    "regionals" : [ "NERC, 8th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Vladimir Kotov",
+    "altNames" : [ "Kotov Vladimir" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC gold medal as coach (2004)",
+      "priority" : 4002
+    }, {
+      "achievement" : "ACM ICPC silver medal as coach (2012, 2013)",
+      "priority" : 3002
+    }, {
+      "achievement" : "ACM ICPC bronze medal as coach (2008)",
+      "priority" : 2002
+    }, {
+      "achievement" : "World Finals coach (1999, 2000, 2002, 2003, 2005, 2007, 2009-2011, 2014-2016, 2018, 2019)",
+      "priority" : 1020
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Yahor Dubovik",
+    "altNames" : [ "Dubovik Yahor" ],
+    "tcRating" : -1,
+    "cfHandle" : "kefaa2",
+    "cfRating" : 3139,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    } ]
+  }, {
+    "name" : "Fedar Karabeinikau",
+    "altNames" : [ "Karabeinikau Fedar", "Fedor Korobeinikov", "Korobeinikov Fedor" ],
+    "tcRating" : -1,
+    "cfHandle" : "Fedosik",
+    "cfRating" : 2111,
+    "ioiID" : "5030",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "IOI Silver Medalist (2016)",
+      "priority" : 31
+    }, {
+      "achievement" : "IOI Bronze Medalist (2017)",
+      "priority" : 21
+    }, {
+      "achievement" : "IOI Participant (2014)",
+      "priority" : 11
+    } ]
+  }, {
+    "name" : "Aliaksandr Kernazhytski",
+    "altNames" : [ "Kernazhytski Aliaksandr", "Alexander Kernozhitsky", "Aleksandr Kernozhitsky", "Kernozhitsky Alexander" ],
+    "tcHandle" : "alex256",
+    "tcId" : "40382230",
+    "tcRating" : 2016,
+    "cfHandle" : "gepardo",
+    "cfRating" : 2618,
+    "ioiID" : "6165",
+    "achievements" : [ {
+      "achievement" : "IOI Gold Medalist (2018)",
+      "priority" : 51
+    }, {
+      "achievement" : "IOI Silver Medalist (2017)",
+      "priority" : 31
+    }, {
+      "achievement" : "Technocup finalist (2018)",
+      "priority" : 16
+    }, {
+      "achievement" : "FII Code Finalist (-1, 0)",
+      "priority" : 16
+    } ]
+  } ]
+}

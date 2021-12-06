@@ -1,1 +1,74 @@
-{"id":99,"university":{"fullName":"Universidad Tecnológica Nacional - Facultad Regional Santa Fe","shortName":"UTN Argentina - Santa Fe","region":"Latin America","appearances":1,"appYears":[],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"new UtnTeam (\"Mejor Nombre Ever, dame el premio\")","regionals":["South America-South, 5th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Daniel Ambort","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"Eric Kiener","altNames":[],"tcRating":-1,"cfHandle":"reaper703","cfRating":-1,"achievements":[]},{"name":"Matias Ramos","altNames":["Matt Ramos","Ramos Matt"],"tcHandle":"matramos","tcId":"40260417","tcRating":771,"cfHandle":"matramos","cfRating":1300,"achievements":[]},{"name":"Luis Santiago Ré","altNames":["Luis Santiago Re"],"tcHandle":"lsantire","tcId":"40420818","tcRating":1030,"cfHandle":"lsantire","cfRating":2037,"achievements":[]}]}
+{
+  "id" : 99,
+  "university" : {
+    "fullName" : "Universitas Indonesia",
+    "shortName" : "UI",
+    "region" : "Asia Pacific",
+    "hashTag" : "#UnivIndonesia",
+    "url" : "http://www.ui.ac.id",
+    "appearances" : 5,
+    "appYears" : [ 2014, 2015, 2017, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Patience from Yusuf",
+    "regionals" : [ "Jakarta, 9th", "Danang, 2nd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Denny Denny",
+    "altNames" : [ ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "twitterHandle" : "dennycs",
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2014, 2015, 2017, 2019)",
+      "priority" : 1004
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Muhammad Yusuf Sholeh",
+    "altNames" : [ "Sholeh Muhammad Yusuf", "Yusuf Sholeh", "Sholeh Yusuf" ],
+    "tcRating" : -1,
+    "cfHandle" : "yusufsholeh",
+    "cfRating" : 2203,
+    "ioiID" : "5918",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2016)",
+      "priority" : 21
+    } ]
+  }, {
+    "name" : "Degoldie Sonny",
+    "altNames" : [ "Sonny Degoldie" ],
+    "tcHandle" : "DigiM",
+    "tcId" : "40197344",
+    "tcRating" : 959,
+    "cfHandle" : "DigiM",
+    "cfRating" : 2035,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2019)",
+      "priority" : 1001
+    } ]
+  }, {
+    "name" : "Ahmad Haulian Yoga Pratama",
+    "altNames" : [ "Yoga Pratama Ahmad Haulian" ],
+    "tcRating" : -1,
+    "cfHandle" : "yogahmad77",
+    "cfRating" : 2263,
+    "ioiID" : "6544",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2018)",
+      "priority" : 31
+    } ]
+  } ]
+}

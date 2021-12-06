@@ -1,1 +1,70 @@
-{"id":90,"university":{"fullName":"Tsinghua University","shortName":"Tsinghua","region":"Asia East","appearances":22,"appYears":[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],"wins":0,"winYears":[],"gold":4,"goldYears":[2007,2009,2011,2015],"silver":8,"silverYears":[2000,2001,2002,2003,2008,2010,2017,2018],"bronze":3,"bronzeYears":[1998,2013,2014],"regionalChampionships":5,"regYears":[2000,2003,2007,2008,2009]},"team":{"name":"Rondam strign","regionals":["Jiaozuo, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Xiaojun Wu","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"ICPC gold medal as coach (2007, 2009, 2011, 2015)","priority":4004},{"achievement":"ICPC silver medal as coach (2008, 2010, 2017, 2018)","priority":3004},{"achievement":"ICPC bronze medal as coach (2013, 2014)","priority":2002},{"achievement":"World Finals coach (2004-2006, 2012, 2016)","priority":1005}]},"contestants":[{"name":"Leping Wang","altNames":[],"tcHandle":"JOHNKRAM","tcId":"40396069","tcRating":2375,"cfHandle":"JOHNKRAM","cfRating":2732,"achievements":[]},{"name":"Jiping Yu","altNames":["YU Jiping","Jiping YU"],"tcRating":-1,"cfHandle":"shigule","cfRating":2187,"achievements":[]},{"name":"Ruizhe Zhang","altNames":["Zhang Ruizhe"],"tcHandle":"ufo","tcRating":-1,"cfHandle":"ufo","cfRating":2434,"achievements":[]}]}
+{
+  "id" : 90,
+  "university" : {
+    "fullName" : "Universidad Simón Bolívar",
+    "shortName" : "USB",
+    "region" : "Latin America",
+    "hashTag" : "#UniversidadSB",
+    "url" : "http://www.usb.ve",
+    "appearances" : 8,
+    "appYears" : [ 2000, 2004, 2005, 2010, 2015, 2016, 2017, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "La bomba de tenedores",
+    "regionals" : [ "South America/North, 2nd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Augusto Hidalgo",
+    "altNames" : [ "Hidalgo Augusto" ],
+    "tcHandle" : "pulgares",
+    "tcId" : "40254181",
+    "tcRating" : 1756,
+    "cfHandle" : "lmn0x4F",
+    "cfRating" : 2225,
+    "twitterHandle" : "augustohidalgob",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2016, 2017)",
+      "priority" : 1002
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Jesus De Aguiar",
+    "altNames" : [ "De Aguiar Jesus" ],
+    "tcRating" : -1,
+    "cfHandle" : "JotaR",
+    "cfRating" : 1570,
+    "twitterHandle" : "jesusrda",
+    "achievements" : [ ]
+  }, {
+    "name" : "Marcos Lerones",
+    "altNames" : [ "Lerones Marcos" ],
+    "tcHandle" : "MarcosJLR",
+    "tcId" : "40694435",
+    "tcRating" : 1672,
+    "cfHandle" : "CrazyDiamond",
+    "cfRating" : 2192,
+    "twitterHandle" : "WarcosJLR",
+    "achievements" : [ ]
+  }, {
+    "name" : "Neil Villamizar",
+    "altNames" : [ "Villamizar Neil" ],
+    "tcHandle" : "totito",
+    "tcId" : "40823159",
+    "tcRating" : 695,
+    "cfHandle" : "totito",
+    "cfRating" : 1673,
+    "achievements" : [ ]
+  } ]
+}

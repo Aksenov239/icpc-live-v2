@@ -1,1 +1,77 @@
-{"id":23,"university":{"fullName":"East China Normal University","shortName":"ECNU","region":"Asia East","appearances":3,"appYears":[2008,2011],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"F0RE1GNERS","regionals":["Xuzhou, 7th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Chunyun Xiao","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2008, 2011)","priority":1002}]},"contestants":[{"name":"Fangxin Lin","altNames":[],"tcRating":-1,"cfHandle":"zerolin","cfRating":2196,"achievements":[]},{"name":"Yuge Zhang","altNames":["Zhang Yuge"],"tcRating":-1,"cfHandle":"ultmaster","cfRating":2131,"achievements":[]},{"name":"Yiran Zhou","altNames":[],"tcRating":-1,"cfHandle":"kblack","cfRating":2210,"achievements":[]}]}
+{
+  "id" : 23,
+  "university" : {
+    "fullName" : "Free University of Tbilisi",
+    "shortName" : "Free U of Tbilisi",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#FreeUniTbilisi",
+    "url" : "http://freeuni.edu.ge/",
+    "appearances" : 2,
+    "appYears" : [ 2015, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Tbilisi FreeUni 1",
+    "regionals" : [ "NERC, 40th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Zaza Gamezardashvili",
+    "altNames" : [ "Gamezardashvili Zaza" ],
+    "tcRating" : -1,
+    "cfHandle" : "gamzaza",
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2015)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Aleksandre Khokhiashvili",
+    "altNames" : [ "Khokhiashvili Aleksandre" ],
+    "tcHandle" : "khokho",
+    "tcId" : "23303116",
+    "tcRating" : 1820,
+    "cfHandle" : "khokho",
+    "cfRating" : 2170,
+    "ioiID" : "6221",
+    "achievements" : [ {
+      "achievement" : "IOI Participant (2017, 2018)",
+      "priority" : 12
+    } ]
+  }, {
+    "name" : "Vano Gamezardashvili",
+    "altNames" : [ "Gamezardashvili Vano" ],
+    "tcHandle" : "vanogam",
+    "tcId" : "40066397",
+    "tcRating" : 1585,
+    "cfHandle" : "vanogam",
+    "cfRating" : 2136,
+    "ioiID" : "6523",
+    "achievements" : [ {
+      "achievement" : "IOI Participant (2018)",
+      "priority" : 11
+    } ]
+  }, {
+    "name" : "Bakari Gamezardashvili",
+    "altNames" : [ "Gamezardashvili Bakari", "Baqar Gamezardashvili", "Gamezardashvili Baqar" ],
+    "tcRating" : -1,
+    "cfHandle" : "baqargam",
+    "cfRating" : 2000,
+    "ioiID" : "6814",
+    "achievements" : [ {
+      "achievement" : "IOI Bronze Medalist (2019)",
+      "priority" : 21
+    } ]
+  } ]
+}

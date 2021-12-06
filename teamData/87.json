@@ -1,1 +1,75 @@
-{"id":87,"university":{"fullName":"Syrian Virtual University","shortName":"SVU","region":"Africa and the Middle East","appearances":1,"appYears":[],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"RadioActive","regionals":["ACPC, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Jafar Alkheir","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"Hasan Jaddouh","altNames":["Jaddouh Hasan"],"tcHandle":"kingofnumbers","tcId":"23086940","tcRating":1757,"cfHandle":"kingofnumbers","cfRating":2454,"achievements":[{"achievement":"ICPC Finalist (2016)","priority":1001},{"achievement":"IOI Silver Medalist (2014)","priority":31}]},{"name":"Hussain Kara Fallah","altNames":["Kara Fallah Hussain"],"tcRating":-1,"cfHandle":"BayHarborButcher","cfRating":2220,"achievements":[{"achievement":"World Finals coach (2018)","priority":1001},{"achievement":"ICPC Finalist (2015)","priority":1001},{"achievement":"IOI Participant (2014)","priority":11}]},{"name":"Joud Zouzou","altNames":["joud zouzou","zouzou joud"],"tcHandle":"joudzouzou","tcId":"23199857","tcRating":1306,"cfHandle":"RedNextCentury","cfRating":2227,"achievements":[{"achievement":"ICPC Finalist (2016)","priority":1001},{"achievement":"IOI Participant (2014, 2015)","priority":12}]}]}
+{
+  "id" : 87,
+  "university" : {
+    "fullName" : "Universidad Nacional de Córdoba - FaMAF",
+    "shortName" : "FAMAF - UNC",
+    "region" : "Latin America",
+    "hashTag" : "#FAMAFUNC",
+    "url" : "http://www.famaf.unc.edu.ar",
+    "appearances" : 9,
+    "appYears" : [ 2006, 2008, 2010, 2011, 2012, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 1,
+    "regYears" : [ 2019 ]
+  },
+  "team" : {
+    "name" : "GG Dem",
+    "regionals" : [ "South America/South, 2nd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Luis Ferroni Rivetti",
+    "altNames" : [ "Ferroni Rivetti Luis" ],
+    "tcRating" : -1,
+    "cfHandle" : "Vladislao",
+    "cfRating" : 1620,
+    "twitterHandle" : "luis_ferroni",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2017, 2018)",
+      "priority" : 1002
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Sebastián Marín",
+    "altNames" : [ "Sebastian Marin", "Marín Sebastián", "Marin Sebastian" ],
+    "tcHandle" : "sebamarin",
+    "tcId" : "40777280",
+    "tcRating" : 1487,
+    "cfHandle" : "sebamarin",
+    "cfRating" : 2154,
+    "achievements" : [ ]
+  }, {
+    "name" : "Mateo Carranza Vélez",
+    "altNames" : [ "Mateo Carranza Velez", "Carranza Vélez Mateo", "Carranza Velez Mateo" ],
+    "tcHandle" : "MateoCV",
+    "tcId" : "40875863",
+    "tcRating" : 1746,
+    "cfHandle" : "MateoCV",
+    "cfRating" : 2402,
+    "achievements" : [ {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    } ]
+  }, {
+    "name" : "Marcos Kolodny",
+    "altNames" : [ "Kolodny Marcos" ],
+    "tcHandle" : "marcosk",
+    "tcId" : "40744852",
+    "tcRating" : 2104,
+    "cfHandle" : "MarcosK",
+    "cfRating" : 2129,
+    "twitterHandle" : "MarcosKolodny",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2019)",
+      "priority" : 1001
+    } ]
+  } ]
+}

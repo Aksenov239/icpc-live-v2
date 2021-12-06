@@ -169,32 +169,49 @@ public class WFEventsLoader extends EventsLoader {
         return Integer.compare(a.length(), b.length());
     }
 
+    static class Organization {
+        private String formalName;
+        private String shortName;
+        private String hashTag;
+        private String id;
+
+        public Organization(String formalName, String shortName, String hashTag, String id) {
+            this.formalName = formalName;
+            this.shortName = shortName;
+            this.hashTag = hashTag;
+            this.id = id;
+        }
+    }
+
     private void readTeamInfosWF(WFContestInfo contest) throws IOException {
         JsonArray jsonOrganizations = new Gson().fromJson(
                 readJsonArray(url + "/organizations"), JsonArray.class);
-        HashMap<String, WFTeamInfo> organizations = new HashMap<>();
-        contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonOrganizations.size()];
+        HashMap<String, Organization> organizations = new HashMap<>();
         for (int i = 0; i < jsonOrganizations.size(); i++) {
             JsonObject je = jsonOrganizations.get(i).getAsJsonObject();
-            WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
             // TODO
-            teamInfo.name = je.get("formal_name").getAsString();
-            teamInfo.shortName = je.get("name").getAsString();
-            teamInfo.hashTag = je.get("twitter_hashtag") == null ?
+            String name = je.get("formal_name").getAsString();
+            String shortName = je.get("name").getAsString();
+            String hashTag = je.get("twitter_hashtag") == null ?
                     null : je.get("twitter_hashtag").getAsString();
-            organizations.put(je.get("id").getAsString(), teamInfo);
-            contest.teamInfos[i] = teamInfo;
+            String id = je.get("id").getAsString();
+            organizations.put(id, new Organization(name, shortName, hashTag, id));
         }
 
         JsonArray jsonTeams = new Gson().fromJson(
                 readJsonArray(url + "/teams"), JsonArray.class);
         contest.teamById = new HashMap<>();
+        contest.teamInfos = new org.icpclive.events.WF.WFTeamInfo[jsonTeams.size()];
         for (int i = 0; i < jsonTeams.size(); i++) {
             JsonObject je = jsonTeams.get(i).getAsJsonObject();
             if (je.get("organization_id").isJsonNull()) {
                 continue;
             }
-            WFTeamInfo teamInfo = organizations.get(je.get("organization_id").getAsString());
+            Organization teamOrg = organizations.get(je.get("organization_id").getAsString());
+            WFTeamInfo teamInfo = new WFTeamInfo(contest.problems.size());
+            teamInfo.shortName = teamOrg.shortName;
+            teamInfo.name = teamOrg.formalName;
+            teamInfo.hashTag = teamOrg.hashTag;
 
             JsonArray groups = je.get("group_ids").getAsJsonArray();
             for (int j = 0; j < groups.size(); j++) {
@@ -203,15 +220,25 @@ public class WFEventsLoader extends EventsLoader {
                 teamInfo.groups.add(group);
             }
 
-            teamInfo.screen = je.get("desktop") == null ? null :
-                    je.get("desktop").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
-            teamInfo.camera = je.get("webcam") == null ? null :
-                    je.get("webcam").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
+            if (je.get("desktop") != null) {
+                JsonArray hrefs = je.get("desktop").getAsJsonArray();
+                teamInfo.screens = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.screens[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
+
+            if (je.get("webcam") != null) {
+                JsonArray hrefs = je.get("webcam").getAsJsonArray();
+                teamInfo.cameras = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.cameras[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
 
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
+            contest.teamInfos[i] = teamInfo;
         }
         Arrays.sort(contest.teamInfos, (a, b) -> compareAsNumbers(((WFTeamInfo) a).cdsId, ((WFTeamInfo) b).cdsId));
 
@@ -256,12 +283,21 @@ public class WFEventsLoader extends EventsLoader {
                 teamInfo.groups.add(group);
             }
 
-            teamInfo.screen = je.get("desktop") == null ? null :
-                    je.get("desktop").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
-            teamInfo.camera = je.get("webcam") == null ? null :
-                    je.get("webcam").getAsJsonArray().
-                            get(0).getAsJsonObject().get("href").getAsString();
+            if (je.get("desktop") != null) {
+                JsonArray hrefs = je.get("desktop").getAsJsonArray();
+                teamInfo.screens = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.screens[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
+
+            if (je.get("webcam") != null) {
+                JsonArray hrefs = je.get("webcam").getAsJsonArray();
+                teamInfo.cameras = new String[hrefs.size()];
+                for (int j = 0; j < hrefs.size(); j++) {
+                    teamInfo.cameras[j] = hrefs.get(j).getAsJsonObject().get("href").getAsString();
+                }
+            }
 
             teamInfo.cdsId = je.get("id").getAsString();
             contest.teamById.put(teamInfo.cdsId, teamInfo);
@@ -469,6 +505,10 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public void readRun(WFContestInfo contestInfo, JsonObject je, boolean update) {
+        if (je.get("judgement_id").isJsonNull()) {
+            System.err.println(je);
+            return;
+        }
 
         WFRunInfo runInfo = contestInfo.runByJudgementId.get(je.get("judgement_id").getAsString());
 

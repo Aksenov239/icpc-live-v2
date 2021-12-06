@@ -1,1 +1,69 @@
-{"id":14,"university":{"fullName":"Cairo University - Faculty of Computers and Information","shortName":"Cairo-FCI","region":"Africa and the Middle East","appearances":14,"appYears":[2002,2004,2006,2008,2010,2011,2012,2013,2014,2015,2016,2017,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":1,"regYears":[2016]},"team":{"name":"One For All","regionals":["ACPC, 10th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Mohamed Abd El-Wahab","altNames":["Abd El-Wahab Mohamed"],"tcHandle":"fegla","tcId":"20538097","tcRating":1339,"cfHandle":"fegla","cfRating":1591,"achievements":[{"achievement":"World Finals coach (2010, 2012-2017)","priority":1014},{"achievement":"ICPC Finalist (2002)","priority":1001}]},"contestants":[{"name":"Mohamed Ahmed","altNames":["Ahmed Mohamed"],"tcHandle":"eagle93","tcId":"23049587","tcRating":1559,"cfHandle":"eagle93","cfRating":1930,"achievements":[{"achievement":"ICPC Finalist (2017)","priority":1001}]},{"name":"Khaled Hamed","altNames":["Hamed Khaled"],"tcHandle":"wewark","tcRating":-1,"cfHandle":"wewark","cfRating":1953,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]},{"name":"Mohammed Saeed","altNames":["Saeed Mohammed"],"tcRating":-1,"cfHandle":"compiler_101","cfRating":2111,"achievements":[]}]}
+{
+  "id" : 14,
+  "university" : {
+    "fullName" : "Cairo University - Faculty of Computers and Artificial Intelligence",
+    "shortName" : "CU-FCAI",
+    "region" : "Africa and the Middle East",
+    "hashTag" : "#Cairo-FCI",
+    "url" : "https://www.fci.cu.edu.eg",
+    "appearances" : 15,
+    "appYears" : [ 2002, 2004, 2006, 2008, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 1,
+    "regYears" : [ 2016 ]
+  },
+  "team" : {
+    "name" : "Be Done",
+    "regionals" : [ "ACPC, 11th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Mohamed Mahmoud",
+    "altNames" : [ "Mahmoud Mohamed", "Mohamed Abd El-Wahab", "Abd El-Wahab Mohamed" ],
+    "tcHandle" : "fegla",
+    "tcId" : "20538097",
+    "tcRating" : 1339,
+    "cfHandle" : "fegla",
+    "cfRating" : 1518,
+    "twitterHandle" : "wahabfegla",
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2010, 2012-2019)",
+      "priority" : 1019
+    }, {
+      "achievement" : "ACM ICPC Finalist (2002)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Osama Fathy",
+    "altNames" : [ "Fathy Osama" ],
+    "tcRating" : -1,
+    "cfHandle" : "OsamaFathy",
+    "cfRating" : 1970,
+    "achievements" : [ ]
+  }, {
+    "name" : "Aly Magdi",
+    "altNames" : [ "Magdi Aly", "Ali Magde", "Magde Ali" ],
+    "tcHandle" : "alimagde",
+    "tcId" : "40311909",
+    "tcRating" : 1190,
+    "cfHandle" : "alimagde",
+    "cfRating" : 1924,
+    "achievements" : [ ]
+  }, {
+    "name" : "Omar AboSrea",
+    "altNames" : [ "AboSrea Omar", "Omar Mohamed", "Mohamed Omar" ],
+    "tcRating" : -1,
+    "cfHandle" : "omar22",
+    "cfRating" : 1719,
+    "achievements" : [ ]
+  } ]
+}

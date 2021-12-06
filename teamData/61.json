@@ -1,1 +1,67 @@
-{"id":61,"university":{"fullName":"Nanjing University","shortName":"NJU","region":"Asia East","appearances":2,"appYears":[2009],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Coffee Chicken","regionals":["QingDao, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Jun MA","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[]},"contestants":[{"name":"Hao Ling","altNames":[],"tcRating":-1,"cfHandle":"AceSrc","cfRating":2436,"achievements":[]},{"name":"Hongyang LIU","altNames":[],"tcRating":-1,"cfHandle":"gisp_zjz","cfRating":2675,"achievements":[]},{"name":"Yangbo Zhang","altNames":[],"tcRating":-1,"cfHandle":"zyb","cfRating":2654,"achievements":[]}]}
+{
+  "id" : 61,
+  "university" : {
+    "fullName" : "Perm State University",
+    "shortName" : "Perm SU",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#PermSU",
+    "url" : "http://www.psu.ru",
+    "appearances" : 7,
+    "appYears" : [ 2004, 2005, 2011, 2013, 2017, 2018, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 1,
+    "goldYears" : [ 2004 ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2013 ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Bagels",
+    "regionals" : [ "NERC, 33rd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Mikhail Lizunov",
+    "altNames" : [ "Lizunov Mikhail" ],
+    "tcRating" : -1,
+    "cfHandle" : "mimirrow",
+    "cfRating" : 1929,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Dmitriy Sidorenko",
+    "altNames" : [ "Dmitriyy Sidorenko", "Sidorenko Dmitriy" ],
+    "tcRating" : -1,
+    "cfHandle" : "dimasidorenko",
+    "cfRating" : 1713,
+    "achievements" : [ ]
+  }, {
+    "name" : "Alexandr Tsaplin",
+    "altNames" : [ "Aleksandr Tsaplin", "Tsaplin Alexandr" ],
+    "tcRating" : -1,
+    "cfHandle" : "Alexandr_TS",
+    "cfRating" : 2342,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "VK Cup finalist (2018)",
+      "priority" : 26
+    } ]
+  }, {
+    "name" : "Dmitriy Buzmakov",
+    "altNames" : [ "Dmitriyy Buzmakov", "Buzmakov Dmitriy" ],
+    "tcRating" : -1,
+    "cfHandle" : "MrBoogie",
+    "cfRating" : 1757,
+    "achievements" : [ ]
+  } ]
+}

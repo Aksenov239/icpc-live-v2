@@ -1,1 +1,96 @@
-{"id":107,"university":{"fullName":"University of Brasilia","shortName":"UnB","region":"Latin America","appearances":1,"appYears":[],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"100% é Pouco, Pagode Importa D+","regionals":["Brazil, 4th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Vinicius Borges","altNames":["Borges Vinicius"],"tcRating":-1,"cfHandle":"viniciusrpb","cfRating":1431,"achievements":[]},"contestants":[{"name":"Luís Felipe Braga Gebrim Silva","altNames":["Luis Felipe Braga Gebrim Silva"],"tcRating":-1,"cfHandle":"Lius","cfRating":2122,"achievements":[]},{"name":"José Marcos da Silva Leite","altNames":["Jose Marcos da Silva Leite","José Leite","Jose Leite","Leite José","Leite Jose"],"tcHandle":"Nson","tcId":"40178551","tcRating":1549,"cfHandle":"Nson","cfRating":2200,"achievements":[]},{"name":"Rafael Lourenço de Lima Chehab","altNames":["Rafael Lourenco de Lima Chehab","Rafael Chehab","Chehab Rafael"],"tcRating":-1,"cfHandle":"rchehab","cfRating":1869,"achievements":[]}]}
+{
+  "id" : 107,
+  "university" : {
+    "fullName" : "University of Latvia",
+    "shortName" : "Latvia",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#lvuniversity",
+    "url" : "http://www.lu.lv",
+    "appearances" : 6,
+    "appYears" : [ 2012, 2014, 2017, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "LU 2",
+    "regionals" : [ "NERC, 9th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Guntis Arnicans",
+    "altNames" : [ "Arnicans Guntis" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2012, 2014, 2017-2019)",
+      "priority" : 1005
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Aleksandrs Zajakins",
+    "altNames" : [ "Zajakins Aleksandrs", "Alexandr Zayakin", "Aleksandr Zayakin", "Zayakin Alexandr" ],
+    "tcHandle" : "sanja",
+    "tcId" : "21167389",
+    "tcRating" : 1126,
+    "cfHandle" : "Sanja",
+    "cfRating" : 2239,
+    "ioiID" : "5964",
+    "achievements" : [ {
+      "achievement" : "IOI Participant (2016, 2017)",
+      "priority" : 12
+    } ]
+  }, {
+    "name" : "Aleksejs Zajakins",
+    "altNames" : [ "Zajakins Aleksejs", "Alexey Zayakin", "Zayakin Alexey" ],
+    "tcHandle" : "Alex_2oo8",
+    "tcId" : "23052468",
+    "tcRating" : 2193,
+    "cfHandle" : "Alex_2oo8",
+    "cfRating" : 2944,
+    "ioiID" : "2964",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2017)",
+      "priority" : 1001
+    }, {
+      "achievement" : "IOI Gold Medalist (2015)",
+      "priority" : 51
+    }, {
+      "achievement" : "IOI Silver Medalist (2013, 2014)",
+      "priority" : 32
+    }, {
+      "achievement" : "Yandex.Algorithm Finalist (2017, 2018)",
+      "priority" : 27
+    }, {
+      "achievement" : "VK Cup finalist (2016, 2020)",
+      "priority" : 27
+    }, {
+      "achievement" : "FBHC Finalist (2020)",
+      "priority" : 26
+    }, {
+      "achievement" : "MemSQL Start[c]UP finalist (2014)",
+      "priority" : 6
+    } ]
+  }, {
+    "name" : "Kristaps Civkulis",
+    "altNames" : [ "Civkulis Kristaps" ],
+    "tcRating" : -1,
+    "cfHandle" : "how_to_become_purple",
+    "cfRating" : 2447,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "VK Cup finalist (2021)",
+      "priority" : 26
+    } ]
+  } ]
+}

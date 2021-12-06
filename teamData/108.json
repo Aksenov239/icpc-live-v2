@@ -1,1 +1,73 @@
-{"id":108,"university":{"fullName":"University of British Columbia","shortName":"U British Columbia","region":"North America","appearances":13,"appYears":[2004,2005,2006,2007,2008,2009,2010,2012,2013,2016,2017,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"UBC p_X(x)=P(X=x)","regionals":["Pacific Northwest, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Lucca Siaudzionis","altNames":["Siaudzionis Lucca","Lucca Morais de Arruda Siaudzionis"],"tcHandle":"luccasiau","tcId":"23039784","tcRating":1214,"cfHandle":"luccasiau","cfRating":1953,"achievements":[{"achievement":"ICPC Finalist (2017, 2018)","priority":1002},{"achievement":"IOI Silver Medalist (2016)","priority":31},{"achievement":"IOI Bronze Medalist (2015)","priority":21}]},"contestants":[{"name":"Henry Xia","altNames":[],"tcRating":-1,"cfHandle":"paulll","cfRating":2268,"achievements":[]},{"name":"Brandon Zhang","altNames":[],"tcRating":-1,"cfHandle":"brandonzhang","cfRating":2162,"achievements":[]},{"name":"Da Wei Zheng","altNames":["David Zheng","Zheng David"],"tcHandle":"miseri","tcRating":-1,"cfHandle":"miseri","cfRating":2130,"achievements":[{"achievement":"ICPC Finalist (2018)","priority":1001}]}]}
+{
+  "id" : 108,
+  "university" : {
+    "fullName" : "University of Rochester",
+    "shortName" : "U Rochester",
+    "region" : "North America",
+    "hashTag" : "#UofR",
+    "url" : "http://www.rochester.edu",
+    "appearances" : 3,
+    "appYears" : [ 2010, 2017, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Rochester Yellowjackets",
+    "regionals" : [ "NAC, 16th", "NANE, 6th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Daniel Stefankovic",
+    "altNames" : [ "Stefankovic Daniel" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "ioiID" : "540",
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2010, 2017)",
+      "priority" : 1002
+    }, {
+      "achievement" : "IOI Gold Medalist (1993)",
+      "priority" : 51
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Nikola Danevski",
+    "altNames" : [ "Danevski Nikola" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "achievements" : [ ]
+  }, {
+    "name" : "Loc Bui",
+    "altNames" : [ "Bui Loc" ],
+    "tcRating" : -1,
+    "cfHandle" : "heklo",
+    "cfRating" : 1944,
+    "achievements" : [ ]
+  }, {
+    "name" : "Vladimir Maksimovski",
+    "altNames" : [ "Maksimovski Vladimir" ],
+    "tcRating" : -1,
+    "cfHandle" : "ReaLNero",
+    "cfRating" : 2150,
+    "ioiID" : "5971",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2018)",
+      "priority" : 31
+    }, {
+      "achievement" : "IOI Bronze Medalist (2016)",
+      "priority" : 21
+    }, {
+      "achievement" : "IOI Participant (2017)",
+      "priority" : 11
+    } ]
+  } ]
+}

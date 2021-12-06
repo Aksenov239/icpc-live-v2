@@ -1,1 +1,171 @@
-{"id":59,"university":{"fullName":"Moscow Institute of Physics & Technology","shortName":"MIPT","region":"Northern Eurasia","appearances":10,"appYears":[2008,2011,2012,2013,2014,2015,2016,2017,2018],"wins":0,"winYears":[],"gold":3,"goldYears":[2012,2016,2018],"silver":1,"silverYears":[2017],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Moscow IPT: Shock Content","regionals":["NEERC, 2nd"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Mikhail Tikhomirov","altNames":["Michael Tikhomirov","Tikhomirov Mikhail"],"tcHandle":"Endagorion","tcId":"22681902","tcRating":3075,"cfHandle":"Endagorion","cfRating":2843,"achievements":[{"achievement":"ICPC gold medal as coach (2016, 2018)","priority":4002},{"achievement":"ICPC silver medal as coach (2017)","priority":3001},{"achievement":"TCO Finalist (2014)","priority":76},{"achievement":"GCJ Finalist (2017)","priority":51},{"achievement":"TCO Semifinalist (2015)","priority":51},{"achievement":"CodeChef 3rd (2015)","priority":31},{"achievement":"RCC Finalist (2014, 2015, 2017)","priority":28},{"achievement":"VK Cup finalist (2015)","priority":26},{"achievement":"CROC Championship finalist (2013)","priority":16},{"achievement":"DCJ Finalist (2017)","priority":16}]},"contestants":[{"name":"Eugene Belykh","altNames":["Evgenii Belykh","Belykh Evgenii"],"tcHandle":"white2302","tcId":"23282621","tcRating":1955,"cfHandle":"amethyst0","cfRating":2637,"achievements":[]},{"name":"Andrey Sergunin","altNames":["Andrei Sergunin","Sergunin Andrey"],"tcHandle":"AndreySergunin","tcId":"40237917","tcRating":1553,"cfHandle":"AndreySergunin","cfRating":2658,"achievements":[]},{"name":"Ilia Stepanov","altNames":["Stepanov Ilia"],"tcHandle":"irkstepanov","tcId":"40441472","tcRating":1711,"cfHandle":"irkstepanov","cfRating":2479,"achievements":[]}]}
+{
+  "id" : 59,
+  "university" : {
+    "fullName" : "Nizhny Novgorod State University",
+    "shortName" : "UNN",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#UNN",
+    "url" : "http://www.unn.ac.ru",
+    "appearances" : 8,
+    "appYears" : [ 2001, 2003, 2004, 2005, 2011, 2012, 2016, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 1,
+    "silverYears" : [ 2011 ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2016 ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Almost Retired",
+    "regionals" : [ "NERC, 2nd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Alexey Shmelev",
+    "altNames" : [ "Shmelev Alexey" ],
+    "tcHandle" : "ashmelev",
+    "tcId" : "22770435",
+    "tcRating" : 2309,
+    "cfHandle" : "ashmelev",
+    "cfRating" : 2480,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC silver medal (2011)",
+      "priority" : 6001
+    }, {
+      "achievement" : "ACM ICPC Finalist (2012)",
+      "priority" : 1001
+    }, {
+      "achievement" : "GCJ 3rd (2018)",
+      "priority" : 101
+    }, {
+      "achievement" : "GCJ Finalist (2011)",
+      "priority" : 51
+    }, {
+      "achievement" : "RCC Finalist (2011, 2013, 2015)",
+      "priority" : 28
+    }, {
+      "achievement" : "FBHC Finalist (2015)",
+      "priority" : 26
+    }, {
+      "achievement" : "CROC Championship finalist (2013)",
+      "priority" : 16
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Aleksei Daniliuk",
+    "altNames" : [ "Daniliuk Aleksei", "Alexey Danilyuk", "Alex Danilyuk", "Danilyuk Alex" ],
+    "tcHandle" : "Um_nik",
+    "tcId" : "23288971",
+    "tcRating" : 3247,
+    "cfHandle" : "Um_nik",
+    "cfRating" : 3303,
+    "twitterHandle" : "Um_nik96",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC silver medal (2016)",
+      "priority" : 6001
+    }, {
+      "achievement" : "World Finals coach (2018)",
+      "priority" : 1001
+    }, {
+      "achievement" : "TCO Finalist (2018-2020)",
+      "priority" : 78
+    }, {
+      "achievement" : "SnackDown Winner (2017)",
+      "priority" : 61
+    }, {
+      "achievement" : "Yandex.Algorithm 2nd (2018)",
+      "priority" : 56
+    }, {
+      "achievement" : "SnackDown 2nd (2018)",
+      "priority" : 56
+    }, {
+      "achievement" : "VK Cup 2nd (2016)",
+      "priority" : 56
+    }, {
+      "achievement" : "TCO Semifinalist (2016, 2017)",
+      "priority" : 52
+    }, {
+      "achievement" : "GCJ Finalist (2021)",
+      "priority" : 51
+    }, {
+      "achievement" : "AtCoder 3rd (2017)",
+      "priority" : 51
+    }, {
+      "achievement" : "FBHC Finalist (2017-2020)",
+      "priority" : 29
+    }, {
+      "achievement" : "RCC Finalist (2015-2017)",
+      "priority" : 28
+    }, {
+      "achievement" : "Yandex.Algorithm Finalist (2016, 2017)",
+      "priority" : 27
+    }, {
+      "achievement" : "VK Cup finalist (2015, 2020)",
+      "priority" : 27
+    }, {
+      "achievement" : "Yandex.Algorithm Finalsit (2015)",
+      "priority" : 26
+    }, {
+      "achievement" : "AtCoder Grand Finalist (2016)",
+      "priority" : 26
+    }, {
+      "achievement" : "CROC Championship finalist (2016)",
+      "priority" : 16
+    } ]
+  }, {
+    "name" : "Valeria Ryabchikova",
+    "altNames" : [ "Ryabchikova Valeria", "Lera Ryabchikova", "Ryabchikova Lera" ],
+    "tcRating" : -1,
+    "cfHandle" : "Ekler",
+    "cfRating" : 2300,
+    "achievements" : [ ]
+  }, {
+    "name" : "Nikolay Kalinin",
+    "altNames" : [ "Kalinin Nikolay" ],
+    "tcHandle" : "KalininN",
+    "tcId" : "23032983",
+    "tcRating" : 2882,
+    "cfHandle" : "KAN",
+    "cfRating" : 3014,
+    "ioiID" : "3088",
+    "achievements" : [ {
+      "achievement" : "ACM ICPC bronze medal (2016)",
+      "priority" : 4001
+    }, {
+      "achievement" : "TCO Finalist (2020)",
+      "priority" : 76
+    }, {
+      "achievement" : "GCJ Finalist (2016, 2017, 2020)",
+      "priority" : 53
+    }, {
+      "achievement" : "IOI Gold Medalist (2013, 2014)",
+      "priority" : 52
+    }, {
+      "achievement" : "RCC 3rd (2016)",
+      "priority" : 51
+    }, {
+      "achievement" : "Yandex.Algorithm Finalist (2016-2018)",
+      "priority" : 28
+    }, {
+      "achievement" : "VK Cup finalist (2015, 2016, 2020)",
+      "priority" : 28
+    }, {
+      "achievement" : "FBHC Finalist (2016, 2017)",
+      "priority" : 27
+    }, {
+      "achievement" : "RCC Finalist (2015)",
+      "priority" : 26
+    }, {
+      "achievement" : "AtCoder Grand Finalist (2016)",
+      "priority" : 26
+    }, {
+      "achievement" : "DGCJ Finalist (2017)",
+      "priority" : 26
+    } ]
+  } ]
+}

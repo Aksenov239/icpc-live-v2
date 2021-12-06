@@ -1,1 +1,66 @@
-{"id":44,"university":{"fullName":"Instituto Militar de Engenharia","shortName":"IME","region":"Latin America","appearances":4,"appYears":[2008,2014,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":1,"regYears":[2014]},"team":{"name":"Fast WA Transform","regionals":["Brazil, 5th"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Claudia Justel","altNames":[],"tcRating":-1,"cfRating":-1,"achievements":[{"achievement":"World Finals coach (2008, 2014)","priority":1002}]},"contestants":[{"name":"Rebeca Calazans de Brito","altNames":["Rebeca Calazans","Calazans Rebeca"],"tcRating":-1,"cfHandle":"rebecacalazans","cfRating":1788,"achievements":[]},{"name":"Mateus Cândido Lima de Castro","altNames":["Mateus Candido Lima de Castro","Mateus de Castro","de Castro Mateus"],"tcRating":-1,"cfHandle":"samuraiexx","cfRating":1855,"achievements":[]},{"name":"João Pedro de Araújo Xavier","altNames":["Joao Pedro de Araujo Xavier"],"tcRating":-1,"cfHandle":"laderlappen","cfRating":1901,"achievements":[]}]}
+{
+  "id" : 44,
+  "university" : {
+    "fullName" : "Izhevsk State Technical University",
+    "shortName" : "Izhevsk STU",
+    "region" : "Northern Eurasia",
+    "hashTag" : "#IzhevskSTU",
+    "url" : "http://inter.istu.ru/",
+    "appearances" : 7,
+    "appYears" : [ 2004, 2005, 2008, 2010, 2013, 2014, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 1,
+    "goldYears" : [ 2008 ],
+    "silver" : 1,
+    "silverYears" : [ 2004 ],
+    "bronze" : 1,
+    "bronzeYears" : [ 2005 ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "Ne nado dumat'",
+    "regionals" : [ "NERC, 35th" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "Ruslan Gatin",
+    "altNames" : [ "Gatin Ruslan" ],
+    "tcHandle" : "GatinRuslan",
+    "tcId" : "22735749",
+    "tcRating" : 998,
+    "cfHandle" : "Ruslan",
+    "cfRating" : 2042,
+    "achievements" : [ {
+      "achievement" : "ACM ICPC Finalist (2013)",
+      "priority" : 1001
+    }, {
+      "achievement" : "Abbyy Cup finalist (2012)",
+      "priority" : 16
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Ilya Zylev",
+    "altNames" : [ "Zylev Ilya" ],
+    "tcRating" : -1,
+    "cfHandle" : "ATSTNG",
+    "cfRating" : 2142,
+    "achievements" : [ ]
+  }, {
+    "name" : "Rustam Musin",
+    "altNames" : [ "Musin Rustam" ],
+    "tcRating" : -1,
+    "cfHandle" : "Musin",
+    "cfRating" : 2132,
+    "achievements" : [ ]
+  }, {
+    "name" : "Aleksandr Yegorov",
+    "altNames" : [ "Yegorov Aleksandr", "Alexandr Egorov", "Aleksandr Egorov", "Egorov Alexandr" ],
+    "tcRating" : -1,
+    "cfHandle" : "Aleksandr_Stark",
+    "cfRating" : 1665,
+    "achievements" : [ ]
+  } ]
+}

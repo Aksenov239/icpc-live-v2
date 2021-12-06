@@ -255,6 +255,20 @@ public class TeamWidget extends Widget {
         teamId = team.getId();
     }
 
+    public void change(TeamInfo team, String infoType, int id) {
+        System.err.println(
+                TeamUrls.getUrl(team, infoType) + " " + team.getName() + " " +
+                        team.getShortName() + " " + team.getId() + " with id " + id);
+        mainVideo.loadNext(TeamUrls.getUrl(team, infoType, id));
+        if (!infoType.equals("camera")) {
+            smallVideo.loadNext(TeamUrls.getUrl(team, "camera", id));
+        } else {
+            smallVideo.loadNext(TeamUrls.getUrl(team, "screen", id));
+        }
+        nextProblemId = -1;
+        teamId = team.getId();
+    }
+
     public void change(RunInfo run) {
         mainVideo.loadNext(TeamUrls.getUrl(run));
         smallVideo.loadNext(null);

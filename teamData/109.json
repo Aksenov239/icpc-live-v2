@@ -1,1 +1,76 @@
-{"id":109,"university":{"fullName":"University of Cambridge","shortName":"Cambridge","region":"Europe","appearances":4,"appYears":[2009,2014,2018],"wins":0,"winYears":[],"gold":0,"goldYears":[],"silver":0,"silverYears":[],"bronze":0,"bronzeYears":[],"regionalChampionships":0,"regYears":[]},"team":{"name":"Treenity","regionals":["NWERC, 1st"],"openCupPlace":-1,"openCupTimes":0},"coach":{"name":"Hayk Saribekyan","altNames":["Saribekyan Hayk"],"tcHandle":"hayk.saribekyan","tcId":"22683576","tcRating":1824,"cfHandle":"hayk.saribekyan","cfRating":2098,"achievements":[{"achievement":"THSC Finalist (2008)","priority":34},{"achievement":"IOI Silver Medalist (2009)","priority":31},{"achievement":"IOI Bronze Medalist (2008)","priority":21},{"achievement":"IOI Participant (2007)","priority":11}]},"contestants":[{"name":"Jeck Lim","altNames":[],"tcRating":-1,"cfHandle":"lamejeck","cfRating":1804,"achievements":[{"achievement":"IMO Gold (2011-2013)","priority":53},{"achievement":"IPhO Gold (2013)","priority":51}]},{"name":"Zoltán Molnár Sáska","altNames":["Zoltan Molnar Saska","Zoltán Gábor Molnár-Sáska","Zoltan Gabor Molnar-Saska","Zoli Molnar-Saska","Molnar-Saska Zoli"],"tcRating":-1,"cfHandle":"Zoli9","cfRating":2174,"achievements":[{"achievement":"IOI Bronze Medalist (2016, 2018)","priority":22}]},{"name":"David Wärn","altNames":["David Warn","Wärn David","Warn David"],"tcHandle":"dwarn","tcId":"40570419","tcRating":2173,"cfHandle":"aitch","cfRating":2708,"achievements":[{"achievement":"IOI Silver Medalist (2016, 2017)","priority":32},{"achievement":"IMO Silver (2016)","priority":31},{"achievement":"IOI Bronze Medalist (2015)","priority":21}]}]}
+{
+  "id" : 109,
+  "university" : {
+    "fullName" : "University of Southern California",
+    "shortName" : "USC",
+    "region" : "North America",
+    "hashTag" : "#USC",
+    "url" : "http://www.usc.edu",
+    "appearances" : 8,
+    "appYears" : [ 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020 ],
+    "wins" : 0,
+    "winYears" : [ ],
+    "gold" : 0,
+    "goldYears" : [ ],
+    "silver" : 0,
+    "silverYears" : [ ],
+    "bronze" : 0,
+    "bronzeYears" : [ ],
+    "regionalChampionships" : 0,
+    "regYears" : [ ]
+  },
+  "team" : {
+    "name" : "USC Trojans",
+    "regionals" : [ "NAC, 16th", "Southern California, 2nd" ],
+    "openCupPlace" : -1,
+    "openCupTimes" : 0
+  },
+  "coach" : {
+    "name" : "David Kempe",
+    "altNames" : [ "Kempe David" ],
+    "tcRating" : -1,
+    "cfRating" : -1,
+    "ioiID" : "576",
+    "achievements" : [ {
+      "achievement" : "World Finals coach (2002, 2013-2016, 2018, 2019)",
+      "priority" : 1008
+    }, {
+      "achievement" : "ACM ICPC Finalist (1999)",
+      "priority" : 1001
+    }, {
+      "achievement" : "IOI Silver Medalist (1994)",
+      "priority" : 31
+    } ]
+  },
+  "contestants" : [ {
+    "name" : "Kangmin Tan",
+    "altNames" : [ "Tan Kangmin", "Tianlei Wang", "Wang Tianlei" ],
+    "tcRating" : -1,
+    "cfHandle" : "deSigntheClutch",
+    "cfRating" : 1988,
+    "achievements" : [ ]
+  }, {
+    "name" : "Tianyi Chen",
+    "altNames" : [ "Chen Tianyi" ],
+    "tcHandle" : "TianyiChen",
+    "tcId" : "40183508",
+    "tcRating" : 1536,
+    "cfHandle" : "TianyiChen",
+    "cfRating" : 2134,
+    "achievements" : [ ]
+  }, {
+    "name" : "Adhyyan Sekhsaria",
+    "altNames" : [ "Sekhsaria Adhyyan" ],
+    "tcRating" : -1,
+    "cfHandle" : "AsleepAdhyyan",
+    "cfRating" : 2194,
+    "ioiID" : "6540",
+    "achievements" : [ {
+      "achievement" : "IOI Silver Medalist (2019)",
+      "priority" : 31
+    }, {
+      "achievement" : "IOI Participant (2018)",
+      "priority" : 11
+    } ]
+  } ]
+}

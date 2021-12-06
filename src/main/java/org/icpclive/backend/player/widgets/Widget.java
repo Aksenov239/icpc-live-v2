@@ -16,6 +16,7 @@ import org.icpclive.events.WF.json.WFTeamInfo;
 import org.icpclive.events.codeforces.CFTeamInfo;
 
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -327,6 +328,16 @@ public abstract class Widget {
         drawProblemPane(problem, x, y, width, height, false);
     }
 
+    private Color enhanceColor(Color color) {
+        float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+        if (hsb[2] < 0.1) {
+            hsb[2] = 0.1f;
+            return new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+        } else {
+            return color;
+        }
+    }
+
     protected void drawProblemPane(ProblemInfo problem, int x, int y, int width, int height, boolean blinking) {
         double opacity = getOpacity(visibilityState) * maximumOpacity;
         double textOpacity = getTextOpacity(visibilityState);
@@ -337,7 +348,7 @@ public abstract class Widget {
         if (opacity == 0) return;
         graphics.setFillColor(backgroundColor, opacity);
         graphics.drawRect(x, y, width, height - 5);
-        graphics.setFillColor(problem.color, opacity);
+        graphics.setFillColor(enhanceColor(problem.color), opacity);
         graphics.drawRect(x, y + height - 5, width, 5);
         setTextOpacity(textOpacity);
         drawTextThatFits(problem.letter, x, y, width, height, PlateStyle.Alignment.CENTER, true);
