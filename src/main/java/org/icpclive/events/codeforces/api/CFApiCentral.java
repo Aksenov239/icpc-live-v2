@@ -24,13 +24,18 @@ public class CFApiCentral {
     private static final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    private static final String KEY = "";
-    private static final String SECRET = "";
+    private String apiKey;
+    private String apiSecret;
 
     public final int contestId;
 
     public CFApiCentral(int contestId) {
         this.contestId = contestId;
+    }
+
+    public void setApiKeyAndSecret(String apiKey, String apiSecret) {
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
     }
 
     public CFStandings getStandings() {
@@ -68,19 +73,19 @@ public class CFApiCentral {
         return hash.toString();
     }
 
-    private static JsonNode apiRequest(String method, Map<String, String> params) throws IOException, NoSuchAlgorithmException {
+    private JsonNode apiRequest(String method, Map<String, String> params) throws IOException, NoSuchAlgorithmException {
         SortedMap<String, String> sortedParams = new TreeMap<>(params);
 
         long time = System.currentTimeMillis() / 1000;
         sortedParams.put("time", String.valueOf(time));
-        sortedParams.put("apiKey", KEY);
+        sortedParams.put("apiKey", apiKey);
 
         String rand = String.valueOf(random.nextInt(900000) + 100000);
         StringBuilder toHash = new StringBuilder(rand).append("/").append(method).append("?");
         for (Map.Entry<String, String> paramAndValue : sortedParams.entrySet()) {
             toHash.append(paramAndValue.getKey()).append("=").append(paramAndValue.getValue()).append("&");
         }
-        toHash.deleteCharAt(toHash.length() - 1).append("#").append(SECRET);
+        toHash.deleteCharAt(toHash.length() - 1).append("#").append(apiSecret);
         sortedParams.put("apiSig", rand + hash(toHash.toString()));
 
         StringBuilder address = new StringBuilder("https://codeforces.com/api/").append(method).append("?");
