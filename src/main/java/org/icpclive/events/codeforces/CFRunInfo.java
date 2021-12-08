@@ -38,6 +38,7 @@ public class CFRunInfo implements RunInfo {
 
     private CFSubmission submission;
     private long lastUpdate;
+    private int points = 0;
 
     public CFRunInfo(CFSubmission submission) {
         this.submission = submission;
@@ -65,6 +66,14 @@ public class CFRunInfo implements RunInfo {
             return "";
         }
         return verdictToString.get(submission.verdict);
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int getPoints() {
+        return points;
     }
 
     @Override
@@ -95,7 +104,7 @@ public class CFRunInfo implements RunInfo {
 
     @Override
     public double getPercentage() {
-        return (double)submission.passedTestCount / getProblem().getTotalTests();
+        return (double) submission.passedTestCount / getProblem().getTotalTests();
     }
 
     @Override

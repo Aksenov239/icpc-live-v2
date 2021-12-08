@@ -37,10 +37,11 @@ public class CFEventsLoader extends EventsLoader {
 
     @Override
     public void run() {
-        while (true) {
+        boolean interrupted = false;
+        while (!interrupted) {
             try {
                 while (true) {
-                    Thread.sleep(300);
+                    Thread.sleep(10000);
                     CFStandings standings = central.getStandings();
                     if (standings == null) {
                         continue;
@@ -52,6 +53,7 @@ public class CFEventsLoader extends EventsLoader {
                 }
             } catch (InterruptedException e) {
                 log.error("error", e);
+                interrupted = true;
             }
         }
     }
