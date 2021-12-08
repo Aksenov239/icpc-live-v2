@@ -12,6 +12,10 @@ import org.icpclive.events.codeforces.api.results.CFStandings;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author egor@egork.net
@@ -42,24 +46,23 @@ public class CFEventsLoader extends EventsLoader {
 
     @Override
     public void run() {
-        boolean interrupted = false;
-        while (!interrupted) {
-            try {
-                while (true) {
-                    Thread.sleep(10000);
-                    CFStandings standings = central.getStandings();
-                    if (standings == null) {
-                        continue;
-                    }
-                    List<CFSubmission> submissions = standings.contest.phase == CFContest.CFContestPhase.BEFORE ? null :
-                            central.getStatus();
-                    System.err.println("Data received");
-                    contestInfo.update(standings, submissions);
-                }
-            } catch (InterruptedException e) {
-                log.error("error", e);
-                interrupted = true;
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            CFStandings standings = central.getStandings();
+            if (standings == null) {
+                return;
             }
+            List<CFSubmission> submissions = standings.contest.phase == CFContest.CFContestPhase.BEFORE ? null :
+                    central.getStatus();
+            System.err.println("Data received");
+            contestInfo.update(standings, submissions);
+        }, 0, 5, TimeUnit.SECONDS);
+        try {
+            if (!scheduler.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)) {
+                log.error("Scheduler in CFEventsLoader finished by timeout");
+            }
+        } catch (InterruptedException e) {
+            // ignored
         }
     }
 
