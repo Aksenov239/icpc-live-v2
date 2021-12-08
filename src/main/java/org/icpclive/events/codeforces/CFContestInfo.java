@@ -105,6 +105,17 @@ public class CFContestInfo extends ContestInfo {
         return runsById.size() - 1;
     }
 
+    @Override
+    public long getTimeFromStart() {
+        if (standings == null) {
+            return 0;
+        }
+        if (standings.contest.relativeTimeSeconds == null) {
+            return 0;
+        }
+        return Math.min(System.currentTimeMillis() - getStartTime(), standings.contest.durationSeconds * 1000);
+    }
+
     public void update(CFStandings standings, List<CFSubmission> submissions) {
         if (problemsMap.isEmpty() && !standings.problems.isEmpty()) {
             int id = 0;
@@ -117,8 +128,12 @@ public class CFContestInfo extends ContestInfo {
             problemNumber = id;
         }
         this.standings = standings;
-        lastTime = standings.contest.relativeTimeSeconds;
+//        lastTime = standings.contest.relativeTimeSeconds;
+        CONTEST_LENGTH = (int) standings.contest.durationSeconds * 1000;
         CFContest.CFContestPhase phase = standings.contest.phase;
+        if (status == Status.BEFORE && phase == CFContest.CFContestPhase.CODING) {
+            setStartTime(System.currentTimeMillis() - standings.contest.relativeTimeSeconds * 1000);
+        }
         status = phase == CFContest.CFContestPhase.BEFORE ? Status.BEFORE : phase == CFContest.CFContestPhase.CODING ? Status.RUNNING : Status.OVER;
         for (CFRanklistRow row : standings.rows) {
             CFTeamInfo teamInfo = new CFTeamInfo(row);
@@ -132,29 +147,43 @@ public class CFContestInfo extends ContestInfo {
             participantsById.put(teamInfo.getId(), teamInfo);
         }
         teamNumber = standings.rows.size();
-        synchronized (runsById) {
-            for (CFSubmission submission : submissions) {
-                if (submission.author.participantType != CFParty.CFPartyParticipantType.CONTESTANT || !participantsByName.containsKey(getName(submission.author))) {
-                    continue;
+        if (submissions != null) {
+            synchronized (runsById) {
+                for (CFSubmission submission : submissions) {
+                    if (submission.author.participantType != CFParty.CFPartyParticipantType.CONTESTANT || !participantsByName.containsKey(getName(submission.author))) {
+                        continue;
+                    }
+                    CFRunInfo runInfo;
+                    boolean isNew;
+                    if (runsById.containsKey((int) submission.id)) {
+                        runInfo = runsById.get((int) submission.id);
+                        runInfo.updateFrom(submission, standings.contest.relativeTimeSeconds);
+                        isNew = false;
+                    } else {
+                        runInfo = new CFRunInfo(submission);
+                        runsById.put(runInfo.getId(), runInfo);
+                        isNew = true;
+                    }
+                    if (isNew) {
+                        addRun(runInfo, runInfo.getProblemId());
+                    }
+                    if (runInfo.isAccepted()) {
+                        int pid = runInfo.getProblemId();
+                        if (firstSolved[pid] == null || firstSolved[pid].getTime() > runInfo.getTime()) {
+                            firstSolved[pid] = runInfo;
+                        }
+                    }
                 }
-                CFRunInfo runInfo;
-                boolean isNew;
-                if (runsById.containsKey((int) submission.id)) {
-                    runInfo = runsById.get((int) submission.id);
-                    runInfo.updateFrom(submission, standings.contest.relativeTimeSeconds);
-                    isNew = false;
-                } else {
-                    runInfo = new CFRunInfo(submission);
-                    runsById.put(runInfo.getId(), runInfo);
-                    isNew = true;
-                }
-                if (isNew) {
-                    addRun(runInfo, runInfo.getProblemId());
-                }
-                if (runInfo.isAccepted()) {
-                    int pid = runInfo.getProblemId();
-                    if (firstSolved[pid] == null || firstSolved[pid].getTime() > runInfo.getTime()) {
-                        firstSolved[pid] = runInfo;
+            }
+        }
+
+        for (CFRanklistRow row : standings.rows) {
+            CFTeamInfo teamInfo = new CFTeamInfo(row);
+
+            for (int i = 0; i < teamInfo.getRuns().length; i++) {
+                for (CFRunInfo runInfo : teamInfo.getRuns()[i]) {
+                    if (runInfo.getPoints() == 0) {
+                        runInfo.setPoints((int) row.problemResults.get(i).points);
                     }
                 }
             }

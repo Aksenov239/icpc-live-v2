@@ -43,8 +43,6 @@ public abstract class EventsLoader implements Runnable {
     }
 
 
-    public abstract void run();
-
     public abstract ContestInfo getContestData();
 
     public double getEmulationSpeed() {
