@@ -6,6 +6,7 @@ Requirements:
 * Java 1.8 (sorry, Java upgrade is in process)
 * Maven
 
+To Run:
 * checkout the repository
 * install OBS shared memory plugin dll https://drive.google.com/file/d/1MvCmhlSpftUFC3N2gj0Lv88-ZV2dtnhP/view?usp=sharing
 * create config/events.properties and config/mainscreen.properties files according to your contest (refer to archive/ for examples)
