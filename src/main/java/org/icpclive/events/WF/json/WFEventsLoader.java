@@ -362,21 +362,11 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public long parseTime(String time) {
-        ZonedDateTime zdt = ZonedDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-//        ZonedDateTime zdt = ZonedDateTime.parse(time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        return zdt.toInstant().toEpochMilli();
-//        LocalDateTime ldt = LocalDateTime.parse(time + ":00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-//        return ldt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return org.icpclive.events.clics.Json.TIME(time);
     }
 
     public long parseRelativeTime(String time) {
-        String[] z = time.split("\\.");
-        String[] t = z[0].split(":");
-        int h = Integer.parseInt(t[0]);
-        int m = Integer.parseInt(t[1]);
-        int s = Integer.parseInt(t[2]);
-        int ms = z.length == 1 ? 0 : Integer.parseInt(z[1]);
-        return ((h * 60 + m) * 60 + s) * 1000 + ms;
+        return org.icpclive.events.clics.Json.RELTIME(time);
     }
 
     public void readContest(WFContestInfo contestInfo, JsonObject je) {
