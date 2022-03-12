@@ -110,7 +110,8 @@ public class WFEventsLoader extends EventsLoader {
             String cdsId = je.get("id").getAsString();
             problemInfo.name = je.get("name").getAsString();
             problemInfo.id = je.get("ordinal").getAsInt();
-            problemInfo.color = Color.decode(je.get("rgb").getAsString());
+        
+	    problemInfo.color = (je.has("rgb") && je.get("rgb").isJsonPrimitive()) ? Color.decode(je.get("rgb").toString()) : Color.GRAY;
             if (je.get("test_data_count") == null) {
                 // TODO
                 problemInfo.testCount = 100;
