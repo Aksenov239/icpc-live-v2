@@ -17,6 +17,7 @@
         <project.target.version>1.8</project.target.version>
         <project.encoding>UTF-8</project.encoding>
         <lwjgl.version>3.1.1</lwjgl.version>
+        <junit.version>4.11</junit.version>
     </properties>
 
     <repositories>
@@ -71,6 +72,12 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
         <!--
           Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
