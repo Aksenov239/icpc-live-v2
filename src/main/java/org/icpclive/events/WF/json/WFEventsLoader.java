@@ -362,11 +362,11 @@ public class WFEventsLoader extends EventsLoader {
     }
 
     public long parseTime(String time) {
-        return org.icpclive.events.clics.Json.TIME(time);
+        return io.icpc.clics.Json.TIME(time);
     }
 
     public long parseRelativeTime(String time) {
-        return org.icpclive.events.clics.Json.RELTIME(time);
+        return io.icpc.clics.Json.RELTIME(time);
     }
 
     public void readContest(WFContestInfo contestInfo, JsonObject je) {
