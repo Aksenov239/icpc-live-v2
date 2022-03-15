@@ -2,6 +2,7 @@ package org.icpclive.events.codeforces;
 
 import org.icpclive.events.RunInfo;
 import org.icpclive.events.TeamInfo;
+import org.icpclive.events.codeforces.api.data.CFMember;
 import org.icpclive.events.codeforces.api.data.CFProblemResult;
 import org.icpclive.events.codeforces.api.data.CFRanklistRow;
 
@@ -35,7 +36,11 @@ public class CFTeamInfo implements TeamInfo {
         if (row.party.teamName != null) {
             return row.party.teamName;
         }
-        return row.party.members.get(0).handle;
+        CFMember member = row.party.members.get(0);
+        if (member.name != null) {
+            return member.name;
+        }
+        return member.handle;
     }
 
     @Override
