@@ -1,6 +1,6 @@
 <challenge>
-    <problem id = "1" alias = "1" problem-id = "1" name = "1" color="#58a2d1"/>
-    <problem id = "2" alias = "2" problem-id = "2" name = "2" color="#fc6d3e"/>
-    <problem id = "3" alias = "3" problem-id = "3" name = "3" color="#7c54aa"/>
-    <problem id = "4" alias = "4" problem-id = "4" name = "4" color="#64d6cb"/>
+    <problem id = "A" alias = "A" problem-id = "roi.2022.main.day1.unsuccessful-sorting" name = "A" color="#58a2d1"/>
+    <problem id = "B" alias = "B" problem-id = "roi.2022.main.day1.roi-tree-knapsack" name = "B" color="#fc6d3e"/>
+    <problem id = "C" alias = "C" problem-id = "roi.2022.main.day1.strange-tree" name = "C" color="#7c54aa"/>
+    <problem id = "D" alias = "D" problem-id = "roi.2022.main.day1.projectors" name = "D" color="#64d6cb"/>
 </challenge>
