@@ -243,7 +243,8 @@ public class IOITeamWidget extends Widget {
 
             PlateStyle color = getTeamRankColor(team);
             applyStyle(color);
-            drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y,
+            drawRectangleWithText("" + Math.max(team.getRank(), 1) //comment to hide global ranks
+, x, y,
                     rankWidth, TEAM_PANE_HEIGHT, PlateStyle.Alignment.CENTER, false, false);
 
             x += rankWidth;

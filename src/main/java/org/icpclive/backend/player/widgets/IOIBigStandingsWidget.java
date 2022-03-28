@@ -283,7 +283,8 @@ public class IOIBigStandingsWidget extends Widget {
     private void drawFullTeamPane(TeamInfo team, int x, int y, boolean bright, boolean odd) {
         PlateStyle rankStyle = getTeamRankColor(team);
         applyStyle(rankStyle);
-        drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y, rankWidth, plateHeight, PlateStyle.Alignment.CENTER, false, false);
+        drawRectangleWithText("" + Math.max(team.getRank(), 1)// comment to hide global ranks
+, x, y, rankWidth, plateHeight, PlateStyle.Alignment.CENTER, false, false);
 
         x += rankWidth;
 

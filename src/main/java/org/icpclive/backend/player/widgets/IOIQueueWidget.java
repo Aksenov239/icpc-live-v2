@@ -199,7 +199,8 @@ public class IOIQueueWidget extends Widget {
 
         PlateStyle color = getTeamRankColor(team);
         applyStyle(color);
-        drawRectangleWithText("" + Math.max(team.getRank(), 1), x, y,
+        drawRectangleWithText("" + Math.max(team.getRank(), 1) // comment to hide global ranks
+, x, y,
                 rankWidth, plateHeight, PlateStyle.Alignment.CENTER, blinking, false);
 
         x += rankWidth + spaceX;
