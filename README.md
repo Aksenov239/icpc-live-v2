@@ -1,10 +1,11 @@
 icpc-live
 ==============
-
 This version of overlays for competitive programming broadcasts was used from 2015 til 2021. Please, refer to https://github.com/icpc/live-v3 for the latest version.
 
-==============
+
+
 Requirements:
+=============
 * Windows
 * OBS Studio
 * Java 1.8 (sorry, Java upgrade is in process)
